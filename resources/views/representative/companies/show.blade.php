@@ -1,0 +1,1546 @@
+@extends('layouts.auth')
+
+@section('title', 'تفاصيل الشركة')
+
+@section('content')
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>تفاصيل الشركة</h1>
+            <p>{{ $company->company_name }}</p>
+        </div>
+        <div class="header-actions">
+            @if($company->status == 'rejected')
+            <a href="{{ route('representative.companies.edit', $company) }}" class="btn btn-primary">
+                <i class="ti ti-edit"></i>
+                تعديل البيانات
+            </a>
+            @endif
+            @if($company->status == 'uploading_documents' && !$company->hasAllRequiredDocuments())
+            <button type="button" onclick="confirmBack()" class="btn btn-secondary">
+                <i class="ti ti-arrow-right"></i>
+                العودة للقائمة
+            </button>
+            @else
+            <a href="{{ route('representative.companies.index') }}" class="btn btn-secondary">
+                <i class="ti ti-arrow-right"></i>
+                العودة للقائمة
+            </a>
+            @endif
+        </div>
+    </div>
+
+    
+
+    <!-- Status Badge -->
+    <div class="status-badge {{ $company->status }}">
+        @if($company->status == 'uploading_documents')
+            <i class="ti ti-upload"></i>
+        @elseif($company->status == 'pending')
+            <i class="ti ti-clock"></i>
+        @elseif($company->status == 'approved')
+            <i class="ti ti-check"></i>
+        @elseif($company->status == 'payment_review')
+            <i class="ti ti-file-invoice"></i>
+        @elseif($company->status == 'active')
+            <i class="ti ti-circle-check"></i>
+        @elseif($company->status == 'rejected')
+            <i class="ti ti-x"></i>
+        @elseif($company->status == 'suspended')
+            <i class="ti ti-ban"></i>
+        @endif
+        <span>{{ $company->status_name }}</span>
+    </div>
+
+    @if($company->status == 'rejected' && $company->rejection_reason)
+        <div class="rejection-alert">
+            <div class="rejection-alert-content">
+                <i class="ti ti-alert-circle"></i>
+                <div>
+                    <strong>سبب الرفض:</strong>
+                    <p>{{ $company->rejection_reason }}</p>
+                    <p class="rejection-note">يرجى تعديل البيانات أو المستندات حسب الملاحظات، ثم إعادة إرسال الطلب للمراجعة.</p>
+                </div>
+            </div>
+            @if($company->hasAllRequiredDocuments())
+            <form action="{{ route('representative.companies.resubmit', $company) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-resubmit">
+                    <i class="ti ti-send"></i>
+                    إعادة إرسال للمراجعة
+                </button>
+            </form>
+            @else
+            <div class="resubmit-disabled-notice">
+                <i class="ti ti-info-circle"></i>
+                يجب رفع جميع المستندات المطلوبة أولاً
+            </div>
+            @endif
+        </div>
+    @endif
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-container">
+        <div class="tabs-nav">
+            @php
+                $activeTab = session('active_tab_' . $company->id, $company->status == 'rejected' ? 'documents' : 'basic');
+            @endphp
+            <button class="tab-btn {{ $activeTab === 'basic' ? 'active' : '' }}" data-tab="basic">
+                <i class="ti ti-building"></i>
+                <span>المعلومات الأساسية</span>
+            </button>
+            <button class="tab-btn {{ $activeTab === 'license' ? 'active' : '' }}" data-tab="license">
+                <i class="ti ti-license"></i>
+                <span>معلومات الترخيص</span>
+            </button>
+            <button class="tab-btn {{ $activeTab === 'manager' ? 'active' : '' }}" data-tab="manager">
+                <i class="ti ti-user"></i>
+                <span>معلومات المدير</span>
+            </button>
+            <button class="tab-btn {{ $activeTab === 'documents' ? 'active' : '' }}" data-tab="documents">
+                <i class="ti ti-files"></i>
+                <span>المستندات</span>
+                @if(!$company->hasAllRequiredDocuments())
+                    <span class="badge-dot"></span>
+                @endif
+            </button>
+            <button class="tab-btn {{ $activeTab === 'registration' ? 'active' : '' }}" data-tab="registration">
+                <i class="ti ti-calendar"></i>
+                <span>معلومات التسجيل</span>
+            </button>
+        </div>
+
+        <div class="tabs-content">
+            <!-- Basic Information Tab -->
+            <div class="tab-pane {{ $activeTab === 'basic' ? 'active' : '' }}" id="basic">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">اسم الشركة</span>
+                        <span class="info-value">{{ $company->company_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">نوع الشركة</span>
+                        <span class="info-value">{{ $company->company_type_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">المدينة</span>
+                        <span class="info-value">{{ $company->city }}</span>
+                    </div>
+                    @if($company->street)
+                    <div class="info-item">
+                        <span class="info-label">الشارع</span>
+                        <span class="info-value">{{ $company->street }}</span>
+                    </div>
+                    @endif
+                    @if($company->company_address)
+                    <div class="info-item full-width">
+                        <span class="info-label">العنوان</span>
+                        <span class="info-value">{{ $company->company_address }}</span>
+                    </div>
+                    @endif
+                    <div class="info-item">
+                        <span class="info-label">رقم الهاتف</span>
+                        <span class="info-value">{{ $company->phone }}</span>
+                    </div>
+                    @if($company->mobile)
+                    <div class="info-item">
+                        <span class="info-label">رقم الجوال</span>
+                        <span class="info-value">{{ $company->mobile }}</span>
+                    </div>
+                    @endif
+                    <div class="info-item">
+                        <span class="info-label">البريد الإلكتروني</span>
+                        <span class="info-value">{{ $company->email }}</span>
+                    </div>
+
+                    @if($company->is_pre_registered)
+                    <div class="info-item">
+                        <span class="info-label">شركة مسجلة مسبقاً</span>
+                        <span class="info-value"><span class="badge badge-info">نعم</span></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">رقم القيد السابق</span>
+                        <span class="info-value">{{ $company->pre_registration_number }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">سنة التسجيل السابق</span>
+                        <span class="info-value">{{ $company->pre_registration_year }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- License Information Tab -->
+            <div class="tab-pane {{ $activeTab === 'license' ? 'active' : '' }}" id="license">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">نوع الترخيص</span>
+                        <span class="info-value">{{ $company->license_type_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">تخصص الترخيص</span>
+                        <span class="info-value">{{ $company->license_specialty_name }}</span>
+                    </div>
+                    @if($company->license_number)
+                    <div class="info-item">
+                        <span class="info-label">رقم الترخيص</span>
+                        <span class="info-value">{{ $company->license_number }}</span>
+                    </div>
+                    @endif
+                    @if($company->license_issuer)
+                    <div class="info-item">
+                        <span class="info-label">جهة الإصدار</span>
+                        <span class="info-value">{{ $company->license_issuer }}</span>
+                    </div>
+                    @endif
+                    @if($company->registration_date)
+                    <div class="info-item">
+                        <span class="info-label">تاريخ التسجيل</span>
+                        <span class="info-value">{{ $company->registration_date->format('Y-m-d') }}</span>
+                    </div>
+                    @endif
+                    @if($company->last_renewal_date)
+                    <div class="info-item">
+                        <span class="info-label">آخر تاريخ تجديد</span>
+                        <span class="info-value"><span class="badge badge-success">{{ $company->last_renewal_date->format('Y-m-d') }}</span></span>
+                    </div>
+                    @endif
+                    @if($company->food_drug_registration_number)
+                    <div class="info-item">
+                        <span class="info-label">رقم تسجيل الغذاء والدواء</span>
+                        <span class="info-value">{{ $company->food_drug_registration_number }}</span>
+                    </div>
+                    @endif
+                    @if($company->chamber_of_commerce_number)
+                    <div class="info-item">
+                        <span class="info-label">رقم السجل التجاري</span>
+                        <span class="info-value">{{ $company->chamber_of_commerce_number }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Manager Information Tab -->
+            <div class="tab-pane {{ $activeTab === 'manager' ? 'active' : '' }}" id="manager">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">اسم المدير</span>
+                        <span class="info-value">{{ $company->manager_name }}</span>
+                    </div>
+                    @if($company->manager_position)
+                    <div class="info-item">
+                        <span class="info-label">المنصب</span>
+                        <span class="info-value">{{ $company->manager_position }}</span>
+                    </div>
+                    @endif
+                    <div class="info-item">
+                        <span class="info-label">رقم هاتف المدير</span>
+                        <span class="info-value">{{ $company->manager_phone }}</span>
+                    </div>
+                    @if($company->manager_email)
+                    <div class="info-item">
+                        <span class="info-label">بريد المدير الإلكتروني</span>
+                        <span class="info-value">{{ $company->manager_email }}</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Documents Tab -->
+            <div class="tab-pane {{ $activeTab === 'documents' ? 'active' : '' }}" id="documents">
+                @if($company->status == 'uploading_documents' || $company->status == 'pending')
+                <div class="alert-info-box">
+                    <i class="ti ti-info-circle"></i>
+                    <div>
+                        <strong>مستندات مطلوبة</strong>
+                        <p>يجب رفع جميع المستندات الإلزامية لإكمال عملية التسجيل</p>
+                    </div>
+                </div>
+                @endif
+
+                @php
+                    $missingDocs = $company->getMissingDocuments();
+                @endphp
+
+                @if(count($missingDocs) > 0)
+                <div class="alert-warning-box">
+                    <i class="ti ti-alert-triangle"></i>
+                    <div>
+                        <strong>المستندات الناقصة ({{ count($missingDocs) }})</strong>
+                        <ul>
+                            @foreach($missingDocs as $type => $name)
+                                <li>{{ $name }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                @endif
+
+                <div class="documents-header">
+                    <h6>
+                        <i class="ti ti-folder"></i>
+                        المستندات المرفوعة ({{ $company->documents->count() }})
+                        @if($company->hasAllRequiredDocuments())
+                            <span class="badge badge-success-sm"><i class="ti ti-check"></i> مكتمل</span>
+                        @endif
+                    </h6>
+                    @if(in_array($company->status, ['uploading_documents', 'rejected']))
+                    <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('uploadModal').style.display='flex'">
+                        <i class="ti ti-upload"></i>
+                        <span>رفع مستند</span>
+                    </button>
+                    @endif
+                </div>
+
+                @if($company->documents->count() > 0)
+                <div class="documents-grid">
+                    @foreach($company->documents as $document)
+                    <div class="document-card">
+                        <div class="document-preview">
+                            @if($document->isImage())
+                                <img src="{{ \Illuminate\Support\Facades\Storage::url($document->file_path) }}" alt="{{ $document->display_name }}">
+                            @else
+                                <div class="document-icon">
+                                    <i class="ti {{ $document->file_icon }}"></i>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="document-info">
+                            <strong>{{ $document->display_name }}</strong>
+                            <small>{{ $document->file_size_formatted }}</small>
+                            @if($document->notes)
+                                <p class="document-notes">{{ $document->notes }}</p>
+                            @endif
+                        </div>
+                        <div class="document-actions">
+                            <a href="{{ route('representative.companies.documents.download', [$company, $document]) }}" class="btn-icon" title="تحميل">
+                                <i class="ti ti-download"></i>
+                            </a>
+                            @if(in_array($company->status, ['uploading_documents', 'rejected']))
+                            <button type="button" class="btn-icon btn-edit" onclick="editDocument({{ $document->id }}, '{{ $document->display_name }}', '{{ $document->document_type}}')" title="تعديل">
+                                <i class="ti ti-edit"></i>
+                            </button>
+                            <button type="button" class="btn-icon btn-danger" onclick="deleteDocument({{ $document->id }}, '{{ $document->display_name }}')" title="حذف">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                            <form id="delete-doc-form-{{ $document->id }}" action="{{ route('representative.companies.documents.destroy', [$company, $document]) }}" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @else
+                <div class="empty-documents">
+                    <i class="ti ti-folder-off"></i>
+                    <p>لم يتم رفع أي مستندات بعد</p>
+                    @if($company->status == 'uploading_documents' || $company->status == 'pending')
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('uploadModal').style.display='flex'">
+                        <i class="ti ti-upload"></i>
+                        رفع المستند الأول
+                    </button>
+                    @endif
+                </div>
+                @endif
+            </div>
+
+            <!-- Registration Information Tab -->
+            <div class="tab-pane {{ $activeTab === 'registration' ? 'active' : '' }}" id="registration">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">تاريخ التسجيل في النظام</span>
+                        <span class="info-value">{{ $company->created_at->format('Y-m-d H:i') }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">آخر تحديث</span>
+                        <span class="info-value">{{ $company->updated_at->format('Y-m-d H:i') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Document Modal -->
+    <div id="uploadModal" class="upload-modal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h3><i class="ti ti-upload"></i> رفع مستند جديد</h3>
+                <button type="button" class="close-modal" onclick="document.getElementById('uploadModal').style.display='none'">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <form action="{{ route('representative.companies.documents.store', $company) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="upload-modal-body">
+                    <div class="form-group">
+                        <label>نوع المستند <span class="required">*</span></label>
+                        <select name="document_type" id="document_type" class="form-control" required>
+                            <option value="">اختر نوع المستند</option>
+                            @php
+                                $uploadedTypes = $company->documents->pluck('document_type')->toArray();
+                            @endphp
+                            @foreach(\App\Models\LocalCompanyDocument::documentTypes() as $key => $value)
+                                @php
+                                    $isUploaded = in_array($key, $uploadedTypes) && $key !== 'other';
+                                    $isRequired = in_array($key, array_keys(\App\Models\LocalCompanyDocument::requiredDocumentTypes()));
+                                @endphp
+                                <option value="{{ $key }}" {{ $isUploaded ? 'disabled' : '' }}>
+                                    {{ $value }}
+                                    @if($isRequired) <span style="color: #dc2626;">*</span> @endif
+                                    @if($isUploaded) (تم الرفع) @endif
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="custom_name_wrapper" style="display: none;">
+                        <label>اسم المستند <span class="required">*</span></label>
+                        <input type="text" name="custom_name" id="custom_name" class="form-control" placeholder="أدخل اسم المستند">
+                    </div>
+
+                    <div class="form-group">
+                        <label>الملف <span class="required">*</span></label>
+                        <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar">
+                        <small>الحد الأقصى: 10 ميجابايت | الأنواع المدعومة: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, GIF, ZIP, RAR</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ملاحظات</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="ملاحظات إضافية (اختياري)"></textarea>
+                    </div>
+                </div>
+                <div class="upload-modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('uploadModal').style.display='none'">إلغاء</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-upload"></i> رفع المستند</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Edit Document Modal -->
+    <div id="editModal" class="upload-modal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h3><i class="ti ti-edit"></i> تعديل المستند</h3>
+                <button type="button" class="close-modal" onclick="document.getElementById('editModal').style.display='none'">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <form id="editDocumentForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="upload-modal-body">
+                    <div class="alert-info-box">
+                        <i class="ti ti-info-circle"></i>
+                        <div>
+                            <strong>استبدال المستند</strong>
+                            <p>سيتم استبدال الملف الحالي بالملف الجديد</p>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="edit_document_type" name="document_type">
+
+                    <div class="form-group">
+                        <label>نوع المستند</label>
+                        <input type="text" id="edit_document_name" class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>الملف الجديد <span class="required">*</span></label>
+                        <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar">
+                        <small>الحد الأقصى: 10 ميجابايت | الأنواع المدعومة: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, GIF, ZIP, RAR</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ملاحظات</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="ملاحظات إضافية (اختياري)"></textarea>
+                    </div>
+                </div>
+                <div class="upload-modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('editModal').style.display='none'">إلغاء</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> تحديث المستند</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('styles')
+<style>
+    .auth-form {
+        width: 100%;
+        max-width: 1200px;
+        padding: 0 20px;
+    }
+
+    .dashboard-container {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        width: 100%;
+    }
+
+    /* Header */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a5f4a;
+        margin: 0 0 5px 0;
+    }
+
+    .page-header p {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+        text-decoration: none;
+        font-family: 'Almarai', sans-serif;
+    }
+
+    .btn-secondary {
+        background: #ffffff;
+        color: #374151;
+        border: 1px solid #d1d5db;
+    }
+
+    .btn-secondary:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .btn-primary {
+        background: #1a5f4a;
+        color: #ffffff;
+        border: 1px solid #1a5f4a;
+    }
+
+    .btn-primary:hover {
+        background: #155a43;
+        border-color: #155a43;
+    }
+
+    .btn-success {
+        background: #10b981;
+        color: #ffffff;
+        border: 1px solid #10b981;
+    }
+
+    .btn-success:hover {
+        background: #059669;
+        border-color: #059669;
+    }
+
+    .documents-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-icon.btn-edit {
+        color: #1a5f4a;
+    }
+
+    .btn-icon.btn-edit:hover {
+        background: #f0fdf4;
+        border-color: #1a5f4a;
+    }
+
+    .rejection-note {
+        font-size: 0.875rem;
+        color: #7f1d1d;
+        margin: 8px 0 0 0;
+        font-style: italic;
+    }
+
+    .btn-resubmit {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: #10b981;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Almarai', sans-serif;
+    }
+
+    .btn-resubmit:hover {
+        background: #059669;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-resubmit i {
+        font-size: 1.1rem;
+    }
+
+    .resubmit-disabled-notice {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        background: #fef3c7;
+        border: 1px solid #fde68a;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: #92400e;
+        margin-top: 12px;
+    }
+
+    .resubmit-disabled-notice i {
+        font-size: 1.125rem;
+        color: #f59e0b;
+        flex-shrink: 0;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .status-badge i {
+        font-size: 1.125rem;
+    }
+
+    .status-badge.uploading_documents {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-badge.uploading_documents i {
+        color: #3b82f6;
+    }
+
+    .status-badge.pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-badge.pending i {
+        color: #f59e0b;
+    }
+
+    .status-badge.approved {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-badge.approved i {
+        color: #10b981;
+    }
+
+    .status-badge.rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-badge.rejected i {
+        color: #ef4444;
+    }
+
+    .status-badge.suspended {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .status-badge.suspended i {
+        color: #6b7280;
+    }
+
+    .status-badge.payment_review {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-badge.payment_review i {
+        color: #f59e0b;
+    }
+
+    .status-badge.active {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-badge.active i {
+        color: #10b981;
+    }
+
+    /* Rejection Alert */
+    .rejection-alert {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .rejection-alert-content {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .rejection-alert-content > i {
+        font-size: 1.5rem;
+        color: #dc2626;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .rejection-alert-content > div {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .rejection-alert strong {
+        font-size: 0.875rem;
+        color: #991b1b;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    .rejection-alert p {
+        font-size: 0.875rem;
+        color: #7f1d1d;
+        margin: 0 0 12px 0;
+        line-height: 1.5;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .btn-edit-rejected {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #1a5f4a;
+        color: #ffffff;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-family: 'Almarai', sans-serif;
+    }
+
+    .btn-edit-rejected:hover {
+        background: #155a43;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 95, 74, 0.3);
+    }
+
+    .btn-edit-rejected i {
+        font-size: 1.1rem;
+    }
+
+    /* Tabs Container */
+    .tabs-container {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .tabs-nav {
+        display: flex;
+        background: #f9fafb;
+        border-bottom: 2px solid #e5e7eb;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+    .tabs-nav::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .tabs-nav::-webkit-scrollbar-track {
+        background: #f3f4f6;
+    }
+
+    .tabs-nav::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 2px;
+    }
+
+    .tab-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px 24px;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: #6b7280;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        font-family: 'Almarai', sans-serif;
+    }
+
+    .tab-btn i {
+        font-size: 1.125rem;
+    }
+
+    .tab-btn:hover {
+        background: rgba(26, 95, 74, 0.05);
+        color: #1a5f4a;
+    }
+
+    .tab-btn.active {
+        color: #1a5f4a;
+        border-bottom-color: #1a5f4a;
+        background: rgba(26, 95, 74, 0.05);
+        font-weight: 600;
+    }
+
+    .tabs-content {
+        padding: 30px;
+    }
+
+    .tab-pane {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .tab-pane.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
+        padding: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .info-item:nth-last-child(-n+2) {
+        border-bottom: none;
+    }
+
+    .info-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 0.95rem;
+        color: #1f2937;
+        font-weight: 600;
+    }
+
+    /* Badge Dot */
+    .badge-dot {
+        width: 8px;
+        height: 8px;
+        background: #dc2626;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Alert Boxes */
+    .alert-info-box,
+    .alert-warning-box {
+        display: flex;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
+
+    .alert-info-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+    }
+
+    .alert-info-box i {
+        font-size: 1.25rem;
+        color: #3b82f6;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .alert-info-box strong {
+        font-size: 0.875rem;
+        color: #1e40af;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .alert-info-box p {
+        font-size: 0.875rem;
+        color: #1e3a8a;
+        margin: 0;
+    }
+
+    .alert-warning-box {
+        background: #fef3c7;
+        border: 1px solid #fde68a;
+    }
+
+    .alert-warning-box i {
+        font-size: 1.25rem;
+        color: #f59e0b;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .alert-warning-box strong {
+        font-size: 0.875rem;
+        color: #92400e;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .alert-warning-box ul {
+        margin: 0;
+        padding-right: 20px;
+        font-size: 0.875rem;
+        color: #78350f;
+    }
+
+    .alert-warning-box li {
+        margin-bottom: 4px;
+    }
+
+    /* Documents Section */
+    .documents-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .documents-header h6 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .documents-header i {
+        color: #1a5f4a;
+        font-size: 1.125rem;
+    }
+
+    .badge-success-sm {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        background: #d1fae5;
+        color: #065f46;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .documents-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .document-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+
+    .document-card:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-color: #1a5f4a;
+    }
+
+    .document-preview {
+        height: 150px;
+        background: #f9fafb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .document-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .document-icon {
+        font-size: 3rem;
+        color: #6b7280;
+    }
+
+    .document-info {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .document-info strong {
+        display: block;
+        font-size: 0.875rem;
+        color: #1f2937;
+        margin-bottom: 4px;
+    }
+
+    .document-info small {
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+
+    .document-notes {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin: 8px 0 0 0;
+    }
+
+    .document-actions {
+        display: flex;
+        padding: 8px;
+        background: #f9fafb;
+        gap: 5px;
+    }
+
+    .btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .btn-icon:hover {
+        background: #f3f4f6;
+        border-color: #1a5f4a;
+        color: #1a5f4a;
+    }
+
+    .btn-icon.btn-danger {
+        color: #dc2626;
+    }
+
+    .btn-icon.btn-danger:hover {
+        background: #fef2f2;
+        border-color: #dc2626;
+    }
+
+    .empty-documents {
+        text-align: center;
+        padding: 60px 20px;
+        background: #f9fafb;
+        border: 1px dashed #d1d5db;
+        border-radius: 8px;
+    }
+
+    .empty-documents i {
+        font-size: 3rem;
+        color: #9ca3af;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .empty-documents p {
+        font-size: 0.95rem;
+        color: #6b7280;
+        margin: 0 0 20px 0;
+    }
+
+    /* Upload Modal */
+    .upload-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .upload-modal-content {
+        background: white;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .upload-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .upload-modal-header h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .close-modal {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #374151;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .close-modal:hover {
+        background: #f3f4f6;
+    }
+
+    .upload-modal-body {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .form-group .required {
+        color: #dc2626;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-family: 'Almarai', sans-serif;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #1a5f4a;
+        box-shadow: 0 0 0 3px rgba(26, 95, 74, 0.1);
+    }
+
+    .form-group small {
+        display: block;
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-top: 5px;
+    }
+
+    .upload-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 15px 20px;
+        border-top: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+
+    .btn-sm {
+        padding: 8px 16px;
+        font-size: 0.875rem;
+    }
+
+    .btn-sm i {
+        font-size: 1rem;
+    }
+
+    .badge {
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .badge-info {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .badge-success {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .header-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .dashboard-container {
+            padding: 15px;
+        }
+
+        .status-badge {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .rejection-alert {
+            padding: 12px;
+        }
+
+        .rejection-alert-content {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rejection-alert-content i {
+            font-size: 1.25rem;
+        }
+
+        .btn-resubmit {
+            width: 100%;
+            justify-content: center;
+            padding: 10px 20px;
+            font-size: 0.875rem;
+        }
+
+        .resubmit-disabled-notice {
+            padding: 8px 12px;
+            font-size: 0.8rem;
+        }
+
+        .tab-btn span {
+            display: none;
+        }
+
+        .tab-btn {
+            flex: 1;
+            justify-content: center;
+            padding: 16px 12px;
+        }
+
+        .tab-btn i {
+            font-size: 1.25rem;
+        }
+
+        .tabs-content {
+            padding: 20px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Tabs functionality
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
+
+            // Remove active class from all buttons and panes
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+            // Add active class to clicked button and corresponding pane
+            this.classList.add('active');
+            document.getElementById(targetTab).classList.add('active');
+
+            // Save active tab to server
+            fetch('{{ route('representative.companies.save-tab', $company) }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    active_tab: targetTab,
+                    _method: 'PATCH'
+                })
+            }).catch(() => {
+                // Silent fail - not critical if session doesn't save
+            });
+        });
+    });
+
+    // Modal functionality
+    const uploadModal = document.getElementById('uploadModal');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const closeModal = document.querySelector('.close-modal');
+    const cancelBtn = document.querySelector('.cancel-btn');
+    const documentTypeSelect = document.getElementById('document_type');
+    const customNameGroup = document.getElementById('custom_name_group');
+
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', function() {
+            uploadModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    if (closeModal) {
+        closeModal.addEventListener('click', function() {
+            uploadModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            uploadModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target === uploadModal) {
+            uploadModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Show/hide custom name field
+    if (documentTypeSelect) {
+        documentTypeSelect.addEventListener('change', function() {
+            const customNameWrapper = document.getElementById('custom_name_wrapper');
+            if (this.value === 'other') {
+                customNameWrapper.style.display = 'block';
+                document.getElementById('custom_name').required = true;
+            } else {
+                customNameWrapper.style.display = 'none';
+                document.getElementById('custom_name').required = false;
+            }
+        });
+    }
+
+    // Delete document function
+    function deleteDocument(documentId, documentName) {
+        Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: `سيتم حذف "${documentName}" نهائياً`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'نعم، احذف',
+            cancelButtonText: 'إلغاء',
+            iconColor: '#dc2626'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-doc-form-' + documentId).submit();
+            }
+        });
+    }
+    window.deleteDocument = deleteDocument;
+
+    function editDocument(documentId, documentName, documentType) {
+        const editModal = document.getElementById('editModal');
+        const editForm = document.getElementById('editDocumentForm');
+        const editDocName = document.getElementById('edit_document_name');
+        const editDocType = document.getElementById('edit_document_type');
+
+        editForm.action = `/clea/companies/{{ $company->id }}/documents/${documentId}`;
+        editDocName.value = documentName;
+        editDocType.value = documentType;
+
+        editModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    window.editDocument = editDocument;
+
+    window.addEventListener('click', function(event) {
+        const editModal = document.getElementById('editModal');
+        if (event.target === editModal) {
+            editModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+
+    // Confirm back with missing documents
+    function confirmBack() {
+        Swal.fire({
+            title: 'تنبيه',
+            text: 'لم يتم رفع جميع المستندات المطلوبة بعد. هل تريد المتابعة؟',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#1a5f4a',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'نعم، العودة',
+            cancelButtonText: 'إلغاء',
+            iconColor: '#f59e0b'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{{ route('representative.companies.index') }}';
+            }
+        });
+    }
+    window.confirmBack = confirmBack;
+
+    // Success/Error messages
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'تم بنجاح',
+            text: '{{ session('success') }}',
+            confirmButtonText: 'حسناً',
+            confirmButtonColor: '#1a5f4a',
+            iconColor: '#10b981',
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'خطأ',
+            text: '{{ session('error') }}',
+            confirmButtonText: 'حسناً',
+            confirmButtonColor: '#1a5f4a',
+            iconColor: '#ef4444'
+        });
+    @endif
+
+    @if($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'خطأ في البيانات',
+            html: '<ul style="text-align: right; list-style: none; padding: 0;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+            confirmButtonText: 'حسناً',
+            confirmButtonColor: '#1a5f4a',
+            iconColor: '#ef4444'
+        });
+    @endif
+</script>
+@endpush

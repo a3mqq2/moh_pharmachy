@@ -1,0 +1,7 @@
+- لا تكتب اي ملاحظات في الكود سواء عربي او انجليزي
+
+- اي نموذج طويل استخدم steps
+
+- لا تستخدم confirm alert استخدم مكانها toasted notification او sweatalert
+
+
