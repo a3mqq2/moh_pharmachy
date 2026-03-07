@@ -321,7 +321,7 @@ class LocalCompanyController extends Controller
                     $localCompany->logActivity('renewal_date_set', 'تم تحديد تاريخ آخر تجديد: ' . $request->last_renewal_date);
                 }
             } else {
-                $registrationFee = Setting::get('registration_fee', 500.00);
+                $registrationFee = Setting::get('local_company_annual_fee', 1000.00);
 
                 $invoice = LocalCompanyInvoice::create([
                     'local_company_id' => $localCompany->id,

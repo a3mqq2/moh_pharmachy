@@ -306,7 +306,7 @@ class ForeignCompanyController extends Controller
     private function getRegistrationFee(): float
     {
         // Get registration fee from settings or return default
-        $setting = Setting::where('key', 'foreign_company_registration_fee')->first();
+        $setting = Setting::where('key', 'foreign_company_initial_fee')->first();
         return $setting ? floatval($setting->value) : 1000.00;
     }
 }
