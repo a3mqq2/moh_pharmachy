@@ -7,9 +7,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^10.0",
         "laravel/tinker": "^2.10",
-        "milon/barcode": "^11.0",
+        "milon/barcode": "^10.0",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^6.0"
     },
@@ -17,7 +17,7 @@
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^7.0",
+        "nunomaduro/collision": "^6.0",
         "phpunit/phpunit": "^10.5"
     },
     "autoload": {
