@@ -20,7 +20,7 @@
                 طباعة الفاتورة
             </a>
 
-            @if($invoice->receipt_path && $invoice->receipt_status === 'pending')
+            @if($invoice->receipt_path && $invoice->receipt_status == 'pending')
             <button type="button"
                     class="btn btn-success"
                     onclick="approveReceipt()">
@@ -35,7 +35,7 @@
             </button>
             @endif
 
-            @if($invoice->status === 'pending' && !$invoice->receipt_path)
+            @if($invoice->status == 'pending' && !$invoice->receipt_path)
             <a href="{{ route('admin.foreign-company-invoices.edit', $invoice->id) }}"
                class="btn btn-warning">
                 <i class="ti ti-edit me-1"></i>
@@ -43,7 +43,7 @@
             </a>
             @endif
 
-            @if($invoice->status === 'pending')
+            @if($invoice->status == 'pending')
             <button type="button"
                     class="btn btn-outline-danger"
                     onclick="showCancelModal()">
@@ -80,7 +80,7 @@
                 <button class="nav-link" id="receipt-tab" data-bs-toggle="tab" data-bs-target="#receipt-content" type="button" role="tab">
                     <i class="ti ti-file-text me-1"></i>
                     إيصال الدفع
-                    @if($invoice->receipt_status === 'pending')
+                    @if($invoice->receipt_status == 'pending')
                         <span class="badge bg-warning ms-1">قيد المراجعة</span>
                     @endif
                 </button>
@@ -114,11 +114,11 @@
                             <tr>
                                 <th class="bg-light">الحالة</th>
                                 <td>
-                                    @if($invoice->status === 'pending')
+                                    @if($invoice->status == 'pending')
                                         <span class="badge bg-warning">قيد الانتظار</span>
-                                    @elseif($invoice->status === 'paid')
+                                    @elseif($invoice->status == 'paid')
                                         <span class="badge bg-success">مدفوعة</span>
-                                    @elseif($invoice->status === 'cancelled')
+                                    @elseif($invoice->status == 'cancelled')
                                         <span class="badge bg-danger">ملغاة</span>
                                     @endif
                                 </td>
@@ -135,7 +135,7 @@
                                 <th class="bg-light">أصدرت بواسطة</th>
                                 <td>{{ $invoice->issuedBy->name ?? 'غير معروف' }}</td>
                             </tr>
-                            @if($invoice->status === 'paid')
+                            @if($invoice->status == 'paid')
                             <tr>
                                 <th class="bg-light">تاريخ الدفع</th>
                                 <td>{{ $invoice->paid_at?->format('Y-m-d H:i') ?? '-' }}</td>
@@ -222,7 +222,7 @@
                 @if($invoice->receipt_path)
                     <div class="row">
                         <div class="col-md-8">
-                            @if($invoice->receipt_status === 'pending')
+                            @if($invoice->receipt_status == 'pending')
                             <div class="alert alert-warning">
                                 <h6 class="alert-heading">
                                     <i class="ti ti-clock me-1"></i>
@@ -230,7 +230,7 @@
                                 </h6>
                                 <p class="mb-0">تم رفع إيصال الدفع من قبل ممثل الشركة ويحتاج إلى مراجعتك للموافقة أو الرفض.</p>
                             </div>
-                            @elseif($invoice->receipt_status === 'approved')
+                            @elseif($invoice->receipt_status == 'approved')
                             <div class="alert alert-success">
                                 <h6 class="alert-heading">
                                     <i class="ti ti-check me-1"></i>
@@ -241,7 +241,7 @@
                                 <p class="mb-0"><strong>في:</strong> {{ $invoice->receipt_reviewed_at->format('Y-m-d H:i') }}</p>
                                 @endif
                             </div>
-                            @elseif($invoice->receipt_status === 'rejected')
+                            @elseif($invoice->receipt_status == 'rejected')
                             <div class="alert alert-danger">
                                 <h6 class="alert-heading">
                                     <i class="ti ti-x me-1"></i>
@@ -266,11 +266,11 @@
                                 <tr>
                                     <th class="bg-light">حالة الإيصال</th>
                                     <td>
-                                        @if($invoice->receipt_status === 'pending')
+                                        @if($invoice->receipt_status == 'pending')
                                             <span class="badge bg-warning">قيد المراجعة</span>
-                                        @elseif($invoice->receipt_status === 'approved')
+                                        @elseif($invoice->receipt_status == 'approved')
                                             <span class="badge bg-success">موافق عليه</span>
-                                        @elseif($invoice->receipt_status === 'rejected')
+                                        @elseif($invoice->receipt_status == 'rejected')
                                             <span class="badge bg-danger">مرفوض</span>
                                         @endif
                                     </td>
@@ -334,14 +334,14 @@
                     <div class="timeline-item mb-4">
                         <div class="d-flex">
                             <div class="flex-shrink-0">
-                                <div class="avtar avtar-s bg-{{ $invoice->receipt_status === 'approved' ? 'success' : 'danger' }}">
+                                <div class="avtar avtar-s bg-{{ $invoice->receipt_status == 'approved' ? 'success' : 'danger' }}">
                                     <i class="ti ti-eye"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-1">مراجعة الإيصال</h6>
                                 <p class="text-muted mb-1">
-                                    تمت {{ $invoice->receipt_status === 'approved' ? 'الموافقة' : 'الرفض' }} من قبل {{ $invoice->receiptReviewedBy->name ?? 'غير معروف' }}
+                                    تمت {{ $invoice->receipt_status == 'approved' ? 'الموافقة' : 'الرفض' }} من قبل {{ $invoice->receiptReviewedBy->name ?? 'غير معروف' }}
                                 </p>
                                 <small class="text-muted">{{ $invoice->receipt_reviewed_at->format('Y-m-d H:i') }}</small>
                             </div>
@@ -349,7 +349,7 @@
                     </div>
                     @endif
 
-                    @if($invoice->status === 'paid')
+                    @if($invoice->status == 'paid')
                     <div class="timeline-item mb-4">
                         <div class="d-flex">
                             <div class="flex-shrink-0">
@@ -366,7 +366,7 @@
                     </div>
                     @endif
 
-                    @if($invoice->status === 'cancelled')
+                    @if($invoice->status == 'cancelled')
                     <div class="timeline-item">
                         <div class="d-flex">
                             <div class="flex-shrink-0">

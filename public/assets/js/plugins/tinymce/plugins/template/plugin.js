@@ -12,27 +12,27 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
+    const isType = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
     const isString = isType('string');
     const isObject = isType('object');
     const isArray = isType('array');
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
     const isArrayOf = (value, pred) => {
@@ -204,7 +204,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -352,9 +352,9 @@
     const getPreviewContent = (editor, html) => {
       var _a;
       let previewHtml = parseAndSerialize(editor, html);
-      if (html.indexOf('<html>') === -1) {
+      if (html.indexOf('<html>') == -1) {
         let contentCssEntries = '';
-        const contentStyle = (_a = getContentStyle(editor)) !== null && _a !== void 0 ? _a : '';
+        const contentStyle = (_a = getContentStyle(editor)) != null && _a != void 0 ? _a : '';
         const cors = shouldUseContentCssCors(editor) ? ' crossorigin="anonymous"' : '';
         global$2.each(editor.contentCSS, url => {
           contentCssEntries += '<link type="text/css" rel="stylesheet" href="' + editor.documentBaseURI.toAbsolute(url) + '"' + cors + '>';
@@ -365,7 +365,7 @@
         const bodyClass = getBodyClass(editor);
         const encode = editor.dom.encode;
         const isMetaKeyPressed = global.os.isMacOS() || global.os.isiOS() ? 'e.metaKey' : 'e.ctrlKey && !e.altKey';
-        const preventClicksOnLinksScript = '<script>' + 'document.addEventListener && document.addEventListener("click", function(e) {' + 'for (var elm = e.target; elm; elm = elm.parentNode) {' + 'if (elm.nodeName === "A" && !(' + isMetaKeyPressed + ')) {' + 'e.preventDefault();' + '}' + '}' + '}, false);' + '</script> ';
+        const preventClicksOnLinksScript = '<script>' + 'document.addEventListener && document.addEventListener("click", function(e) {' + 'for (var elm = e.target; elm; elm = elm.parentNode) {' + 'if (elm.nodeName == "A" && !(' + isMetaKeyPressed + ')) {' + 'e.preventDefault();' + '}' + '}' + '}, false);' + '</script> ';
         const directionality = editor.getBody().dir;
         const dirAttr = directionality ? ' dir="' + encode(directionality) + '"' : '';
         previewHtml = '<!DOCTYPE html>' + '<html>' + '<head>' + '<base href="' + encode(editor.documentBaseURI.getURI()) + '">' + contentCssEntries + preventClicksOnLinksScript + '</head>' + '<body class="' + encode(bodyClass) + '"' + dirAttr + '>' + previewHtml + '</body>' + '</html>';
@@ -374,7 +374,7 @@
     };
     const open = (editor, templateList) => {
       const createTemplates = () => {
-        if (!templateList || templateList.length === 0) {
+        if (!templateList || templateList.length == 0) {
           const message = editor.translate('No templates defined.');
           editor.notificationManager.open({
             text: message,
@@ -383,9 +383,9 @@
           return Optional.none();
         }
         return Optional.from(global$2.map(templateList, (template, index) => {
-          const isUrlTemplate = t => t.url !== undefined;
+          const isUrlTemplate = t => t.url != undefined;
           return {
-            selected: index === 0,
+            selected: index == 0,
             text: template.title,
             value: {
               url: isUrlTemplate(template) ? Optional.from(template.url) : Optional.none(),
@@ -399,13 +399,13 @@
         text: t.text,
         value: t.text
       }));
-      const findTemplate = (templates, templateTitle) => find(templates, t => t.text === templateTitle);
+      const findTemplate = (templates, templateTitle) => find(templates, t => t.text == templateTitle);
       const loadFailedAlert = api => {
         editor.windowManager.alert('Could not load the specified template.', () => api.focus('template'));
       };
       const getTemplateContent = t => t.value.url.fold(() => Promise.resolve(t.value.content.getOr('')), url => fetch(url).then(res => res.ok ? res.text() : Promise.reject()));
       const onChange = (templates, updateDialog) => (api, change) => {
-        if (change.name === 'template') {
+        if (change.name == 'template') {
           const newTemplateTitle = api.getData().template;
           findTemplate(templates, newTemplateTitle).each(t => {
             api.block('Loading...');

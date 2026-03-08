@@ -12,21 +12,21 @@ class PharmaceuticalProductController extends Controller
     {
         $query = PharmaceuticalProduct::with(['foreignCompany.localCompany', 'representative']);
 
-        if ($request->has('status') && $request->status !== '') {
+        if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
 
-        if ($request->has('search') && $request->search !== '') {
+        if ($request->has('search') && $request->search != '') {
             $query->where('product_name', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->has('foreign_company') && $request->foreign_company !== '') {
+        if ($request->has('foreign_company') && $request->foreign_company != '') {
             $query->whereHas('foreignCompany', function ($q) use ($request) {
                 $q->where('company_name', 'like', '%' . $request->foreign_company . '%');
             });
         }
 
-        if ($request->has('local_company') && $request->local_company !== '') {
+        if ($request->has('local_company') && $request->local_company != '') {
             $query->whereHas('foreignCompany.localCompany', function ($q) use ($request) {
                 $q->where('company_name', 'like', '%' . $request->local_company . '%');
             });
@@ -58,7 +58,7 @@ class PharmaceuticalProductController extends Controller
 
     public function approve(PharmaceuticalProduct $product)
     {
-        if ($product->status !== 'pending_review') {
+        if ($product->status != 'pending_review') {
             return back()->with('error', 'لا يمكن الموافقة على هذا الصنف في حالته الحالية.');
         }
 
@@ -78,7 +78,7 @@ class PharmaceuticalProductController extends Controller
 
     public function finalApprove(PharmaceuticalProduct $product)
     {
-        if ($product->status !== 'pending_final_approval') {
+        if ($product->status != 'pending_final_approval') {
             return back()->with('error', 'لا يمكن الموافقة النهائية على هذا الصنف في حالته الحالية.');
         }
 
@@ -109,7 +109,7 @@ class PharmaceuticalProductController extends Controller
             'rejection_reason' => 'required|string|max:1000',
         ]);
 
-        if ($product->status !== 'pending_review') {
+        if ($product->status != 'pending_review') {
             return back()->with('error', 'لا يمكن رفض هذا الصنف في حالته الحالية.');
         }
 
@@ -127,7 +127,7 @@ class PharmaceuticalProductController extends Controller
 
     public function approveReceipt(PharmaceuticalProduct $product, \App\Models\PharmaceuticalProductInvoice $invoice)
     {
-        if ($invoice->status !== 'pending_review') {
+        if ($invoice->status != 'pending_review') {
             return back()->with('error', 'لا يمكن الموافقة على هذا الإيصال في حالته الحالية.');
         }
 
@@ -151,7 +151,7 @@ class PharmaceuticalProductController extends Controller
             'rejection_reason' => 'required|string|max:1000',
         ]);
 
-        if ($invoice->status !== 'pending_review') {
+        if ($invoice->status != 'pending_review') {
             return back()->with('error', 'لا يمكن رفض هذا الإيصال في حالته الحالية.');
         }
 
@@ -175,7 +175,7 @@ class PharmaceuticalProductController extends Controller
 
     public function printCertificate(PharmaceuticalProduct $product)
     {
-        if ($product->status !== 'active') {
+        if ($product->status != 'active') {
             return back()->with('error', 'يمكن طباعة الشهادة فقط للأصناف المفعلة.');
         }
 

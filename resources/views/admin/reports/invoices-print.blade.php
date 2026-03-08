@@ -190,11 +190,11 @@
     @if(request()->hasAny(['type', 'status', 'from_date', 'to_date']))
     <div class="filters">
         <h3>معايير البحث:</h3>
-        @if(request('type') && request('type') !== 'all')
-            <p><strong>نوع الفاتورة:</strong> {{ request('type') === 'local' ? 'شركات محلية' : 'أصناف دوائية' }}</p>
+        @if(request('type') && request('type') != 'all')
+            <p><strong>نوع الفاتورة:</strong> {{ request('type') == 'local' ? 'شركات محلية' : 'أصناف دوائية' }}</p>
         @endif
         @if(request('status'))
-            <p><strong>الحالة:</strong> {{ request('status') === 'paid' ? 'مدفوعة' : 'غير مدفوعة' }}</p>
+            <p><strong>الحالة:</strong> {{ request('status') == 'paid' ? 'مدفوعة' : 'غير مدفوعة' }}</p>
         @endif
         @if(request('from_date'))
             <p><strong>من تاريخ:</strong> {{ request('from_date') }}</p>
@@ -205,7 +205,7 @@
     </div>
     @endif
 
-    @if($type === 'all')
+    @if($type == 'all')
     <div class="summary">
         <h3>الإحصائيات الإجمالية</h3>
         <div class="summary-grid">
@@ -221,7 +221,7 @@
     </div>
     @endif
 
-    @if($type === 'all' || $type === 'local')
+    @if($type == 'all' || $type == 'local')
     <div class="section-title">فواتير الشركات المحلية</div>
 
     <table>
@@ -272,7 +272,7 @@
     </table>
     @endif
 
-    @if($type === 'all' || $type === 'pharmaceutical')
+    @if($type == 'all' || $type == 'pharmaceutical')
     <div class="section-title">فواتير الأصناف الدوائية</div>
 
     <table>

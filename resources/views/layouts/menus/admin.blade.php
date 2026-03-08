@@ -38,8 +38,8 @@
 
 @php
   $localCompaniesActive = request()->routeIs('admin.local-companies.*') || request()->is('admin/local-companies*');
-  $isDistributorFilter = request()->query('company_type') === 'distributor';
-  $isSupplierFilter = request()->query('company_type') === 'supplier';
+  $isDistributorFilter = request()->query('company_type') == 'distributor';
+  $isSupplierFilter = request()->query('company_type') == 'supplier';
 @endphp
 
 <li class="pc-item pc-hasmenu {{ $localCompaniesActive ? 'active open pc-trigger' : '' }}">
@@ -119,7 +119,7 @@
     <li class="pc-item {{ request()->routeIs('admin.pharmaceutical-products.index') && !request()->has('status') ? 'active' : '' }}">
       <a class="pc-link" href="{{ route('admin.pharmaceutical-products.index') }}">عرض جميع الأصناف</a>
     </li>
-    <li class="pc-item {{ request()->routeIs('admin.pharmaceutical-products.index') && request('status') === 'pending_review' ? 'active' : '' }}">
+    <li class="pc-item {{ request()->routeIs('admin.pharmaceutical-products.index') && request('status') == 'pending_review' ? 'active' : '' }}">
       <a class="pc-link" href="{{ route('admin.pharmaceutical-products.index', ['status' => 'pending_review']) }}">
         <i class="ti ti-clock me-1"></i>قيد المراجعة
         @php
@@ -130,7 +130,7 @@
         @endif
       </a>
     </li>
-    <li class="pc-item {{ request()->routeIs('admin.pharmaceutical-products.index') && request('status') === 'pending_payment' ? 'active' : '' }}">
+    <li class="pc-item {{ request()->routeIs('admin.pharmaceutical-products.index') && request('status') == 'pending_payment' ? 'active' : '' }}">
       <a class="pc-link" href="{{ route('admin.pharmaceutical-products.index', ['status' => 'pending_payment']) }}">
         <i class="ti ti-file-invoice me-1"></i>قيد السداد
         @php
@@ -141,7 +141,7 @@
         @endif
       </a>
     </li>
-    <li class="pc-item {{ request()->routeIs('admin.pharmaceutical-products.index') && request('status') === 'active' ? 'active' : '' }}">
+    <li class="pc-item {{ request()->routeIs('admin.pharmaceutical-products.index') && request('status') == 'active' ? 'active' : '' }}">
       <a class="pc-link" href="{{ route('admin.pharmaceutical-products.index', ['status' => 'active']) }}">
         <i class="ti ti-check me-1"></i>المفعلة
       </a>

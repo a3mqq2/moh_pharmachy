@@ -14,7 +14,7 @@
     <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
             <h4 class="mb-1">{{ $foreignCompany->company_name }}</h4>
-            <span class="badge bg-{{ $foreignCompany->entity_type === 'factory' ? 'info' : 'primary' }} me-1">{{ $foreignCompany->entity_type_name }}</span>
+            <span class="badge bg-{{ $foreignCompany->entity_type == 'factory' ? 'info' : 'primary' }} me-1">{{ $foreignCompany->entity_type_name }}</span>
             <span class="badge {{ str_replace('badge-', 'bg-', $foreignCompany->status_badge_class) }} me-1">{{ $foreignCompany->status_name }}</span>
             <span class="badge bg-dark">{{ $foreignCompany->country }}</span>
         </div>
@@ -24,7 +24,7 @@
                     <i class="ti ti-printer me-1"></i>طباعة الشهادة
                 </a>
             @endif
-            @if($foreignCompany->status === 'pending')
+            @if($foreignCompany->status == 'pending')
                 @if($foreignCompany->hasAllRequiredDocuments())
                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
                         <i class="ti ti-check me-1"></i>قبول
@@ -37,7 +37,7 @@
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
                     <i class="ti ti-x me-1"></i>رفض
                 </button>
-            @elseif($foreignCompany->status === 'rejected')
+            @elseif($foreignCompany->status == 'rejected')
                 <form action="{{ route('admin.foreign-companies.restore-pending', $foreignCompany) }}" method="POST" class="d-inline restore-form">
                     @csrf
                     <button type="submit" class="btn btn-warning"><i class="ti ti-refresh me-1"></i>إعادة للمراجعة</button>
@@ -49,13 +49,13 @@
 </div>
 
 
-@if($foreignCompany->status === 'rejected' && $foreignCompany->rejection_reason)
+@if($foreignCompany->status == 'rejected' && $foreignCompany->rejection_reason)
 <div class="alert alert-danger">
     <strong><i class="ti ti-alert-circle me-1"></i>سبب الرفض:</strong> {{ $foreignCompany->rejection_reason }}
 </div>
 @endif
 
-@if($foreignCompany->status === 'pending' && !$foreignCompany->hasAllRequiredDocuments())
+@if($foreignCompany->status == 'pending' && !$foreignCompany->hasAllRequiredDocuments())
 <div class="alert alert-warning">
     <strong><i class="ti ti-alert-triangle me-1"></i>المستندات غير مكتملة:</strong>
     <p class="mb-0 mt-2">الشركة لم ترفع جميع المستندات المطلوبة بعد.</p>
@@ -308,8 +308,8 @@
                                 </td>
                                 <td><strong>{{ number_format($invoice->amount, 2) }}</strong> د.ل</td>
                                 <td>
-                                    <span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : 'warning' }}">
-                                        {{ $invoice->status === 'paid' ? 'مدفوعة' : 'قيد الدفع' }}
+                                    <span class="badge bg-{{ $invoice->status == 'paid' ? 'success' : 'warning' }}">
+                                        {{ $invoice->status == 'paid' ? 'مدفوعة' : 'قيد الدفع' }}
                                     </span>
                                     @if($invoice->paid_at)
                                         <br><small class="text-muted">{{ $invoice->paid_at->format('Y-m-d') }}</small>
@@ -323,7 +323,7 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                        @if($invoice->receipt_path && $invoice->receipt_status === 'pending')
+                                        @if($invoice->receipt_path && $invoice->receipt_status == 'pending')
                                             <button type="button" class="btn btn-outline-success btn-sm btn-approve-receipt" data-id="{{ $invoice->id }}" data-company-id="{{ $foreignCompany->id }}">
                                                 <i class="ti ti-check me-1"></i>موافقة على الإيصال
                                             </button>

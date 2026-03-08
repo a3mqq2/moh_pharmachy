@@ -288,7 +288,7 @@ data-pc-theme="light"
                        onclick="markAsRead('{{ $notification->id }}')">
                       <div class="d-flex align-items-start">
                         <div class="flex-shrink-0">
-                          <div class="avtar avtar-s bg-light-{{ isset($notification->data['company_type']) && $notification->data['company_type'] === 'local' ? 'primary' : 'success' }}">
+                          <div class="avtar avtar-s bg-light-{{ isset($notification->data['company_type']) && $notification->data['company_type'] == 'local' ? 'primary' : 'success' }}">
                             <i class="ti {{ $notification->data['icon'] ?? 'ti-bell' }}"></i>
                           </div>
                         </div>

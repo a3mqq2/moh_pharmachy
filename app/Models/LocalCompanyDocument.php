@@ -54,7 +54,7 @@ class LocalCompanyDocument extends Model
 
     public function getDisplayNameAttribute()
     {
-        if ($this->document_type === 'other' && $this->custom_name) {
+        if ($this->document_type == 'other' && $this->custom_name) {
             return $this->custom_name;
         }
         return $this->document_type_name;

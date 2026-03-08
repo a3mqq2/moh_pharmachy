@@ -101,10 +101,10 @@
 
     const register$1 = editor => {
       editor.addCommand('mceInsertDate', (_ui, value) => {
-        insertDateTime(editor, value !== null && value !== void 0 ? value : getDateFormat(editor));
+        insertDateTime(editor, value != null && value != void 0 ? value : getDateFormat(editor));
       });
       editor.addCommand('mceInsertTime', (_ui, value) => {
-        insertDateTime(editor, value !== null && value !== void 0 ? value : getTimeFormat(editor));
+        insertDateTime(editor, value != null && value != void 0 ? value : getTimeFormat(editor));
       });
     };
 
@@ -141,7 +141,7 @@
       editor.ui.registry.addSplitButton('insertdatetime', {
         icon: 'insert-time',
         tooltip: 'Insert date/time',
-        select: value => value === defaultFormat.get(),
+        select: value => value == defaultFormat.get(),
         fetch: done => {
           done(global.map(formats, format => ({
             type: 'choiceitem',

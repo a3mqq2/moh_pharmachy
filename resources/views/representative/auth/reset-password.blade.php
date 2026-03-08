@@ -273,7 +273,7 @@ function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById(inputId + '-eye');
 
-    if (input.type === 'password') {
+    if (input.type == 'password') {
         input.type = 'text';
         icon.classList.remove('ti-eye');
         icon.classList.add('ti-eye-off');

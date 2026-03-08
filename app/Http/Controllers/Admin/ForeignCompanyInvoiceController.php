@@ -77,7 +77,7 @@ class ForeignCompanyInvoiceController extends Controller
     {
         $company = ForeignCompany::findOrFail($companyId);
 
-        if ($company->status !== 'approved') {
+        if ($company->status != 'approved') {
             return redirect()->back()
                 ->with('error', 'لا يمكن إصدار فاتورة إلا للشركات المقبولة');
         }
@@ -123,7 +123,7 @@ class ForeignCompanyInvoiceController extends Controller
             ->with('foreignCompany')
             ->findOrFail($invoiceId);
 
-        if ($invoice->receipt_status === 'approved') {
+        if ($invoice->receipt_status == 'approved') {
             return redirect()->back()
                 ->with('info', 'تمت الموافقة على هذا الإيصال مسبقاً');
         }
@@ -133,14 +133,14 @@ class ForeignCompanyInvoiceController extends Controller
                 ->with('error', 'لم يتم رفع إيصال الدفع بعد');
         }
 
-        if ($invoice->receipt_status !== 'pending') {
+        if ($invoice->receipt_status != 'pending') {
             return redirect()->back()
                 ->with('error', 'لا يمكن الموافقة على هذا الإيصال في حالته الحالية');
         }
 
         $invoice->approveReceipt();
 
-        if ($company->status === 'approved' || $company->status === 'pending_payment') {
+        if ($company->status == 'approved' || $company->status == 'pending_payment') {
             $company->markAsActive();
 
             if ($company->representative && $company->representative->email) {
@@ -150,7 +150,7 @@ class ForeignCompanyInvoiceController extends Controller
                     Log::error('Failed to send foreign company activated email: ' . $e->getMessage());
                 }
             }
-        } elseif ($company->status === 'expired') {
+        } elseif ($company->status == 'expired') {
             $company->renewCompany();
         }
 
@@ -165,7 +165,7 @@ class ForeignCompanyInvoiceController extends Controller
             ->with('foreignCompany')
             ->findOrFail($invoiceId);
 
-        if ($invoice->receipt_status === 'rejected') {
+        if ($invoice->receipt_status == 'rejected') {
             return redirect()->back()
                 ->with('info', 'تم رفض هذا الإيصال مسبقاً');
         }
@@ -175,7 +175,7 @@ class ForeignCompanyInvoiceController extends Controller
                 ->with('error', 'لم يتم رفع إيصال الدفع بعد');
         }
 
-        if ($invoice->receipt_status !== 'pending') {
+        if ($invoice->receipt_status != 'pending') {
             return redirect()->back()
                 ->with('error', 'لا يمكن رفض هذا الإيصال في حالته الحالية');
         }
@@ -227,12 +227,12 @@ class ForeignCompanyInvoiceController extends Controller
         $invoice = ForeignCompanyInvoice::with('foreignCompany')
             ->findOrFail($invoiceId);
 
-        if ($invoice->status === 'cancelled') {
+        if ($invoice->status == 'cancelled') {
             return redirect()->back()
                 ->with('info', 'هذه الفاتورة ملغاة بالفعل');
         }
 
-        if ($invoice->status === 'paid') {
+        if ($invoice->status == 'paid') {
             return redirect()->back()
                 ->with('error', 'لا يمكن إلغاء فاتورة تم دفعها');
         }
@@ -258,7 +258,7 @@ class ForeignCompanyInvoiceController extends Controller
         $invoice = ForeignCompanyInvoice::with('foreignCompany')
             ->findOrFail($invoiceId);
 
-        if ($invoice->status !== 'pending' || $invoice->receipt_path) {
+        if ($invoice->status != 'pending' || $invoice->receipt_path) {
             return redirect()->back()
                 ->with('error', 'لا يمكن تعديل هذه الفاتورة');
         }
@@ -271,7 +271,7 @@ class ForeignCompanyInvoiceController extends Controller
         $invoice = ForeignCompanyInvoice::with('foreignCompany')
             ->findOrFail($invoiceId);
 
-        if ($invoice->status !== 'pending' || $invoice->receipt_path) {
+        if ($invoice->status != 'pending' || $invoice->receipt_path) {
             return redirect()->back()
                 ->with('error', 'لا يمكن تعديل هذه الفاتورة');
         }

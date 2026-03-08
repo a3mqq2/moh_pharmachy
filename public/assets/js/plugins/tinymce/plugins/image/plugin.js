@@ -13,32 +13,32 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
-    const eq = t => a => t === a;
-    const is = (value, constructor) => isObject(value) && hasProto(value, constructor, (o, proto) => getPrototypeOf(o) === proto);
+    const isType = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
+    const eq = t => a => t == a;
+    const is = (value, constructor) => isObject(value) && hasProto(value, constructor, (o, proto) => getPrototypeOf(o) == proto);
     const isString = isType('string');
     const isObject = isType('object');
     const isPlainObject = value => is(value, Object);
     const isArray = isType('array');
     const isNull = eq(null);
     const isBoolean = isSimpleType('boolean');
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
     const isNumber = isSimpleType('number');
@@ -122,7 +122,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -174,7 +174,7 @@
       return t;
     };
     const has = (obj, key) => hasOwnProperty.call(obj, key);
-    const hasNonNullableKey = (obj, key) => has(obj, key) && obj[key] !== undefined && obj[key] !== null;
+    const hasNonNullableKey = (obj, key) => has(obj, key) && obj[key] != undefined && obj[key] != null;
 
     const nativePush = Array.prototype.push;
     const flatten = xs => {
@@ -199,7 +199,7 @@
       return Optional.none();
     };
 
-    typeof window !== 'undefined' ? window : Function('return this;')();
+    typeof window != 'undefined' ? window : Function('return this;')();
 
     const rawSet = (dom, key, value) => {
       if (isString(value) || isBoolean(value) || isNumber(value)) {
@@ -238,7 +238,7 @@
       return fromDom(node);
     };
     const fromDom = node => {
-      if (node === null || node === undefined) {
+      if (node == null || node == undefined) {
         throw new Error('Node cannot be null or undefined');
       }
       return { dom: node };
@@ -292,7 +292,7 @@
       });
       registerOption('image_list', {
         processor: value => {
-          const valid = value === false || isString(value) || isArrayOf(value, isObject) || isFunction(value);
+          const valid = value == false || isString(value) || isArrayOf(value, isObject) || isFunction(value);
           return valid ? {
             value,
             valid
@@ -432,11 +432,11 @@
       };
       reader.onerror = () => {
         var _a;
-        reject((_a = reader.error) === null || _a === void 0 ? void 0 : _a.message);
+        reject((_a = reader.error) == null || _a == void 0 ? void 0 : _a.message);
       };
       reader.readAsDataURL(blob);
     });
-    const isPlaceholderImage = imgElm => imgElm.nodeName === 'IMG' && (imgElm.hasAttribute('data-mce-object') || imgElm.hasAttribute('data-mce-placeholder'));
+    const isPlaceholderImage = imgElm => imgElm.nodeName == 'IMG' && (imgElm.hasAttribute('data-mce-object') || imgElm.hasAttribute('data-mce-placeholder'));
     const isSafeImageUrl = (editor, src) => {
       const getOption = editor.options.get;
       return global$2.isDomSafe(src, 'img', {
@@ -448,14 +448,14 @@
 
     const DOM = global$3.DOM;
     const getHspace = image => {
-      if (image.style.marginLeft && image.style.marginRight && image.style.marginLeft === image.style.marginRight) {
+      if (image.style.marginLeft && image.style.marginRight && image.style.marginLeft == image.style.marginRight) {
         return removePixelSuffix(image.style.marginLeft);
       } else {
         return '';
       }
     };
     const getVspace = image => {
-      if (image.style.marginTop && image.style.marginBottom && image.style.marginTop === image.style.marginBottom) {
+      if (image.style.marginTop && image.style.marginBottom && image.style.marginTop == image.style.marginBottom) {
         return removePixelSuffix(image.style.marginTop);
       } else {
         return '';
@@ -471,14 +471,14 @@
     const getAttrib = (image, name) => {
       var _a;
       if (image.hasAttribute(name)) {
-        return (_a = image.getAttribute(name)) !== null && _a !== void 0 ? _a : '';
+        return (_a = image.getAttribute(name)) != null && _a != void 0 ? _a : '';
       } else {
         return '';
       }
     };
-    const hasCaption = image => image.parentNode !== null && image.parentNode.nodeName === 'FIGURE';
+    const hasCaption = image => image.parentNode != null && image.parentNode.nodeName == 'FIGURE';
     const updateAttrib = (image, name, value) => {
-      if (value === '' || value === null) {
+      if (value == '' || value == null) {
         image.removeAttribute(name);
       } else {
         image.setAttribute(name, value);
@@ -507,7 +507,7 @@
     };
     const normalizeStyle = (image, normalizeCss) => {
       const attrValue = image.getAttribute('style');
-      const value = normalizeCss(attrValue !== null ? attrValue : '');
+      const value = normalizeCss(attrValue != null ? attrValue : '');
       if (value.length > 0) {
         image.setAttribute('style', value);
         image.setAttribute('data-mce-style', value);
@@ -550,11 +550,11 @@
     };
     const getBorderStyle = image => {
       var _a;
-      return (_a = image.style.borderStyle) !== null && _a !== void 0 ? _a : '';
+      return (_a = image.style.borderStyle) != null && _a != void 0 ? _a : '';
     };
-    const isFigure = elm => isNonNullable(elm) && elm.nodeName === 'FIGURE';
-    const isImage = elm => elm.nodeName === 'IMG';
-    const getIsDecorative = image => DOM.getAttrib(image, 'alt').length === 0 && DOM.getAttrib(image, 'role') === 'presentation';
+    const isFigure = elm => isNonNullable(elm) && elm.nodeName == 'FIGURE';
+    const isImage = elm => elm.nodeName == 'IMG';
+    const getIsDecorative = image => DOM.getAttrib(image, 'alt').length == 0 && DOM.getAttrib(image, 'role') == 'presentation';
     const getAlt = image => {
       if (getIsDecorative(image)) {
         return '';
@@ -581,19 +581,19 @@
       var _a;
       const image = document.createElement('img');
       updateAttrib(image, 'style', data.style);
-      if (getHspace(image) || data.hspace !== '') {
+      if (getHspace(image) || data.hspace != '') {
         setHspace(image, data.hspace);
       }
-      if (getVspace(image) || data.vspace !== '') {
+      if (getVspace(image) || data.vspace != '') {
         setVspace(image, data.vspace);
       }
-      if (getBorder(image) || data.border !== '') {
+      if (getBorder(image) || data.border != '') {
         setBorder(image, data.border);
       }
-      if (getBorderStyle(image) || data.borderStyle !== '') {
+      if (getBorderStyle(image) || data.borderStyle != '') {
         setBorderStyle(image, data.borderStyle);
       }
-      return normalizeCss((_a = image.getAttribute('style')) !== null && _a !== void 0 ? _a : '');
+      return normalizeCss((_a = image.getAttribute('style')) != null && _a != void 0 ? _a : '');
     };
     const create = (normalizeCss, data) => {
       const image = document.createElement('img');
@@ -628,7 +628,7 @@
       isDecorative: getIsDecorative(image)
     });
     const updateProp = (image, oldData, newData, name, set) => {
-      if (newData[name] !== oldData[name]) {
+      if (newData[name] != oldData[name]) {
         set(image, name, String(newData[name]));
       }
     };
@@ -645,13 +645,13 @@
           const sugarImage = SugarElement.fromDom(image);
           set(sugarImage, 'alt', alt);
         }
-        if (DOM.getAttrib(image, 'role') === 'presentation') {
+        if (DOM.getAttrib(image, 'role') == 'presentation') {
           DOM.setAttrib(image, 'role', '');
         }
       }
     };
     const updateAlt = (image, oldData, newData) => {
-      if (newData.alt !== oldData.alt || newData.isDecorative !== oldData.isDecorative) {
+      if (newData.alt != oldData.alt || newData.isDecorative != oldData.isDecorative) {
         setAlt(image, newData.alt, newData.isDecorative);
       }
     };
@@ -687,7 +687,7 @@
       if (figureElm) {
         return editor.dom.select('img', figureElm)[0];
       }
-      if (imgElm && (imgElm.nodeName !== 'IMG' || isPlaceholderImage(imgElm))) {
+      if (imgElm && (imgElm.nodeName != 'IMG' || isPlaceholderImage(imgElm))) {
         return null;
       }
       return imgElm;
@@ -698,7 +698,7 @@
       const textBlockElements = filter(editor.schema.getTextBlockElements(), (_, parentElm) => !editor.schema.isValidChild(parentElm, 'figure'));
       const textBlock = dom.getParent(figure.parentNode, node => hasNonNullableKey(textBlockElements, node.nodeName), editor.getBody());
       if (textBlock) {
-        return (_a = dom.split(textBlock, figure)) !== null && _a !== void 0 ? _a : figure;
+        return (_a = dom.split(textBlock, figure)) != null && _a != void 0 ? _a : figure;
       } else {
         return figure;
       }
@@ -786,7 +786,7 @@
     };
     const baseMerge = merger => {
       return (...objects) => {
-        if (objects.length === 0) {
+        if (objects.length == 0) {
           throw new Error(`Can't merge zero objects`);
         }
         const ret = {};
@@ -821,7 +821,7 @@
       const out = [];
       global.each(list, item => {
         const text = getText(item);
-        if (item.menu !== undefined) {
+        if (item.menu != undefined) {
           const items = sanitizeList(item.menu, extractValue);
           out.push({
             text,
@@ -849,7 +849,7 @@
     const findEntryDelegate = (list, value) => findMap(list, item => {
       if (isGroup(item)) {
         return findEntryDelegate(item.items, value);
-      } else if (item.value === value) {
+      } else if (item.value == value) {
         return Optional.some(item);
       } else {
         return Optional.none();
@@ -1112,7 +1112,7 @@
     });
     const toImageData = (data, removeEmptyAlt) => ({
       src: data.src.value,
-      alt: (data.alt === null || data.alt.length === 0) && removeEmptyAlt ? null : data.alt,
+      alt: (data.alt == null || data.alt.length == 0) && removeEmptyAlt ? null : data.alt,
       title: data.title,
       width: data.dimensions.width,
       height: data.dimensions.height,
@@ -1128,7 +1128,7 @@
     const addPrependUrl2 = (info, srcURL) => {
       if (!/^(?:[a-zA-Z]+:)?\/\//.test(srcURL)) {
         return info.prependURL.bind(prependUrl => {
-          if (srcURL.substring(0, prependUrl.length) !== prependUrl) {
+          if (srcURL.substring(0, prependUrl.length) != prependUrl) {
             return Optional.some(prependUrl + srcURL);
           }
           return Optional.none();
@@ -1196,7 +1196,7 @@
     const formFillFromMeta = (info, api) => {
       const data = api.getData();
       const meta = data.src.meta;
-      if (meta !== undefined) {
+      if (meta != undefined) {
         const newData = deepMerge({}, data);
         formFillFromMeta2(info, newData, meta);
         api.setData(newData);
@@ -1239,9 +1239,9 @@
       const data = api.getData();
       const image = ListUtils.findEntry(info.imageList, data.images);
       image.each(img => {
-        const updateAlt = data.alt === '' || state.prevImage.map(image => image.text === data.alt).getOr(false);
+        const updateAlt = data.alt == '' || state.prevImage.map(image => image.text == data.alt).getOr(false);
         if (updateAlt) {
-          if (img.value === '') {
+          if (img.value == '') {
             api.setData({
               src: img,
               alt: state.prevAlt
@@ -1299,15 +1299,15 @@
       });
     };
     const changeHandler = (helpers, info, state) => (api, evt) => {
-      if (evt.name === 'src') {
+      if (evt.name == 'src') {
         changeSrc(helpers, info, state, api);
-      } else if (evt.name === 'images') {
+      } else if (evt.name == 'images') {
         changeImages(helpers, info, state, api);
-      } else if (evt.name === 'alt') {
+      } else if (evt.name == 'alt') {
         state.prevAlt = api.getData().alt;
-      } else if (evt.name === 'fileinput') {
+      } else if (evt.name == 'fileinput') {
         changeFileInput(helpers, info, state, api);
-      } else if (evt.name === 'isDecorative') {
+      } else if (evt.name == 'isDecorative') {
         api.setEnabled('alt', !api.getData().isDecorative);
       }
     };
@@ -1361,7 +1361,7 @@
       return editor.editorUpload.blobCache.create({
         blob: file,
         blobUri,
-        name: (_a = file.name) === null || _a === void 0 ? void 0 : _a.replace(/\.[^\.]+$/, ''),
+        name: (_a = file.name) == null || _a == void 0 ? void 0 : _a.replace(/\.[^\.]+$/, ''),
         filename: file.name,
         base64: dataUrl.split(',')[1]
       });
@@ -1377,10 +1377,10 @@
     const serializeStyle = editor => (stylesArg, name) => editor.dom.serializeStyle(stylesArg, name);
     const uploadImage = editor => blobInfo => global$1(editor).upload([blobInfo], false).then(results => {
       var _a;
-      if (results.length === 0) {
+      if (results.length == 0) {
         return Promise.reject('Failed to upload image');
-      } else if (results[0].status === false) {
-        return Promise.reject((_a = results[0].error) === null || _a === void 0 ? void 0 : _a.message);
+      } else if (results[0].status == false) {
+        return Promise.reject((_a = results[0].error) == null || _a == void 0 ? void 0 : _a.message);
       } else {
         return results[0];
       }

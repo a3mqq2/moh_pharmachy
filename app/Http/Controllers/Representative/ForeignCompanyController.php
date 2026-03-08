@@ -221,7 +221,7 @@ class ForeignCompanyController extends Controller
         $company->update($validated);
 
         // Send notification to admins
-        $action = $company->status === 'rejected' ? 'company_resubmitted' : 'company_updated';
+        $action = $company->status == 'rejected' ? 'company_resubmitted' : 'company_updated';
         NotificationHelper::notifyAdmins(
             $action,
             'foreign',
@@ -252,7 +252,7 @@ class ForeignCompanyController extends Controller
                 ->with('error', 'يجب رفع جميع المستندات المطلوبة قبل إرسال الطلب للمراجعة');
         }
 
-        $wasRejected = $company->status === 'rejected';
+        $wasRejected = $company->status == 'rejected';
 
         $company->markAsPending();
 

@@ -562,7 +562,7 @@
         const field = document.getElementById(fieldId);
         const icon = document.getElementById(fieldId + '_icon');
 
-        if (field.type === 'password') {
+        if (field.type == 'password') {
             field.type = 'text';
             icon.classList.remove('ti-eye');
             icon.classList.add('ti-eye-off');
@@ -594,13 +594,13 @@
             strengthBar.className = 'strength-bar-fill';
             strengthText.className = 'strength-text';
 
-            if (strength === 0) {
+            if (strength == 0) {
                 strengthLabel = 'غير محددة';
                 strengthClass = '';
             } else if (strength <= 2) {
                 strengthLabel = 'ضعيفة';
                 strengthClass = 'weak';
-            } else if (strength === 3) {
+            } else if (strength == 3) {
                 strengthLabel = 'متوسطة';
                 strengthClass = 'medium';
             } else {

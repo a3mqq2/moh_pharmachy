@@ -22,7 +22,7 @@ class InvoiceController extends Controller
         $foreignInvoices = collect();
         $pharmaceuticalInvoices = collect();
 
-        if ($type === 'all' || $type === 'local') {
+        if ($type == 'all' || $type == 'local') {
             $query = LocalCompanyInvoice::with(['localCompany', 'creator']);
 
             if ($status) {
@@ -45,7 +45,7 @@ class InvoiceController extends Controller
             });
         }
 
-        if ($type === 'all' || $type === 'foreign') {
+        if ($type == 'all' || $type == 'foreign') {
             $query = ForeignCompanyInvoice::with(['foreignCompany', 'issuedBy']);
 
             if ($status) {
@@ -68,7 +68,7 @@ class InvoiceController extends Controller
             });
         }
 
-        if ($type === 'all' || $type === 'pharmaceutical') {
+        if ($type == 'all' || $type == 'pharmaceutical') {
             $query = PharmaceuticalProductInvoice::with(['pharmaceuticalProduct.representative']);
 
             if ($status) {
@@ -96,12 +96,12 @@ class InvoiceController extends Controller
 
         $invoices = $localInvoices->merge($foreignInvoices)->merge($pharmaceuticalInvoices);
 
-        if ($sortBy === 'created_at') {
-            $invoices = $sortOrder === 'desc'
+        if ($sortBy == 'created_at') {
+            $invoices = $sortOrder == 'desc'
                 ? $invoices->sortByDesc('created_at')
                 : $invoices->sortBy('created_at');
-        } elseif ($sortBy === 'amount') {
-            $invoices = $sortOrder === 'desc'
+        } elseif ($sortBy == 'amount') {
+            $invoices = $sortOrder == 'desc'
                 ? $invoices->sortByDesc('amount')
                 : $invoices->sortBy('amount');
         }

@@ -15,11 +15,11 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                if ($guard === 'representative') {
+                if ($guard == 'representative') {
                     return redirect()->route('representative.dashboard');
                 }
 
-                if ($guard === 'web' || $guard === null) {
+                if ($guard == 'web' || $guard == null) {
                     return redirect()->route('admin.dashboard');
                 }
             }

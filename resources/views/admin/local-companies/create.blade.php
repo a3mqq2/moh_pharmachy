@@ -544,7 +544,7 @@
     function updateSteps() {
         document.querySelectorAll('.wizard-step').forEach((step, index) => {
             step.classList.remove('active', 'completed');
-            if (index + 1 === currentStep) {
+            if (index + 1 == currentStep) {
                 step.classList.add('active');
             } else if (index + 1 < currentStep) {
                 step.classList.add('completed');
@@ -553,7 +553,7 @@
 
         document.querySelectorAll('.wizard-content').forEach((content, index) => {
             content.classList.remove('active');
-            if (index + 1 === currentStep) {
+            if (index + 1 == currentStep) {
                 content.classList.add('active');
             }
         });

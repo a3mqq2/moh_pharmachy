@@ -34,17 +34,17 @@
                     <div class="col-md-3">
                         <label class="form-label">نوع الفاتورة</label>
                         <select name="type" class="form-select">
-                            <option value="all" {{ request('type', 'all') === 'all' ? 'selected' : '' }}>الكل</option>
-                            <option value="local" {{ request('type') === 'local' ? 'selected' : '' }}>شركات محلية</option>
-                            <option value="pharmaceutical" {{ request('type') === 'pharmaceutical' ? 'selected' : '' }}>أصناف دوائية</option>
+                            <option value="all" {{ request('type', 'all') == 'all' ? 'selected' : '' }}>الكل</option>
+                            <option value="local" {{ request('type') == 'local' ? 'selected' : '' }}>شركات محلية</option>
+                            <option value="pharmaceutical" {{ request('type') == 'pharmaceutical' ? 'selected' : '' }}>أصناف دوائية</option>
                         </select>
                     </div>
                     <div class="col-md-2">
                         <label class="form-label">الحالة</label>
                         <select name="status" class="form-select">
                             <option value="">الكل</option>
-                            <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>مدفوعة</option>
-                            <option value="unpaid" {{ request('status') === 'unpaid' ? 'selected' : '' }}>غير مدفوعة</option>
+                            <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>مدفوعة</option>
+                            <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>غير مدفوعة</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    @if(request('type', 'all') === 'all' || request('type') === 'local')
+    @if(request('type', 'all') == 'all' || request('type') == 'local')
     <div class="card mb-4">
         <div class="card-header bg-primary bg-opacity-10">
             <h5 class="mb-0 text-white">
@@ -93,7 +93,7 @@
                             <td><span class="badge bg-dark">{{ $invoice->invoice_number }}</span></td>
                             <td>{{ $invoice->localCompany->company_name }}</td>
                             <td><strong class="text-primary">{{ number_format($invoice->amount, 2) }} د.ل</strong></td>
-                            <td><span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : 'warning' }}">{{ $invoice->status_name }}</span></td>
+                            <td><span class="badge bg-{{ $invoice->status == 'paid' ? 'success' : 'warning' }}">{{ $invoice->status_name }}</span></td>
                             <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
                         </tr>
                         @empty
@@ -134,7 +134,7 @@
     </div>
     @endif
 
-    @if(request('type', 'all') === 'all' || request('type') === 'pharmaceutical')
+    @if(request('type', 'all') == 'all' || request('type') == 'pharmaceutical')
     <div class="card mb-4">
         <div class="card-header bg-success bg-opacity-10">
             <h5 class="mb-0">
@@ -162,7 +162,7 @@
                             <td><span class="badge bg-dark">{{ $invoice->invoice_number }}</span></td>
                             <td>{{ $invoice->pharmaceuticalProduct->product_name }}</td>
                             <td><strong class="text-success">{{ number_format($invoice->amount, 2) }} د.ل</strong></td>
-                            <td><span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : 'warning' }}">{{ $invoice->status_name }}</span></td>
+                            <td><span class="badge bg-{{ $invoice->status == 'paid' ? 'success' : 'warning' }}">{{ $invoice->status_name }}</span></td>
                             <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
                         </tr>
                         @empty
@@ -203,7 +203,7 @@
     </div>
     @endif
 
-    @if(request('type', 'all') === 'all')
+    @if(request('type', 'all') == 'all')
     <div class="card">
         <div class="card-header bg-info bg-opacity-10">
             <h5 class="mb-0">

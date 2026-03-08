@@ -12,26 +12,26 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
+    const isType = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
     const isString = isType('string');
     const isBoolean = isSimpleType('boolean');
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
 
@@ -126,7 +126,7 @@
       const resolveFileInput = value => {
         var _a;
         if (!resolved) {
-          (_a = fileInput.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(fileInput);
+          (_a = fileInput.parentNode) == null || _a == void 0 ? void 0 : _a.removeChild(fileInput);
           resolved = true;
           resolve(value);
         }
@@ -141,7 +141,7 @@
           resolveFileInput([]);
         };
         if (!resolved) {
-          if (e.type === 'focusin') {
+          if (e.type == 'focusin') {
             global.setEditorTimeout(editor, cleanup, 1000);
           } else {
             cleanup();
@@ -249,7 +249,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -277,7 +277,7 @@
     }
     Optional.singletonNone = new Optional(false);
 
-    typeof window !== 'undefined' ? window : Function('return this;')();
+    typeof window != 'undefined' ? window : Function('return this;')();
 
     const ELEMENT = 1;
 
@@ -323,7 +323,7 @@
       return fromDom(node);
     };
     const fromDom = node => {
-      if (node === null || node === undefined) {
+      if (node == null || node == undefined) {
         throw new Error('Node cannot be null or undefined');
       }
       return { dom: node };
@@ -339,17 +339,17 @@
 
     const is = (element, selector) => {
       const dom = element.dom;
-      if (dom.nodeType !== ELEMENT) {
+      if (dom.nodeType != ELEMENT) {
         return false;
       } else {
         const elem = dom;
-        if (elem.matches !== undefined) {
+        if (elem.matches != undefined) {
           return elem.matches(selector);
-        } else if (elem.msMatchesSelector !== undefined) {
+        } else if (elem.msMatchesSelector != undefined) {
           return elem.msMatchesSelector(selector);
-        } else if (elem.webkitMatchesSelector !== undefined) {
+        } else if (elem.webkitMatchesSelector != undefined) {
           return elem.webkitMatchesSelector(selector);
-        } else if (elem.mozMatchesSelector !== undefined) {
+        } else if (elem.mozMatchesSelector != undefined) {
           return elem.mozMatchesSelector(selector);
         } else {
           throw new Error('Browser lacks native selectors');
@@ -391,7 +391,7 @@
           predicate: node => {
             const sugarNode = SugarElement.fromDom(node);
             const textBlockElementsMap = editor.schema.getTextBlockElements();
-            const isRoot = elem => elem.dom === editor.getBody();
+            const isRoot = elem => elem.dom == editor.getBody();
             return !has$1(sugarNode, 'data-mce-bogus') && closest(sugarNode, 'table,[data-mce-bogus="all"]', isRoot).fold(() => closest$1(sugarNode, elem => name(elem) in textBlockElementsMap && editor.dom.isEmpty(elem.dom), isRoot), never);
           },
           items: insertToolbarItems,
@@ -401,7 +401,7 @@
       }
     };
 
-    const supports = element => element.dom.classList !== undefined;
+    const supports = element => element.dom.classList != undefined;
 
     const has = (element, clazz) => supports(element) && element.dom.classList.contains(clazz);
 
@@ -409,8 +409,8 @@
       const isEditable = node => editor.dom.isEditable(node);
       const isInEditableContext = el => isEditable(el.parentElement);
       const isImage = node => {
-        const isImageFigure = node.nodeName === 'FIGURE' && /image/i.test(node.className);
-        const isImage = node.nodeName === 'IMG' || isImageFigure;
+        const isImageFigure = node.nodeName == 'FIGURE' && /image/i.test(node.className);
+        const isImage = node.nodeName == 'IMG' || isImageFigure;
         const isPagebreak = has(SugarElement.fromDom(node), 'mce-pagebreak');
         return isImage && isInEditableContext(node) && !isPagebreak;
       };

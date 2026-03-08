@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
         togglePassword.addEventListener('click', function(e) {
             e.preventDefault();
 
-            if (passwordField.type === 'password') {
+            if (passwordField.type == 'password') {
                 passwordField.type = 'text';
                 eyeIcon.classList.remove('ti-eye');
                 eyeIcon.classList.add('ti-eye-off');

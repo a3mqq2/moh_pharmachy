@@ -7,7 +7,7 @@
 
     var global$2 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-    const eq = t => a => t === a;
+    const eq = t => a => t == a;
     const isNull = eq(null);
 
     const identity = x => {
@@ -109,51 +109,51 @@
     const isWordBoundary = (map, index) => {
       const type = map[index];
       const nextType = map[index + 1];
-      if (index < 0 || index > map.length - 1 && index !== 0) {
+      if (index < 0 || index > map.length - 1 && index != 0) {
         return false;
       }
-      if (type === characterIndices.ALETTER && nextType === characterIndices.ALETTER) {
+      if (type == characterIndices.ALETTER && nextType == characterIndices.ALETTER) {
         return false;
       }
       const nextNextType = map[index + 2];
-      if (type === characterIndices.ALETTER && (nextType === characterIndices.MIDLETTER || nextType === characterIndices.MIDNUMLET || nextType === characterIndices.AT) && nextNextType === characterIndices.ALETTER) {
+      if (type == characterIndices.ALETTER && (nextType == characterIndices.MIDLETTER || nextType == characterIndices.MIDNUMLET || nextType == characterIndices.AT) && nextNextType == characterIndices.ALETTER) {
         return false;
       }
       const prevType = map[index - 1];
-      if ((type === characterIndices.MIDLETTER || type === characterIndices.MIDNUMLET || nextType === characterIndices.AT) && nextType === characterIndices.ALETTER && prevType === characterIndices.ALETTER) {
+      if ((type == characterIndices.MIDLETTER || type == characterIndices.MIDNUMLET || nextType == characterIndices.AT) && nextType == characterIndices.ALETTER && prevType == characterIndices.ALETTER) {
         return false;
       }
-      if ((type === characterIndices.NUMERIC || type === characterIndices.ALETTER) && (nextType === characterIndices.NUMERIC || nextType === characterIndices.ALETTER)) {
+      if ((type == characterIndices.NUMERIC || type == characterIndices.ALETTER) && (nextType == characterIndices.NUMERIC || nextType == characterIndices.ALETTER)) {
         return false;
       }
-      if ((type === characterIndices.MIDNUM || type === characterIndices.MIDNUMLET) && nextType === characterIndices.NUMERIC && prevType === characterIndices.NUMERIC) {
+      if ((type == characterIndices.MIDNUM || type == characterIndices.MIDNUMLET) && nextType == characterIndices.NUMERIC && prevType == characterIndices.NUMERIC) {
         return false;
       }
-      if (type === characterIndices.NUMERIC && (nextType === characterIndices.MIDNUM || nextType === characterIndices.MIDNUMLET) && nextNextType === characterIndices.NUMERIC) {
+      if (type == characterIndices.NUMERIC && (nextType == characterIndices.MIDNUM || nextType == characterIndices.MIDNUMLET) && nextNextType == characterIndices.NUMERIC) {
         return false;
       }
-      if ((type === characterIndices.EXTEND || type === characterIndices.FORMAT) && (nextType === characterIndices.ALETTER || nextType === characterIndices.NUMERIC || nextType === characterIndices.KATAKANA || nextType === characterIndices.EXTEND || nextType === characterIndices.FORMAT) || (nextType === characterIndices.EXTEND || nextType === characterIndices.FORMAT && (nextNextType === characterIndices.ALETTER || nextNextType === characterIndices.NUMERIC || nextNextType === characterIndices.KATAKANA || nextNextType === characterIndices.EXTEND || nextNextType === characterIndices.FORMAT)) && (type === characterIndices.ALETTER || type === characterIndices.NUMERIC || type === characterIndices.KATAKANA || type === characterIndices.EXTEND || type === characterIndices.FORMAT)) {
+      if ((type == characterIndices.EXTEND || type == characterIndices.FORMAT) && (nextType == characterIndices.ALETTER || nextType == characterIndices.NUMERIC || nextType == characterIndices.KATAKANA || nextType == characterIndices.EXTEND || nextType == characterIndices.FORMAT) || (nextType == characterIndices.EXTEND || nextType == characterIndices.FORMAT && (nextNextType == characterIndices.ALETTER || nextNextType == characterIndices.NUMERIC || nextNextType == characterIndices.KATAKANA || nextNextType == characterIndices.EXTEND || nextNextType == characterIndices.FORMAT)) && (type == characterIndices.ALETTER || type == characterIndices.NUMERIC || type == characterIndices.KATAKANA || type == characterIndices.EXTEND || type == characterIndices.FORMAT)) {
         return false;
       }
-      if (type === characterIndices.CR && nextType === characterIndices.LF) {
+      if (type == characterIndices.CR && nextType == characterIndices.LF) {
         return false;
       }
-      if (type === characterIndices.NEWLINE || type === characterIndices.CR || type === characterIndices.LF) {
+      if (type == characterIndices.NEWLINE || type == characterIndices.CR || type == characterIndices.LF) {
         return true;
       }
-      if (nextType === characterIndices.NEWLINE || nextType === characterIndices.CR || nextType === characterIndices.LF) {
+      if (nextType == characterIndices.NEWLINE || nextType == characterIndices.CR || nextType == characterIndices.LF) {
         return true;
       }
-      if (type === characterIndices.KATAKANA && nextType === characterIndices.KATAKANA) {
+      if (type == characterIndices.KATAKANA && nextType == characterIndices.KATAKANA) {
         return false;
       }
-      if (nextType === characterIndices.EXTENDNUMLET && (type === characterIndices.ALETTER || type === characterIndices.NUMERIC || type === characterIndices.KATAKANA || type === characterIndices.EXTENDNUMLET)) {
+      if (nextType == characterIndices.EXTENDNUMLET && (type == characterIndices.ALETTER || type == characterIndices.NUMERIC || type == characterIndices.KATAKANA || type == characterIndices.EXTENDNUMLET)) {
         return false;
       }
-      if (type === characterIndices.EXTENDNUMLET && (nextType === characterIndices.ALETTER || nextType === characterIndices.NUMERIC || nextType === characterIndices.KATAKANA)) {
+      if (type == characterIndices.EXTENDNUMLET && (nextType == characterIndices.ALETTER || nextType == characterIndices.NUMERIC || nextType == characterIndices.KATAKANA)) {
         return false;
       }
-      if (type === characterIndices.AT) {
+      if (type == characterIndices.AT) {
         return false;
       }
       return true;
@@ -162,7 +162,7 @@
     const EMPTY_STRING = EMPTY_STRING$1;
     const WHITESPACE = WHITESPACE$1;
     const PUNCTUATION = PUNCTUATION$1;
-    const isProtocol = str => str === 'http' || str === 'https';
+    const isProtocol = str => str == 'http' || str == 'https';
     const findWordEnd = (characters, startIndex) => {
       let i;
       for (i = startIndex; i < characters.length; i++) {
@@ -175,7 +175,7 @@
     const findUrlEnd = (characters, startIndex) => {
       const endIndex = findWordEnd(characters, startIndex + 1);
       const peakedWord = characters.slice(startIndex + 1, endIndex).join(EMPTY_STRING);
-      return peakedWord.substr(0, 3) === '://' ? endIndex : startIndex;
+      return peakedWord.substr(0, 3) == '://' ? endIndex : startIndex;
     };
     const findWordsWithIndices = (chars, sChars, characterMap, options) => {
       const words = [];
@@ -239,7 +239,7 @@
       const treeWalker = new global$1(node, node);
       let tempNode;
       while (tempNode = treeWalker.next()) {
-        if (tempNode.nodeType === 3) {
+        if (tempNode.nodeType == 3) {
           txt += removeZwsp$1(tempNode.data);
         } else if (isNewline(tempNode) && txt.length) {
           textBlocks.push(txt);

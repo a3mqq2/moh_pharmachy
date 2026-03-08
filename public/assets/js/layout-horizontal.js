@@ -67,7 +67,7 @@
     // Update pc-caption html structure for horizontal layout
     pc_menu_list.forEach(function (item, list_index) {
       if (item.classList.contains('pc-caption')) {
-        if (flag_hit_extra === true) {
+        if (flag_hit_extra == true) {
           if (flag_item_extra.insertAdjacentHTML) {
             var menuicon = '';
             if (flag_item_extra.children[1]) {
@@ -110,14 +110,14 @@
           flag_hit_extra = false;
         }
       } else {
-        if (flag_hit === false) {
+        if (flag_hit == false) {
           pc_sing_link = flag_item;
           flag_hit = true;
         }
 
         pc_new_list += item.outerHTML;
-        if (list_index + 1 === pc_menu_list.length) {
-          if (flag_hit_extra === true) {
+        if (list_index + 1 == pc_menu_list.length) {
+          if (flag_hit_extra == true) {
             if (flag_item_extra.insertAdjacentHTML) {
               flag_item_extra.insertAdjacentHTML(
                 'afterend',
@@ -147,7 +147,7 @@
           flag_item_extra = item;
         }
 
-        if (flag_hit_extra === true) {
+        if (flag_hit_extra == true) {
           item.remove();
         }
       }
@@ -159,18 +159,18 @@
     pc_menu_list_new.forEach(function (item, list_index) {
       flag_w += get_w(item) + 49;
       if (flag_w > window.innerWidth) {
-        if (flag_hit === false) {
+        if (flag_hit == false) {
           pc_sing_link = flag_item;
           flag_hit = true;
         }
-        if (flag_hit === true) {
+        if (flag_hit == true) {
           pc_new_list += item.outerHTML;
           item.remove();
         }
       } else {
         flag_item = item;
       }
-      if (list_index + 1 === pc_menu_list_new.length) {
+      if (list_index + 1 == pc_menu_list_new.length) {
         if (pc_sing_link.insertAdjacentHTML) {
           pc_sing_link.insertAdjacentHTML(
             'afterend',

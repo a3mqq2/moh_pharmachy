@@ -8,8 +8,8 @@
     var global$1 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
     const applyListFormat = (editor, listName, styleValue) => {
-      const cmd = listName === 'UL' ? 'InsertUnorderedList' : 'InsertOrderedList';
-      editor.execCommand(cmd, false, styleValue === false ? null : { 'list-style-type': styleValue });
+      const cmd = listName == 'UL' ? 'InsertUnorderedList' : 'InsertOrderedList';
+      editor.execCommand(cmd, false, styleValue == false ? null : { 'list-style-type': styleValue });
     };
 
     const register$2 = editor => {
@@ -36,7 +36,7 @@
     const getNumberStyles = option('advlist_number_styles');
     const getBulletStyles = option('advlist_bullet_styles');
 
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
 
     var global = tinymce.util.Tools.resolve('tinymce.util.Tools');
@@ -106,7 +106,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -153,13 +153,13 @@
     const matchNodeNames = regex => node => isNonNullable(node) && regex.test(node.nodeName);
     const isListNode = matchNodeNames(/^(OL|UL|DL)$/);
     const isTableCellNode = matchNodeNames(/^(TH|TD)$/);
-    const inList = (editor, parents, nodeName) => findUntil(parents, parent => isListNode(parent) && !isCustomList(parent), isTableCellNode).exists(list => list.nodeName === nodeName && isChildOfBody(editor, list));
+    const inList = (editor, parents, nodeName) => findUntil(parents, parent => isListNode(parent) && !isCustomList(parent), isTableCellNode).exists(list => list.nodeName == nodeName && isChildOfBody(editor, list));
     const getSelectedStyleType = editor => {
       const listElm = editor.dom.getParent(editor.selection.getNode(), 'ol,ul');
       const style = editor.dom.getStyle(listElm, 'listStyleType');
       return Optional.from(style);
     };
-    const isWithinNonEditable = (editor, element) => element !== null && !editor.dom.isEditable(element);
+    const isWithinNonEditable = (editor, element) => element != null && !editor.dom.isEditable(element);
     const isWithinNonEditableList = (editor, element) => {
       const parentList = editor.dom.getParent(element, 'ol,ul,dl');
       return isWithinNonEditable(editor, parentList) && editor.selection.isEditable();
@@ -179,7 +179,7 @@
         return chr.toUpperCase();
       });
     };
-    const normalizeStyleValue = styleValue => isNullable(styleValue) || styleValue === 'default' ? '' : styleValue;
+    const normalizeStyleValue = styleValue => isNullable(styleValue) || styleValue == 'default' ? '' : styleValue;
     const makeSetupHandler = (editor, nodeName) => api => {
       const updateButtonState = (editor, parents) => {
         const element = editor.selection.getStart(true);
@@ -192,13 +192,13 @@
     const addSplitButton = (editor, id, tooltip, cmd, nodeName, styles) => {
       editor.ui.registry.addSplitButton(id, {
         tooltip,
-        icon: nodeName === 'OL' ? 'ordered-list' : 'unordered-list',
+        icon: nodeName == 'OL' ? 'ordered-list' : 'unordered-list',
         presets: 'listpreview',
         columns: 3,
         fetch: callback => {
           const items = global.map(styles, styleValue => {
-            const iconStyle = nodeName === 'OL' ? 'num' : 'bull';
-            const iconName = styleValue === 'disc' || styleValue === 'decimal' ? 'default' : styleValue;
+            const iconStyle = nodeName == 'OL' ? 'num' : 'bull';
+            const iconName = styleValue == 'disc' || styleValue == 'decimal' ? 'default' : styleValue;
             const itemValue = normalizeStyleValue(styleValue);
             const displayText = styleValueToText(styleValue);
             return {
@@ -216,7 +216,7 @@
         },
         select: value => {
           const listStyleType = getSelectedStyleType(editor);
-          return listStyleType.map(listStyle => value === listStyle).getOr(false);
+          return listStyleType.map(listStyle => value == listStyle).getOr(false);
         },
         onSetup: makeSetupHandler(editor, nodeName)
       });
@@ -225,9 +225,9 @@
       editor.ui.registry.addToggleButton(id, {
         active: false,
         tooltip,
-        icon: nodeName === 'OL' ? 'ordered-list' : 'unordered-list',
+        icon: nodeName == 'OL' ? 'ordered-list' : 'unordered-list',
         onSetup: makeSetupHandler(editor, nodeName),
-        onAction: () => editor.queryCommandState(cmd) || styleValue === '' ? editor.execCommand(cmd) : applyListFormat(editor, nodeName, styleValue)
+        onAction: () => editor.queryCommandState(cmd) || styleValue == '' ? editor.execCommand(cmd) : applyListFormat(editor, nodeName, styleValue)
       });
     };
     const addControl = (editor, id, tooltip, cmd, nodeName, styles) => {

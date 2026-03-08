@@ -207,11 +207,11 @@
             <tr>
                 <th>حالة الفاتورة</th>
                 <td>
-                    @if($invoice->status === 'pending')
+                    @if($invoice->status == 'pending')
                         قيد الانتظار
-                    @elseif($invoice->status === 'paid')
+                    @elseif($invoice->status == 'paid')
                         مدفوعة
-                    @elseif($invoice->status === 'cancelled')
+                    @elseif($invoice->status == 'cancelled')
                         ملغاة
                     @endif
                 </td>

@@ -32,26 +32,26 @@
     if (predicate(v, constructor.prototype)) {
       return true;
     } else {
-      return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+      return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
     }
   };
   const typeOf = x => {
     const t = typeof x;
-    if (x === null) {
+    if (x == null) {
       return 'null';
-    } else if (t === 'object' && Array.isArray(x)) {
+    } else if (t == 'object' && Array.isArray(x)) {
       return 'array';
-    } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+    } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
       return 'string';
     } else {
       return t;
     }
   };
-  const isType = type => value => typeOf(value) === type;
-  const eq = t => a => t === a;
+  const isType = type => value => typeOf(value) == type;
+  const eq = t => a => t == a;
   const isString = isType('string');
   const isUndefined = eq(undefined);
-  const isNullable = a => a === null || a === undefined;
+  const isNullable = a => a == null || a == undefined;
   const isNonNullable = a => !isNullable(a);
 
   const not = f => t => !f(t);
@@ -59,10 +59,10 @@
   const hasOwnProperty = Object.hasOwnProperty;
   const has = (obj, key) => hasOwnProperty.call(obj, key);
 
-  const checkRange = (str, substr, start) => substr === '' || str.length >= substr.length && str.substr(start, start + substr.length) === substr;
+  const checkRange = (str, substr, start) => substr == '' || str.length >= substr.length && str.substr(start, start + substr.length) == substr;
   const contains = (str, substr, start = 0, end) => {
     const idx = str.indexOf(substr, start);
-    if (idx !== -1) {
+    if (idx != -1) {
       return isUndefined(end) ? true : idx + substr.length <= end;
     } else {
       return false;
@@ -73,13 +73,13 @@
   };
 
   const zeroWidth = '\uFEFF';
-  const isZwsp = char => char === zeroWidth;
+  const isZwsp = char => char == zeroWidth;
   const removeZwsp = s => s.replace(/\uFEFF/g, '');
 
   var global = tinymce.util.Tools.resolve('tinymce.dom.TextSeeker');
 
-  const isTextNode = node => node.nodeType === 3;
-  const isElement = node => node.nodeType === 1;
+  const isTextNode = node => node.nodeType == 3;
+  const isElement = node => node.nodeType == 1;
   const isBracketOrSpace = char => /^[(\[{ \u00a0]$/.test(char);
   const hasProtocol = url => /^([A-Za-z][A-Za-z\d.+-]*:\/\/)|mailto:/.test(url);
   const isPunctuation = char => /[?!,.;:]/.test(char);
@@ -110,22 +110,22 @@
     const voidElements = editor.schema.getVoidElements();
     const autoLinkPattern = getAutoLinkPattern(editor);
     const {dom, selection} = editor;
-    if (dom.getParent(selection.getNode(), 'a[href]') !== null) {
+    if (dom.getParent(selection.getNode(), 'a[href]') != null) {
       return null;
     }
     const rng = selection.getRng();
     const textSeeker = global(dom, node => {
-      return dom.isBlock(node) || has(voidElements, node.nodeName.toLowerCase()) || dom.getContentEditable(node) === 'false';
+      return dom.isBlock(node) || has(voidElements, node.nodeName.toLowerCase()) || dom.getContentEditable(node) == 'false';
     });
     const {
       container: endContainer,
       offset: endOffset
     } = freefallRtl(rng.endContainer, rng.endOffset);
-    const root = (_a = dom.getParent(endContainer, dom.isBlock)) !== null && _a !== void 0 ? _a : dom.getRoot();
+    const root = (_a = dom.getParent(endContainer, dom.isBlock)) != null && _a != void 0 ? _a : dom.getRoot();
     const endSpot = textSeeker.backwards(endContainer, endOffset + offset, (node, offset) => {
       const text = node.data;
       const idx = findChar(text, offset, not(isBracketOrSpace));
-      return idx === -1 || isPunctuation(text[idx]) ? idx : idx + 1;
+      return idx == -1 || isPunctuation(text[idx]) ? idx : idx + 1;
     }, root);
     if (!endSpot) {
       return null;
@@ -134,7 +134,7 @@
     const startSpot = textSeeker.backwards(endSpot.container, endSpot.offset, (node, offset) => {
       lastTextNode = node;
       const idx = findChar(node.data, offset, isBracketOrSpace);
-      return idx === -1 ? idx : idx + 1;
+      return idx == -1 ? idx : idx + 1;
     }, root);
     const newRng = dom.createRng();
     if (!startSpot) {
@@ -180,7 +180,7 @@
       if (isString(defaultLinkTarget)) {
         const anchor = selection.getNode();
         dom.setAttrib(anchor, 'target', defaultLinkTarget);
-        if (defaultLinkTarget === '_blank' && !allowUnsafeLinkTarget(editor)) {
+        if (defaultLinkTarget == '_blank' && !allowUnsafeLinkTarget(editor)) {
           dom.setAttrib(anchor, 'rel', 'noopener');
         }
       }
@@ -203,14 +203,14 @@
   };
   const setup = editor => {
     editor.on('keydown', e => {
-      if (e.keyCode === 13 && !e.isDefaultPrevented()) {
+      if (e.keyCode == 13 && !e.isDefaultPrevented()) {
         handleEnter(editor);
       }
     });
     editor.on('keyup', e => {
-      if (e.keyCode === 32) {
+      if (e.keyCode == 32) {
         handleSpacebar(editor);
-      } else if (e.keyCode === 48 && e.shiftKey || e.keyCode === 221) {
+      } else if (e.keyCode == 48 && e.shiftKey || e.keyCode == 221) {
         handleBracket(editor);
       }
     });

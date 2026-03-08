@@ -816,7 +816,7 @@
             if (stepNum < step) {
                 el.classList.add('completed');
                 el.classList.remove('active');
-            } else if (stepNum === step) {
+            } else if (stepNum == step) {
                 el.classList.add('active');
                 el.classList.remove('completed');
             } else {
@@ -824,9 +824,9 @@
             }
         });
 
-        document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'inline-flex';
-        document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'inline-flex';
-        document.getElementById('submitBtn').style.display = step === totalSteps ? 'inline-flex' : 'none';
+        document.getElementById('prevBtn').style.display = step == 1 ? 'none' : 'inline-flex';
+        document.getElementById('nextBtn').style.display = step == totalSteps ? 'none' : 'inline-flex';
+        document.getElementById('submitBtn').style.display = step == totalSteps ? 'inline-flex' : 'none';
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -838,7 +838,7 @@
         let missingFields = [];
 
         requiredInputs.forEach(input => {
-            if (input.type === 'radio') {
+            if (input.type == 'radio') {
                 const radioGroup = currentStepEl.querySelectorAll(`[name="${input.name}"]`);
                 const isChecked = Array.from(radioGroup).some(radio => radio.checked);
                 if (!isChecked) {

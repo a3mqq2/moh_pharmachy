@@ -21,28 +21,28 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
-    const eq = t => a => t === a;
+    const isType = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
+    const eq = t => a => t == a;
     const isArray$1 = isType('array');
     const isNull = eq(null);
     const isUndefined = eq(undefined);
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
 
@@ -118,7 +118,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -1395,14 +1395,14 @@
     };
     const charmapFilter = charmap => {
       return global.grep(charmap, item => {
-        return isArray(item) && item.length === 2;
+        return isArray(item) && item.length == 2;
       });
     };
     const getCharsFromOption = optionValue => {
       if (isArray(optionValue)) {
         return charmapFilter(optionValue);
       }
-      if (typeof optionValue === 'function') {
+      if (typeof optionValue == 'function') {
         return optionValue();
       }
       return [];
@@ -1417,7 +1417,7 @@
       }
       const userCharMapAppend = getCharMapAppend(editor);
       if (userCharMapAppend) {
-        const userDefinedGroup = global.grep(charmap, cg => cg.name === UserDefined);
+        const userDefinedGroup = global.grep(charmap, cg => cg.name == UserDefined);
         if (userDefinedGroup.length) {
           userDefinedGroup[0].characters = [
             ...userDefinedGroup[0].characters,
@@ -1490,7 +1490,7 @@
 
     const contains = (str, substr, start = 0, end) => {
       const idx = str.indexOf(substr, start);
-      if (idx !== -1) {
+      if (idx != -1) {
         return isUndefined(end) ? true : idx + substr.length <= end;
       } else {
         return false;
@@ -1546,9 +1546,9 @@
         type: 'tabpanel',
         tabs: makeTabs()
       });
-      const currentTab = charMap.length === 1 ? Cell(UserDefined) : Cell('All');
+      const currentTab = charMap.length == 1 ? Cell(UserDefined) : Cell('All');
       const scanAndSet = (dialogApi, pattern) => {
-        find(charMap, group => group.name === currentTab.get()).each(f => {
+        find(charMap, group => group.name == currentTab.get()).each(f => {
           const items = scan(f, pattern);
           dialogApi.setData({ results: items });
         });
@@ -1558,7 +1558,7 @@
         const pattern = dialogApi.getData().pattern;
         scanAndSet(dialogApi, pattern);
       }, SEARCH_DELAY);
-      const body = charMap.length === 1 ? makePanel() : makeTabPanel();
+      const body = charMap.length == 1 ? makePanel() : makeTabPanel();
       const initialData = {
         pattern: '',
         results: scan(charMap[0], '')
@@ -1575,7 +1575,7 @@
           }],
         initialData,
         onAction: (api, details) => {
-          if (details.name === 'results') {
+          if (details.name == 'results') {
             insertChar(editor, details.value);
             api.close();
           }
@@ -1585,7 +1585,7 @@
           updateFilter.throttle(dialogApi);
         },
         onChange: (dialogApi, changeData) => {
-          if (changeData.name === patternName) {
+          if (changeData.name == patternName) {
             updateFilter.throttle(dialogApi);
           }
         }

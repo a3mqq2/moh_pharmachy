@@ -654,7 +654,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     console.log('Script loaded');
-    console.log('jQuery available:', typeof jQuery !== 'undefined');
+    console.log('jQuery available:', typeof jQuery != 'undefined');
 
     // Wait for DOM to be ready
     (function() {
@@ -665,7 +665,7 @@
             console.log('Initializing form...');
 
             // Check if jQuery is available
-            if (typeof jQuery === 'undefined') {
+            if (typeof jQuery == 'undefined') {
                 console.error('jQuery is not loaded!');
                 return;
             }
@@ -691,7 +691,7 @@
                 tags: true,
                 createTag: function (params) {
                     var term = $.trim(params.term);
-                    if (term === '') {
+                    if (term == '') {
                         return null;
                     }
                     return {
@@ -718,7 +718,7 @@
                 tokenSeparators: [','],
                 createTag: function (params) {
                     var term = $.trim(params.term);
-                    if (term === '') {
+                    if (term == '') {
                         return null;
                     }
                     return {
@@ -771,13 +771,13 @@
                     submit: submitBtn.length
                 });
 
-                if (step === 1) {
+                if (step == 1) {
                     prevBtn.hide();
                 } else {
                     prevBtn.show();
                 }
 
-                if (step === totalSteps) {
+                if (step == totalSteps) {
                     nextBtn.hide();
                     submitBtn.show();
                 } else {
@@ -827,11 +827,11 @@
         }
 
         // Wait for DOM and jQuery to be ready
-        if (document.readyState === 'loading') {
+        if (document.readyState == 'loading') {
             document.addEventListener('DOMContentLoaded', initializeForm);
         } else {
             // DOM is already loaded, check if jQuery is ready
-            if (typeof jQuery !== 'undefined') {
+            if (typeof jQuery != 'undefined') {
                 initializeForm();
             } else {
                 // Wait a bit for jQuery to load

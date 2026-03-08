@@ -60,13 +60,13 @@
     };
     const parseCssValueToInt = (dom, elm, name, computed) => {
       var _a;
-      const value = parseInt((_a = dom.getStyle(elm, name, computed)) !== null && _a !== void 0 ? _a : '', 10);
+      const value = parseInt((_a = dom.getStyle(elm, name, computed)) != null && _a != void 0 ? _a : '', 10);
       return isNaN(value) ? 0 : value;
     };
     const shouldScrollIntoView = trigger => {
-      if ((trigger === null || trigger === void 0 ? void 0 : trigger.type.toLowerCase()) === 'setcontent') {
+      if ((trigger == null || trigger == void 0 ? void 0 : trigger.type.toLowerCase()) == 'setcontent') {
         const setContentEvent = trigger;
-        return setContentEvent.selection === true || setContentEvent.paste === true;
+        return setContentEvent.selection == true || setContentEvent.paste == true;
       } else {
         return false;
       }
@@ -84,7 +84,7 @@
       }
       const docEle = doc.documentElement;
       const resizeBottomMargin = getExtraMarginBottom ? getExtraMarginBottom() : getAutoResizeOverflowPadding(editor);
-      const minHeight = (_a = getMinHeight(editor)) !== null && _a !== void 0 ? _a : editor.getElement().offsetHeight;
+      const minHeight = (_a = getMinHeight(editor)) != null && _a != void 0 ? _a : editor.getElement().offsetHeight;
       let resizeHeight = minHeight;
       const marginTop = parseCssValueToInt(dom, docEle, 'margin-top', true);
       const marginBottom = parseCssValueToInt(dom, docEle, 'margin-bottom', true);
@@ -105,7 +105,7 @@
       } else {
         toggleScrolling(editor, false);
       }
-      if (resizeHeight !== oldSize.get()) {
+      if (resizeHeight != oldSize.get()) {
         const deltaSize = resizeHeight - oldSize.get();
         dom.setStyle(editor.getContainer(), 'height', resizeHeight + 'px');
         oldSize.set(resizeHeight);
@@ -147,11 +147,11 @@
         resizeCounter += 1;
       });
       editor.on('NodeChange SetContent keyup FullscreenStateChanged ResizeContent', e => {
-        if (resizeCounter === 1) {
+        if (resizeCounter == 1) {
           sizeAfterFirstResize = editor.getContainer().offsetHeight;
           resize(editor, oldSize, e, getExtraMarginBottom);
           resizeCounter += 1;
-        } else if (resizeCounter === 2) {
+        } else if (resizeCounter == 2) {
           const isLooping = sizeAfterFirstResize < editor.getContainer().offsetHeight;
           if (isLooping) {
             const dom = editor.dom;

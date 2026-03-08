@@ -12,23 +12,23 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
+    const isType = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
     const isString = isType('string');
     const isObject = isType('object');
     const isArray = isType('array');
@@ -113,7 +113,7 @@
       const toFormats = () => {
         const groupItems = bind(groupOrder, g => {
           const items = groups[g];
-          return items.length === 0 ? [] : [{
+          return items.length == 0 ? [] : [{
               title: g,
               items
             }];
@@ -141,14 +141,14 @@
         const skinUrlBase = getSkinUrl(editor);
         const skinUrl = skinUrlBase ? editor.documentBaseURI.toAbsolute(skinUrlBase) : global$2.baseURL + '/skins/ui/' + skin;
         const contentSkinUrlPart = global$2.baseURL + '/skins/content/';
-        return href === skinUrl + '/content' + (editor.inline ? '.inline' : '') + '.min.css' || href.indexOf(contentSkinUrlPart) !== -1;
+        return href == skinUrl + '/content' + (editor.inline ? '.inline' : '') + '.min.css' || href.indexOf(contentSkinUrlPart) != -1;
       }
       return false;
     };
     const compileFilter = filter => {
       if (isString(filter)) {
         return value => {
-          return value.indexOf(filter) !== -1;
+          return value.indexOf(filter) != -1;
         };
       } else if (filter instanceof RegExp) {
         return value => {
@@ -249,7 +249,7 @@
       });
     };
     const isExclusiveMode = (editor, group) => {
-      return group === null || shouldImportExclusive(editor);
+      return group == null || shouldImportExclusive(editor);
     };
     const isUniqueSelector = (editor, selector, group, globallyUniqueSelectors) => {
       return !(isExclusiveMode(editor, group) ? selector in globallyUniqueSelectors : selector in group.selectors);

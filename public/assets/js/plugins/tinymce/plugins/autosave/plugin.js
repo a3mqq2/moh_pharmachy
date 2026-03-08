@@ -12,23 +12,23 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType = type => value => typeOf(value) === type;
-    const eq = t => a => t === a;
+    const isType = type => value => typeOf(value) == type;
+    const eq = t => a => t == a;
     const isString = isType('string');
     const isUndefined = eq(undefined);
 
@@ -103,7 +103,7 @@
         return editor.dom.isEmpty(editor.getBody());
       } else {
         const trimmedHtml = global$1.trim(html);
-        if (trimmedHtml === '') {
+        if (trimmedHtml == '') {
           return true;
         } else {
           const fragment = new DOMParser().parseFromString(trimmedHtml, 'text/html');
@@ -113,7 +113,7 @@
     };
     const hasDraft = editor => {
       var _a;
-      const time = parseInt((_a = global$2.getItem(getAutoSavePrefix(editor) + 'time')) !== null && _a !== void 0 ? _a : '0', 10) || 0;
+      const time = parseInt((_a = global$2.getItem(getAutoSavePrefix(editor) + 'time')) != null && _a != void 0 ? _a : '0', 10) || 0;
       if (new Date().getTime() - time > getAutoSaveRetention(editor)) {
         removeDraft(editor, false);
         return false;
@@ -124,7 +124,7 @@
       const prefix = getAutoSavePrefix(editor);
       global$2.removeItem(prefix + 'draft');
       global$2.removeItem(prefix + 'time');
-      if (fire !== false) {
+      if (fire != false) {
         fireRemoveDraft(editor);
       }
     };
@@ -143,7 +143,7 @@
       var _a;
       const prefix = getAutoSavePrefix(editor);
       if (hasDraft(editor)) {
-        editor.setContent((_a = global$2.getItem(prefix + 'draft')) !== null && _a !== void 0 ? _a : '', { format: 'raw' });
+        editor.setContent((_a = global$2.getItem(prefix + 'draft')) != null && _a != void 0 ? _a : '', { format: 'raw' });
         fireRestoreDraft(editor);
       }
     };

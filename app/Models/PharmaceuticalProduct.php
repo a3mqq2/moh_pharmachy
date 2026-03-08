@@ -158,7 +158,7 @@ class PharmaceuticalProduct extends Model
             ->pluck('document_type')
             ->toArray();
 
-        return count(array_diff($requiredTypes, $uploadedTypes)) === 0;
+        return count(array_diff($requiredTypes, $uploadedTypes)) == 0;
     }
 
     public function getMissingDocumentTypes(): array

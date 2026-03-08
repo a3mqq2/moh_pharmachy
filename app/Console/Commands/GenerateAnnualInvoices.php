@@ -51,20 +51,20 @@ class GenerateAnnualInvoices extends Command
 
         try {
             // Generate invoices for foreign companies
-            if (!$companyType || $companyType === 'foreign') {
+            if (!$companyType || $companyType == 'foreign') {
                 $this->info('Processing foreign companies...');
                 $this->generateForeignCompanyInvoices($testMode, $stats);
             }
 
             // Generate invoices for local companies
-            if (!$companyType || $companyType === 'local') {
+            if (!$companyType || $companyType == 'local') {
                 $this->info('Processing local companies...');
                 $this->generateLocalCompanyInvoices($testMode, $stats);
             }
 
             // Display summary
             $this->newLine();
-            $this->info('=== Summary ===');
+            $this->info('== Summary ==');
             $this->table(
                 ['Metric', 'Count'],
                 [
@@ -132,7 +132,7 @@ class GenerateAnnualInvoices extends Command
 
                 // Check if the anniversary is within the current month
                 $now = Carbon::now();
-                if ($lastAnniversary->month !== $now->month || $lastAnniversary->year !== $now->year) {
+                if ($lastAnniversary->month != $now->month || $lastAnniversary->year != $now->year) {
                     continue;
                 }
 
@@ -151,7 +151,7 @@ class GenerateAnnualInvoices extends Command
                         ]);
 
                         // Update company status if needed
-                        if ($company->status === 'active') {
+                        if ($company->status == 'active') {
                             $company->update(['status' => 'pending_payment']);
                         }
                     });
@@ -212,7 +212,7 @@ class GenerateAnnualInvoices extends Command
 
                 // Check if the anniversary is within the current month
                 $now = Carbon::now();
-                if ($lastAnniversary->month !== $now->month || $lastAnniversary->year !== $now->year) {
+                if ($lastAnniversary->month != $now->month || $lastAnniversary->year != $now->year) {
                     continue;
                 }
 
@@ -231,7 +231,7 @@ class GenerateAnnualInvoices extends Command
                         ]);
 
                         // Update company status if needed
-                        if ($company->status === 'active') {
+                        if ($company->status == 'active') {
                             $company->update(['status' => 'pending_payment']);
                         }
                     });

@@ -8,7 +8,7 @@
         if (!selector) return false;
         var otherField = field.form.querySelector(selector);
         if (!otherField) return false;
-        return otherField.value !== field.value;
+        return otherField.value != field.value;
       }
     },
     messages: {

@@ -48,7 +48,7 @@ class LocalCompanyDocumentController extends Controller
 
     public function download(LocalCompany $localCompany, LocalCompanyDocument $localCompanyDocument)
     {
-        if ($localCompanyDocument->local_company_id !== $localCompany->id) {
+        if ($localCompanyDocument->local_company_id != $localCompany->id) {
             abort(404);
         }
 
@@ -57,7 +57,7 @@ class LocalCompanyDocumentController extends Controller
 
     public function destroy(LocalCompany $localCompany, LocalCompanyDocument $localCompanyDocument)
     {
-        if ($localCompanyDocument->local_company_id !== $localCompany->id) {
+        if ($localCompanyDocument->local_company_id != $localCompany->id) {
             abort(404);
         }
 

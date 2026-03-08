@@ -255,8 +255,8 @@
         <div class="card-header">
             <h3><i class="ti ti-file-invoice"></i> معلومات الفاتورة</h3>
             <div>
-                <span class="badge {{ $invoice->status === 'paid' ? 'badge-success' : ($invoice->status === 'pending' ? 'badge-warning' : 'badge-danger') }}">
-                    {{ $invoice->status === 'paid' ? 'مدفوعة' : ($invoice->status === 'pending' ? 'معلقة' : 'ملغاة') }}
+                <span class="badge {{ $invoice->status == 'paid' ? 'badge-success' : ($invoice->status == 'pending' ? 'badge-warning' : 'badge-danger') }}">
+                    {{ $invoice->status == 'paid' ? 'مدفوعة' : ($invoice->status == 'pending' ? 'معلقة' : 'ملغاة') }}
                 </span>
             </div>
         </div>
@@ -306,7 +306,7 @@
         </div>
     </div>
 
-    @if($invoice->status === 'pending')
+    @if($invoice->status == 'pending')
     <div class="info-card">
         <div class="card-header">
             <h3><i class="ti ti-upload"></i> رفع إيصال الدفع</h3>
@@ -315,23 +315,23 @@
             @if($invoice->receipt_path)
                 <div class="alert alert-info">
                     <i class="ti ti-info-circle me-2"></i>
-                    @if($invoice->receipt_status === 'pending')
+                    @if($invoice->receipt_status == 'pending')
                         <strong>تم رفع إيصال الدفع بنجاح.</strong> جاري مراجعة الإيصال من قبل الإدارة.
-                    @elseif($invoice->receipt_status === 'rejected')
+                    @elseif($invoice->receipt_status == 'rejected')
                         <strong>تم رفض الإيصال.</strong>
                         <br>السبب: {{ $invoice->receipt_rejection_reason }}
                         <br><small class="text-muted">يرجى رفع إيصال جديد.</small>
                     @endif
                 </div>
 
-                @if($invoice->receipt_status === 'rejected' || $invoice->receipt_status === 'pending')
+                @if($invoice->receipt_status == 'rejected' || $invoice->receipt_status == 'pending')
                 <div class="mb-3">
                     <label class="form-label">الإيصال الحالي</label>
                     <div class="d-flex gap-2">
                         <a href="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}" class="btn btn-outline-primary" target="_blank">
                             <i class="ti ti-download"></i> تحميل الإيصال
                         </a>
-                        @if($invoice->receipt_status === 'rejected')
+                        @if($invoice->receipt_status == 'rejected')
                         <form action="{{ route('representative.foreign-companies.invoices.delete-receipt', [$company, $invoice]) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف الإيصال؟')">
                             @csrf
                             @method('DELETE')
@@ -344,7 +344,7 @@
                 </div>
                 @endif
 
-                @if($invoice->receipt_status === 'rejected')
+                @if($invoice->receipt_status == 'rejected')
                 <form action="{{ route('representative.foreign-companies.invoices.upload-receipt', [$company, $invoice]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
@@ -378,7 +378,7 @@
             @endif
         </div>
     </div>
-    @elseif($invoice->status === 'paid')
+    @elseif($invoice->status == 'paid')
     <div class="info-card">
         <div class="card-header">
             <h3><i class="ti ti-file-check"></i> إيصال الدفع</h3>

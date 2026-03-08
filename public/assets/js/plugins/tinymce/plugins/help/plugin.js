@@ -33,7 +33,7 @@
     const get$1 = customTabs => {
       const addTab = spec => {
         var _a;
-        const name = (_a = spec.name) !== null && _a !== void 0 ? _a : generate('tab-name');
+        const name = (_a = spec.name) != null && _a != void 0 ? _a : generate('tab-name');
         const currentCustomTabs = customTabs.get();
         currentCustomTabs[name] = spec;
         customTabs.set(currentCustomTabs);
@@ -72,27 +72,27 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
-    const eq = t => a => t === a;
+    const isType = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
+    const eq = t => a => t == a;
     const isString = isType('string');
     const isUndefined = eq(undefined);
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
 
@@ -168,7 +168,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -712,7 +712,7 @@
     const tab$1 = editor => {
       const availablePlugins = () => {
         const premiumPlugins = filter(urls, ({type}) => {
-          return type === 'premium';
+          return type == 'premium';
         });
         const sortedPremiumPlugins = sort(map(premiumPlugins, p => p.name), (s1, s2) => s1.localeCompare(s2));
         const premiumPluginList = map(sortedPremiumPlugins, pluginName => `<li>${ pluginName }</li>`).join('');
@@ -735,11 +735,11 @@
         }
       };
       const getPluginData = (editor, key) => find(urls, x => {
-        return x.key === key;
+        return x.key == key;
       }).fold(() => {
         return identifyUnknownPlugin(editor, key);
       }, x => {
-        const name = x.type === 'premium' ? `${ x.name }*` : x.name;
+        const name = x.type == 'premium' ? `${ x.name }*` : x.name;
         const html = makeLink({
           name,
           url: `https://www.tiny.cloud/docs/tinymce/6/${ x.slug }/`
@@ -792,7 +792,7 @@
     var global = tinymce.util.Tools.resolve('tinymce.EditorManager');
 
     const tab = () => {
-      const getVersion = (major, minor) => major.indexOf('@') === 0 ? 'X.X.X' : major + '.' + minor;
+      const getVersion = (major, minor) => major.indexOf('@') == 0 ? 'X.X.X' : major + '.' + minor;
       const version = getVersion(global.majorVersion, global.minorVersion);
       const changeLogLink = '<a data-alloy-tabstop="true" tabindex="-1" href="https://www.tiny.cloud/docs/tinymce/6/changelog/?utm_campaign=help_dialog_version_tab&utm_source=tiny&utm_medium=referral" rel="noopener" target="_blank">TinyMCE ' + version + '</a>';
       const htmlPanel = {
@@ -820,7 +820,7 @@
           }
           return t;
         } else {
-          const name = (_a = t.name) !== null && _a !== void 0 ? _a : generate('tab-name');
+          const name = (_a = t.name) != null && _a != void 0 ? _a : generate('tab-name');
           newTabs[name] = t;
           return name;
         }
@@ -833,7 +833,7 @@
     const getNamesFromTabs = tabs => {
       const names = keys(tabs);
       const idx = names.indexOf('versions');
-      if (idx !== -1) {
+      if (idx != -1) {
         names.splice(idx, 1);
         names.push('versions');
       }

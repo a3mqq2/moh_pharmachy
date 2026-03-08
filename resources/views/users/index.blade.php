@@ -37,7 +37,7 @@
                             <select name="role" class="form-select">
                                 <option value="">كل الأدوار</option>
                                 @foreach($roles as $role)
-                                    <option value="{{ $role->name }}" {{ request('role') === $role->name ? 'selected' : '' }}>
+                                    <option value="{{ $role->name }}" {{ request('role') == $role->name ? 'selected' : '' }}>
                                         {{ $role->display_name ?? $role->name }}
                                     </option>
                                 @endforeach

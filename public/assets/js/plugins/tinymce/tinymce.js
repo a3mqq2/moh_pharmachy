@@ -6,17 +6,17 @@
     'use strict';
 
     var typeOf$1 = function (x) {
-      if (x === null) {
+      if (x == null) {
         return 'null';
       }
-      if (x === undefined) {
+      if (x == undefined) {
         return 'undefined';
       }
       var t = typeof x;
-      if (t === 'object' && (Array.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'Array')) {
+      if (t == 'object' && (Array.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name == 'Array')) {
         return 'array';
       }
-      if (t === 'object' && (String.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'String')) {
+      if (t == 'object' && (String.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name == 'String')) {
         return 'string';
       }
       return t;
@@ -30,7 +30,7 @@
         'function',
         'xml',
         'null'
-      ].indexOf(x) !== -1;
+      ].indexOf(x) != -1;
     };
 
     var sort$1 = function (xs, compareFn) {
@@ -47,12 +47,12 @@
       return { eq: f };
     };
     var tripleEq = eq$2(function (x, y) {
-      return x === y;
+      return x == y;
     });
     var eqString = tripleEq;
     var eqArray = function (eqa) {
       return eq$2(function (x, y) {
-        if (x.length !== y.length) {
+        if (x.length != y.length) {
           return false;
         }
         var len = x.length;
@@ -87,19 +87,19 @@
       });
     };
     var eqAny = eq$2(function (x, y) {
-      if (x === y) {
+      if (x == y) {
         return true;
       }
       var tx = typeOf$1(x);
       var ty = typeOf$1(y);
-      if (tx !== ty) {
+      if (tx != ty) {
         return false;
       }
       if (isEquatableType(tx)) {
-        return x === y;
-      } else if (tx === 'array') {
+        return x == y;
+      } else if (tx == 'array') {
         return eqArray(eqAny).eq(x, y);
-      } else if (tx === 'object') {
+      } else if (tx == 'object') {
         return eqRecord(eqAny).eq(x, y);
       }
       return false;
@@ -111,25 +111,25 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType$1 = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
-    const eq$1 = t => a => t === a;
-    const is$4 = (value, constructor) => isObject(value) && hasProto(value, constructor, (o, proto) => getPrototypeOf$2(o) === proto);
+    const isType$1 = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
+    const eq$1 = t => a => t == a;
+    const is$4 = (value, constructor) => isObject(value) && hasProto(value, constructor, (o, proto) => getPrototypeOf$2(o) == proto);
     const isString = isType$1('string');
     const isObject = isType$1('object');
     const isPlainObject = value => is$4(value, Object);
@@ -137,7 +137,7 @@
     const isNull = eq$1(null);
     const isBoolean = isSimpleType('boolean');
     const isUndefined = eq$1(undefined);
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
     const isNumber = isSimpleType('number');
@@ -170,7 +170,7 @@
       return x;
     };
     const tripleEquals = (a, b) => {
-      return a === b;
+      return a == b;
     };
     function curry(fn, ...initialArgs) {
       return (...restArgs) => {
@@ -258,7 +258,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -292,7 +292,7 @@
     const rawIndexOf = (ts, t) => nativeIndexOf.call(ts, t);
     const indexOf$1 = (xs, x) => {
       const r = rawIndexOf(xs, x);
-      return r === -1 ? Optional.none() : Optional.some(r);
+      return r == -1 ? Optional.none() : Optional.some(r);
     };
     const contains$2 = (xs, x) => rawIndexOf(xs, x) > -1;
     const exists = (xs, pred) => {
@@ -397,7 +397,7 @@
     const forall = (xs, pred) => {
       for (let i = 0, len = xs.length; i < len; ++i) {
         const x = xs[i];
-        if (pred(x, i) !== true) {
+        if (pred(x, i) != true) {
           return false;
         }
       }
@@ -507,7 +507,7 @@
       return has$2(obj, key) ? Optional.from(obj[key]) : Optional.none();
     };
     const has$2 = (obj, key) => hasOwnProperty$1.call(obj, key);
-    const hasNonNullableKey = (obj, key) => has$2(obj, key) && obj[key] !== undefined && obj[key] !== null;
+    const hasNonNullableKey = (obj, key) => has$2(obj, key) && obj[key] != undefined && obj[key] != null;
     const equal$1 = (a1, a2, eq = eqAny) => eqRecord(eq).eq(a1, a2);
 
     const stringArray = a => {
@@ -518,7 +518,7 @@
       return keys(all);
     };
 
-    const isArrayLike = o => o.length !== undefined;
+    const isArrayLike = o => o.length != undefined;
     const isArray = Array.isArray;
     const toArray$1 = obj => {
       if (!isArray(obj)) {
@@ -538,14 +538,14 @@
       s = s || o;
       if (isArrayLike(o)) {
         for (let n = 0, l = o.length; n < l; n++) {
-          if (cb.call(s, o[n], n, o) === false) {
+          if (cb.call(s, o[n], n, o) == false) {
             return false;
           }
         }
       } else {
         for (const n in o) {
           if (has$2(o, n)) {
-            if (cb.call(s, o[n], n, o) === false) {
+            if (cb.call(s, o[n], n, o) == false) {
               return false;
             }
           }
@@ -572,7 +572,7 @@
     const indexOf = (a, v) => {
       if (a) {
         for (let i = 0, l = a.length; i < l; i++) {
-          if (a[i] === v) {
+          if (a[i] == v) {
             return i;
           }
         }
@@ -609,13 +609,13 @@
     };
 
     const DeviceType = (os, browser, userAgent, mediaMatch) => {
-      const isiPad = os.isiOS() && /ipad/i.test(userAgent) === true;
+      const isiPad = os.isiOS() && /ipad/i.test(userAgent) == true;
       const isiPhone = os.isiOS() && !isiPad;
       const isMobile = os.isiOS() || os.isAndroid();
       const isTouch = isMobile || mediaMatch('(pointer:coarse)');
       const isTablet = isiPad || !isiPhone && isMobile && mediaMatch('(min-device-width:768px)');
       const isPhone = isiPhone || isMobile && !isTablet;
-      const iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) === false;
+      const iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) == false;
       const isDesktop = !isPhone && !isTablet && !iOSwebview;
       return {
         isiPad: constant(isiPad),
@@ -654,7 +654,7 @@
     };
     const detect$5 = (versionRegexes, agent) => {
       const cleanedAgent = String(agent).toLowerCase();
-      if (versionRegexes.length === 0) {
+      if (versionRegexes.length == 0) {
         return unknown$2();
       }
       return find$1(versionRegexes, cleanedAgent);
@@ -679,7 +679,7 @@
         const lcBrand = uaBrand.brand.toLowerCase();
         return find$2(browsers, browser => {
           var _a;
-          return lcBrand === ((_a = browser.brand) === null || _a === void 0 ? void 0 : _a.toLowerCase());
+          return lcBrand == ((_a = browser.brand) == null || _a == void 0 ? void 0 : _a.toLowerCase());
         }).map(info => ({
           current: info.name,
           version: Version.nu(parseInt(uaBrand.version, 10), 0)
@@ -716,13 +716,13 @@
       return str.substring(numChars);
     };
 
-    const checkRange = (str, substr, start) => substr === '' || str.length >= substr.length && str.substr(start, start + substr.length) === substr;
+    const checkRange = (str, substr, start) => substr == '' || str.length >= substr.length && str.substr(start, start + substr.length) == substr;
     const removeLeading = (str, prefix) => {
       return startsWith(str, prefix) ? removeFromStart(str, prefix.length) : str;
     };
     const contains$1 = (str, substr, start = 0, end) => {
       const idx = str.indexOf(substr, start);
-      if (idx !== -1) {
+      if (idx != -1) {
         return isUndefined(end) ? true : idx + substr.length <= end;
       } else {
         return false;
@@ -873,7 +873,7 @@
     const nu$2 = info => {
       const current = info.current;
       const version = info.version;
-      const isBrowser = name => () => current === name;
+      const isBrowser = name => () => current == name;
       return {
         current,
         version,
@@ -913,7 +913,7 @@
     const nu$1 = info => {
       const current = info.current;
       const version = info.version;
-      const isOS = name => () => current === name;
+      const isOS = name => () => current == name;
       return {
         current,
         version,
@@ -963,7 +963,7 @@
     const browser$3 = platform$3.browser;
     const os$1 = platform$3.os;
     const deviceType = platform$3.deviceType;
-    const windowsPhone = userAgent.indexOf('Windows Phone') !== -1;
+    const windowsPhone = userAgent.indexOf('Windows Phone') != -1;
     const Env = {
       transparentSrc: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
       documentMode: browser$3.isIE() ? document.documentMode || 7 : 10,
@@ -1010,12 +1010,12 @@
     };
     const is$3 = (obj, type) => {
       if (!type) {
-        return obj !== undefined;
+        return obj != undefined;
       }
-      if (type === 'array' && isArray(obj)) {
+      if (type == 'array' && isArray(obj)) {
         return true;
       }
-      return typeof obj === type;
+      return typeof obj == type;
     };
     const makeMap$4 = (items, delim, map = {}) => {
       const resolvedItems = isString(items) ? items.split(delim || ',') : items || [];
@@ -1032,7 +1032,7 @@
         for (const name in ext) {
           if (has$2(ext, name)) {
             const value = ext[name];
-            if (value !== undefined) {
+            if (value != undefined) {
               obj[name] = value;
             }
           }
@@ -1047,7 +1047,7 @@
           o = o[n];
         }
         each$c(o, (o, i) => {
-          if (f.call(s, o, i, n) === false) {
+          if (f.call(s, o, i, n) == false) {
             return false;
           } else {
             walk$4(o, f, n, s);
@@ -1069,7 +1069,7 @@
     const explode$3 = (s, d) => {
       if (isArray$1(s)) {
         return s;
-      } else if (s === '') {
+      } else if (s == '') {
         return [];
       } else {
         return map$1(s.split(d || ','), trim$3);
@@ -1078,7 +1078,7 @@
     const _addCacheSuffix = url => {
       const cacheSuffix = Env.cacheSuffix;
       if (cacheSuffix) {
-        url += (url.indexOf('?') === -1 ? '?' : '&') + cacheSuffix;
+        url += (url.indexOf('?') == -1 ? '?' : '&') + cacheSuffix;
       }
       return url;
     };
@@ -1116,11 +1116,11 @@
     const lift3 = (oa, ob, oc, f) => oa.isSome() && ob.isSome() && oc.isSome() ? Optional.some(f(oa.getOrDie(), ob.getOrDie(), oc.getOrDie())) : Optional.none();
     const someIf = (b, a) => b ? Optional.some(a) : Optional.none();
 
-    const Global = typeof window !== 'undefined' ? window : Function('return this;')();
+    const Global = typeof window != 'undefined' ? window : Function('return this;')();
 
     const path = (parts, scope) => {
-      let o = scope !== undefined && scope !== null ? scope : Global;
-      for (let i = 0; i < parts.length && o !== undefined && o !== null; ++i) {
+      let o = scope != undefined && scope != null ? scope : Global;
+      for (let i = 0; i < parts.length && o != undefined && o != null; ++i) {
         o = o[parts[i]];
       }
       return o;
@@ -1135,7 +1135,7 @@
     };
     const getOrDie = (name, scope) => {
       const actual = unsafe(name, scope);
-      if (actual === undefined || actual === null) {
+      if (actual == undefined || actual == null) {
         throw new Error(name + ' not available on this browser');
       }
       return actual;
@@ -1161,14 +1161,14 @@
       return r.toLowerCase();
     };
     const type$1 = element => element.dom.nodeType;
-    const isType = t => element => type$1(element) === t;
-    const isComment$1 = element => type$1(element) === COMMENT || name(element) === '#comment';
+    const isType = t => element => type$1(element) == t;
+    const isComment$1 = element => type$1(element) == COMMENT || name(element) == '#comment';
     const isHTMLElement$1 = element => isElement$7(element) && isPrototypeOf(element.dom);
     const isElement$7 = isType(ELEMENT);
     const isText$b = isType(TEXT);
     const isDocument$2 = isType(DOCUMENT);
     const isDocumentFragment$1 = isType(DOCUMENT_FRAGMENT);
-    const isTag = tag => e => isElement$7(e) && name(e) === tag;
+    const isTag = tag => e => isElement$7(e) && name(e) == tag;
 
     const rawSet = (dom, key, value) => {
       if (isString(value) || isBoolean(value) || isNumber(value)) {
@@ -1189,7 +1189,7 @@
     };
     const get$9 = (element, key) => {
       const v = element.dom.getAttribute(key);
-      return v === null ? undefined : v;
+      return v == null ? undefined : v;
     };
     const getOpt = (element, key) => Optional.from(get$9(element, key));
     const has$1 = (element, key) => {
@@ -1201,7 +1201,7 @@
     };
     const hasNone = element => {
       const attrs = element.dom.attributes;
-      return attrs === undefined || attrs === null || attrs.length === 0;
+      return attrs == undefined || attrs == null || attrs.length == 0;
     };
     const clone$4 = element => foldl(element.dom.attributes, (acc, attr) => {
       acc[attr.name] = attr.value;
@@ -1210,7 +1210,7 @@
 
     const read$4 = (element, attr) => {
       const value = get$9(element, attr);
-      return value === undefined || value === '' ? [] : value.split(' ');
+      return value == undefined || value == '' ? [] : value.split(' ');
     };
     const add$4 = (element, attr, id) => {
       const old = read$4(element, attr);
@@ -1219,7 +1219,7 @@
       return true;
     };
     const remove$9 = (element, attr, id) => {
-      const nu = filter$5(read$4(element, attr), v => v !== id);
+      const nu = filter$5(read$4(element, attr), v => v != id);
       if (nu.length > 0) {
         set$3(element, attr, nu.join(' '));
       } else {
@@ -1228,7 +1228,7 @@
       return false;
     };
 
-    const supports = element => element.dom.classList !== undefined;
+    const supports = element => element.dom.classList != undefined;
     const get$8 = element => read$4(element, 'class');
     const add$3 = (element, clazz) => add$4(element, 'class', clazz);
     const remove$8 = (element, clazz) => remove$9(element, 'class', clazz);
@@ -1249,7 +1249,7 @@
     };
     const cleanClass = element => {
       const classList = supports(element) ? element.dom.classList : get$8(element);
-      if (classList.length === 0) {
+      if (classList.length == 0) {
         remove$a(element, 'class');
       }
     };
@@ -1291,7 +1291,7 @@
       return fromDom$2(node);
     };
     const fromDom$2 = node => {
-      if (node === null || node === undefined) {
+      if (node == null || node == undefined) {
         throw new Error('Node cannot be null or undefined');
       }
       return { dom: node };
@@ -1320,38 +1320,38 @@
 
     const is$1 = (element, selector) => {
       const dom = element.dom;
-      if (dom.nodeType !== ELEMENT) {
+      if (dom.nodeType != ELEMENT) {
         return false;
       } else {
         const elem = dom;
-        if (elem.matches !== undefined) {
+        if (elem.matches != undefined) {
           return elem.matches(selector);
-        } else if (elem.msMatchesSelector !== undefined) {
+        } else if (elem.msMatchesSelector != undefined) {
           return elem.msMatchesSelector(selector);
-        } else if (elem.webkitMatchesSelector !== undefined) {
+        } else if (elem.webkitMatchesSelector != undefined) {
           return elem.webkitMatchesSelector(selector);
-        } else if (elem.mozMatchesSelector !== undefined) {
+        } else if (elem.mozMatchesSelector != undefined) {
           return elem.mozMatchesSelector(selector);
         } else {
           throw new Error('Browser lacks native selectors');
         }
       }
     };
-    const bypassSelector = dom => dom.nodeType !== ELEMENT && dom.nodeType !== DOCUMENT && dom.nodeType !== DOCUMENT_FRAGMENT || dom.childElementCount === 0;
+    const bypassSelector = dom => dom.nodeType != ELEMENT && dom.nodeType != DOCUMENT && dom.nodeType != DOCUMENT_FRAGMENT || dom.childElementCount == 0;
     const all = (selector, scope) => {
-      const base = scope === undefined ? document : scope.dom;
+      const base = scope == undefined ? document : scope.dom;
       return bypassSelector(base) ? [] : map$3(base.querySelectorAll(selector), SugarElement.fromDom);
     };
     const one = (selector, scope) => {
-      const base = scope === undefined ? document : scope.dom;
+      const base = scope == undefined ? document : scope.dom;
       return bypassSelector(base) ? Optional.none() : Optional.from(base.querySelector(selector)).map(SugarElement.fromDom);
     };
 
-    const eq = (e1, e2) => e1.dom === e2.dom;
+    const eq = (e1, e2) => e1.dom == e2.dom;
     const contains = (e1, e2) => {
       const d1 = e1.dom;
       const d2 = e2.dom;
-      return d1 === d2 ? false : d1.contains(d2);
+      return d1 == d2 ? false : d1.contains(d2);
     };
 
     const owner$1 = element => SugarElement.fromDom(element.dom.ownerDocument);
@@ -1364,11 +1364,11 @@
       const stop = isFunction(isRoot) ? isRoot : never;
       let dom = element.dom;
       const ret = [];
-      while (dom.parentNode !== null && dom.parentNode !== undefined) {
+      while (dom.parentNode != null && dom.parentNode != undefined) {
         const rawParent = dom.parentNode;
         const p = SugarElement.fromDom(rawParent);
         ret.push(p);
-        if (stop(p) === true) {
+        if (stop(p) == true) {
           break;
         } else {
           dom = rawParent;
@@ -1396,7 +1396,7 @@
 
     const getHead = doc => {
       const b = doc.dom.head;
-      if (b === null || b === undefined) {
+      if (b == null || b == undefined) {
         throw new Error('Head is not available yet');
       }
       return SugarElement.fromDom(b);
@@ -1431,7 +1431,7 @@
 
     const inBody = element => {
       const dom = isText$b(element) ? element.dom.parentNode : element.dom;
-      if (dom === undefined || dom === null || dom.ownerDocument === null) {
+      if (dom == undefined || dom == null || dom.ownerDocument == null) {
         return false;
       }
       const doc = dom.ownerDocument;
@@ -1507,12 +1507,12 @@
       if (inBody(element)) {
         return element.dom.isContentEditable;
       } else {
-        return closest$2(element).fold(constant(assumeEditable), editable => getRaw$1(editable) === 'true');
+        return closest$2(element).fold(constant(assumeEditable), editable => getRaw$1(editable) == 'true');
       }
     };
     const getRaw$1 = element => element.dom.contentEditable;
 
-    const isSupported = dom => dom.style !== undefined && isFunction(dom.style.getPropertyValue);
+    const isSupported = dom => dom.style != undefined && isFunction(dom.style.getPropertyValue);
 
     const internalSet = (dom, property, value) => {
       if (!isString(value)) {
@@ -1542,7 +1542,7 @@
       const dom = element.dom;
       const styles = window.getComputedStyle(dom);
       const r = styles.getPropertyValue(property);
-      return r === '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
+      return r == '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
     };
     const getUnsafeProperty = (dom, property) => isSupported(dom) ? dom.style.getPropertyValue(property) : '';
     const getRaw = (element, property) => {
@@ -1605,7 +1605,7 @@
 
     const after$3 = (marker, elements) => {
       each$e(elements, (x, i) => {
-        const e = i === 0 ? marker : elements[i - 1];
+        const e = i == 0 ? marker : elements[i - 1];
         after$4(e, x);
       });
     };
@@ -1623,7 +1623,7 @@
     };
     const remove$5 = element => {
       const dom = element.dom;
-      if (dom.parentNode !== null) {
+      if (dom.parentNode != null) {
         dom.parentNode.removeChild(dom);
       }
     };
@@ -1706,10 +1706,10 @@
       return SugarPosition(box.left, box.top);
     };
     const firstDefinedOrZero = (a, b) => {
-      if (a !== undefined) {
+      if (a != undefined) {
         return a;
       } else {
-        return b !== undefined ? b : 0;
+        return b != undefined ? b : 0;
       }
     };
     const absolute = element => {
@@ -1717,11 +1717,11 @@
       const body = doc.body;
       const win = doc.defaultView;
       const html = doc.documentElement;
-      if (body === element.dom) {
+      if (body == element.dom) {
         return SugarPosition(body.offsetLeft, body.offsetTop);
       }
-      const scrollTop = firstDefinedOrZero(win === null || win === void 0 ? void 0 : win.pageYOffset, html.scrollTop);
-      const scrollLeft = firstDefinedOrZero(win === null || win === void 0 ? void 0 : win.pageXOffset, html.scrollLeft);
+      const scrollTop = firstDefinedOrZero(win == null || win == void 0 ? void 0 : win.pageYOffset, html.scrollTop);
+      const scrollLeft = firstDefinedOrZero(win == null || win == void 0 ? void 0 : win.pageXOffset, html.scrollLeft);
       const clientTop = firstDefinedOrZero(html.clientTop, body.clientTop);
       const clientLeft = firstDefinedOrZero(html.clientLeft, body.clientLeft);
       return viewport(element).translate(scrollLeft - clientLeft, scrollTop - clientTop);
@@ -1730,7 +1730,7 @@
       const dom = element.dom;
       const doc = dom.ownerDocument;
       const body = doc.body;
-      if (body === dom) {
+      if (body == dom) {
         return SugarPosition(body.offsetLeft, body.offsetTop);
       }
       if (!inBody(element)) {
@@ -1740,13 +1740,13 @@
     };
 
     const get$5 = _DOC => {
-      const doc = _DOC !== undefined ? _DOC.dom : document;
+      const doc = _DOC != undefined ? _DOC.dom : document;
       const x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
       const y = doc.body.scrollTop || doc.documentElement.scrollTop;
       return SugarPosition(x, y);
     };
     const to = (x, y, _DOC) => {
-      const doc = _DOC !== undefined ? _DOC.dom : document;
+      const doc = _DOC != undefined ? _DOC.dom : document;
       const win = doc.defaultView;
       if (win) {
         win.scrollTo(x, y);
@@ -1762,7 +1762,7 @@
     };
 
     const get$4 = _win => {
-      const win = _win === undefined ? window : _win;
+      const win = _win == undefined ? window : _win;
       if (detect$2().browser.isFirefox()) {
         return Optional.none();
       } else {
@@ -1778,7 +1778,7 @@
       bottom: y + height
     });
     const getBounds = _win => {
-      const win = _win === undefined ? window : _win;
+      const win = _win == undefined ? window : _win;
       const doc = win.document;
       const scroll = get$5(SugarElement.fromDom(doc));
       return get$4(win).fold(() => {
@@ -1834,12 +1834,12 @@
           if (!shallow && node[startName]) {
             return node[startName];
           }
-          if (node !== this.rootNode) {
+          if (node != this.rootNode) {
             let sibling = node[siblingName];
             if (sibling) {
               return sibling;
             }
-            for (let parent = node.parentNode; parent && parent !== this.rootNode; parent = parent.parentNode) {
+            for (let parent = node.parentNode; parent && parent != this.rootNode; parent = parent.parentNode) {
               sibling = parent[siblingName];
               if (sibling) {
                 return sibling;
@@ -1852,7 +1852,7 @@
       findPreviousNode(node, shallow) {
         if (node) {
           const sibling = node.previousSibling;
-          if (this.rootNode && sibling === this.rootNode) {
+          if (this.rootNode && sibling == this.rootNode) {
             return;
           }
           if (sibling) {
@@ -1866,7 +1866,7 @@
             return sibling;
           }
           const parent = node.parentNode;
-          if (parent && parent !== this.rootNode) {
+          if (parent && parent != this.rootNode) {
             return parent;
           }
         }
@@ -1876,16 +1876,16 @@
 
     const isNodeType = type => {
       return node => {
-        return !!node && node.nodeType === type;
+        return !!node && node.nodeType == type;
       };
     };
     const isRestrictedNode = node => !!node && !Object.getPrototypeOf(node);
     const isElement$6 = isNodeType(1);
     const isHTMLElement = node => isElement$6(node) && isHTMLElement$1(SugarElement.fromDom(node));
-    const isSVGElement = node => isElement$6(node) && node.namespaceURI === 'http://www.w3.org/2000/svg';
+    const isSVGElement = node => isElement$6(node) && node.namespaceURI == 'http://www.w3.org/2000/svg';
     const matchNodeName = name => {
       const lowerCasedName = name.toLowerCase();
-      return node => isNonNullable(node) && node.nodeName.toLowerCase() === lowerCasedName;
+      return node => isNonNullable(node) && node.nodeName.toLowerCase() == lowerCasedName;
     };
     const matchNodeNames = names => {
       const lowerCasedNames = names.map(s => s.toLowerCase());
@@ -1906,7 +1906,7 @@
             for (let i = 0; i < items.length; i++) {
               const computed = win.getComputedStyle(node, null);
               const cssValue = computed ? computed.getPropertyValue(name) : null;
-              if (cssValue === items[i]) {
+              if (cssValue == items[i]) {
                 return true;
               }
             }
@@ -1922,19 +1922,19 @@
     };
     const hasAttributeValue = (attrName, attrValue) => {
       return node => {
-        return isElement$6(node) && node.getAttribute(attrName) === attrValue;
+        return isElement$6(node) && node.getAttribute(attrName) == attrValue;
       };
     };
     const isBogus$2 = node => isElement$6(node) && node.hasAttribute('data-mce-bogus');
-    const isBogusAll$1 = node => isElement$6(node) && node.getAttribute('data-mce-bogus') === 'all';
-    const isTable$2 = node => isElement$6(node) && node.tagName === 'TABLE';
+    const isBogusAll$1 = node => isElement$6(node) && node.getAttribute('data-mce-bogus') == 'all';
+    const isTable$2 = node => isElement$6(node) && node.tagName == 'TABLE';
     const hasContentEditableState = value => {
       return node => {
         if (isHTMLElement(node)) {
-          if (node.contentEditable === value) {
+          if (node.contentEditable == value) {
             return true;
           }
-          if (node.getAttribute('data-mce-contenteditable') === value) {
+          if (node.getAttribute('data-mce-contenteditable') == value) {
             return true;
           }
         }
@@ -1976,7 +1976,7 @@
 
     const zeroWidth = '\uFEFF';
     const nbsp = '\xA0';
-    const isZwsp$2 = char => char === zeroWidth;
+    const isZwsp$2 = char => char == zeroWidth;
     const removeZwsp = s => s.replace(/\uFEFF/g, '');
 
     const NodeValue = (is, name) => {
@@ -2062,8 +2062,8 @@
         return has$2(lookup, name(node));
       };
     };
-    const isTable$1 = node => name(node) === 'table';
-    const isBr$5 = node => isElement$7(node) && name(node) === 'br';
+    const isTable$1 = node => name(node) == 'table';
+    const isBr$5 = node => isElement$7(node) && name(node) == 'br';
     const isTextBlock$2 = lazyLookup(textBlocks);
     const isList = lazyLookup(lists);
     const isListItem$1 = lazyLookup(listItems$1);
@@ -2083,7 +2083,7 @@
     const removeTrailingBr = elm => {
       const allBrs = descendants(elm, 'br');
       const brs = filter$5(getLastChildren$1(elm).slice(-1), isBr$5);
-      if (allBrs.length === brs.length) {
+      if (allBrs.length == brs.length) {
         each$e(brs, remove$5);
       }
     };
@@ -2121,10 +2121,10 @@
     };
     const isCaretContainerInline = node => isText$9(node) && isZwsp$1(node.data);
     const isCaretContainer$2 = node => isCaretContainerBlock$1(node) || isCaretContainerInline(node);
-    const hasContent = node => node.firstChild !== node.lastChild || !isBr$6(node.firstChild);
+    const hasContent = node => node.firstChild != node.lastChild || !isBr$6(node.firstChild);
     const insertInline$1 = (node, before) => {
       var _a;
-      const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+      const doc = (_a = node.ownerDocument) != null && _a != void 0 ? _a : document;
       const textNode = doc.createTextNode(ZWSP$1);
       const parentNode = node.parentNode;
       if (!before) {
@@ -2139,9 +2139,9 @@
           }
         }
         if (node.nextSibling) {
-          parentNode === null || parentNode === void 0 ? void 0 : parentNode.insertBefore(textNode, node.nextSibling);
+          parentNode == null || parentNode == void 0 ? void 0 : parentNode.insertBefore(textNode, node.nextSibling);
         } else {
-          parentNode === null || parentNode === void 0 ? void 0 : parentNode.appendChild(textNode);
+          parentNode == null || parentNode == void 0 ? void 0 : parentNode.appendChild(textNode);
         }
       } else {
         const sibling = node.previousSibling;
@@ -2153,7 +2153,7 @@
             return sibling.splitText(sibling.data.length - 1);
           }
         }
-        parentNode === null || parentNode === void 0 ? void 0 : parentNode.insertBefore(textNode, node);
+        parentNode == null || parentNode == void 0 ? void 0 : parentNode.insertBefore(textNode, node);
       }
       return textNode;
     };
@@ -2162,18 +2162,18 @@
       if (!isText$a(container)) {
         return false;
       }
-      return container.data.charAt(pos.offset()) === ZWSP$1 || pos.isAtStart() && isCaretContainerInline(container.previousSibling);
+      return container.data.charAt(pos.offset()) == ZWSP$1 || pos.isAtStart() && isCaretContainerInline(container.previousSibling);
     };
     const isAfterInline = pos => {
       const container = pos.container();
       if (!isText$a(container)) {
         return false;
       }
-      return container.data.charAt(pos.offset() - 1) === ZWSP$1 || pos.isAtEnd() && isCaretContainerInline(container.nextSibling);
+      return container.data.charAt(pos.offset() - 1) == ZWSP$1 || pos.isAtEnd() && isCaretContainerInline(container.nextSibling);
     };
     const insertBlock = (blockName, node, before) => {
       var _a;
-      const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+      const doc = (_a = node.ownerDocument) != null && _a != void 0 ? _a : document;
       const blockNode = doc.createElement(blockName);
       blockNode.setAttribute('data-mce-caret', before ? 'before' : 'after');
       blockNode.setAttribute('data-mce-bogus', 'all');
@@ -2181,23 +2181,23 @@
       const parentNode = node.parentNode;
       if (!before) {
         if (node.nextSibling) {
-          parentNode === null || parentNode === void 0 ? void 0 : parentNode.insertBefore(blockNode, node.nextSibling);
+          parentNode == null || parentNode == void 0 ? void 0 : parentNode.insertBefore(blockNode, node.nextSibling);
         } else {
-          parentNode === null || parentNode === void 0 ? void 0 : parentNode.appendChild(blockNode);
+          parentNode == null || parentNode == void 0 ? void 0 : parentNode.appendChild(blockNode);
         }
       } else {
-        parentNode === null || parentNode === void 0 ? void 0 : parentNode.insertBefore(blockNode, node);
+        parentNode == null || parentNode == void 0 ? void 0 : parentNode.insertBefore(blockNode, node);
       }
       return blockNode;
     };
-    const startsWithCaretContainer$1 = node => isText$9(node) && node.data[0] === ZWSP$1;
-    const endsWithCaretContainer$1 = node => isText$9(node) && node.data[node.data.length - 1] === ZWSP$1;
+    const startsWithCaretContainer$1 = node => isText$9(node) && node.data[0] == ZWSP$1;
+    const endsWithCaretContainer$1 = node => isText$9(node) && node.data[node.data.length - 1] == ZWSP$1;
     const trimBogusBr = elm => {
       var _a;
       const brs = elm.getElementsByTagName('br');
       const lastBr = brs[brs.length - 1];
       if (isBogus$2(lastBr)) {
-        (_a = lastBr.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(lastBr);
+        (_a = lastBr.parentNode) == null || _a == void 0 ? void 0 : _a.removeChild(lastBr);
       }
     };
     const showCaretContainerBlock = caretContainer => {
@@ -2245,10 +2245,10 @@
       }
       return isAtomicInline(node) || isBr$4(node) || isTable(node) || isNonUiContentEditableFalse(node);
     };
-    const isUnselectable = node => isElement$6(node) && node.getAttribute('unselectable') === 'true';
+    const isUnselectable = node => isElement$6(node) && node.getAttribute('unselectable') == 'true';
     const isNonUiContentEditableFalse = node => !isUnselectable(node) && isContentEditableFalse$a(node);
     const isInEditable = (node, root) => {
-      for (let tempNode = node.parentNode; tempNode && tempNode !== root; tempNode = tempNode.parentNode) {
+      for (let tempNode = node.parentNode; tempNode && tempNode != root; tempNode = tempNode.parentNode) {
         if (isNonUiContentEditableFalse(tempNode)) {
           return false;
         }
@@ -2279,15 +2279,15 @@
       }
       return true;
     };
-    const isCollapsibleWhitespace$1 = c => ' \f\t\x0B'.indexOf(c) !== -1;
-    const isNewLineChar = c => c === '\n' || c === '\r';
+    const isCollapsibleWhitespace$1 = c => ' \f\t\x0B'.indexOf(c) != -1;
+    const isNewLineChar = c => c == '\n' || c == '\r';
     const isNewline = (text, idx) => idx < text.length && idx >= 0 ? isNewLineChar(text[idx]) : false;
     const normalize$4 = (text, tabSpaces = 4, isStartOfContent = true, isEndOfContent = true) => {
       const tabSpace = repeat(' ', tabSpaces);
       const normalizedText = text.replace(/\t/g, tabSpace);
       const result = foldl(normalizedText, (acc, c) => {
-        if (isCollapsibleWhitespace$1(c) || c === nbsp) {
-          if (acc.pcIsSpace || acc.str === '' && isStartOfContent || acc.str.length === normalizedText.length - 1 && isEndOfContent || isNewline(normalizedText, acc.str.length + 1)) {
+        if (isCollapsibleWhitespace$1(c) || c == nbsp) {
+          if (acc.pcIsSpace || acc.str == '' && isStartOfContent || acc.str.length == normalizedText.length - 1 && isEndOfContent || isNewline(normalizedText, acc.str.length + 1)) {
             return {
               pcIsSpace: false,
               str: acc.str + nbsp
@@ -2320,7 +2320,7 @@
       return isText$a(node) && isWhitespaceText(node.data) && !hasWhitespacePreserveParent(node, rootNode);
     };
     const isNamedAnchor = node => {
-      return isElement$6(node) && node.nodeName === 'A' && !node.hasAttribute('href') && (node.hasAttribute('name') || node.hasAttribute('id'));
+      return isElement$6(node) && node.nodeName == 'A' && !node.hasAttribute('href') && (node.hasAttribute('name') || node.hasAttribute('id'));
     };
     const isContent$1 = (node, rootNode) => {
       return isCaretCandidate$3(node) && !isWhitespace$1(node, rootNode) || isNamedAnchor(node) || isBookmark(node);
@@ -2368,9 +2368,9 @@
     };
     const isEmpty$2 = (elm, skipBogus = true) => isEmptyNode(elm.dom, skipBogus);
 
-    const isNonHtmlElementRootName = name => name.toLowerCase() === 'svg';
+    const isNonHtmlElementRootName = name => name.toLowerCase() == 'svg';
     const isNonHtmlElementRoot = node => isNonHtmlElementRootName(node.nodeName);
-    const toScopeType = node => (node === null || node === void 0 ? void 0 : node.nodeName) === 'svg' ? 'svg' : 'html';
+    const toScopeType = node => (node == null || node == void 0 ? void 0 : node.nodeName) == 'svg' ? 'svg' : 'html';
     const namespaceElements = ['svg'];
     const createNamespaceTracker = () => {
       let scopes = [];
@@ -2405,7 +2405,7 @@
     const updateTransparent = (blocksSelector, transparent) => {
       if (isNonNullable(transparent.querySelector(blocksSelector))) {
         transparent.setAttribute(transparentBlockAttr, 'true');
-        if (transparent.getAttribute('data-mce-selected') === 'inline-boundary') {
+        if (transparent.getAttribute('data-mce-selected') == 'inline-boundary') {
           transparent.removeAttribute('data-mce-selected');
         }
         return true;
@@ -2424,7 +2424,7 @@
       const childPropertyName = leftSide ? 'lastChild' : 'firstChild';
       for (let child = el[childPropertyName]; child; child = child[childPropertyName]) {
         if (isEmpty$2(SugarElement.fromDom(child))) {
-          (_a = child.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(child);
+          (_a = child.parentNode) == null || _a == void 0 ? void 0 : _a.removeChild(child);
           return;
         }
       }
@@ -2504,14 +2504,14 @@
     const isTransparentElement = (schema, node) => isElement$6(node) && isTransparentElementName(schema, node.nodeName);
     const isTransparentBlock = (schema, node) => isTransparentElement(schema, node) && hasBlockAttr(node);
     const isTransparentInline = (schema, node) => isTransparentElement(schema, node) && !hasBlockAttr(node);
-    const isTransparentAstBlock = (schema, node) => node.type === 1 && isTransparentElementName(schema, node.name) && isString(node.attr(transparentBlockAttr));
+    const isTransparentAstBlock = (schema, node) => node.type == 1 && isTransparentElementName(schema, node.name) && isString(node.attr(transparentBlockAttr));
 
     const browser$2 = detect$2().browser;
     const firstElement = nodes => find$2(nodes, isElement$7);
     const getTableCaptionDeltaY = elm => {
-      if (browser$2.isFirefox() && name(elm) === 'table') {
+      if (browser$2.isFirefox() && name(elm) == 'table') {
         return firstElement(children$1(elm)).filter(elm => {
-          return name(elm) === 'caption';
+          return name(elm) == 'caption';
         }).bind(caption => {
           return firstElement(nextSiblings(caption)).map(body => {
             const bodyTop = body.dom.offsetTop;
@@ -2530,7 +2530,7 @@
       const doc = body.ownerDocument;
       rootElm = rootElm ? rootElm : body;
       if (elm) {
-        if (rootElm === body && elm.getBoundingClientRect && get$7(SugarElement.fromDom(body), 'position') === 'static') {
+        if (rootElm == body && elm.getBoundingClientRect && get$7(SugarElement.fromDom(body), 'position') == 'static') {
           const pos = elm.getBoundingClientRect();
           x = pos.left + (doc.documentElement.scrollLeft || body.scrollLeft) - doc.documentElement.clientLeft;
           y = pos.top + (doc.documentElement.scrollTop || body.scrollTop) - doc.documentElement.clientTop;
@@ -2540,14 +2540,14 @@
           };
         }
         let offsetParent = elm;
-        while (offsetParent && offsetParent !== rootElm && offsetParent.nodeType && !hasChild(offsetParent, rootElm)) {
+        while (offsetParent && offsetParent != rootElm && offsetParent.nodeType && !hasChild(offsetParent, rootElm)) {
           const castOffsetParent = offsetParent;
           x += castOffsetParent.offsetLeft || 0;
           y += castOffsetParent.offsetTop || 0;
           offsetParent = castOffsetParent.offsetParent;
         }
         offsetParent = elm.parentNode;
-        while (offsetParent && offsetParent !== rootElm && offsetParent.nodeType && !hasChild(offsetParent, rootElm)) {
+        while (offsetParent && offsetParent != rootElm && offsetParent.nodeType && !hasChild(offsetParent, rootElm)) {
           x -= offsetParent.scrollLeft || 0;
           y -= offsetParent.scrollTop || 0;
           offsetParent = offsetParent.parentNode;
@@ -2609,14 +2609,14 @@
         if (failure) {
           state.failed.push(failure);
         }
-        if (state.status === 1) {
+        if (state.status == 1) {
           return;
         }
-        if (state.status === 2) {
+        if (state.status == 2) {
           passed();
           return;
         }
-        if (state.status === 3) {
+        if (state.status == 3) {
           failed();
           return;
         }
@@ -2655,7 +2655,7 @@
       const loadAll = urls => {
         const loadedUrls = Promise.allSettled(map$3(urls, url => load(url).then(constant(url))));
         return loadedUrls.then(results => {
-          const parts = partition$2(results, r => r.status === 'fulfilled');
+          const parts = partition$2(results, r => r.status == 'fulfilled');
           if (parts.fail.length > 0) {
             return Promise.reject(map$3(parts.fail, result => result.reason));
           } else {
@@ -2667,7 +2667,7 @@
         const urlWithSuffix = Tools._addCacheSuffix(url);
         get$a(loadedStates, urlWithSuffix).each(state => {
           const count = --state.count;
-          if (count === 0) {
+          if (count == 0) {
             delete loadedStates[urlWithSuffix];
             removeStyle(state.id);
           }
@@ -2676,7 +2676,7 @@
       const unloadRawCss = key => {
         get$a(loadedStates, key).each(state => {
           const count = --state.count;
-          if (count === 0) {
+          if (count == 0) {
             delete loadedStates[key];
             removeStyle(state.id);
           }
@@ -2714,7 +2714,7 @@
     };
     const instance = create$d();
 
-    const isSpan = node => node.nodeName.toLowerCase() === 'span';
+    const isSpan = node => node.nodeName.toLowerCase() == 'span';
     const isInlineContent = (node, root, schema) => isNonNullable(node) && (isContent$1(node, root) || schema.isInline(node.nodeName.toLowerCase()));
     const surroundedByInlineContent = (node, root, schema) => {
       const prev = new DomTreeWalker(node, root).prev(false);
@@ -2723,7 +2723,7 @@
       const nextIsInline = isUndefined(next) || isInlineContent(next, root, schema);
       return prevIsInline && nextIsInline;
     };
-    const isBookmarkNode$2 = node => isSpan(node) && node.getAttribute('data-mce-type') === 'bookmark';
+    const isBookmarkNode$2 = node => isSpan(node) && node.getAttribute('data-mce-type') == 'bookmark';
     const isKeepTextNode = (node, root, schema) => isText$a(node) && node.data.length > 0 && surroundedByInlineContent(node, root, schema);
     const isKeepElement = node => isElement$6(node) ? node.childNodes.length > 0 : false;
     const isDocument = node => isDocumentFragment(node) || isDocument$1(node);
@@ -2739,8 +2739,8 @@
       }
       if (isElement$6(node)) {
         const currentChildren = node.childNodes;
-        if (currentChildren.length === 1 && isBookmarkNode$2(currentChildren[0])) {
-          (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(currentChildren[0], node);
+        if (currentChildren.length == 1 && isBookmarkNode$2(currentChildren[0])) {
+          (_a = node.parentNode) == null || _a == void 0 ? void 0 : _a.insertBefore(currentChildren[0], node);
         }
       }
       if (!isDocument(node) && !isContent$1(node, rootNode) && !isKeepElement(node) && !isKeepTextNode(node, rootNode, schema)) {
@@ -2843,10 +2843,10 @@
     const getEncodeFunc = (name, entities) => {
       const entitiesMap = buildEntitiesLookup(entities) || namedEntities;
       const encodeNamedAndNumeric = (text, attr) => text.replace(attr ? attrsCharsRegExp : textCharsRegExp, chr => {
-        if (baseEntities[chr] !== undefined) {
+        if (baseEntities[chr] != undefined) {
           return baseEntities[chr];
         }
-        if (entitiesMap[chr] !== undefined) {
+        if (entitiesMap[chr] != undefined) {
           return entitiesMap[chr];
         }
         if (chr.length > 1) {
@@ -2874,7 +2874,7 @@
     };
     const decode = text => text.replace(entityRegExp, (all, numeric) => {
       if (numeric) {
-        if (numeric.charAt(0).toLowerCase() === 'x') {
+        if (numeric.charAt(0).toLowerCase() == 'x') {
           numeric = parseInt(numeric.substr(1), 16);
         } else {
           numeric = parseInt(numeric, 10);
@@ -2907,7 +2907,7 @@
       return bind$3(split$1(value, ','), rule => {
         const matches = customElementRegExp.exec(rule);
         if (matches) {
-          const inline = matches[1] === '~';
+          const inline = matches[1] == '~';
           const cloneName = inline ? 'span' : 'div';
           const name = matches[2];
           return [{
@@ -2927,13 +2927,13 @@
       globalAttributes = 'id accesskey class dir lang style tabindex title role';
       blockContent = 'address blockquote div dl fieldset form h1 h2 h3 h4 h5 h6 hr menu ol p pre table ul';
       phrasingContent = 'a abbr b bdo br button cite code del dfn em embed i iframe img input ins kbd ' + 'label map noscript object q s samp script select small span strong sub sup ' + 'textarea u var #text #comment';
-      if (type !== 'html4') {
+      if (type != 'html4') {
         const transparentContent = 'a ins del canvas map';
         globalAttributes += ' contenteditable contextmenu draggable dropzone ' + 'hidden spellcheck translate';
         blockContent += ' article aside details dialog figure main header footer hgroup section nav ' + transparentContent;
         phrasingContent += ' audio canvas command datalist mark meter output picture ' + 'progress time wbr video ruby bdi keygen svg';
       }
-      if (type !== 'html5-strict') {
+      if (type != 'html5-strict') {
         globalAttributes += ' xml:lang';
         const html4PhrasingContent = 'acronym applet basefont big font strike tt';
         phrasingContent = [
@@ -2992,7 +2992,7 @@
           }
         }
       };
-      if (type !== 'html5-strict') {
+      if (type != 'html5-strict') {
         const html4PhrasingContent = 'acronym applet basefont big font strike tt';
         each$e(split$1(html4PhrasingContent), name => {
           add(name, '', phrasingContent);
@@ -3012,14 +3012,14 @@
       add('script', 'src async defer type charset');
       add('body', 'onafterprint onbeforeprint onbeforeunload onblur onerror onfocus ' + 'onhashchange onload onmessage onoffline ononline onpagehide onpageshow ' + 'onpopstate onresize onscroll onstorage onunload', flowContent);
       add('dd div', '', flowContent);
-      add('address dt caption', '', type === 'html4' ? phrasingContent : flowContent);
+      add('address dt caption', '', type == 'html4' ? phrasingContent : flowContent);
       add('h1 h2 h3 h4 h5 h6 pre p abbr code var samp kbd sub sup i b u bdo span legend em strong small s cite dfn', '', phrasingContent);
       add('blockquote', 'cite', flowContent);
       add('ol', 'reversed start type', 'li');
       add('ul', '', 'li');
       add('li', 'value', flowContent);
       add('dl', '', 'dt dd');
-      add('a', 'href target rel media hreflang type', type === 'html4' ? phrasingContent : flowContent);
+      add('a', 'href target rel media hreflang type', type == 'html4' ? phrasingContent : flowContent);
       add('q', 'cite', phrasingContent);
       add('ins del', 'cite datetime', flowContent);
       add('img', 'src sizes srcset alt usemap ismap width height');
@@ -3035,7 +3035,7 @@
         'area'
       ].join(' '));
       add('area', 'alt coords shape href target rel media hreflang type');
-      add('table', 'border', 'caption colgroup thead tfoot tbody tr' + (type === 'html4' ? ' col' : ''));
+      add('table', 'border', 'caption colgroup thead tfoot tbody tr' + (type == 'html4' ? ' col' : ''));
       add('colgroup', 'span', 'col');
       add('col', 'span');
       add('tbody thead tfoot', '', 'tr');
@@ -3049,7 +3049,7 @@
       ].join(' '));
       add('label', 'form for', phrasingContent);
       add('input', 'accept alt autocomplete checked dirname disabled form formaction formenctype formmethod formnovalidate ' + 'formtarget height list max maxlength min multiple name pattern readonly required size src step type value width');
-      add('button', 'disabled form formaction formenctype formmethod formnovalidate formtarget name type value', type === 'html4' ? flowContent : phrasingContent);
+      add('button', 'disabled form formaction formenctype formmethod formnovalidate formtarget name type value', type == 'html4' ? flowContent : phrasingContent);
       add('select', 'disabled form multiple name required size', 'option optgroup');
       add('optgroup', 'disabled label', 'option');
       add('option', 'disabled label selected value');
@@ -3059,7 +3059,7 @@
         'li'
       ].join(' '));
       add('noscript', '', flowContent);
-      if (type !== 'html4') {
+      if (type != 'html4') {
         add('wbr');
         add('ruby', '', [
           phrasingContent,
@@ -3106,7 +3106,7 @@
         add('keygen', 'autofocus challenge disabled form keytype name');
         addElement('svg', 'id tabindex lang xml:space class style x y width height viewBox preserveAspectRatio zoomAndPan transform'.split(' '), []);
       }
-      if (type !== 'html5-strict') {
+      if (type != 'html5-strict') {
         addAttrs('script', 'language xml:space');
         addAttrs('style', 'xml:space');
         addAttrs('object', 'declare classid code codebase codetype archive standby align border hspace vspace');
@@ -3141,7 +3141,7 @@
         addAttrs('area', 'nohref');
         addAttrs('body', 'background bgcolor text link vlink alink');
       }
-      if (type !== 'html4') {
+      if (type != 'html4') {
         addAttrs('input button select textarea', 'autofocus');
         addAttrs('input textarea', 'placeholder');
         addAttrs('a', 'download');
@@ -3149,7 +3149,7 @@
         addAttrs('img', 'loading');
         addAttrs('iframe', 'sandbox seamless allow allowfullscreen loading');
       }
-      if (type !== 'html4') {
+      if (type != 'html4') {
         each$e([
           schema.video,
           schema.audio
@@ -3168,7 +3168,7 @@
       return schema;
     };
 
-    const prefixToOperation = prefix => prefix === '-' ? 'remove' : 'add';
+    const prefixToOperation = prefix => prefix == '-' ? 'remove' : 'add';
     const parseValidChildrenRules = value => {
       const childRuleRegExp = /^([+\-]?)([A-Za-z0-9_\-.\u00b7\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u037d\u037f-\u1fff\u200c-\u200d\u203f-\u2040\u2070-\u218f\u2c00-\u2fef\u3001-\ud7ff\uf900-\ufdcf\ufdf0-\ufffd]+)\[([^\]]+)]$/;
       return bind$3(split$1(value, ','), rule => {
@@ -3201,32 +3201,32 @@
           const attrName = matches[2].replace(/[\\:]:/g, ':');
           const attrPrefix = matches[3];
           const value = matches[4];
-          if (attrType === '!') {
+          if (attrType == '!') {
             targetElement.attributesRequired = targetElement.attributesRequired || [];
             targetElement.attributesRequired.push(attrName);
             attr.required = true;
           }
-          if (attrType === '-') {
+          if (attrType == '-') {
             delete attributes[attrName];
             attributesOrder.splice(Tools.inArray(attributesOrder, attrName), 1);
             return;
           }
           if (attrPrefix) {
-            if (attrPrefix === '=') {
+            if (attrPrefix == '=') {
               targetElement.attributesDefault = targetElement.attributesDefault || [];
               targetElement.attributesDefault.push({
                 name: attrName,
                 value
               });
               attr.defaultValue = value;
-            } else if (attrPrefix === '~') {
+            } else if (attrPrefix == '~') {
               targetElement.attributesForced = targetElement.attributesForced || [];
               targetElement.attributesForced.push({
                 name: attrName,
                 value
               });
               attr.forcedValue = value;
-            } else if (attrPrefix === '<') {
+            } else if (attrPrefix == '<') {
               attr.validValues = Tools.makeMap(value, '?');
             }
           }
@@ -3265,12 +3265,12 @@
             attributesOrder: []
           };
           globalElement.each(el => cloneAttributesInto(el, element));
-          if (prefix === '#') {
+          if (prefix == '#') {
             element.paddEmpty = true;
-          } else if (prefix === '-') {
+          } else if (prefix == '-') {
             element.removeEmpty = true;
           }
-          if (attrsPrefix === '!') {
+          if (attrsPrefix == '!') {
             element.removeEmptyAttrs = true;
           }
           if (attrData) {
@@ -3279,7 +3279,7 @@
           if (outputName) {
             element.outputName = elementName;
           }
-          if (elementName === '@') {
+          if (elementName == '@') {
             if (globalElement.isNone()) {
               globalElement = Optional.some(element);
             } else {
@@ -3314,7 +3314,7 @@
           value = { '*': value };
         }
         each$b(value, (value, key) => {
-          styles[key] = styles[key.toUpperCase()] = mode === 'map' ? makeMap$2(value, /[, ]/) : explode$2(value, /[, ]/);
+          styles[key] = styles[key.toUpperCase()] = mode == 'map' ? makeMap$2(value, /[, ]/) : explode$2(value, /[, ]/);
         });
         return styles;
       } else {
@@ -3341,9 +3341,9 @@
           return makeMap$2(value, /[, ]/, makeMap$2(value.toUpperCase(), /[, ]/));
         }
       };
-      const schemaType = (_a = settings.schema) !== null && _a !== void 0 ? _a : 'html5';
+      const schemaType = (_a = settings.schema) != null && _a != void 0 ? _a : 'html5';
       const schemaItems = makeSchema(schemaType);
-      if (settings.verify_html === false) {
+      if (settings.verify_html == false) {
         settings.valid_elements = '*[*]';
       }
       const validStyles = compileElementMap(settings.valid_styles);
@@ -3368,7 +3368,7 @@
       const addValidElements = validElements => {
         const globalElement = Optional.from(elements['@']);
         const hasPatternsRegExp = /[*?+]/;
-        each$e(parseValidElementsRules(globalElement, validElements !== null && validElements !== void 0 ? validElements : ''), ({name, element, aliasName}) => {
+        each$e(parseValidElementsRules(globalElement, validElements != null && validElements != void 0 ? validElements : ''), ({name, element, aliasName}) => {
           if (aliasName) {
             elements[aliasName] = element;
           }
@@ -3391,7 +3391,7 @@
       const addCustomElements = customElements => {
         delete mapCache.text_block_elements;
         delete mapCache.block_elements;
-        each$e(parseCustomElementsRules(customElements !== null && customElements !== void 0 ? customElements : ''), ({inline, name, cloneName}) => {
+        each$e(parseCustomElementsRules(customElements != null && customElements != void 0 ? customElements : ''), ({inline, name, cloneName}) => {
           children[name] = children[cloneName];
           customElementsMap[name] = cloneName;
           nonEmptyElementsMap[name.toUpperCase()] = {};
@@ -3416,10 +3416,10 @@
         });
       };
       const addValidChildren = validChildren => {
-        each$e(parseValidChildrenRules(validChildren !== null && validChildren !== void 0 ? validChildren : ''), ({operation, name, validChildren}) => {
-          const parent = operation === 'replace' ? { '#comment': {} } : children[name];
+        each$e(parseValidChildrenRules(validChildren != null && validChildren != void 0 ? validChildren : ''), ({operation, name, validChildren}) => {
+          const parent = operation == 'replace' ? { '#comment': {} } : children[name];
           each$e(validChildren, child => {
-            if (operation === 'remove') {
+            if (operation == 'remove') {
               delete parent[child];
             } else {
               parent[child] = {};
@@ -3595,7 +3595,7 @@
     const normalizeHex = hex => removeLeading(hex, '#').toUpperCase();
     const toHex = component => {
       const hex = component.toString(16);
-      return (hex.length === 1 ? '0' + hex : hex).toUpperCase();
+      return (hex.length == 1 ? '0' + hex : hex).toUpperCase();
     };
     const fromRgba = rgbaColour => {
       const value = toHex(rgbaColour.red) + toHex(rgbaColour.green) + toHex(rgbaColour.blue);
@@ -3618,15 +3618,15 @@
       return rgbaColour(r, g, b, a);
     };
     const fromString = rgbaString => {
-      if (rgbaString === 'transparent') {
+      if (rgbaString == 'transparent') {
         return Optional.some(rgbaColour(0, 0, 0, 0));
       }
       const rgbMatch = rgbRegex.exec(rgbaString);
-      if (rgbMatch !== null) {
+      if (rgbMatch != null) {
         return Optional.some(fromStringValues(rgbMatch[1], rgbMatch[2], rgbMatch[3], '1'));
       }
       const rgbaMatch = rgbaRegex.exec(rgbaString);
-      if (rgbaMatch !== null) {
+      if (rgbaMatch != null) {
         return Optional.some(fromStringValues(rgbaMatch[1], rgbaMatch[2], rgbaMatch[3], rgbaMatch[4]));
       }
       return Optional.none();
@@ -3683,14 +3683,14 @@
             ];
             let i = box.length - 1;
             while (i--) {
-              if (box[i] !== box[i + 1]) {
+              if (box[i] != box[i + 1]) {
                 break;
               }
             }
             if (i > -1 && noJoin) {
               return;
             }
-            styles[prefix + suffix] = i === -1 ? box[0] : box.join(' ');
+            styles[prefix + suffix] = i == -1 ? box[0] : box.join(' ');
             delete styles[prefix + '-top' + suffix];
             delete styles[prefix + '-right' + suffix];
             delete styles[prefix + '-bottom' + suffix];
@@ -3704,7 +3704,7 @@
             const values = value.indexOf(',') > -1 ? [value] : value.split(' ');
             let i = values.length;
             while (i--) {
-              if (values[i] !== values[0]) {
+              if (values[i] != values[0]) {
                 return false;
               }
             }
@@ -3781,20 +3781,20 @@
               if (name && value) {
                 name = decodeHexSequences(name);
                 value = decodeHexSequences(value);
-                if (name.indexOf(invisibleChar) !== -1 || name.indexOf('"') !== -1) {
+                if (name.indexOf(invisibleChar) != -1 || name.indexOf('"') != -1) {
                   continue;
                 }
-                if (!settings.allow_script_urls && (name === 'behavior' || /expression\s*\(|\/\*|\*\//.test(value))) {
+                if (!settings.allow_script_urls && (name == 'behavior' || /expression\s*\(|\/\*|\*\//.test(value))) {
                   continue;
                 }
-                if (name === 'font-weight' && value === '700') {
+                if (name == 'font-weight' && value == '700') {
                   value = 'bold';
-                } else if (name === 'color' || name === 'background-color') {
+                } else if (name == 'color' || name == 'background-color') {
                   value = value.toLowerCase();
                 }
-                if (isString(settings.force_hex_color) && settings.force_hex_color !== 'off') {
+                if (isString(settings.force_hex_color) && settings.force_hex_color != 'off') {
                   fromString(value).each(rgba => {
-                    if (settings.force_hex_color === 'always' || rgba.alpha === 1) {
+                    if (settings.force_hex_color == 'always' || rgba.alpha == 1) {
                       value = rgbaToHexString(toString(rgba));
                     }
                   });
@@ -3810,10 +3810,10 @@
             compress('padding', '');
             compress('margin', '');
             compress2('border', 'border-width', 'border-style', 'border-color');
-            if (styles.border === 'medium none') {
+            if (styles.border == 'medium none') {
               delete styles.border;
             }
-            if (styles['border-image'] === 'none') {
+            if (styles['border-image'] == 'none') {
               delete styles['border-image'];
             }
           }
@@ -3871,10 +3871,10 @@
       mozPressure: true
     };
     const isNativeEvent = event => event instanceof Event || isFunction(event.initEvent);
-    const hasIsDefaultPrevented = event => event.isDefaultPrevented === always || event.isDefaultPrevented === never;
+    const hasIsDefaultPrevented = event => event.isDefaultPrevented == always || event.isDefaultPrevented == never;
     const needsNormalizing = event => isNullable(event.preventDefault) || isNativeEvent(event);
     const clone$3 = (originalEvent, data) => {
-      const event = data !== null && data !== void 0 ? data : {};
+      const event = data != null && data != void 0 ? data : {};
       for (const name in originalEvent) {
         if (!has$2(deprecated, name)) {
           event[name] = originalEvent[name];
@@ -3896,7 +3896,7 @@
       const event = clone$3(originalEvent, data);
       event.type = type;
       if (isNullable(event.target)) {
-        event.target = (_a = event.srcElement) !== null && _a !== void 0 ? _a : fallbackTarget;
+        event.target = (_a = event.srcElement) != null && _a != void 0 ? _a : fallbackTarget;
       }
       if (needsNormalizing(originalEvent)) {
         event.preventDefault = () => {
@@ -3918,8 +3918,8 @@
           event.stopPropagation();
         };
         if (!hasIsDefaultPrevented(event)) {
-          event.isDefaultPrevented = event.defaultPrevented === true ? always : never;
-          event.isPropagationStopped = event.cancelBubble === true ? always : never;
+          event.isDefaultPrevented = event.defaultPrevented == true ? always : never;
+          event.isPropagationStopped = event.cancelBubble == true ? always : never;
           event.isImmediatePropagationStopped = never;
         }
       }
@@ -3954,7 +3954,7 @@
         return;
       }
       const isDocReady = () => {
-        return doc.readyState === 'complete' || doc.readyState === 'interactive' && doc.body;
+        return doc.readyState == 'complete' || doc.readyState == 'interactive' && doc.body;
       };
       const readyHandler = () => {
         removeEvent(win, 'DOMContentLoaded', readyHandler);
@@ -4009,19 +4009,19 @@
           let nativeHandler = defaultNativeHandler;
           let capture = false;
           let fakeName = false;
-          if (name === 'DOMContentLoaded') {
+          if (name == 'DOMContentLoaded') {
             name = 'ready';
           }
-          if (self.domLoaded && name === 'ready' && target.readyState === 'complete') {
+          if (self.domLoaded && name == 'ready' && target.readyState == 'complete') {
             callback.call(scope, fix({ type: name }));
             continue;
           }
-          if (!self.hasFocusIn && (name === 'focusin' || name === 'focusout')) {
+          if (!self.hasFocusIn && (name == 'focusin' || name == 'focusout')) {
             capture = true;
-            fakeName = name === 'focusin' ? 'focus' : 'blur';
+            fakeName = name == 'focusin' ? 'focus' : 'blur';
             nativeHandler = evt => {
               const event = fix(evt || win.event);
-              event.type = event.type === 'focus' ? 'focusin' : 'focusout';
+              event.type = event.type == 'focus' ? 'focusin' : 'focusout';
               self.executeHandlers(event, id);
             };
           }
@@ -4034,13 +4034,13 @@
             callbackList.fakeName = fakeName;
             callbackList.capture = capture;
             callbackList.nativeHandler = nativeHandler;
-            if (name === 'ready') {
+            if (name == 'ready') {
               bindOnReady(target, nativeHandler, self);
             } else {
               addEvent(target, fakeName || name, nativeHandler, capture);
             }
           } else {
-            if (name === 'ready' && self.domLoaded) {
+            if (name == 'ready' && self.domLoaded) {
               callback(fix({ type: name }));
             } else {
               callbackList.push({
@@ -4070,7 +4070,7 @@
                 if (callback) {
                   let ci = callbackList.length;
                   while (ci--) {
-                    if (callbackList[ci].func === callback) {
+                    if (callbackList[ci].func == callback) {
                       const nativeHandler = callbackList.nativeHandler;
                       const fakeName = callbackList.fakeName, capture = callbackList.capture;
                       const newCallbackList = callbackList.slice(0, ci).concat(callbackList.slice(ci + 1));
@@ -4081,7 +4081,7 @@
                     }
                   }
                 }
-                if (!callback || callbackList.length === 0) {
+                if (!callback || callbackList.length == 0) {
                   delete eventMap[name];
                   removeEvent(target, callbackList.fakeName || name, callbackList.nativeHandler, callbackList.capture);
                 }
@@ -4166,7 +4166,7 @@
         if (callbackList) {
           for (let i = 0, l = callbackList.length; i < l; i++) {
             const callback = callbackList[i];
-            if (callback && callback.func.call(callback.scope, evt) === false) {
+            if (callback && callback.func.call(callback.scope, evt) == false) {
               evt.preventDefault();
             }
             if (evt.isImmediatePropagationStopped()) {
@@ -4183,7 +4183,7 @@
     const internalStyleName = 'data-mce-style';
     const numericalCssMap = Tools.makeMap('fill-opacity font-weight line-height opacity orphans widows z-index zoom', ' ');
     const legacySetAttribute = (elm, name, value) => {
-      if (isNullable(value) || value === '') {
+      if (isNullable(value) || value == '') {
         remove$a(elm, name);
       } else {
         set$3(elm, name, value);
@@ -4196,7 +4196,7 @@
         for (let lastNodeType = node.nodeType, tempNode = node.previousSibling; tempNode; tempNode = tempNode.previousSibling) {
           const nodeType = tempNode.nodeType;
           if (normalized && isText$a(tempNode)) {
-            if (nodeType === lastNodeType || !tempNode.data.length) {
+            if (nodeType == lastNodeType || !tempNode.data.length) {
               continue;
             }
           }
@@ -4220,7 +4220,7 @@
     };
     const applyStyle$1 = ($elm, cssName, cssValue) => {
       const normalizedName = camelCaseToHyphens(cssName);
-      if (isNullable(cssValue) || cssValue === '') {
+      if (isNullable(cssValue) || cssValue == '') {
         remove$6($elm, normalizedName);
       } else {
         set$2($elm, normalizedName, convertStyleToString(cssValue, normalizedName));
@@ -4320,7 +4320,7 @@
         run(elm, e => {
           if (isElement$6(e)) {
             const $elm = SugarElement.fromDom(e);
-            const val = value === '' ? null : value;
+            const val = value == '' ? null : value;
             const originalValue = get$9($elm, name);
             const hook = attrHooks[name];
             if (hook && hook.set) {
@@ -4328,7 +4328,7 @@
             } else {
               legacySetAttribute($elm, name, val);
             }
-            if (originalValue !== val && settings.onSetAttrib) {
+            if (originalValue != val && settings.onSetAttrib) {
               settings.onSetAttrib({
                 attrElm: $elm.dom,
                 attrName: name,
@@ -4381,7 +4381,7 @@
           return get$7(SugarElement.fromDom($elm), camelCaseToHyphens(name));
         } else {
           name = name.replace(/-(\D)/g, (a, b) => b.toUpperCase());
-          if (name === 'float') {
+          if (name == 'float') {
             name = 'cssFloat';
           }
           return $elm.style ? $elm.style[name] : undefined;
@@ -4397,10 +4397,10 @@
         }
         let w = getStyle($elm, 'width');
         let h = getStyle($elm, 'height');
-        if (!w || w.indexOf('px') === -1) {
+        if (!w || w.indexOf('px') == -1) {
           w = '0';
         }
-        if (!h || h.indexOf('px') === -1) {
+        if (!h || h.indexOf('px') == -1) {
           h = '0';
         }
         return {
@@ -4431,10 +4431,10 @@
       const getParents = (elm, selector, root, collect) => {
         const result = [];
         let node = get(elm);
-        collect = collect === undefined;
-        const resolvedRoot = root || (getRoot().nodeName !== 'BODY' ? getRoot().parentNode : null);
+        collect = collect == undefined;
+        const resolvedRoot = root || (getRoot().nodeName != 'BODY' ? getRoot().parentNode : null);
         if (isString(selector)) {
-          if (selector === '*') {
+          if (selector == '*') {
             selector = isElement$6;
           } else {
             const selectorVal = selector;
@@ -4442,7 +4442,7 @@
           }
         }
         while (node) {
-          if (node === resolvedRoot || isNullable(node.nodeType) || isDocument$1(node) || isDocumentFragment(node)) {
+          if (node == resolvedRoot || isNullable(node.nodeType) || isDocument$1(node) || isDocumentFragment(node)) {
             break;
           }
           if (!selector || selector(node)) {
@@ -4481,11 +4481,11 @@
       const isParentNode = node => isFunction(node.querySelectorAll);
       const select = (selector, scope) => {
         var _a, _b;
-        const elm = (_b = (_a = get(scope)) !== null && _a !== void 0 ? _a : settings.root_element) !== null && _b !== void 0 ? _b : doc;
+        const elm = (_b = (_a = get(scope)) != null && _a != void 0 ? _a : settings.root_element) != null && _b != void 0 ? _b : doc;
         return isParentNode(elm) ? from(elm.querySelectorAll(selector)) : [];
       };
       const run = function (elm, func, scope) {
-        const context = scope !== null && scope !== void 0 ? scope : this;
+        const context = scope != null && scope != void 0 ? scope : this;
         if (isArray$1(elm)) {
           const result = [];
           each$a(elm, (e, i) => {
@@ -4562,7 +4562,7 @@
           const $node = SugarElement.fromDom(n);
           if (keepChildren) {
             each$e(children$1($node), child => {
-              if (isText$b(child) && child.dom.length === 0) {
+              if (isText$b(child) && child.dom.length == 0) {
                 remove$5(child);
               } else {
                 before$3($node, child);
@@ -4582,7 +4582,7 @@
       const parseStyle = cssText => styles.parse(cssText);
       const serializeStyle = (stylesArg, name) => styles.serialize(stylesArg, name);
       const addStyle = cssText => {
-        if (self !== DOMUtils.DOM && doc === document) {
+        if (self != DOMUtils.DOM && doc == document) {
           if (addedStyles[cssText]) {
             return;
           }
@@ -4671,8 +4671,8 @@
       const insertAfter = (node, reference) => {
         const referenceNode = get(reference);
         return run(node, node => {
-          const parent = referenceNode === null || referenceNode === void 0 ? void 0 : referenceNode.parentNode;
-          const nextSibling = referenceNode === null || referenceNode === void 0 ? void 0 : referenceNode.nextSibling;
+          const parent = referenceNode == null || referenceNode == void 0 ? void 0 : referenceNode.parentNode;
+          const nextSibling = referenceNode == null || referenceNode == void 0 ? void 0 : referenceNode.nextSibling;
           if (parent) {
             if (nextSibling) {
               parent.insertBefore(node, nextSibling);
@@ -4691,11 +4691,11 @@
             replacee.appendChild(node);
           });
         }
-        (_a = elm.parentNode) === null || _a === void 0 ? void 0 : _a.replaceChild(replacee, elm);
+        (_a = elm.parentNode) == null || _a == void 0 ? void 0 : _a.replaceChild(replacee, elm);
         return elm;
       });
       const rename = (elm, name) => {
-        if (elm.nodeName !== name.toUpperCase()) {
+        if (elm.nodeName != name.toUpperCase()) {
           const newElm = create(name);
           each$a(getAttribs(elm), attrNode => {
             setAttrib(newElm, attrNode.nodeName, getAttrib(elm, attrNode.nodeName));
@@ -4710,10 +4710,10 @@
         let ps = a;
         while (ps) {
           let pe = b;
-          while (pe && ps !== pe) {
+          while (pe && ps != pe) {
             pe = pe.parentNode;
           }
-          if (ps === pe) {
+          if (ps == pe) {
             break;
           }
           ps = ps.parentNode;
@@ -4726,7 +4726,7 @@
       };
       const isNonEmptyElement = node => {
         if (isElement$6(node)) {
-          const isNamedAnchor = node.nodeName.toLowerCase() === 'a' && !getAttrib(node, 'href') && getAttrib(node, 'id');
+          const isNamedAnchor = node.nodeName.toLowerCase() == 'a' && !getAttrib(node, 'href') && getAttrib(node, 'id');
           if (getAttrib(node, 'name') || getAttrib(node, 'data-mce-bookmark') || isNamedAnchor) {
             return true;
           }
@@ -4748,12 +4748,12 @@
             if (isElement$6(tempNode)) {
               const bogusVal = tempNode.getAttribute('data-mce-bogus');
               if (bogusVal) {
-                tempNode = walker.next(bogusVal === 'all');
+                tempNode = walker.next(bogusVal == 'all');
                 continue;
               }
               const name = tempNode.nodeName.toLowerCase();
               if (nonEmptyElements && nonEmptyElements[name]) {
-                if (name === 'br') {
+                if (name == 'br') {
                   brCount++;
                   tempNode = walker.next();
                   continue;
@@ -4767,7 +4767,7 @@
             if (isComment(tempNode)) {
               return false;
             }
-            if (isText$a(tempNode) && !isWhitespaceText(tempNode.data) && (!(options === null || options === void 0 ? void 0 : options.includeZwsp) || !isZwsp(tempNode.data))) {
+            if (isText$a(tempNode) && !isWhitespaceText(tempNode.data) && (!(options == null || options == void 0 ? void 0 : options.includeZwsp) || !isZwsp(tempNode.data))) {
               return false;
             }
             if (isText$a(tempNode) && tempNode.parentNode && whitespaceElements[tempNode.parentNode.nodeName] && isWhitespaceText(tempNode.data)) {
@@ -4814,7 +4814,7 @@
           }
           return rv;
         } else {
-          if (settings.collect && (target === doc || target === win)) {
+          if (settings.collect && (target == doc || target == win)) {
             boundEvents.push([
               target,
               name,
@@ -4834,11 +4834,11 @@
           }
           return rv;
         } else {
-          if (boundEvents.length > 0 && (target === doc || target === win)) {
+          if (boundEvents.length > 0 && (target == doc || target == win)) {
             let i = boundEvents.length;
             while (i--) {
               const [boundTarget, boundName, boundFunc] = boundEvents[i];
-              if (target === boundTarget && (!name || name === boundName) && (!func || func === boundFunc)) {
+              if (target == boundTarget && (!name || name == boundName) && (!func || func == boundFunc)) {
                 events.unbind(boundTarget, boundName, boundFunc);
               }
             }
@@ -4851,10 +4851,10 @@
       const getContentEditable = node => {
         if (node && isHTMLElement(node)) {
           const contentEditable = node.getAttribute('data-mce-contenteditable');
-          if (contentEditable && contentEditable !== 'inherit') {
+          if (contentEditable && contentEditable != 'inherit') {
             return contentEditable;
           }
-          return node.contentEditable !== 'inherit' ? node.contentEditable : null;
+          return node.contentEditable != 'inherit' ? node.contentEditable : null;
         } else {
           return null;
         }
@@ -4862,9 +4862,9 @@
       const getContentEditableParent = node => {
         const root = getRoot();
         let state = null;
-        for (let tempNode = node; tempNode && tempNode !== root; tempNode = tempNode.parentNode) {
+        for (let tempNode = node; tempNode && tempNode != root; tempNode = tempNode.parentNode) {
           state = getContentEditable(tempNode);
-          if (state !== null) {
+          if (state != null) {
             break;
           }
         }
@@ -4892,7 +4892,7 @@
         });
       };
       const isChildOf = (node, parent) => {
-        return node === parent || parent.contains(node);
+        return node == parent || parent.contains(node);
       };
       const dumpRng = r => 'startContainer: ' + r.startContainer.nodeName + ', startOffset: ' + r.startOffset + ', endContainer: ' + r.endContainer.nodeName + ', endOffset: ' + r.endOffset;
       const self = {
@@ -5027,7 +5027,7 @@
         });
       }
       isDone(url) {
-        return this.states[url] === LOADED;
+        return this.states[url] == LOADED;
       }
       markDone(url) {
         this.states[url] = LOADED;
@@ -5036,7 +5036,7 @@
         const self = this;
         self.queue.push(url);
         const state = self.states[url];
-        if (state === undefined) {
+        if (state == undefined) {
           self.states[url] = QUEUED;
         }
         return new Promise((resolve, reject) => {
@@ -5070,7 +5070,7 @@
           delete self.scriptLoadedCallbacks[url];
         };
         const processResults = results => {
-          const failures = filter$5(results, result => result.status === 'rejected');
+          const failures = filter$5(results, result => result.status == 'rejected');
           if (failures.length > 0) {
             return Promise.reject(bind$3(failures, ({reason}) => isArray$1(reason) ? reason : [reason]));
           } else {
@@ -5078,10 +5078,10 @@
           }
         };
         const load = urls => Promise.allSettled(map$3(urls, url => {
-          if (self.states[url] === LOADED) {
+          if (self.states[url] == LOADED) {
             execCallbacks('resolve', url);
             return Promise.resolve();
-          } else if (self.states[url] === FAILED) {
+          } else if (self.states[url] == FAILED) {
             execCallbacks('reject', url);
             return Promise.reject(url);
           } else {
@@ -5142,7 +5142,7 @@
 
     const isDuplicated = (items, item) => {
       const firstIndex = items.indexOf(item);
-      return firstIndex !== -1 && items.indexOf(item, firstIndex + 1) > firstIndex;
+      return firstIndex != -1 && items.indexOf(item, firstIndex + 1) > firstIndex;
     };
     const isRaw = str => isObject(str) && has$2(str, 'raw');
     const isTokenised = str => isArray$1(str) && str.length > 1;
@@ -5164,7 +5164,7 @@
       const lcNames = map$3(keys(items), name => name.toLowerCase());
       each$d(items, (translation, name) => {
         const lcName = name.toLowerCase();
-        if (lcName !== name && isDuplicated(lcNames, lcName)) {
+        if (lcName != name && isDuplicated(lcNames, lcName)) {
           if (!has$2(items, lcName)) {
             langData[lcName] = translation;
           }
@@ -5182,7 +5182,7 @@
         }
         return !isEmpty(obj) ? '' + obj : '';
       };
-      const isEmpty = text => text === '' || text === null || text === undefined;
+      const isEmpty = text => text == '' || text == null || text == undefined;
       const getLangData = text => {
         const textStr = toString(text);
         return has$2(langData, textStr) ? toString(langData[textStr]) : get$a(langData, textStr.toLowerCase()).map(toString).getOr(textStr);
@@ -5201,7 +5201,7 @@
       }
       return removeContext(getLangData(text));
     };
-    const isRtl$1 = () => getLanguageData().bind(items => get$a(items, '_dir')).exists(dir => dir === 'rtl');
+    const isRtl$1 = () => getLanguageData().bind(items => get$a(items, '_dir')).exists(dir => dir == 'rtl');
     const hasCode = code => has$2(data, code);
     const I18n = {
       getData: getData$1,
@@ -5219,7 +5219,7 @@
       const lookup = {};
       const _listeners = [];
       const runListeners = (name, state) => {
-        const matchedListeners = filter$5(_listeners, listener => listener.name === name && listener.state === state);
+        const matchedListeners = filter$5(_listeners, listener => listener.name == name && listener.state == state);
         each$e(matchedListeners, listener => listener.resolve());
       };
       const isLoaded = name => has$2(urls, name);
@@ -5233,13 +5233,13 @@
       const loadLanguagePack = (name, languages) => {
         const language = I18n.getCode();
         const wrappedLanguages = ',' + (languages || '') + ',';
-        if (!language || languages && wrappedLanguages.indexOf(',' + language + ',') === -1) {
+        if (!language || languages && wrappedLanguages.indexOf(',' + language + ',') == -1) {
           return;
         }
         ScriptLoader.ScriptLoader.add(urls[name] + '/langs/' + language + '.js');
       };
       const requireLangPack = (name, languages) => {
-        if (AddOnManager.languageLoad !== false) {
+        if (AddOnManager.languageLoad != false) {
           if (isLoaded(name)) {
             loadLanguagePack(name, languages);
           } else {
@@ -5277,7 +5277,7 @@
           return Promise.resolve();
         }
         let urlString = isString(addOnUrl) ? addOnUrl : addOnUrl.prefix + addOnUrl.resource + addOnUrl.suffix;
-        if (urlString.indexOf('/') !== 0 && urlString.indexOf('://') === -1) {
+        if (urlString.indexOf('/') != 0 && urlString.indexOf('://') == -1) {
           urlString = AddOnManager.baseURL + '/' + urlString;
         }
         urls[name] = urlString.substring(0, urlString.lastIndexOf('/'));
@@ -5292,9 +5292,9 @@
         }
       };
       const waitFor = (name, state = 'added') => {
-        if (state === 'added' && isAdded(name)) {
+        if (state == 'added' && isAdded(name)) {
           return Promise.resolve();
-        } else if (state === 'loaded' && isLoaded(name)) {
+        } else if (state == 'loaded' && isLoaded(name)) {
           return Promise.resolve();
         } else {
           return new Promise(resolve => {
@@ -5554,7 +5554,7 @@
         const customAttrNames = Optional.from(node.attr(dataAnnotationAttributes())).map(names => names.split(',')).getOr([]);
         const customClasses = Optional.from(node.attr(dataAnnotationClasses())).map(names => names.split(',')).getOr([]);
         each$e(customAttrNames, name => node.attr(name, null));
-        const classList = (_b = (_a = node.attr('class')) === null || _a === void 0 ? void 0 : _a.split(' ')) !== null && _b !== void 0 ? _b : [];
+        const classList = (_b = (_a = node.attr('class')) == null || _a == void 0 ? void 0 : _a.split(' ')) != null && _b != void 0 ? _b : [];
         const newClassList = difference(classList, [annotation()].concat(customClasses));
         node.attr('class', newClassList.length > 0 ? newClassList.join(' ') : null);
         node.attr(dataAnnotationClasses(), null);
@@ -5564,8 +5564,8 @@
       editor.serializer.addAttributeFilter(dataAnnotation$1, nodes => {
         for (const node of nodes) {
           identifyParserNode(node).each(settings => {
-            if (settings.persistent === false) {
-              if (node.name === 'span') {
+            if (settings.persistent == false) {
+              if (node.name == 'span') {
                 node.unwrap();
               } else {
                 removeDirectAnnotation(node);
@@ -5653,7 +5653,7 @@
       const walk = (node, offset, walker, process) => {
         if (isText$a(node)) {
           const newOffset = process(node, offset, node.data);
-          if (newOffset !== -1) {
+          if (newOffset != -1) {
             return Optional.some({
               container: node,
               offset: newOffset
@@ -5663,14 +5663,14 @@
         return walker().bind(next => walk(next.container, next.offset, walker, process));
       };
       const backwards = (node, offset, process, root) => {
-        const walker = TextWalker(node, root !== null && root !== void 0 ? root : dom.getRoot(), isBlockBoundary);
+        const walker = TextWalker(node, root != null && root != void 0 ? root : dom.getRoot(), isBlockBoundary);
         return walk(node, offset, () => walker.prev().map(prev => ({
           container: prev,
           offset: prev.length
         })), process).getOrNull();
       };
       const forwards = (node, offset, process, root) => {
-        const walker = TextWalker(node, root !== null && root !== void 0 ? root : dom.getRoot(), isBlockBoundary);
+        const walker = TextWalker(node, root != null && root != void 0 ? root : dom.getRoot(), isBlockBoundary);
         return walk(node, offset, () => walker.next().map(next => ({
           container: next,
           offset: 0
@@ -5714,7 +5714,7 @@
       rect.width = 0;
       return rect;
     };
-    const isEqual = (rect1, rect2) => rect1.left === rect2.left && rect1.top === rect2.top && rect1.bottom === rect2.bottom && rect1.right === rect2.right;
+    const isEqual = (rect1, rect2) => rect1.left == rect2.left && rect1.top == rect2.top && rect1.bottom == rect2.bottom && rect1.right == rect2.right;
     const isValidOverflow = (overflowY, rect1, rect2) => overflowY >= 0 && overflowY <= Math.min(rect1.height, rect2.height) / 2;
     const isAbove$1 = (rect1, rect2) => {
       const halfHeight = Math.min(rect2.height / 2, rect1.height / 2);
@@ -5765,7 +5765,7 @@
 
     const getSelectedNode = range => {
       const startContainer = range.startContainer, startOffset = range.startOffset;
-      if (startContainer === range.endContainer && startContainer.hasChildNodes() && range.endOffset === startOffset + 1) {
+      if (startContainer == range.endContainer && startContainer.hasChildNodes() && range.endOffset == startOffset + 1) {
         return startContainer.childNodes[startOffset];
       }
       return null;
@@ -5852,7 +5852,7 @@
       const ec = rng.endContainer;
       const so = rng.startOffset;
       const eo = rng.endOffset;
-      if (sc === ec && isText$a(ec) && so === 0 && eo === 1) {
+      if (sc == ec && isText$a(ec) && so == 0 && eo == 1) {
         const newRng = rng.cloneRange();
         newRng.setEndAfter(ec);
         return getBoundingClientRect$1(newRng);
@@ -5860,7 +5860,7 @@
         return null;
       }
     };
-    const isZeroRect = r => r.left === 0 && r.right === 0 && r.top === 0 && r.bottom === 0;
+    const isZeroRect = r => r.left == 0 && r.right == 0 && r.top == 0 && r.bottom == 0;
     const getBoundingClientRect$1 = item => {
       var _a;
       let clientRect;
@@ -5874,7 +5874,7 @@
         return getBrClientRect(item);
       }
       if (isZeroRect(clientRect) && isRange(item)) {
-        return (_a = getBoundingClientRectWebKitText(item)) !== null && _a !== void 0 ? _a : clientRect;
+        return (_a = getBoundingClientRectWebKitText(item)) != null && _a != void 0 ? _a : clientRect;
       }
       return clientRect;
     };
@@ -5887,7 +5887,7 @@
     const getCaretPositionClientRects = caretPosition => {
       const clientRects = [];
       const addUniqueAndValidRect = clientRect => {
-        if (clientRect.height === 0) {
+        if (clientRect.height == 0) {
           return;
         }
         if (clientRects.length > 0) {
@@ -5967,9 +5967,9 @@
     const CaretPosition = (container, offset, clientRects) => {
       const isAtStart = () => {
         if (isText$7(container)) {
-          return offset === 0;
+          return offset == 0;
         }
-        return offset === 0;
+        return offset == 0;
       };
       const isAtEnd = () => {
         if (isText$7(container)) {
@@ -5990,7 +5990,7 @@
         return clientRects;
       };
       const isVisible = () => getClientRects().length > 0;
-      const isEqual = caretPosition => caretPosition && container === caretPosition.container() && offset === caretPosition.offset();
+      const isEqual = caretPosition => caretPosition && container == caretPosition.container() && offset == caretPosition.offset();
       const getNode = before => resolveIndex$1(container, before ? offset - 1 : offset);
       return {
         container: constant(container),
@@ -6016,7 +6016,7 @@
     CaretPosition.isElementPosition = pos => !CaretPosition.isTextPosition(pos);
 
     const trimEmptyTextNode$1 = (dom, node) => {
-      if (isText$a(node) && node.data.length === 0) {
+      if (isText$a(node) && node.data.length == 0) {
         dom.remove(node);
       }
     };
@@ -6055,7 +6055,7 @@
         return [];
       }
       return reduce(node.childNodes, (result, node) => {
-        if (isBogus(node) && node.nodeName !== 'BR') {
+        if (isBogus(node) && node.nodeName != 'BR') {
           result = result.concat(getChildNodes(node));
         } else {
           result.push(node);
@@ -6073,7 +6073,7 @@
       }
       return offset;
     };
-    const equal = a => b => a === b;
+    const equal = a => b => a == b;
     const normalizedNodeIndex = node => {
       let nodes, index;
       nodes = getChildNodes(normalizedParent(node));
@@ -6095,7 +6095,7 @@
     };
     const parentsUntil$1 = (root, node, predicate) => {
       const parents = [];
-      for (let tempNode = node.parentNode; tempNode && tempNode !== root; tempNode = tempNode.parentNode) {
+      for (let tempNode = node.parentNode; tempNode && tempNode != root; tempNode = tempNode.parentNode) {
         if (predicate && predicate(tempNode)) {
           break;
         }
@@ -6171,7 +6171,7 @@
         if (!match) {
           return null;
         }
-        if (match[1] === 'text()') {
+        if (match[1] == 'text()') {
           match[1] = '#text';
         }
         return resolvePathItem(result, match[1], parseInt(match[2], 10));
@@ -6181,7 +6181,7 @@
       }
       if (!isText$6(container) && container.parentNode) {
         let nodeOffset;
-        if (offset === 'after') {
+        if (offset == 'after') {
           nodeOffset = nodeIndex(container) + 1;
         } else {
           nodeOffset = nodeIndex(container);
@@ -6215,7 +6215,7 @@
         }
         point.push(dom.nodeIndex(childNodes[offset], normalized) + after);
       }
-      for (let node = container; node && node !== root; node = node.parentNode) {
+      for (let node = container; node && node != root; node = node.parentNode) {
         point.push(dom.nodeIndex(node, normalized));
       }
       return point;
@@ -6244,9 +6244,9 @@
     const findIndex = (dom, name, element) => {
       let count = 0;
       Tools.each(dom.select(name), node => {
-        if (node.getAttribute('data-mce-bogus') === 'all') {
+        if (node.getAttribute('data-mce-bogus') == 'all') {
           return;
-        } else if (node === element) {
+        } else if (node == element) {
           return false;
         } else {
           count++;
@@ -6258,7 +6258,7 @@
     const moveEndPoint$1 = (rng, start) => {
       let container = start ? rng.startContainer : rng.endContainer;
       let offset = start ? rng.startOffset : rng.endOffset;
-      if (isElement$6(container) && container.nodeName === 'TR') {
+      if (isElement$6(container) && container.nodeName == 'TR') {
         const childNodes = container.childNodes;
         container = childNodes[Math.min(start ? offset : offset - 1, childNodes.length - 1)];
         if (container) {
@@ -6304,7 +6304,7 @@
     const getOffsetBookmark = (trim, normalized, selection) => {
       const element = selection.getNode();
       const rng = selection.getRng();
-      if (element.nodeName === 'IMG' || isContentEditableFalse$9(element)) {
+      if (element.nodeName == 'IMG' || isContentEditableFalse$9(element)) {
         const name = element.nodeName;
         return {
           name,
@@ -6351,7 +6351,7 @@
       const element = selection.getNode();
       const name = element.nodeName;
       const forward = selection.isForward();
-      if (name === 'IMG') {
+      if (name == 'IMG') {
         return {
           name,
           index: findIndex(dom, name, element)
@@ -6378,9 +6378,9 @@
       };
     };
     const getBookmark$2 = (selection, type, normalized = false) => {
-      if (type === 2) {
+      if (type == 2) {
         return getOffsetBookmark(trim$2, normalized, selection);
-      } else if (type === 3) {
+      } else if (type == 3) {
         return getCaretBookmark(selection);
       } else if (type) {
         return getRangeBookmark(selection);
@@ -6451,21 +6451,21 @@
       if (!isArray$1(cases)) {
         throw new Error('cases must be an array');
       }
-      if (cases.length === 0) {
+      if (cases.length == 0) {
         throw new Error('there must be at least one case');
       }
       const constructors = [];
       const adt = {};
       each$e(cases, (acase, count) => {
         const keys$1 = keys(acase);
-        if (keys$1.length !== 1) {
+        if (keys$1.length != 1) {
           throw new Error('one and only one name per case');
         }
         const key = keys$1[0];
         const value = acase[key];
-        if (adt[key] !== undefined) {
+        if (adt[key] != undefined) {
           throw new Error('duplicate key detected:' + key);
-        } else if (key === 'cata') {
+        } else if (key == 'cata') {
           throw new Error('cannot have a case named cata (sorry)');
         } else if (!isArray$1(value)) {
           throw new Error('case arguments must be an array');
@@ -6473,12 +6473,12 @@
         constructors.push(key);
         adt[key] = (...args) => {
           const argLength = args.length;
-          if (argLength !== value.length) {
+          if (argLength != value.length) {
             throw new Error('Wrong number of arguments to case ' + key + '. Expected ' + value.length + ' (' + value + '), got ' + argLength);
           }
           const match = branches => {
             const branchKeys = keys(branches);
-            if (constructors.length !== branchKeys.length) {
+            if (constructors.length != branchKeys.length) {
               throw new Error('Wrong number of arguments to match. Expected: ' + constructors.join(',') + '\nActual: ' + branchKeys.join(','));
             }
             const allReqd = forall(constructors, reqKey => {
@@ -6491,7 +6491,7 @@
           };
           return {
             fold: (...foldArgs) => {
-              if (foldArgs.length !== cases.length) {
+              if (foldArgs.length != cases.length) {
                 throw new Error('Wrong number of arguments to fold. Expected ' + cases.length + ', got ' + foldArgs.length);
               }
               const target = foldArgs[count];
@@ -6554,15 +6554,15 @@
       };
     };
 
-    const isInlinePattern = pattern => pattern.type === 'inline-command' || pattern.type === 'inline-format';
-    const isBlockPattern = pattern => pattern.type === 'block-command' || pattern.type === 'block-format';
+    const isInlinePattern = pattern => pattern.type == 'inline-command' || pattern.type == 'inline-format';
+    const isBlockPattern = pattern => pattern.type == 'block-command' || pattern.type == 'block-format';
     const normalizePattern = pattern => {
       const err = message => Result.error({
         message,
         pattern
       });
       const formatOrCmd = (name, onFormat, onCommand) => {
-        if (pattern.format !== undefined) {
+        if (pattern.format != undefined) {
           let formats;
           if (isArray$1(pattern.format)) {
             if (!forall(pattern.format, isString)) {
@@ -6575,7 +6575,7 @@
             return err(name + ' pattern has non-string `format` parameter');
           }
           return Result.value(onFormat(formats));
-        } else if (pattern.cmd !== undefined) {
+        } else if (pattern.cmd != undefined) {
           if (!isString(pattern.cmd)) {
             return err(name + ' pattern has non-string `cmd` parameter');
           }
@@ -6590,16 +6590,16 @@
       if (!isString(pattern.start)) {
         return err('Raw pattern is missing `start` parameter');
       }
-      if (pattern.end !== undefined) {
+      if (pattern.end != undefined) {
         if (!isString(pattern.end)) {
           return err('Inline pattern has non-string `end` parameter');
         }
-        if (pattern.start.length === 0 && pattern.end.length === 0) {
+        if (pattern.start.length == 0 && pattern.end.length == 0) {
           return err('Inline pattern has empty `start` and `end` parameters');
         }
         let start = pattern.start;
         let end = pattern.end;
-        if (end.length === 0) {
+        if (end.length == 0) {
           end = start;
           start = '';
         }
@@ -6615,11 +6615,11 @@
           cmd,
           value
         }));
-      } else if (pattern.replacement !== undefined) {
+      } else if (pattern.replacement != undefined) {
         if (!isString(pattern.replacement)) {
           return err('Replacement pattern has non-string `replacement` parameter');
         }
-        if (pattern.start.length === 0) {
+        if (pattern.start.length == 0) {
           return err('Replacement pattern has empty `start` parameter');
         }
         return Result.value({
@@ -6630,7 +6630,7 @@
           value: pattern.replacement
         });
       } else {
-        if (pattern.start.length === 0) {
+        if (pattern.start.length == 0) {
           return err('Block pattern has empty `start` parameter');
         }
         return formatOrCmd('Block', formats => ({
@@ -6683,7 +6683,7 @@
     const bodyOptionProcessor = (editor, defaultValue = '') => value => {
       const valid = isString(value);
       if (valid) {
-        if (value.indexOf('=') !== -1) {
+        if (value.indexOf('=') != -1) {
           const bodyObj = getHash(value);
           return {
             value: get$a(bodyObj, editor.id).getOr(defaultValue),
@@ -6904,7 +6904,7 @@
       });
       registerOption('content_css', {
         processor: value => {
-          const valid = value === false || isString(value) || isArrayOf(value, isString);
+          const valid = value == false || isString(value) || isArrayOf(value, isString);
           if (valid) {
             if (isString(value)) {
               return {
@@ -6916,7 +6916,7 @@
                 value,
                 valid
               };
-            } else if (value === false) {
+            } else if (value == false) {
               return {
                 value: [],
                 valid
@@ -6971,14 +6971,14 @@
         processor: value => {
           const valid = isBoolean(value) || isString(value);
           if (valid) {
-            if (value === false || deviceDetection$1.isiPhone() || deviceDetection$1.isiPad()) {
+            if (value == false || deviceDetection$1.isiPhone() || deviceDetection$1.isiPad()) {
               return {
                 value: '',
                 valid
               };
             } else {
               return {
-                value: value === true ? 'table,img,figure.image,div,video,iframe' : value,
+                value: value == true ? 'table,img,figure.image,div,video,iframe' : value,
                 valid
               };
             }
@@ -6998,7 +6998,7 @@
       registerOption('event_root', { processor: 'object' });
       registerOption('service_message', { processor: 'string' });
       registerOption('theme', {
-        processor: value => value === false || isString(value) || isFunction(value),
+        processor: value => value == false || isString(value) || isFunction(value),
         default: 'silver'
       });
       registerOption('theme_url', { processor: 'string' });
@@ -7013,10 +7013,10 @@
       });
       registerOption('preview_styles', {
         processor: value => {
-          const valid = value === false || isString(value);
+          const valid = value == false || isString(value);
           if (valid) {
             return {
-              value: value === false ? '' : value,
+              value: value == false ? '' : value,
               valid
             };
           } else {
@@ -7187,7 +7187,7 @@
         processor: 'boolean',
         default: true
       });
-      registerOption('auto_focus', { processor: value => isString(value) || value === true });
+      registerOption('auto_focus', { processor: value => isString(value) || value == true });
       registerOption('browser_spellcheck', {
         processor: 'boolean',
         default: false
@@ -7242,8 +7242,8 @@
       });
       registerOption('text_patterns', {
         processor: value => {
-          if (isArrayOf(value, isObject) || value === false) {
-            const patterns = value === false ? [] : value;
+          if (isArrayOf(value, isObject) || value == false) {
+            const patterns = value == false ? [] : value;
             return {
               value: fromRawPatterns(patterns),
               valid: true
@@ -7536,7 +7536,7 @@
     const hasTextPatternsLookup = editor => editor.options.isSet('text_patterns_lookup');
     const getFontStyleValues = editor => Tools.explode(editor.options.get('font_size_style_values'));
     const getFontSizeClasses = editor => Tools.explode(editor.options.get('font_size_classes'));
-    const isEncodingXml = editor => editor.options.get('encoding') === 'xml';
+    const isEncodingXml = editor => editor.options.get('encoding') == 'xml';
     const getAllowedImageFileTypes = editor => Tools.explode(editor.options.get('images_file_types'));
     const hasTableTabNavigation = option('table_tab_navigation');
     const getDetailsInitialState = option('details_initial_state');
@@ -7561,7 +7561,7 @@
     };
     const deleteZwspChars = caretContainer => {
       let idx;
-      while ((idx = caretContainer.data.lastIndexOf(ZWSP$1)) !== -1) {
+      while ((idx = caretContainer.data.lastIndexOf(ZWSP$1)) != -1) {
         caretContainer.deleteData(idx, 1);
       }
     };
@@ -7588,8 +7588,8 @@
       remove$3(caretContainer);
       return newPosition;
     };
-    const removeTextCaretContainer = (caretContainer, pos) => isText$5(caretContainer) && pos.container() === caretContainer ? removeTextAndReposition(caretContainer, pos) : removeUnchanged(caretContainer, pos);
-    const removeElementCaretContainer = (caretContainer, pos) => pos.container() === caretContainer.parentNode ? removeElementAndReposition(caretContainer, pos) : removeUnchanged(caretContainer, pos);
+    const removeTextCaretContainer = (caretContainer, pos) => isText$5(caretContainer) && pos.container() == caretContainer ? removeTextAndReposition(caretContainer, pos) : removeUnchanged(caretContainer, pos);
+    const removeElementCaretContainer = (caretContainer, pos) => pos.container() == caretContainer.parentNode ? removeElementAndReposition(caretContainer, pos) : removeUnchanged(caretContainer, pos);
     const removeAndReposition = (container, pos) => CaretPosition.isTextPosition(pos) ? removeTextCaretContainer(container, pos) : removeElementCaretContainer(container, pos);
     const remove$3 = caretContainerNode => {
       if (isElement$3(caretContainerNode) && isCaretContainer$2(caretContainerNode)) {
@@ -7601,7 +7601,7 @@
       }
       if (isText$5(caretContainerNode)) {
         deleteZwspChars(caretContainerNode);
-        if (caretContainerNode.data.length === 0) {
+        if (caretContainerNode.data.length == 0) {
           removeNode$1(caretContainerNode);
         }
       }
@@ -7615,7 +7615,7 @@
       const clientRect = collapse(element.getBoundingClientRect(), before);
       let scrollX;
       let scrollY;
-      if (root.tagName === 'BODY') {
+      if (root.tagName == 'BODY') {
         const docElm = root.ownerDocument.documentElement;
         scrollX = root.scrollLeft || docElm.scrollLeft;
         scrollY = root.scrollTop || docElm.scrollTop;
@@ -7647,8 +7647,8 @@
         let sibling = node.previousSibling;
         if (endsWithCaretContainer$1(sibling)) {
           const data = sibling.data;
-          if (data.length === 1) {
-            (_a = sibling.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(sibling);
+          if (data.length == 1) {
+            (_a = sibling.parentNode) == null || _a == void 0 ? void 0 : _a.removeChild(sibling);
           } else {
             sibling.deleteData(data.length - 1, 1);
           }
@@ -7656,8 +7656,8 @@
         sibling = node.nextSibling;
         if (startsWithCaretContainer$1(sibling)) {
           const data = sibling.data;
-          if (data.length === 1) {
-            (_b = sibling.parentNode) === null || _b === void 0 ? void 0 : _b.removeChild(sibling);
+          if (data.length == 1) {
+            (_b = sibling.parentNode) == null || _b == void 0 ? void 0 : _b.removeChild(sibling);
           } else {
             sibling.deleteData(0, 1);
           }
@@ -7816,11 +7816,11 @@
     };
     const getEditingHost = (node, rootNode) => {
       const isCETrue = node => isContentEditableTrue$1(node.dom);
-      const isRoot = node => node.dom === rootNode;
+      const isRoot = node => node.dom == rootNode;
       return ancestor$4(SugarElement.fromDom(node), isCETrue, isRoot).map(elm => elm.dom).getOr(rootNode);
     };
     const getParentBlock$3 = (node, rootNode) => {
-      while (node && node !== rootNode) {
+      while (node && node != rootNode) {
         if (isBlockLike(node)) {
           return node;
         }
@@ -7828,7 +7828,7 @@
       }
       return null;
     };
-    const isInSameBlock = (caretPosition1, caretPosition2, rootNode) => getParentBlock$3(caretPosition1.container(), rootNode) === getParentBlock$3(caretPosition2.container(), rootNode);
+    const isInSameBlock = (caretPosition1, caretPosition2, rootNode) => getParentBlock$3(caretPosition1.container(), rootNode) == getParentBlock$3(caretPosition2.container(), rootNode);
     const getChildNodeAtRelativeOffset = (relativeOffset, caretPosition) => {
       if (!caretPosition) {
         return Optional.none();
@@ -7842,7 +7842,7 @@
     };
     const beforeAfter = (before, node) => {
       var _a;
-      const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+      const doc = (_a = node.ownerDocument) != null && _a != void 0 ? _a : document;
       const range = doc.createRange();
       if (before) {
         range.setStartBefore(node);
@@ -7853,11 +7853,11 @@
       }
       return range;
     };
-    const isNodesInSameBlock = (root, node1, node2) => getParentBlock$3(node1, root) === getParentBlock$3(node2, root);
+    const isNodesInSameBlock = (root, node1, node2) => getParentBlock$3(node1, root) == getParentBlock$3(node2, root);
     const lean = (left, root, node) => {
       const siblingName = left ? 'previousSibling' : 'nextSibling';
       let tempNode = node;
-      while (tempNode && tempNode !== root) {
+      while (tempNode && tempNode != root) {
         let sibling = tempNode[siblingName];
         if (sibling && isCaretContainer(sibling)) {
           sibling = sibling[siblingName];
@@ -7886,13 +7886,13 @@
       if (isCaretContainerBlock$1(container)) {
         const block = isText$4(container) ? container.parentNode : container;
         const location = block.getAttribute('data-mce-caret');
-        if (location === 'before') {
+        if (location == 'before') {
           node = block.nextSibling;
           if (isFakeCaretTarget(node)) {
             return before$2(node);
           }
         }
-        if (location === 'after') {
+        if (location == 'after') {
           node = block.previousSibling;
           if (isFakeCaretTarget(node)) {
             return after$2(node);
@@ -7904,7 +7904,7 @@
       }
       if (isText$a(container)) {
         if (isCaretContainer(container)) {
-          if (direction === 1) {
+          if (direction == 1) {
             node = leanRight(container);
             if (node) {
               return before$2(node);
@@ -7914,7 +7914,7 @@
               return after$2(node);
             }
           }
-          if (direction === -1) {
+          if (direction == -1) {
             node = leanLeft(container);
             if (node) {
               return after$2(node);
@@ -7927,7 +7927,7 @@
           return range;
         }
         if (endsWithCaretContainer$1(container) && offset >= container.data.length - 1) {
-          if (direction === 1) {
+          if (direction == 1) {
             node = leanRight(container);
             if (node) {
               return before$2(node);
@@ -7936,7 +7936,7 @@
           return range;
         }
         if (startsWithCaretContainer$1(container) && offset <= 1) {
-          if (direction === -1) {
+          if (direction == -1) {
             node = leanLeft(container);
             if (node) {
               return after$2(node);
@@ -7944,14 +7944,14 @@
           }
           return range;
         }
-        if (offset === container.data.length) {
+        if (offset == container.data.length) {
           node = leanRight(container);
           if (node) {
             return before$2(node);
           }
           return range;
         }
-        if (offset === 0) {
+        if (offset == 0) {
           node = leanLeft(container);
           if (node) {
             return after$2(node);
@@ -7964,7 +7964,7 @@
     const getRelativeCefElm = (forward, caretPosition) => getChildNodeAtRelativeOffset(forward ? 0 : -1, caretPosition).filter(isContentEditableFalse$7);
     const getNormalizedRangeEndPoint = (direction, root, range) => {
       const normalizedRange = normalizeRange(direction, root, range);
-      return direction === -1 ? CaretPosition.fromRangeStart(normalizedRange) : CaretPosition.fromRangeEnd(normalizedRange);
+      return direction == -1 ? CaretPosition.fromRangeStart(normalizedRange) : CaretPosition.fromRangeEnd(normalizedRange);
     };
     const getElementFromPosition = pos => Optional.from(pos.getNode()).map(SugarElement.fromDom);
     const getElementFromPrevPosition = pos => Optional.from(pos.getNode(true)).map(SugarElement.fromDom);
@@ -8000,7 +8000,7 @@
     const getParents$3 = (node, root) => {
       const parents = [];
       let tempNode = node;
-      while (tempNode && tempNode !== root) {
+      while (tempNode && tempNode != root) {
         parents.push(tempNode);
         tempNode = tempNode.parentNode;
       }
@@ -8154,7 +8154,7 @@
     const afterElement = node => isBr$6(node) ? CaretPosition.before(node) : CaretPosition.after(node);
     const isBeforeOrStart = position => {
       if (CaretPosition.isTextPosition(position)) {
-        return position.offset() === 0;
+        return position.offset() == 0;
       } else {
         return isCaretCandidate$3(position.getNode());
       }
@@ -8162,12 +8162,12 @@
     const isAfterOrEnd = position => {
       if (CaretPosition.isTextPosition(position)) {
         const container = position.container();
-        return position.offset() === container.data.length;
+        return position.offset() == container.data.length;
       } else {
         return isCaretCandidate$3(position.getNode(true));
       }
     };
-    const isBeforeAfterSameElement = (from, to) => !CaretPosition.isTextPosition(from) && !CaretPosition.isTextPosition(to) && from.getNode() === to.getNode(true);
+    const isBeforeAfterSameElement = (from, to) => !CaretPosition.isTextPosition(from) && !CaretPosition.isTextPosition(to) && from.getNode() == to.getNode(true);
     const isAtBr = position => !CaretPosition.isTextPosition(position) && isBr$6(position.getNode());
     const shouldSkipPosition = (forward, from, to) => {
       if (forward) {
@@ -8208,10 +8208,10 @@
     const lastPositionIn = curry(positionIn, false);
 
     const CARET_ID = '_mce_caret';
-    const isCaretNode = node => isElement$6(node) && node.id === CARET_ID;
+    const isCaretNode = node => isElement$6(node) && node.id == CARET_ID;
     const getParentCaretContainer = (body, node) => {
       let currentNode = node;
-      while (currentNode && currentNode !== body) {
+      while (currentNode && currentNode != body) {
         if (isCaretNode(currentNode)) {
           return currentNode;
         }
@@ -8248,7 +8248,7 @@
     };
     const insertZwsp = (node, rng) => {
       var _a;
-      const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+      const doc = (_a = node.ownerDocument) != null && _a != void 0 ? _a : document;
       const textNode = doc.createTextNode(ZWSP$1);
       node.appendChild(textNode);
       rng.setStart(textNode, 0);
@@ -8304,12 +8304,12 @@
     const isValidTextNode = node => isText$a(node) && node.data.length > 0;
     const restoreEndPoint = (dom, suffix, bookmark) => {
       const marker = dom.get(bookmark.id + '_' + suffix);
-      const markerParent = marker === null || marker === void 0 ? void 0 : marker.parentNode;
+      const markerParent = marker == null || marker == void 0 ? void 0 : marker.parentNode;
       const keep = bookmark.keep;
       if (marker && markerParent) {
         let container;
         let offset;
-        if (suffix === 'start') {
+        if (suffix == 'start') {
           if (!keep) {
             container = markerParent;
             offset = dom.nodeIndex(marker);
@@ -8432,12 +8432,12 @@
       });
     };
     const isBookmarkNode$1 = node => {
-      return isElement$6(node) && node.tagName === 'SPAN' && node.getAttribute('data-mce-type') === 'bookmark';
+      return isElement$6(node) && node.tagName == 'SPAN' && node.getAttribute('data-mce-type') == 'bookmark';
     };
 
-    const is = expected => actual => expected === actual;
+    const is = expected => actual => expected == actual;
     const isNbsp = is(nbsp);
-    const isWhiteSpace = chr => chr !== '' && ' \f\n\r\t\x0B'.indexOf(chr) !== -1;
+    const isWhiteSpace = chr => chr != '' && ' \f\n\r\t\x0B'.indexOf(chr) != -1;
     const isContent = chr => !isWhiteSpace(chr) && !isNbsp(chr) && !isZwsp$2(chr);
 
     const getRanges$1 = selection => {
@@ -8471,7 +8471,7 @@
     const getStartNode = rng => {
       const sc = rng.startContainer, so = rng.startOffset;
       if (isText$a(sc)) {
-        return so === 0 ? Optional.some(SugarElement.fromDom(sc)) : Optional.none();
+        return so == 0 ? Optional.some(SugarElement.fromDom(sc)) : Optional.none();
       } else {
         return Optional.from(sc.childNodes[so]).map(SugarElement.fromDom);
       }
@@ -8479,7 +8479,7 @@
     const getEndNode = rng => {
       const ec = rng.endContainer, eo = rng.endOffset;
       if (isText$a(ec)) {
-        return eo === ec.data.length ? Optional.some(SugarElement.fromDom(ec)) : Optional.none();
+        return eo == ec.data.length ? Optional.some(SugarElement.fromDom(ec)) : Optional.none();
       } else {
         return Optional.from(ec.childNodes[eo - 1]).map(SugarElement.fromDom);
       }
@@ -8491,7 +8491,7 @@
     };
     const getLastChildren = node => {
       return lastChild(node).fold(constant([node]), child => {
-        if (name(child) === 'br') {
+        if (name(child) == 'br') {
           return prevSibling(child).map(sibling => {
             return [node].concat(getLastChildren(sibling));
           }).getOr([]);
@@ -8517,7 +8517,7 @@
       ], name.toLowerCase()));
       let currentNode = node;
       do {
-        if (isText$a(currentNode) && Tools.trim(currentNode.data).length !== 0) {
+        if (isText$a(currentNode) && Tools.trim(currentNode.data).length != 0) {
           if (start) {
             rng.setStart(currentNode, 0);
           } else {
@@ -8529,7 +8529,7 @@
           if (start) {
             rng.setStartBefore(currentNode);
           } else {
-            if (currentNode.nodeName === 'BR') {
+            if (currentNode.nodeName == 'BR') {
               rng.setEndBefore(currentNode);
             } else {
               rng.setEndAfter(currentNode);
@@ -8538,7 +8538,7 @@
           return;
         }
       } while (currentNode = start ? walker.next() : walker.prev());
-      if (root.nodeName === 'BODY') {
+      if (root.nodeName == 'BODY') {
         if (start) {
           rng.setStart(root, 0);
         } else {
@@ -8570,7 +8570,7 @@
       selection.moveToBookmark(bookmark);
     };
 
-    const isNode = node => isNumber(node === null || node === void 0 ? void 0 : node.nodeType);
+    const isNode = node => isNumber(node == null || node == void 0 ? void 0 : node.nodeType);
     const isElementNode$1 = node => isElement$6(node) && !isBookmarkNode$1(node) && !isCaretNode(node) && !isBogus$2(node);
     const isElementDirectlySelected = (dom, node) => {
       if (isElementNode$1(node) && !/^(TD|TH)$/.test(node.nodeName)) {
@@ -8609,14 +8609,14 @@
         let walker;
         if (startOffset < nodes.length) {
           const startNode = nodes[startOffset];
-          walker = new DomTreeWalker(startNode, (_a = dom.getParent(startNode, dom.isBlock)) !== null && _a !== void 0 ? _a : root);
+          walker = new DomTreeWalker(startNode, (_a = dom.getParent(startNode, dom.isBlock)) != null && _a != void 0 ? _a : root);
         } else {
           const startNode = nodes[nodes.length - 1];
-          walker = new DomTreeWalker(startNode, (_b = dom.getParent(startNode, dom.isBlock)) !== null && _b !== void 0 ? _b : root);
+          walker = new DomTreeWalker(startNode, (_b = dom.getParent(startNode, dom.isBlock)) != null && _b != void 0 ? _b : root);
           walker.next(true);
         }
         for (let node = walker.current(); node; node = walker.next()) {
-          if (dom.getContentEditable(node) === 'false') {
+          if (dom.getContentEditable(node) == 'false') {
             return;
           } else if (isText$a(node) && !isWhiteSpaceNode$1(node)) {
             rng.setStart(node, 0);
@@ -8650,7 +8650,7 @@
       }
     };
     const isEmptyTextNode$1 = node => {
-      return isNonNullable(node) && isText$a(node) && node.length === 0;
+      return isNonNullable(node) && isText$a(node) && node.length == 0;
     };
     const isWrapNoneditableTarget = (editor, node) => {
       const baseDataSelector = '[data-mce-cef-wrappable]';
@@ -8660,7 +8660,7 @@
     };
     const isWrappableNoneditable = (editor, node) => {
       const dom = editor.dom;
-      return isElementNode$1(node) && dom.getContentEditable(node) === 'false' && isWrapNoneditableTarget(editor, node) && dom.select('[contenteditable="true"]', node).length === 0;
+      return isElementNode$1(node) && dom.getContentEditable(node) == 'false' && isWrapNoneditableTarget(editor, node) && dom.select('[contenteditable="true"]', node).length == 0;
     };
     const replaceVars = (value, vars) => {
       if (isFunction(value)) {
@@ -8677,20 +8677,20 @@
       str2 = str2 || '';
       str1 = '' + (str1.nodeName || str1);
       str2 = '' + (str2.nodeName || str2);
-      return str1.toLowerCase() === str2.toLowerCase();
+      return str1.toLowerCase() == str2.toLowerCase();
     };
     const normalizeStyleValue = (value, name) => {
       if (isNullable(value)) {
         return null;
       } else {
         let strValue = String(value);
-        if (name === 'color' || name === 'backgroundColor') {
+        if (name == 'color' || name == 'backgroundColor') {
           strValue = rgbaToHexString(strValue);
         }
-        if (name === 'fontWeight' && value === 700) {
+        if (name == 'fontWeight' && value == 700) {
           strValue = 'bold';
         }
-        if (name === 'fontFamily') {
+        if (name == 'fontFamily') {
           strValue = strValue.replace(/[\'\"]/g, '').replace(/,\s+/g, ',');
         }
         return strValue;
@@ -8705,7 +8705,7 @@
       dom.getParent(node, n => {
         if (isElement$6(n)) {
           decoration = dom.getStyle(n, 'text-decoration');
-          return !!decoration && decoration !== 'none';
+          return !!decoration && decoration != 'none';
         } else {
           return false;
         }
@@ -8721,7 +8721,7 @@
     };
     const isVariableFormatName = (editor, formatName) => {
       const hasVariableValues = format => {
-        const isVariableValue = val => isFunction(val) || val.length > 1 && val.charAt(0) === '%';
+        const isVariableValue = val => isFunction(val) || val.length > 1 && val.charAt(0) == '%';
         return exists([
           'styles',
           'attributes'
@@ -8741,7 +8741,7 @@
         'styles',
         'classes'
       ];
-      const filterObj = format => filter$4(format, (_, key) => exists(validKeys, validKey => validKey === key));
+      const filterObj = format => filter$4(format, (_, key) => exists(validKeys, validKey => validKey == key));
       return isFormatPredicate(editor, formatName, fmt1 => {
         const filteredFmt1 = filterObj(fmt1);
         return isFormatPredicate(editor, otherFormatName, fmt2 => {
@@ -8751,17 +8751,17 @@
       });
     };
     const isBlockFormat = format => hasNonNullableKey(format, 'block');
-    const isWrappingBlockFormat = format => isBlockFormat(format) && format.wrapper === true;
-    const isNonWrappingBlockFormat = format => isBlockFormat(format) && format.wrapper !== true;
+    const isWrappingBlockFormat = format => isBlockFormat(format) && format.wrapper == true;
+    const isNonWrappingBlockFormat = format => isBlockFormat(format) && format.wrapper != true;
     const isSelectorFormat = format => hasNonNullableKey(format, 'selector');
     const isInlineFormat = format => hasNonNullableKey(format, 'inline');
     const isMixedFormat = format => isSelectorFormat(format) && isInlineFormat(format) && is$2(get$a(format, 'mixed'), true);
-    const shouldExpandToSelector = format => isSelectorFormat(format) && format.expand !== false && !isInlineFormat(format);
+    const shouldExpandToSelector = format => isSelectorFormat(format) && format.expand != false && !isInlineFormat(format);
     const getEmptyCaretContainers = node => {
       const nodes = [];
       let tempNode = node;
       while (tempNode) {
-        if (isText$a(tempNode) && tempNode.data !== ZWSP$1 || tempNode.childNodes.length > 1) {
+        if (isText$a(tempNode) && tempNode.data != ZWSP$1 || tempNode.childNodes.length > 1) {
           return [];
         }
         if (isElement$6(tempNode)) {
@@ -8789,7 +8789,7 @@
       let parent = node;
       while (parent) {
         if (isElement$6(parent) && dom.getContentEditable(parent)) {
-          return dom.getContentEditable(parent) === 'false' ? parent : node;
+          return dom.getContentEditable(parent) == 'false' ? parent : node;
         }
         parent = parent.parentNode;
       }
@@ -8844,7 +8844,7 @@
       for (let i = 0; i < parents.length; i++) {
         for (let y = 0; y < formatList.length; y++) {
           const curFormat = formatList[y];
-          if (isNonNullable(curFormat.collapsed) && curFormat.collapsed !== rng.collapsed) {
+          if (isNonNullable(curFormat.collapsed) && curFormat.collapsed != rng.collapsed) {
             continue;
           }
           if (isSelectorFormat(curFormat) && dom.is(parents[i], curFormat.selector)) {
@@ -8863,8 +8863,8 @@
         node = format.wrapper ? null : dom.getParent(container, format.block, root);
       }
       if (!node) {
-        const scopeRoot = (_a = dom.getParent(container, 'LI,TD,TH,SUMMARY')) !== null && _a !== void 0 ? _a : root;
-        node = dom.getParent(isText$a(container) ? container.parentNode : container, node => node !== root && isTextBlock(dom.schema, node), scopeRoot);
+        const scopeRoot = (_a = dom.getParent(container, 'LI,TD,TH,SUMMARY')) != null && _a != void 0 ? _a : root;
+        node = dom.getParent(isText$a(container) ? container.parentNode : container, node => node != root && isTextBlock(dom.schema, node), scopeRoot);
       }
       if (node && isBlockFormat(format) && format.wrapper) {
         node = getParents$1(dom, node, 'ul,ol').reverse()[0] || node;
@@ -8884,7 +8884,7 @@
       const parent = container.parentNode;
       if (isNonNullable(container[siblingName])) {
         return false;
-      } else if (parent === root || isNullable(parent) || dom.isBlock(parent)) {
+      } else if (parent == root || isNullable(parent) || dom.isBlock(parent)) {
         return true;
       } else {
         return isAtBlockBoundary$1(dom, root, parent, siblingName);
@@ -8909,7 +8909,7 @@
             return parent;
           }
         }
-        if (parent === root || parent.parentNode === root) {
+        if (parent == root || parent.parentNode == root) {
           container = parent;
           break;
         }
@@ -8970,10 +8970,10 @@
         });
       }
       if (isInlineFormat(format) || format.block_expand) {
-        if (!isInlineFormat(format) || (!isText$a(startContainer) || startOffset === 0)) {
+        if (!isInlineFormat(format) || (!isText$a(startContainer) || startOffset == 0)) {
           startContainer = findParentContainer(dom, formatList, startContainer, startOffset, true);
         }
-        if (!isInlineFormat(format) || (!isText$a(endContainer) || endOffset === endContainer.data.length)) {
+        if (!isInlineFormat(format) || (!isText$a(endContainer) || endOffset == endContainer.data.length)) {
           endContainer = findParentContainer(dom, formatList, endContainer, endOffset, false);
         }
       }
@@ -9017,28 +9017,28 @@
       const endContainer = getNode$1(rng.endContainer, endOffset - 1);
       const exclude = nodes => {
         const firstNode = nodes[0];
-        if (isText$a(firstNode) && firstNode === startContainer && startOffset >= firstNode.data.length) {
+        if (isText$a(firstNode) && firstNode == startContainer && startOffset >= firstNode.data.length) {
           nodes.splice(0, 1);
         }
         const lastNode = nodes[nodes.length - 1];
-        if (endOffset === 0 && nodes.length > 0 && lastNode === endContainer && isText$a(lastNode)) {
+        if (endOffset == 0 && nodes.length > 0 && lastNode == endContainer && isText$a(lastNode)) {
           nodes.splice(nodes.length - 1, 1);
         }
         return nodes;
       };
       const collectSiblings = (node, name, endNode) => {
         const siblings = [];
-        for (; node && node !== endNode; node = node[name]) {
+        for (; node && node != endNode; node = node[name]) {
           siblings.push(node);
         }
         return siblings;
       };
-      const findEndPoint = (node, root) => dom.getParent(node, node => node.parentNode === root, root);
+      const findEndPoint = (node, root) => dom.getParent(node, node => node.parentNode == root, root);
       const walkBoundary = (startNode, endNode, next) => {
         const siblingName = next ? 'nextSibling' : 'previousSibling';
-        for (let node = startNode, parent = node.parentNode; node && node !== endNode; node = parent) {
+        for (let node = startNode, parent = node.parentNode; node && node != endNode; node = parent) {
           parent = node.parentNode;
-          const siblings = collectSiblings(node === startNode ? node : node[siblingName], siblingName);
+          const siblings = collectSiblings(node == startNode ? node : node[siblingName], siblingName);
           if (siblings.length) {
             if (!next) {
               siblings.reverse();
@@ -9047,10 +9047,10 @@
           }
         }
       };
-      if (startContainer === endContainer) {
+      if (startContainer == endContainer) {
         return callback(exclude([startContainer]));
       }
-      const ancestor = (_a = dom.findCommonAncestor(startContainer, endContainer)) !== null && _a !== void 0 ? _a : dom.getRoot();
+      const ancestor = (_a = dom.findCommonAncestor(startContainer, endContainer)) != null && _a != void 0 ? _a : dom.getRoot();
       if (dom.isChildOf(startContainer, endContainer)) {
         return walkBoundary(startContainer, ancestor, true);
       }
@@ -9060,7 +9060,7 @@
       const startPoint = findEndPoint(startContainer, ancestor) || startContainer;
       const endPoint = findEndPoint(endContainer, ancestor) || endContainer;
       walkBoundary(startContainer, startPoint, true);
-      const siblings = collectSiblings(startPoint === startContainer ? startPoint : startPoint.nextSibling, 'nextSibling', endPoint === endContainer ? endPoint.nextSibling : endPoint);
+      const siblings = collectSiblings(startPoint == startContainer ? startPoint : startPoint.nextSibling, 'nextSibling', endPoint == endContainer ? endPoint.nextSibling : endPoint);
       if (siblings.length) {
         callback(exclude(siblings));
       }
@@ -9075,9 +9075,9 @@
       'div.mce-toc',
       'div[data-mce-toc]'
     ];
-    const isZeroWidth = elem => isText$b(elem) && get$3(elem) === ZWSP$1;
+    const isZeroWidth = elem => isText$b(elem) && get$3(elem) == ZWSP$1;
     const context = (editor, elem, wrapName, nodeName) => parent(elem).fold(() => 'skipping', parent => {
-      if (nodeName === 'br' || isZeroWidth(elem)) {
+      if (nodeName == 'br' || isZeroWidth(elem)) {
         return 'valid';
       } else if (isAnnotation(elem)) {
         return 'existing';
@@ -9401,7 +9401,7 @@
         1
       ]
     };
-    const isTouchEvent = evt => evt.type === 'longpress' || evt.type.indexOf('touch') === 0;
+    const isTouchEvent = evt => evt.type == 'longpress' || evt.type.indexOf('touch') == 0;
     const ControlSelection = (selection, editor) => {
       const dom = editor.dom;
       const editableDoc = editor.getDoc();
@@ -9446,10 +9446,10 @@
         if (!selector) {
           return false;
         }
-        if (elm.getAttribute('data-mce-resize') === 'false') {
+        if (elm.getAttribute('data-mce-resize') == 'false') {
           return false;
         }
-        if (elm === editor.getBody()) {
+        if (elm == editor.getBody()) {
           return false;
         }
         if (dom.hasClass(elm, 'mce-preview-object') && isNonNullable(elm.firstElementChild)) {
@@ -9490,7 +9490,7 @@
         height = deltaY * selectedHandle[3] + startH;
         width = width < 5 ? 5 : width;
         height = height < 5 ? 5 : height;
-        if ((isImage(selectedElm) || isMedia(selectedElm)) && getResizeImgProportional(editor) !== false) {
+        if ((isImage(selectedElm) || isMedia(selectedElm)) && getResizeImgProportional(editor) != false) {
           proportional = !VK.modifierPressed(e);
         } else {
           proportional = VK.modifierPressed(e);
@@ -9523,7 +9523,7 @@
         }
         deltaX = rootElement.scrollWidth - startScrollWidth;
         deltaY = rootElement.scrollHeight - startScrollHeight;
-        if (deltaX + deltaY !== 0) {
+        if (deltaX + deltaY != 0) {
           dom.setStyles(resizeHelper, {
             left: resizeHelperX - deltaX,
             top: resizeHelperY - deltaY
@@ -9543,7 +9543,7 @@
         }
         dom.unbind(editableDoc, 'mousemove', resizeGhostElement);
         dom.unbind(editableDoc, 'mouseup', endGhostResize);
-        if (rootDocument !== editableDoc) {
+        if (rootDocument != editableDoc) {
           dom.unbind(rootDocument, 'mousemove', resizeGhostElement);
           dom.unbind(rootDocument, 'mouseup', endGhostResize);
         }
@@ -9565,7 +9565,7 @@
         const rect = targetElm.getBoundingClientRect();
         const targetWidth = rect.width || rect.right - rect.left;
         const targetHeight = rect.height || rect.bottom - rect.top;
-        if (selectedElm !== targetElm) {
+        if (selectedElm != targetElm) {
           hideResizeRect();
           selectedElm = targetElm;
           width = height = 0;
@@ -9613,7 +9613,7 @@
               rootElement.appendChild(selectedElmGhost);
               dom.bind(editableDoc, 'mousemove', resizeGhostElement);
               dom.bind(editableDoc, 'mouseup', endGhostResize);
-              if (rootDocument !== editableDoc) {
+              if (rootDocument != editableDoc) {
                 dom.bind(rootDocument, 'mousemove', resizeGhostElement);
                 dom.bind(rootDocument, 'mouseup', endGhostResize);
               }
@@ -9668,8 +9668,8 @@
         if (resizeStarted || editor.removed || editor.composing) {
           return;
         }
-        const targetElm = e.type === 'mousedown' ? e.target : selection.getNode();
-        const controlElm = closest$3(SugarElement.fromDom(targetElm), controlElmSelector).map(e => e.dom).filter(e => dom.isEditable(e.parentElement) || e.nodeName === 'IMG' && dom.isEditable(e)).getOrUndefined();
+        const targetElm = e.type == 'mousedown' ? e.target : selection.getNode();
+        const controlElm = closest$3(SugarElement.fromDom(targetElm), controlElmSelector).map(e => e.dom).filter(e => dom.isEditable(e.parentElement) || e.nodeName == 'IMG' && dom.isEditable(e)).getOrUndefined();
         const selectedValue = isNonNullable(controlElm) ? dom.getAttrib(controlElm, elementSelectionAttr, '1') : '1';
         each$e(dom.select(`img[${ elementSelectionAttr }],hr[${ elementSelectionAttr }]`), img => {
           img.removeAttribute(elementSelectionAttr);
@@ -9703,7 +9703,7 @@
         disableGeckoResize();
         editor.on('NodeChange ResizeEditor ResizeWindow ResizeContent drop', updateResizeRect);
         editor.on('keyup compositionend', e => {
-          if (selectedElm && selectedElm.nodeName === 'TABLE') {
+          if (selectedElm && selectedElm.nodeName == 'TABLE') {
             updateResizeRect(e);
           }
         });
@@ -9797,7 +9797,7 @@
     const doDiagnose = (win, ranges) => {
       const rng = ranges.ltr();
       if (rng.collapsed) {
-        const reversed = ranges.rtl().filter(rev => rev.collapsed === false);
+        const reversed = ranges.rtl().filter(rev => rev.collapsed == false);
         return reversed.map(rev => adt$3.rtl(SugarElement.fromDom(rev.endContainer), rev.endOffset, SugarElement.fromDom(rev.startContainer), rev.startOffset)).getOrThunk(() => fromRange(win, adt$3.ltr, rng));
       } else {
         return fromRange(win, adt$3.ltr, rng);
@@ -9820,8 +9820,8 @@
 
     const caretPositionFromPoint = (doc, x, y) => {
       var _a, _b;
-      return Optional.from((_b = (_a = doc.dom).caretPositionFromPoint) === null || _b === void 0 ? void 0 : _b.call(_a, x, y)).bind(pos => {
-        if (pos.offsetNode === null) {
+      return Optional.from((_b = (_a = doc.dom).caretPositionFromPoint) == null || _b == void 0 ? void 0 : _b.call(_a, x, y)).bind(pos => {
+        if (pos.offsetNode == null) {
           return Optional.none();
         }
         const r = doc.dom.createRange();
@@ -9832,7 +9832,7 @@
     };
     const caretRangeFromPoint = (doc, x, y) => {
       var _a, _b;
-      return Optional.from((_b = (_a = doc.dom).caretRangeFromPoint) === null || _b === void 0 ? void 0 : _b.call(_a, x, y));
+      return Optional.from((_b = (_a = doc.dom).caretRangeFromPoint) == null || _b == void 0 ? void 0 : _b.call(_a, x, y));
     };
     const availableSearch = (() => {
       if (document.caretPositionFromPoint) {
@@ -9913,7 +9913,7 @@
 
     const beforeSpecial = (element, offset) => {
       const name$1 = name(element);
-      if ('input' === name$1) {
+      if ('input' == name$1) {
         return Situ.after(element);
       } else if (!contains$2([
           'br',
@@ -9921,7 +9921,7 @@
         ], name$1)) {
         return Situ.on(element, offset);
       } else {
-        return offset === 0 ? Situ.before(element) : Situ.after(element);
+        return offset == 0 ? Situ.before(element) : Situ.after(element);
       }
     };
     const preprocessRelative = (startSitu, finishSitu) => {
@@ -9975,12 +9975,12 @@
     };
 
     const isEq$4 = (rng1, rng2) => {
-      return isNonNullable(rng1) && isNonNullable(rng2) && (rng1.startContainer === rng2.startContainer && rng1.startOffset === rng2.startOffset) && (rng1.endContainer === rng2.endContainer && rng1.endOffset === rng2.endOffset);
+      return isNonNullable(rng1) && isNonNullable(rng2) && (rng1.startContainer == rng2.startContainer && rng1.startOffset == rng2.startOffset) && (rng1.endContainer == rng2.endContainer && rng1.endOffset == rng2.endOffset);
     };
 
     const findParent = (node, rootNode, predicate) => {
       let currentNode = node;
-      while (currentNode && currentNode !== rootNode) {
+      while (currentNode && currentNode != rootNode) {
         if (predicate(currentNode)) {
           return currentNode;
         }
@@ -9988,8 +9988,8 @@
       }
       return null;
     };
-    const hasParent$1 = (node, rootNode, predicate) => findParent(node, rootNode, predicate) !== null;
-    const hasParentWithName = (node, rootNode, name) => hasParent$1(node, rootNode, node => node.nodeName === name);
+    const hasParent$1 = (node, rootNode, predicate) => findParent(node, rootNode, predicate) != null;
+    const hasParentWithName = (node, rootNode, name) => hasParent$1(node, rootNode, node => node.nodeName == name);
     const isCeFalseCaretContainer = (node, rootNode) => isCaretContainer$2(node) && !hasParent$1(node, rootNode, isCaretNode);
     const hasBrBeforeAfter = (dom, node, left) => {
       const parentNode = node.parentNode;
@@ -10006,11 +10006,11 @@
     };
     const isPrevNode = (node, name) => {
       var _a;
-      return ((_a = node.previousSibling) === null || _a === void 0 ? void 0 : _a.nodeName) === name;
+      return ((_a = node.previousSibling) == null || _a == void 0 ? void 0 : _a.nodeName) == name;
     };
     const hasContentEditableFalseParent = (root, node) => {
       let currentNode = node;
-      while (currentNode && currentNode !== root) {
+      while (currentNode && currentNode != root) {
         if (isContentEditableFalse$b(currentNode)) {
           return true;
         }
@@ -10033,7 +10033,7 @@
       }
       const walker = new DomTreeWalker(startNode, parentBlockContainer);
       while (node = walker[left ? 'prev' : 'next']()) {
-        if (dom.getContentEditableParent(node) === 'false' || isCeFalseCaretContainer(node, body)) {
+        if (dom.getContentEditableParent(node) == 'false' || isCeFalseCaretContainer(node, body)) {
           return Optional.none();
         }
         if (isText$a(node) && node.data.length > 0) {
@@ -10061,7 +10061,7 @@
       let normalized = false;
       let container = start ? rng.startContainer : rng.endContainer;
       let offset = start ? rng.startOffset : rng.endOffset;
-      const isAfterNode = isElement$6(container) && offset === container.childNodes.length;
+      const isAfterNode = isElement$6(container) && offset == container.childNodes.length;
       const nonEmptyElementsMap = dom.schema.getNonEmptyElements();
       let directionLeft = start;
       if (isCaretContainer$2(container)) {
@@ -10074,7 +10074,7 @@
         container = body;
         offset = 0;
       }
-      if (container === body) {
+      if (container == body) {
         if (directionLeft) {
           node = container.childNodes[offset > 0 ? offset - 1 : 0];
           if (node) {
@@ -10090,7 +10090,7 @@
           offset = Math.min(!directionLeft && offset > 0 ? offset - 1 : offset, container.childNodes.length - 1);
           container = container.childNodes[offset];
           offset = isText$a(container) && isAfterNode ? container.data.length : 0;
-          if (!collapsed && container === body.lastChild && isTable$2(container)) {
+          if (!collapsed && container == body.lastChild && isTable$2(container)) {
             return Optional.none();
           }
           if (hasContentEditableFalseParent(body, container) || isCaretContainer$2(container)) {
@@ -10127,7 +10127,7 @@
         }
       }
       if (collapsed) {
-        if (isText$a(container) && offset === 0) {
+        if (isText$a(container) && offset == 0) {
           findTextNodeRelative(dom, isAfterNode, collapsed, true, container).each(pos => {
             container = pos.container();
             offset = pos.offset();
@@ -10148,7 +10148,7 @@
           }
         }
       }
-      if (directionLeft && !collapsed && isText$a(container) && offset === container.data.length) {
+      if (directionLeft && !collapsed && isText$a(container) && offset == container.data.length) {
         findTextNodeRelative(dom, isAfterNode, collapsed, false, container).each(pos => {
           container = pos.container();
           offset = pos.offset();
@@ -10181,7 +10181,7 @@
     };
     const split = rng => {
       let startContainer = rng.startContainer, startOffset = rng.startOffset, endContainer = rng.endContainer, endOffset = rng.endOffset;
-      if (startContainer === endContainer && isText$a(startContainer)) {
+      if (startContainer == endContainer && isText$a(startContainer)) {
         if (startOffset > 0 && startOffset < startContainer.data.length) {
           endContainer = splitText(startContainer, startOffset);
           startContainer = endContainer.previousSibling;
@@ -10227,7 +10227,7 @@
         });
       };
       const expand = (rng, options = { type: 'word' }) => {
-        if (options.type === 'word') {
+        if (options.type == 'word') {
           const rangeLike = expandRng(dom, rng, [{ inline: 'span' }]);
           const newRange = dom.createRng();
           newRange.setStart(rangeLike.startContainer, rangeLike.startOffset);
@@ -10260,7 +10260,7 @@
       };
       const get = element => {
         const r = getOffset(element);
-        if (r <= 0 || r === null) {
+        if (r <= 0 || r == null) {
           const css = get$7(element, name);
           return parseFloat(css) || 0;
         }
@@ -10269,7 +10269,7 @@
       const getOuter = get;
       const aggregate = (element, properties) => foldl(properties, (acc, property) => {
         const val = get$7(element, property);
-        const value = val === undefined ? 0 : parseInt(val, 10);
+        const value = val == undefined ? 0 : parseInt(val, 10);
         return isNaN(value) ? acc : acc + value;
       }, 0);
       const max = (element, value, properties) => {
@@ -10309,7 +10309,7 @@
 
     const view = doc => {
       var _a;
-      const element = doc.dom === document ? Optional.none() : Optional.from((_a = doc.dom.defaultView) === null || _a === void 0 ? void 0 : _a.frameElement);
+      const element = doc.dom == document ? Optional.none() : Optional.from((_a = doc.dom.defaultView) == null || _a == void 0 ? void 0 : _a.frameElement);
       return element.map(SugarElement.fromDom);
     };
     const owner = element => documentOrOwner(element);
@@ -10338,7 +10338,7 @@
       return SugarPosition(r.left + offset.left + scroll.left, r.top + offset.top + scroll.top);
     };
 
-    const excludeFromDescend = element => name(element) === 'textarea';
+    const excludeFromDescend = element => name(element) == 'textarea';
     const fireScrollIntoViewEvent = (editor, data) => {
       const scrollEvent = editor.dispatch('ScrollIntoView', data);
       return scrollEvent.isDefaultPrevented();
@@ -10348,7 +10348,7 @@
     };
     const descend = (element, offset) => {
       const children = children$1(element);
-      if (children.length === 0 || excludeFromDescend(element)) {
+      if (children.length == 0 || excludeFromDescend(element)) {
         return {
           element,
           offset
@@ -10366,7 +10366,7 @@
             offset
           };
         } else {
-          if (name(last) === 'img') {
+          if (name(last) == 'img') {
             return {
               element: last,
               offset: 1
@@ -10456,12 +10456,12 @@
       const markerBottom = marker.bottom;
       const largerThanViewport = markerBottom - markerTop >= viewHeight;
       if (markerTop < scrollTop) {
-        scrollToMarker(editor, marker, viewHeight, alignToTop !== false, doc);
+        scrollToMarker(editor, marker, viewHeight, alignToTop != false, doc);
       } else if (markerTop > viewportBottom) {
-        const align = largerThanViewport ? alignToTop !== false : alignToTop === true;
+        const align = largerThanViewport ? alignToTop != false : alignToTop == true;
         scrollToMarker(editor, marker, viewHeight, align, doc);
       } else if (markerBottom > viewportBottom && !largerThanViewport) {
-        scrollToMarker(editor, marker, viewHeight, alignToTop === true, doc);
+        scrollToMarker(editor, marker, viewHeight, alignToTop == true, doc);
       }
     };
     const intoWindow = (editor, doc, scrollTop, marker, alignToTop) => {
@@ -10474,9 +10474,9 @@
       const op = find(marker.element);
       const viewportBounds = getBounds(window);
       if (op.top < viewportBounds.y) {
-        intoView(marker.element, alignToTop !== false);
+        intoView(marker.element, alignToTop != false);
       } else if (op.top > viewportBounds.bottom) {
-        intoView(marker.element, alignToTop === true);
+        intoView(marker.element, alignToTop == true);
       }
     };
     const rangeIntoWindow = (editor, rng, alignToTop) => withMarker(editor, intoWindow, rng, alignToTop);
@@ -10495,7 +10495,7 @@
     const focus$1 = (element, preventScroll = false) => element.dom.focus({ preventScroll });
     const hasFocus$1 = element => {
       const root = getRootNode(element).dom;
-      return element.dom === root.activeElement;
+      return element.dom == root.activeElement;
     };
     const active$1 = (root = getDocument()) => Optional.from(root.dom.activeElement).map(SugarElement.fromDom);
     const search = element => active$1(getRootNode(element)).filter(e => element.dom.contains(e.dom));
@@ -10516,7 +10516,7 @@
     const nativeRangeToSelectionRange = r => SimSelection.range(SugarElement.fromDom(r.startContainer), r.startOffset, SugarElement.fromDom(r.endContainer), r.endOffset);
     const readRange = win => {
       const selection = win.getSelection();
-      const rng = !selection || selection.rangeCount === 0 ? Optional.none() : Optional.from(selection.getRangeAt(0));
+      const rng = !selection || selection.rangeCount == 0 ? Optional.none() : Optional.from(selection.getRangeAt(0));
       return rng.map(nativeRangeToSelectionRange);
     };
     const getBookmark = root => {
@@ -10548,7 +10548,7 @@
 
     const isEditorUIElement$1 = elm => {
       const className = elm.className.toString();
-      return className.indexOf('tox-') !== -1 || className.indexOf('mce-') !== -1;
+      return className.indexOf('tox-') != -1 || className.indexOf('mce-') != -1;
     };
     const FocusManager = { isEditorUIElement: isEditorUIElement$1 };
 
@@ -10585,7 +10585,7 @@
     };
 
     const isManualNodeChange = e => {
-      return e.type === 'nodechange' && e.selectionChange;
+      return e.type == 'nodechange' && e.selectionChange;
     };
     const registerPageMouseUp = (editor, throttledStore) => {
       const mouseUpPage = () => {
@@ -10631,7 +10631,7 @@
     };
     const isEditorContentAreaElement = elm => {
       const classList = elm.classList;
-      if (classList !== undefined) {
+      if (classList != undefined) {
         return classList.contains('tox-edit-area') || classList.contains('tox-edit-area__iframe') || classList.contains('mce-content-body');
       } else {
         return false;
@@ -10642,7 +10642,7 @@
       const parent = DOM$9.getParent(elm, elm => {
         return isEditorUIElement(elm) || (customSelector ? editor.dom.is(elm, customSelector) : false);
       });
-      return parent !== null;
+      return parent != null;
     };
     const getActiveElement = editor => {
       try {
@@ -10656,7 +10656,7 @@
       const editor = e.editor;
       register$6(editor);
       const toggleContentAreaOnFocus = (editor, fn) => {
-        if (shouldHighlightOnFocus(editor) && editor.inline !== true) {
+        if (shouldHighlightOnFocus(editor) && editor.inline != true) {
           const contentArea = SugarElement.fromDom(editor.getContainer());
           fn(contentArea, 'tox-edit-focus');
         }
@@ -10666,7 +10666,7 @@
         if (isEditorContentAreaElement(getActiveElement(editor))) {
           toggleContentAreaOnFocus(editor, add$2);
         }
-        if (focusedEditor !== editor) {
+        if (focusedEditor != editor) {
           if (focusedEditor) {
             focusedEditor.dispatch('blur', { focusedEditor: editor });
           }
@@ -10679,10 +10679,10 @@
       editor.on('focusout', () => {
         Delay.setEditorTimeout(editor, () => {
           const focusedEditor = editorManager.focusedEditor;
-          if (!isEditorContentAreaElement(getActiveElement(editor)) || focusedEditor !== editor) {
+          if (!isEditorContentAreaElement(getActiveElement(editor)) || focusedEditor != editor) {
             toggleContentAreaOnFocus(editor, remove$7);
           }
-          if (!isUIElement(editor, getActiveElement(editor)) && focusedEditor === editor) {
+          if (!isUIElement(editor, getActiveElement(editor)) && focusedEditor == editor) {
             editor.dispatch('blur', { focusedEditor: null });
             editorManager.focusedEditor = null;
           }
@@ -10694,8 +10694,8 @@
           if (activeEditor) {
             getOriginalEventTarget(e).each(target => {
               const elem = target;
-              if (elem.ownerDocument === document) {
-                if (elem !== document.body && !isUIElement(activeEditor, elem) && editorManager.focusedEditor === activeEditor) {
+              if (elem.ownerDocument == document) {
+                if (elem != document.body && !isUIElement(activeEditor, elem) && editorManager.focusedEditor == activeEditor) {
                   activeEditor.dispatch('blur', { focusedEditor: null });
                   editorManager.focusedEditor = null;
                 }
@@ -10707,7 +10707,7 @@
       }
     };
     const unregisterDocumentEvents = (editorManager, e) => {
-      if (editorManager.focusedEditor === e.editor) {
+      if (editorManager.focusedEditor == e.editor) {
         editorManager.focusedEditor = null;
       }
       if (!editorManager.activeEditor && documentFocusInHandler) {
@@ -10720,7 +10720,7 @@
       editorManager.on('RemoveEditor', curry(unregisterDocumentEvents, editorManager));
     };
 
-    const getContentEditableHost = (editor, node) => editor.dom.getParent(node, node => editor.dom.getContentEditable(node) === 'true');
+    const getContentEditableHost = (editor, node) => editor.dom.getParent(node, node => editor.dom.getContentEditable(node) == 'true');
     const getCollapsedNode = rng => rng.collapsed ? Optional.from(getNode$1(rng.startContainer, rng.startOffset)).map(SugarElement.fromDom) : Optional.none();
     const getFocusInElement = (root, rng) => getCollapsedNode(rng).bind(node => {
       if (isTableSection(node)) {
@@ -10820,7 +10820,7 @@
     const getEnd$1 = (root, rng, real = false) => getEndpointElement(root, rng, false, real, (elm, offset) => offset > 0 ? offset - 1 : offset);
     const skipEmptyTextNodes = (node, forwards) => {
       const orig = node;
-      while (node && isText$a(node) && node.length === 0) {
+      while (node && isText$a(node) && node.length == 0) {
         node = forwards ? node.nextSibling : node.previousSibling;
       }
       return node || orig;
@@ -10835,7 +10835,7 @@
       const endOffset = rng.endOffset;
       let node = rng.commonAncestorContainer;
       if (!rng.collapsed) {
-        if (startContainer === endContainer) {
+        if (startContainer == endContainer) {
           if (endOffset - startOffset < 2) {
             if (startContainer.hasChildNodes()) {
               node = startContainer.childNodes[startOffset];
@@ -10843,17 +10843,17 @@
           }
         }
         if (isText$a(startContainer) && isText$a(endContainer)) {
-          if (startContainer.length === startOffset) {
+          if (startContainer.length == startOffset) {
             startContainer = skipEmptyTextNodes(startContainer.nextSibling, true);
           } else {
             startContainer = startContainer.parentNode;
           }
-          if (endOffset === 0) {
+          if (endOffset == 0) {
             endContainer = skipEmptyTextNodes(endContainer.previousSibling, false);
           } else {
             endContainer = endContainer.parentNode;
           }
-          if (startContainer && startContainer === endContainer) {
+          if (startContainer && startContainer == endContainer) {
             node = startContainer;
           }
         }
@@ -10866,19 +10866,19 @@
       const root = dom.getRoot();
       const start = dom.getParent(startElm || getStart(root, rng, rng.collapsed), dom.isBlock);
       const end = dom.getParent(endElm || getEnd$1(root, rng, rng.collapsed), dom.isBlock);
-      if (start && start !== root) {
+      if (start && start != root) {
         selectedBlocks.push(start);
       }
-      if (start && end && start !== end) {
+      if (start && end && start != end) {
         let node;
         const walker = new DomTreeWalker(start, root);
-        while ((node = walker.next()) && node !== end) {
+        while ((node = walker.next()) && node != end) {
           if (dom.isBlock(node)) {
             selectedBlocks.push(node);
           }
         }
       }
-      if (end && start !== end && end !== root) {
+      if (end && start != end && end != root) {
         selectedBlocks.push(end);
       }
       return selectedBlocks;
@@ -10897,12 +10897,12 @@
 
     const processRanges = (editor, ranges) => map$3(ranges, range => {
       const evt = editor.dispatch('GetSelectionRange', { range });
-      return evt.range !== range ? evt.range : range;
+      return evt.range != range ? evt.range : range;
     });
 
-    const getEnd = element => name(element) === 'img' ? 1 : getOption(element).fold(() => children$1(element).length, v => v.length);
-    const isTextNodeWithCursorPosition = el => getOption(el).filter(text => text.trim().length !== 0 || text.indexOf(nbsp) > -1).isSome();
-    const isContentEditableFalse$5 = elem => isHTMLElement$1(elem) && get$9(elem, 'contenteditable') === 'false';
+    const getEnd = element => name(element) == 'img' ? 1 : getOption(element).fold(() => children$1(element).length, v => v.length);
+    const isTextNodeWithCursorPosition = el => getOption(el).filter(text => text.trim().length != 0 || text.indexOf(nbsp) > -1).isSome();
+    const isContentEditableFalse$5 = elem => isHTMLElement$1(elem) && get$9(elem, 'contenteditable') == 'false';
     const elementsWithCursorPosition = [
       'img',
       'br'
@@ -10966,12 +10966,12 @@
       if (node[startName]) {
         return node[startName];
       }
-      if (node !== root) {
+      if (node != root) {
         let sibling = node[siblingName];
         if (sibling) {
           return sibling;
         }
-        for (let parent = node.parent; parent && parent !== root; parent = parent.parent) {
+        for (let parent = node.parent; parent && parent != root; parent = parent.parent) {
           sibling = parent[siblingName];
           if (sibling) {
             return sibling;
@@ -10982,18 +10982,18 @@
     };
     const isEmptyTextNode = node => {
       var _a;
-      const text = (_a = node.value) !== null && _a !== void 0 ? _a : '';
+      const text = (_a = node.value) != null && _a != void 0 ? _a : '';
       if (!isWhitespaceText(text)) {
         return false;
       }
       const parentNode = node.parent;
-      if (parentNode && (parentNode.name !== 'span' || parentNode.attr('style')) && /^[ ]+$/.test(text)) {
+      if (parentNode && (parentNode.name != 'span' || parentNode.attr('style')) && /^[ ]+$/.test(text)) {
         return false;
       }
       return true;
     };
     const isNonEmptyElement = node => {
-      const isNamedAnchor = node.name === 'a' && !node.attr('href') && node.attr('id');
+      const isNamedAnchor = node.name == 'a' && !node.attr('href') && node.attr('id');
       return node.attr('name') || node.attr('id') && !node.firstChild || node.attr('data-mce-bookmark') || isNamedAnchor;
     };
     class AstNode {
@@ -11009,7 +11009,7 @@
       constructor(name, type) {
         this.name = name;
         this.type = type;
-        if (type === 1) {
+        if (type == 1) {
           this.attributes = [];
           this.attributes.map = {};
         }
@@ -11035,13 +11035,13 @@
         }
         const attrs = self.attributes;
         if (attrs) {
-          if (value !== undefined) {
-            if (value === null) {
+          if (value != undefined) {
+            if (value == null) {
               if (name in attrs.map) {
                 delete attrs.map[name];
                 let i = attrs.length;
                 while (i--) {
-                  if (attrs[i].name === name) {
+                  if (attrs[i].name == name) {
                     attrs.splice(i, 1);
                     return self;
                   }
@@ -11052,7 +11052,7 @@
             if (name in attrs.map) {
               let i = attrs.length;
               while (i--) {
-                if (attrs[i].name === name) {
+                if (attrs[i].name == name) {
                   attrs[i].value = value;
                   break;
                 }
@@ -11079,7 +11079,7 @@
           cloneAttrs.map = {};
           for (let i = 0, l = selfAttrs.length; i < l; i++) {
             const selfAttr = selfAttrs[i];
-            if (selfAttr.name !== 'id') {
+            if (selfAttr.name != 'id') {
               cloneAttrs[cloneAttrs.length] = {
                 name: selfAttr.name,
                 value: selfAttr.value
@@ -11112,7 +11112,7 @@
       remove() {
         const self = this, parent = self.parent, next = self.next, prev = self.prev;
         if (parent) {
-          if (parent.firstChild === self) {
+          if (parent.firstChild == self) {
             parent.firstChild = next;
             if (next) {
               next.prev = null;
@@ -11120,7 +11120,7 @@
           } else if (prev) {
             prev.next = next;
           }
-          if (parent.lastChild === self) {
+          if (parent.lastChild == self) {
             parent.lastChild = prev;
             if (prev) {
               prev.next = null;
@@ -11154,7 +11154,7 @@
         }
         const parent = refNode.parent || this;
         if (before) {
-          if (refNode === parent.firstChild) {
+          if (refNode == parent.firstChild) {
             parent.firstChild = node;
           } else if (refNode.prev) {
             refNode.prev.next = node;
@@ -11163,7 +11163,7 @@
           node.next = refNode;
           refNode.prev = node;
         } else {
-          if (refNode === parent.lastChild) {
+          if (refNode == parent.lastChild) {
             parent.lastChild = node;
           } else if (refNode.next) {
             refNode.next.prev = node;
@@ -11179,7 +11179,7 @@
         const self = this;
         const collection = [];
         for (let node = self.firstChild; node; node = walk$2(node, self)) {
-          if (node.name === name) {
+          if (node.name == name) {
             collection.push(node);
           }
         }
@@ -11218,7 +11218,7 @@
         }
         if (node) {
           do {
-            if (node.type === 1) {
+            if (node.type == 1) {
               if (node.attr('data-mce-bogus')) {
                 continue;
               }
@@ -11229,13 +11229,13 @@
                 return false;
               }
             }
-            if (node.type === 8) {
+            if (node.type == 8) {
               return false;
             }
-            if (node.type === 3 && !isEmptyTextNode(node)) {
+            if (node.type == 3 && !isEmptyTextNode(node)) {
               return false;
             }
-            if (node.type === 3 && node.parent && whitespace[node.parent.name] && isWhitespaceText((_a = node.value) !== null && _a !== void 0 ? _a : '')) {
+            if (node.type == 3 && node.parent && whitespace[node.parent.name] && isWhitespaceText((_a = node.value) != null && _a != void 0 ? _a : '')) {
               return false;
             }
             if (predicate && predicate(node)) {
@@ -11252,7 +11252,7 @@
 
     const unescapedTextParents = Tools.makeMap('NOSCRIPT STYLE SCRIPT XMP IFRAME NOEMBED NOFRAMES PLAINTEXT', ' ');
     const containsZwsp = node => isString(node.nodeValue) && node.nodeValue.includes(ZWSP$1);
-    const getTemporaryNodeSelector = tempAttrs => `${ tempAttrs.length === 0 ? '' : `${ map$3(tempAttrs, attr => `[${ attr }]`).join(',') },` }[data-mce-bogus="all"]`;
+    const getTemporaryNodeSelector = tempAttrs => `${ tempAttrs.length == 0 ? '' : `${ map$3(tempAttrs, attr => `[${ attr }]`).join(',') },` }[data-mce-bogus="all"]`;
     const getTemporaryNodes = (tempAttrs, body) => body.querySelectorAll(getTemporaryNodeSelector(tempAttrs));
     const createZwspCommentWalker = body => document.createTreeWalker(body, NodeFilter.SHOW_COMMENT, node => containsZwsp(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP);
     const createUnescapedZwspTextWalker = body => document.createTreeWalker(body, NodeFilter.SHOW_TEXT, node => {
@@ -11263,13 +11263,13 @@
         return NodeFilter.FILTER_SKIP;
       }
     });
-    const hasZwspComment = body => createZwspCommentWalker(body).nextNode() !== null;
-    const hasUnescapedZwspText = body => createUnescapedZwspTextWalker(body).nextNode() !== null;
-    const hasTemporaryNode = (tempAttrs, body) => body.querySelector(getTemporaryNodeSelector(tempAttrs)) !== null;
+    const hasZwspComment = body => createZwspCommentWalker(body).nextNode() != null;
+    const hasUnescapedZwspText = body => createUnescapedZwspTextWalker(body).nextNode() != null;
+    const hasTemporaryNode = (tempAttrs, body) => body.querySelector(getTemporaryNodeSelector(tempAttrs)) != null;
     const trimTemporaryNodes = (tempAttrs, body) => {
       each$e(getTemporaryNodes(tempAttrs, body), elm => {
         const element = SugarElement.fromDom(elm);
-        if (get$9(element, 'data-mce-bogus') === 'all') {
+        if (get$9(element, 'data-mce-bogus') == 'all') {
           remove$5(element);
         } else {
           each$e(tempAttrs, attr => {
@@ -11282,7 +11282,7 @@
     };
     const emptyAllNodeValuesInWalker = walker => {
       let curr = walker.nextNode();
-      while (curr !== null) {
+      while (curr != null) {
         curr.nodeValue = null;
         curr = walker.nextNode();
       }
@@ -11322,7 +11322,7 @@
       const bogusElements = descendants(parent, '[data-mce-bogus]');
       each$e(bogusElements, elem => {
         const bogusValue = get$9(elem, 'data-mce-bogus');
-        if (bogusValue === 'all') {
+        if (bogusValue == 'all') {
           remove$5(elem);
         } else if (isBr$5(elem)) {
           before$3(elem, SugarElement.fromText(zeroWidth));
@@ -11365,19 +11365,19 @@
     };
     const getContentFromBody = (editor, args, body) => {
       let content;
-      if (args.format === 'raw') {
+      if (args.format == 'raw') {
         content = Tools.trim(trim$2(trim$1(body, editor.serializer.getTempAttrs()).innerHTML));
-      } else if (args.format === 'text') {
+      } else if (args.format == 'text') {
         content = getPlainTextContent(editor, body);
-      } else if (args.format === 'tree') {
+      } else if (args.format == 'tree') {
         content = editor.serializer.serialize(body, args);
       } else {
         content = trimEmptyContents(editor, editor.serializer.serialize(body, args));
       }
-      const shouldTrim = args.format !== 'text' && !isWsPreserveElement(SugarElement.fromDom(body));
+      const shouldTrim = args.format != 'text' && !isWsPreserveElement(SugarElement.fromDom(body));
       return shouldTrim && isString(content) ? Tools.trim(content) : content;
     };
-    const getContentInternal = (editor, args) => Optional.from(editor.getBody()).fold(constant(args.format === 'tree' ? new AstNode('body', 11) : ''), body => getContentFromBody(editor, args, body));
+    const getContentInternal = (editor, args) => Optional.from(editor.getBody()).fold(constant(args.format == 'tree' ? new AstNode('body', 11) : ''), body => getContentFromBody(editor, args, body));
 
     const makeMap$1 = Tools.makeMap;
     const Writer = settings => {
@@ -11387,12 +11387,12 @@
       const indentBefore = makeMap$1(settings.indent_before || '');
       const indentAfter = makeMap$1(settings.indent_after || '');
       const encode = Entities.getEncodeFunc(settings.entity_encoding || 'raw', settings.entities);
-      const htmlOutput = settings.element_format !== 'xhtml';
+      const htmlOutput = settings.element_format != 'xhtml';
       return {
         start: (name, attrs, empty) => {
           if (indent && indentBefore[name] && html.length > 0) {
             const value = html[html.length - 1];
-            if (value.length > 0 && value !== '\n') {
+            if (value.length > 0 && value != '\n') {
               html.push('\n');
             }
           }
@@ -11410,7 +11410,7 @@
           }
           if (empty && indent && indentAfter[name] && html.length > 0) {
             const value = html[html.length - 1];
-            if (value.length > 0 && value !== '\n') {
+            if (value.length > 0 && value != '\n') {
               html.push('\n');
             }
           }
@@ -11420,7 +11420,7 @@
           html.push('</', name, '>');
           if (indent && indentAfter[name] && html.length > 0) {
             value = html[html.length - 1];
-            if (value.length > 0 && value !== '\n') {
+            if (value.length > 0 && value != '\n') {
               html.push('\n');
             }
           }
@@ -11466,22 +11466,22 @@
         const handlers = {
           3: node => {
             var _a;
-            writer.text((_a = node.value) !== null && _a !== void 0 ? _a : '', node.raw);
+            writer.text((_a = node.value) != null && _a != void 0 ? _a : '', node.raw);
           },
           8: node => {
             var _a;
-            writer.comment((_a = node.value) !== null && _a !== void 0 ? _a : '');
+            writer.comment((_a = node.value) != null && _a != void 0 ? _a : '');
           },
           7: node => {
             writer.pi(node.name, node.value);
           },
           10: node => {
             var _a;
-            writer.doctype((_a = node.value) !== null && _a !== void 0 ? _a : '');
+            writer.doctype((_a = node.value) != null && _a != void 0 ? _a : '');
           },
           4: node => {
             var _a;
-            writer.cdata((_a = node.value) !== null && _a !== void 0 ? _a : '');
+            writer.cdata((_a = node.value) != null && _a != void 0 ? _a : '');
           },
           11: node => {
             let tempNode = node;
@@ -11540,7 +11540,7 @@
               if (!isEmpty) {
                 let child = node.firstChild;
                 if (child) {
-                  if ((name === 'pre' || name === 'textarea') && child.type === 3 && ((_a = child.value) === null || _a === void 0 ? void 0 : _a[0]) === '\n') {
+                  if ((name == 'pre' || name == 'textarea') && child.type == 3 && ((_a = child.value) == null || _a == void 0 ? void 0 : _a[0]) == '\n') {
                     writer.text('\n', true);
                   }
                   do {
@@ -11554,9 +11554,9 @@
             handler(node);
           }
         };
-        if (node.type === 1 && !settings.inner) {
+        if (node.type == 1 && !settings.inner) {
           walk(node);
-        } else if (node.type === 3) {
+        } else if (node.type == 3) {
           handlers[3](node);
         } else {
           handlers[11](node);
@@ -11636,12 +11636,12 @@
       const parentNodeStyleProps = getStyleProps(dom, parentNode);
       const valueMismatch = prop => {
         var _a, _b;
-        const nodeValue = (_a = dom.getStyle(node, prop)) !== null && _a !== void 0 ? _a : '';
-        const parentValue = (_b = dom.getStyle(parentNode, prop)) !== null && _b !== void 0 ? _b : '';
-        return isNotEmpty(nodeValue) && isNotEmpty(parentValue) && nodeValue !== parentValue;
+        const nodeValue = (_a = dom.getStyle(node, prop)) != null && _a != void 0 ? _a : '';
+        const parentValue = (_b = dom.getStyle(parentNode, prop)) != null && _b != void 0 ? _b : '';
+        return isNotEmpty(nodeValue) && isNotEmpty(parentValue) && nodeValue != parentValue;
       };
       return exists(nodeStyleProps, nodeStyleProp => {
-        const propExists = props => exists(props, prop => prop === nodeStyleProp);
+        const propExists = props => exists(props, prop => prop == nodeStyleProp);
         if (!propExists(parentNodeStyleProps) && propExists(shorthandStyleProps)) {
           const longhandProps = getLonghandStyleProps(parentNodeStyleProps);
           return exists(longhandProps, valueMismatch);
@@ -11659,10 +11659,10 @@
     const isAfterSpace = curry(isChar, false, isWhiteSpace);
     const isEmptyText = pos => {
       const container = pos.container();
-      return isText$a(container) && (container.data.length === 0 || isZwsp$1(container.data) && BookmarkManager.isBookmarkNode(container.parentNode));
+      return isText$a(container) && (container.data.length == 0 || isZwsp$1(container.data) && BookmarkManager.isBookmarkNode(container.parentNode));
     };
     const matchesElementPosition = (before, predicate) => pos => getChildNodeAtRelativeOffset(before ? 0 : -1, pos).filter(predicate).isSome();
-    const isImageBlock = node => isImg(node) && get$7(SugarElement.fromDom(node), 'display') === 'block';
+    const isImageBlock = node => isImg(node) && get$7(SugarElement.fromDom(node), 'display') == 'block';
     const isCefNode = node => isContentEditableFalse$b(node) && !isBogusAll$1(node);
     const isBeforeImageBlock = matchesElementPosition(true, isImageBlock);
     const isAfterImageBlock = matchesElementPosition(false, isImageBlock);
@@ -11811,7 +11811,7 @@
     const normalizeNbspInMiddleOfTextNode = node => {
       const text = node.data;
       const newText = normalizeNbspMiddle(text);
-      if (newText !== text) {
+      if (newText != text) {
         node.data = newText;
         return true;
       } else {
@@ -11856,14 +11856,14 @@
     };
 
     const normalize$1 = (node, offset, count, schema) => {
-      if (count === 0) {
+      if (count == 0) {
         return;
       }
       const elm = SugarElement.fromDom(node);
       const root = ancestor$4(elm, el => schema.isBlock(name(el))).getOr(elm);
       const whitespace = node.data.slice(offset, offset + count);
       const isEndOfContent = offset + count >= node.data.length && needsToBeNbspRight(root, CaretPosition(node, node.data.length), schema);
-      const isStartOfContent = offset === 0 && needsToBeNbspLeft(root, CaretPosition(node, 0), schema);
+      const isStartOfContent = offset == 0 && needsToBeNbspLeft(root, CaretPosition(node, 0), schema);
       node.replaceData(offset, count, normalize$4(whitespace, 4, isStartOfContent, isEndOfContent));
     };
     const normalizeWhitespaceAfter = (node, offset, schema) => {
@@ -11895,7 +11895,7 @@
     const needsReposition = (pos, elm) => {
       const container = pos.container();
       const offset = pos.offset();
-      return !CaretPosition.isTextPosition(pos) && container === elm.parentNode && offset > CaretPosition.before(elm).offset();
+      return !CaretPosition.isTextPosition(pos) && container == elm.parentNode && offset > CaretPosition.before(elm).offset();
     };
     const reposition = (elm, pos) => needsReposition(pos, elm) ? CaretPosition(pos.container(), pos.offset() - 1) : pos;
     const beforeOrStartOf = node => isText$a(node) ? CaretPosition(node, 0) : CaretPosition.before(node);
@@ -11929,7 +11929,7 @@
         editor.selection.setRng(pos.toRange(), forward);
       });
     };
-    const eqRawNode = rawNode => elm => elm.dom === rawNode;
+    const eqRawNode = rawNode => elm => elm.dom == rawNode;
     const isBlock = (editor, elm) => elm && has$2(editor.schema.getBlockElements(), name(elm));
     const paddEmptyBlock = (elm, preserveEmptyCaret) => {
       if (isEmpty$2(elm)) {
@@ -11957,7 +11957,7 @@
         const prevNode = prev.dom, nextNode = next.dom;
         const offset = prevNode.data.length;
         mergeTextNodes(prevNode, nextNode, schema, normalizeWhitespace);
-        return pos.container() === nextNode ? CaretPosition(prevNode, offset) : pos;
+        return pos.container() == nextNode ? CaretPosition(prevNode, offset) : pos;
       }).orThunk(() => {
         if (normalizeWhitespace) {
           prevTextOpt.each(elm => normalizeWhitespaceBefore(elm.dom, elm.dom.length, schema));
@@ -11993,7 +11993,7 @@
     const isInlineTarget = (editor, elm) => is$1(SugarElement.fromDom(elm), getInlineBoundarySelector(editor)) && !isTransparentBlock(editor.schema, elm) && editor.dom.isEditable(elm);
     const isRtl = element => {
       var _a;
-      return DOMUtils.DOM.getStyle(element, 'direction', true) === 'rtl' || hasStrongRtl((_a = element.textContent) !== null && _a !== void 0 ? _a : '');
+      return DOMUtils.DOM.getStyle(element, 'direction', true) == 'rtl' || hasStrongRtl((_a = element.textContent) != null && _a != void 0 ? _a : '');
     };
     const findInlineParents = (isInlineTarget, rootNode, pos) => filter$5(DOMUtils.DOM.getParents(pos.container(), '*', rootNode), isInlineTarget);
     const findRootInline = (isInlineTarget, rootNode, pos) => {
@@ -12003,7 +12003,7 @@
     const hasSameParentBlock = (rootNode, node1, node2) => {
       const block1 = getParentBlock$3(node1, rootNode);
       const block2 = getParentBlock$3(node2, rootNode);
-      return isNonNullable(block1) && block1 === block2;
+      return isNonNullable(block1) && block1 == block2;
     };
     const isAtZwsp = pos => isBeforeInline(pos) || isAfterInline(pos);
     const normalizePosition = (forward, pos) => {
@@ -12076,8 +12076,8 @@
       var _a;
       rng.deleteContents();
       const lastNode = freefallRtl(root).getOr(root);
-      const lastBlock = SugarElement.fromDom((_a = editor.dom.getParent(lastNode.dom, editor.dom.isBlock)) !== null && _a !== void 0 ? _a : root.dom);
-      if (lastBlock.dom === editor.getBody()) {
+      const lastBlock = SugarElement.fromDom((_a = editor.dom.getParent(lastNode.dom, editor.dom.isBlock)) != null && _a != void 0 ? _a : root.dom);
+      if (lastBlock.dom == editor.getBody()) {
         paddEmptyBody(editor, moveSelection);
       } else if (isEmpty$2(lastBlock)) {
         fillWithPaddingBr(lastBlock);
@@ -12171,7 +12171,7 @@
     const getTableFromCellRng = (cellRng, isRoot) => getClosestTable(cellRng.start, isRoot).bind(startParentTable => getClosestTable(cellRng.end, isRoot).bind(endParentTable => someIf(eq(startParentTable, endParentTable), startParentTable)));
     const isSingleCellTable = (cellRng, isRoot) => !isExpandedCellRng(cellRng) && getTableFromCellRng(cellRng, isRoot).exists(table => {
       const rows = table.dom.rows;
-      return rows.length === 1 && rows[0].cells.length === 1;
+      return rows.length == 1 && rows[0].cells.length == 1;
     });
     const getCellRng = (rng, isRoot) => {
       const startCell = getClosestCell$1(rng.startContainer, isRoot);
@@ -12214,7 +12214,7 @@
     const handleSingleTable = (cellRng, selectionDetails, rng, isRoot) => getTableSelections(cellRng, selectionDetails, rng, isRoot).bind(({start, end}) => start.or(end)).bind(tableSelection => {
       const {isSameTable} = selectionDetails;
       const selectedCells = getSelectedCells(tableSelection).getOr([]);
-      if (isSameTable && tableSelection.cells.length === selectedCells.length) {
+      if (isSameTable && tableSelection.cells.length == selectedCells.length) {
         return Optional.some(deleteAction.fullTable(tableSelection.table));
       } else if (selectedCells.length > 0) {
         if (isSameTable) {
@@ -12330,7 +12330,7 @@
     const deleteRange$3 = (editor, startElm, selectedCells) => {
       const rootNode = SugarElement.fromDom(editor.getBody());
       const rng = editor.selection.getRng();
-      return selectedCells.length !== 0 ? emptySingleTableCells(editor, selectedCells, Optional.none()) : deleteTableRange(editor, rootNode, rng, startElm);
+      return selectedCells.length != 0 ? emptySingleTableCells(editor, selectedCells, Optional.none()) : deleteTableRange(editor, rootNode, rng, startElm);
     };
     const getParentCell = (rootElm, elm) => find$2(parentsAndSelf(elm, rootElm), isTableCell$2);
     const getParentCaption = (rootElm, elm) => find$2(parentsAndSelf(elm, rootElm), isTag('caption'));
@@ -12363,12 +12363,12 @@
     const backspaceDelete$a = (editor, forward) => {
       const startElm = SugarElement.fromDom(editor.selection.getStart(true));
       const cells = getCellsFromEditor(editor);
-      return editor.selection.isCollapsed() && cells.length === 0 ? deleteCaret$3(editor, forward, startElm) : deleteRange$3(editor, startElm, cells);
+      return editor.selection.isCollapsed() && cells.length == 0 ? deleteCaret$3(editor, forward, startElm) : deleteRange$3(editor, startElm, cells);
     };
 
     const getContentEditableRoot$1 = (root, node) => {
       let tempNode = node;
-      while (tempNode && tempNode !== root) {
+      while (tempNode && tempNode != root) {
         if (isContentEditableTrue$3(tempNode) || isContentEditableFalse$b(tempNode)) {
           return tempNode;
         }
@@ -12389,14 +12389,14 @@
       const dom = editor.dom;
       const internalAttributes = new Set(editor.serializer.getTempAttrs());
       const compare = (node1, node2) => {
-        if (node1.nodeName !== node2.nodeName || node1.nodeType !== node2.nodeType) {
+        if (node1.nodeName != node2.nodeName || node1.nodeType != node2.nodeType) {
           return false;
         }
         const getAttribs = node => {
           const attribs = {};
           each$9(dom.getAttribs(node), attr => {
             const name = attr.nodeName.toLowerCase();
-            if (name !== 'style' && !isAttributeInternal(name)) {
+            if (name != 'style' && !isAttributeInternal(name)) {
               attribs[name] = dom.getAttrib(node, name);
             }
           });
@@ -12409,7 +12409,7 @@
               if (isUndefined(value)) {
                 return false;
               }
-              if (obj1[name] !== value) {
+              if (obj1[name] != value) {
                 return false;
               }
               delete obj2[name];
@@ -12447,7 +12447,7 @@
       'h5',
       'h6'
     ].includes(node.name);
-    const isSummary = node => node.name === 'summary';
+    const isSummary = node => node.name == 'summary';
 
     const traverse = (root, fn) => {
       let node = root;
@@ -12459,7 +12459,7 @@
       const name = node.name;
       for (let ni = 0, nl = nodeFilters.length; ni < nl; ni++) {
         const filter = nodeFilters[ni];
-        if (filter.name === name) {
+        if (filter.name == name) {
           const match = matches.nodes[name];
           if (match) {
             match.nodes.push(node);
@@ -12508,7 +12508,7 @@
           each$e(match.filter.callbacks, callback => {
             for (let i = nodes.length - 1; i >= 0; i--) {
               const node = nodes[i];
-              const valueMatches = filteringAttributes ? node.attr(match.filter.name) !== undefined : node.name === match.filter.name;
+              const valueMatches = filteringAttributes ? node.attr(match.filter.name) != undefined : node.name == match.filter.name;
               if (!valueMatches || isNullable(node.parent)) {
                 nodes.splice(i, 1);
               }
@@ -12541,25 +12541,25 @@
     };
     const isPaddedWithNbsp = node => {
       var _a;
-      return hasOnlyChild(node, '#text') && ((_a = node === null || node === void 0 ? void 0 : node.firstChild) === null || _a === void 0 ? void 0 : _a.value) === nbsp;
+      return hasOnlyChild(node, '#text') && ((_a = node == null || node == void 0 ? void 0 : node.firstChild) == null || _a == void 0 ? void 0 : _a.value) == nbsp;
     };
     const hasOnlyChild = (node, name) => {
-      const firstChild = node === null || node === void 0 ? void 0 : node.firstChild;
-      return isNonNullable(firstChild) && firstChild === node.lastChild && firstChild.name === name;
+      const firstChild = node == null || node == void 0 ? void 0 : node.firstChild;
+      return isNonNullable(firstChild) && firstChild == node.lastChild && firstChild.name == name;
     };
     const isPadded = (schema, node) => {
       const rule = schema.getElementRule(node.name);
-      return (rule === null || rule === void 0 ? void 0 : rule.paddEmpty) === true;
+      return (rule == null || rule == void 0 ? void 0 : rule.paddEmpty) == true;
     };
     const isEmpty = (schema, nonEmptyElements, whitespaceElements, node) => node.isEmpty(nonEmptyElements, whitespaceElements, node => isPadded(schema, node));
-    const isLineBreakNode = (node, isBlock) => isNonNullable(node) && (isBlock(node) || node.name === 'br');
+    const isLineBreakNode = (node, isBlock) => isNonNullable(node) && (isBlock(node) || node.name == 'br');
     const findClosestEditingHost = scope => {
       let editableNode;
       for (let node = scope; node; node = node.parent) {
         const contentEditable = node.attr('contenteditable');
-        if (contentEditable === 'false') {
+        if (contentEditable == 'false') {
           break;
-        } else if (contentEditable === 'true') {
+        } else if (contentEditable == 'true') {
           editableNode = node;
         }
       }
@@ -12585,7 +12585,7 @@
       const whitespaceElements = schema.getWhitespaceElements();
       const nonSplittableElements = Tools.makeMap('tr,td,th,tbody,thead,tfoot,table,summary');
       const fixed = new Set();
-      const isSplittableElement = node => node !== rootNode && !nonSplittableElements[node.name];
+      const isSplittableElement = node => node != rootNode && !nonSplittableElements[node.name];
       for (let ni = 0; ni < nodes.length; ni++) {
         const node = nodes[ni];
         let parent;
@@ -12594,7 +12594,7 @@
         if (!node.parent || fixed.has(node)) {
           continue;
         }
-        if (textBlockElements[node.name] && node.parent.name === 'li') {
+        if (textBlockElements[node.name] && node.parent.name == 'li') {
           let sibling = node.next;
           while (sibling) {
             if (textBlockElements[sibling.name]) {
@@ -12627,7 +12627,7 @@
               } else {
                 tempNode = currentNode;
               }
-              for (let childNode = parents[i].firstChild; childNode && childNode !== parents[i + 1];) {
+              for (let childNode = parents[i].firstChild; childNode && childNode != parents[i + 1];) {
                 const nextNode = childNode.next;
                 tempNode.append(childNode);
                 childNode = nextNode;
@@ -12648,14 +12648,14 @@
             removeOrUnwrapInvalidNode(node, schema);
           }
         } else if (node.parent) {
-          if (node.name === 'li') {
+          if (node.name == 'li') {
             let sibling = node.prev;
-            if (sibling && (sibling.name === 'ul' || sibling.name === 'ol')) {
+            if (sibling && (sibling.name == 'ul' || sibling.name == 'ol')) {
               sibling.append(node);
               continue;
             }
             sibling = node.next;
-            if (sibling && (sibling.name === 'ul' || sibling.name === 'ol') && sibling.firstChild) {
+            if (sibling && (sibling.name == 'ul' || sibling.name == 'ol') && sibling.firstChild) {
               sibling.insert(node, sibling.firstChild, true);
               continue;
             }
@@ -12677,7 +12677,7 @@
     const hasClosest = (node, parentName) => {
       let tempNode = node;
       while (tempNode) {
-        if (tempNode.name === parentName) {
+        if (tempNode.name == parentName) {
           return true;
         }
         tempNode = tempNode.parent;
@@ -12691,11 +12691,11 @@
       if (schema.children[node.name] && !schema.isValidChild(parent.name, node.name)) {
         return true;
       }
-      if (node.name === 'a' && hasClosest(parent, 'a')) {
+      if (node.name == 'a' && hasClosest(parent, 'a')) {
         return true;
       }
       if (isSummary(parent) && isHeading(node)) {
-        return !((parent === null || parent === void 0 ? void 0 : parent.firstChild) === node && (parent === null || parent === void 0 ? void 0 : parent.lastChild) === node);
+        return !((parent == null || parent == void 0 ? void 0 : parent.firstChild) == node && (parent == null || parent == void 0 ? void 0 : parent.lastChild) == node);
       }
       return false;
     };
@@ -12721,10 +12721,10 @@
     const normalize = rng => rng.collapsed ? rng : normalizeBlockSelectionRange(rng);
 
     const hasOnlyOneChild$1 = node => {
-      return isNonNullable(node.firstChild) && node.firstChild === node.lastChild;
+      return isNonNullable(node.firstChild) && node.firstChild == node.lastChild;
     };
     const isPaddingNode = node => {
-      return node.name === 'br' || node.value === nbsp;
+      return node.name == 'br' || node.value == nbsp;
     };
     const isPaddedEmptyBlock = (schema, node) => {
       const blockElements = schema.getBlockElements();
@@ -12737,29 +12737,29 @@
     const isListFragment = (schema, fragment) => {
       let firstChild = fragment.firstChild;
       let lastChild = fragment.lastChild;
-      if (firstChild && firstChild.name === 'meta') {
+      if (firstChild && firstChild.name == 'meta') {
         firstChild = firstChild.next;
       }
-      if (lastChild && lastChild.attr('id') === 'mce_marker') {
+      if (lastChild && lastChild.attr('id') == 'mce_marker') {
         lastChild = lastChild.prev;
       }
       if (isEmptyFragmentElement(schema, lastChild)) {
-        lastChild = lastChild === null || lastChild === void 0 ? void 0 : lastChild.prev;
+        lastChild = lastChild == null || lastChild == void 0 ? void 0 : lastChild.prev;
       }
-      if (!firstChild || firstChild !== lastChild) {
+      if (!firstChild || firstChild != lastChild) {
         return false;
       }
-      return firstChild.name === 'ul' || firstChild.name === 'ol';
+      return firstChild.name == 'ul' || firstChild.name == 'ol';
     };
     const cleanupDomFragment = domFragment => {
       var _a, _b;
       const firstChild = domFragment.firstChild;
       const lastChild = domFragment.lastChild;
-      if (firstChild && firstChild.nodeName === 'META') {
-        (_a = firstChild.parentNode) === null || _a === void 0 ? void 0 : _a.removeChild(firstChild);
+      if (firstChild && firstChild.nodeName == 'META') {
+        (_a = firstChild.parentNode) == null || _a == void 0 ? void 0 : _a.removeChild(firstChild);
       }
-      if (lastChild && lastChild.id === 'mce_marker') {
-        (_b = lastChild.parentNode) === null || _b === void 0 ? void 0 : _b.removeChild(lastChild);
+      if (lastChild && lastChild.id == 'mce_marker') {
+        (_b = lastChild.parentNode) == null || _b == void 0 ? void 0 : _b.removeChild(lastChild);
       }
       return domFragment;
     };
@@ -12770,15 +12770,15 @@
     };
     const listItems = elm => {
       var _a;
-      return filter$5((_a = elm === null || elm === void 0 ? void 0 : elm.childNodes) !== null && _a !== void 0 ? _a : [], child => {
-        return child.nodeName === 'LI';
+      return filter$5((_a = elm == null || elm == void 0 ? void 0 : elm.childNodes) != null && _a != void 0 ? _a : [], child => {
+        return child.nodeName == 'LI';
       });
     };
     const isPadding = node => {
-      return node.data === nbsp || isBr$6(node);
+      return node.data == nbsp || isBr$6(node);
     };
     const isListItemPadded = node => {
-      return isNonNullable(node === null || node === void 0 ? void 0 : node.firstChild) && node.firstChild === node.lastChild && isPadding(node.firstChild);
+      return isNonNullable(node == null || node == void 0 ? void 0 : node.firstChild) && node.firstChild == node.lastChild && isPadding(node.firstChild);
     };
     const isEmptyOrPadded = elm => {
       return !elm.firstChild || isListItemPadded(elm);
@@ -12788,7 +12788,7 @@
     };
     const getParentLi = (dom, node) => {
       const parentBlock = dom.getParent(node, dom.isBlock);
-      return parentBlock && parentBlock.nodeName === 'LI' ? parentBlock : null;
+      return parentBlock && parentBlock.nodeName == 'LI' ? parentBlock : null;
     };
     const isParentBlockLi = (dom, node) => {
       return !!getParentLi(dom, node);
@@ -12850,9 +12850,9 @@
       const isAt = location => {
         const caretPos = CaretPosition.fromRangeStart(rng);
         const caretWalker = CaretWalker(dom.getRoot());
-        const newPos = location === BEGINNING ? caretWalker.prev(caretPos) : caretWalker.next(caretPos);
-        const newPosNode = newPos === null || newPos === void 0 ? void 0 : newPos.getNode();
-        return newPosNode ? getParentLi(dom, newPosNode) !== liTarget : true;
+        const newPos = location == BEGINNING ? caretWalker.prev(caretPos) : caretWalker.next(caretPos);
+        const newPosNode = newPos == null || newPos == void 0 ? void 0 : newPos.getNode();
+        return newPosNode ? getParentLi(dom, newPosNode) != liTarget : true;
       };
       if (!liTarget) {
         return null;
@@ -12870,12 +12870,12 @@
       var _a;
       const firstNode = fragment.firstChild;
       const lastNode = fragment.lastChild;
-      const last = lastNode.attr('data-mce-type') === 'bookmark' ? lastNode.prev : lastNode;
-      const isPastingSingleElement = firstNode === last;
+      const last = lastNode.attr('data-mce-type') == 'bookmark' ? lastNode.prev : lastNode;
+      const isPastingSingleElement = firstNode == last;
       const isWrappedElement = contains$2(mergeableWrappedElements, firstNode.name);
       if (isPastingSingleElement && isWrappedElement) {
-        const isContentEditable = firstNode.attr('contenteditable') !== 'false';
-        const isPastingInTheSameBlockTag = ((_a = dom.getParent(parentNode, dom.isBlock)) === null || _a === void 0 ? void 0 : _a.nodeName.toLowerCase()) === firstNode.name;
+        const isContentEditable = firstNode.attr('contenteditable') != 'false';
+        const isPastingInTheSameBlockTag = ((_a = dom.getParent(parentNode, dom.isBlock)) == null || _a == void 0 ? void 0 : _a.nodeName.toLowerCase()) == firstNode.name;
         const isPastingInContentEditable = Optional.from(getContentEditableRoot$1(root, parentNode)).forall(isContentEditableTrue$3);
         return isContentEditable && isPastingInTheSameBlockTag && isPastingInContentEditable;
       } else {
@@ -12886,19 +12886,19 @@
     const isTableCellContentSelected = (dom, rng, cell) => {
       if (isNonNullable(cell)) {
         const endCell = dom.getParent(rng.endContainer, isTableCell);
-        return cell === endCell && hasAllContentsSelected(SugarElement.fromDom(cell), rng);
+        return cell == endCell && hasAllContentsSelected(SugarElement.fromDom(cell), rng);
       } else {
         return false;
       }
     };
     const validInsertion = (editor, value, parentNode) => {
       var _a;
-      if (parentNode.getAttribute('data-mce-bogus') === 'all') {
-        (_a = parentNode.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(editor.dom.createFragment(value), parentNode);
+      if (parentNode.getAttribute('data-mce-bogus') == 'all') {
+        (_a = parentNode.parentNode) == null || _a == void 0 ? void 0 : _a.insertBefore(editor.dom.createFragment(value), parentNode);
       } else {
         const node = parentNode.firstChild;
         const node2 = parentNode.lastChild;
-        if (!node || node === node2 && node.nodeName === 'BR') {
+        if (!node || node == node2 && node.nodeName == 'BR') {
           editor.dom.setHTML(parentNode, value);
         } else {
           editor.selection.setContent(value, { no_events: true });
@@ -12917,7 +12917,7 @@
         Tools.each(dom.select('*[data-mce-fragment]'), node => {
           const isInline = isNonNullable(textInlineElements[node.nodeName.toLowerCase()]);
           if (isInline && hasInheritableStyles(dom, node)) {
-            for (let parentNode = node.parentElement; isNonNullable(parentNode) && parentNode !== root; parentNode = parentNode.parentElement) {
+            for (let parentNode = node.parentElement; isNonNullable(parentNode) && parentNode != root; parentNode = parentNode.parentElement) {
               const styleConflict = hasStyleConflict(dom, node, parentNode);
               if (styleConflict) {
                 break;
@@ -12934,7 +12934,7 @@
     const markFragmentElements = fragment => {
       let node = fragment;
       while (node = node.walk()) {
-        if (node.type === 1) {
+        if (node.type == 1) {
           node.attr('data-mce-fragment', '1');
         }
       }
@@ -12960,7 +12960,7 @@
       }
       selection.scrollIntoView(marker);
       const parentEditableElm = getContentEditableRoot$1(editor.getBody(), marker);
-      if (parentEditableElm && dom.getContentEditable(parentEditableElm) === 'false') {
+      if (parentEditableElm && dom.getContentEditable(parentEditableElm) == 'false') {
         dom.remove(marker);
         selection.select(parentEditableElm);
         return;
@@ -12968,11 +12968,11 @@
       let rng = dom.createRng();
       const node = marker.previousSibling;
       if (isText$a(node)) {
-        rng.setStart(node, (_b = (_a = node.nodeValue) === null || _a === void 0 ? void 0 : _a.length) !== null && _b !== void 0 ? _b : 0);
+        rng.setStart(node, (_b = (_a = node.nodeValue) == null || _a == void 0 ? void 0 : _a.length) != null && _b != void 0 ? _b : 0);
         const node2 = marker.nextSibling;
         if (isText$a(node2)) {
           node.appendData(node2.data);
-          (_c = node2.parentNode) === null || _c === void 0 ? void 0 : _c.removeChild(node2);
+          (_c = node2.parentNode) == null || _c == void 0 ? void 0 : _c.removeChild(node2);
         }
       } else {
         rng.setStartBefore(marker);
@@ -12982,7 +12982,7 @@
         let caretPos = CaretPosition.fromRangeStart(rng);
         const caretWalker = CaretWalker(editor.getBody());
         caretPos = caretWalker.next(caretPos);
-        return caretPos === null || caretPos === void 0 ? void 0 : caretPos.toRange();
+        return caretPos == null || caretPos == void 0 ? void 0 : caretPos.toRange();
       };
       const parentBlock = dom.getParent(marker, dom.isBlock);
       dom.remove(marker);
@@ -13007,7 +13007,7 @@
       const startCell = dom.getParent(rng.startContainer, isTableCell);
       if (isTableCellContentSelected(dom, rng, startCell)) {
         deleteCellContents(editor, rng, SugarElement.fromDom(startCell));
-      } else if (rng.startContainer === rng.endContainer && rng.endOffset - rng.startOffset === 1 && isText$a(rng.startContainer.childNodes[rng.startOffset])) {
+      } else if (rng.startContainer == rng.endContainer && rng.endOffset - rng.startOffset == 1 && isText$a(rng.startContainer.childNodes[rng.startOffset])) {
         rng.deleteContents();
       } else {
         editor.getDoc().execCommand('Delete', false);
@@ -13015,7 +13015,7 @@
     };
     const findMarkerNode = scope => {
       for (let markerNode = scope; markerNode; markerNode = markerNode.walk()) {
-        if (markerNode.attr('id') === 'mce_marker') {
+        if (markerNode.attr('id') == 'mce_marker') {
           return Optional.some(markerNode);
         }
       }
@@ -13023,7 +13023,7 @@
     };
     const notHeadingsInSummary = (dom, node, fragment) => {
       var _a;
-      return exists(fragment.children(), isHeading) && ((_a = dom.getParent(node, dom.isBlock)) === null || _a === void 0 ? void 0 : _a.nodeName) === 'SUMMARY';
+      return exists(fragment.children(), isHeading) && ((_a = dom.getParent(node, dom.isBlock)) == null || _a == void 0 ? void 0 : _a.nodeName) == 'SUMMARY';
     };
     const insertHtmlAtCaret = (editor, value, details) => {
       var _a, _b;
@@ -13036,14 +13036,14 @@
       if (!details.preserve_zwsp) {
         value = trim$2(value);
       }
-      if (value.indexOf('{$caret}') === -1) {
+      if (value.indexOf('{$caret}') == -1) {
         value += '{$caret}';
       }
       value = value.replace(/\{\$caret\}/, bookmarkHtml);
       let rng = selection.getRng();
       const caretElement = rng.startContainer;
       const body = editor.getBody();
-      if (caretElement === body && selection.isCollapsed()) {
+      if (caretElement == body && selection.isCollapsed()) {
         if (dom.isBlock(body.firstChild) && canHaveChildren(editor, body.firstChild) && dom.isEmpty(body.firstChild)) {
           rng = dom.createRng();
           rng.setStart(body.firstChild, 0);
@@ -13061,24 +13061,24 @@
         insert: true
       };
       const fragment = parser.parse(value, parserArgs);
-      if (details.paste === true && isListFragment(editor.schema, fragment) && isParentBlockLi(dom, parentNode)) {
+      if (details.paste == true && isListFragment(editor.schema, fragment) && isParentBlockLi(dom, parentNode)) {
         rng = insertAtCaret$1(serializer, dom, selection.getRng(), fragment);
         if (rng) {
           selection.setRng(rng);
         }
         return value;
       }
-      if (details.paste === true && shouldPasteContentOnly(dom, fragment, parentNode, editor.getBody())) {
-        (_a = fragment.firstChild) === null || _a === void 0 ? void 0 : _a.unwrap();
+      if (details.paste == true && shouldPasteContentOnly(dom, fragment, parentNode, editor.getBody())) {
+        (_a = fragment.firstChild) == null || _a == void 0 ? void 0 : _a.unwrap();
       }
       markFragmentElements(fragment);
       let node = fragment.lastChild;
-      if (node && node.attr('id') === 'mce_marker') {
+      if (node && node.attr('id') == 'mce_marker') {
         const marker = node;
         for (node = node.prev; node; node = node.walk(true)) {
-          if (node.type === 3 || !dom.isBlock(node.name)) {
+          if (node.type == 3 || !dom.isBlock(node.name)) {
             if (node.parent && editor.schema.isValidChild(node.parent.name, 'span')) {
-              node.parent.insert(marker, node, node.name === 'br');
+              node.parent.insert(marker, node, node.name == 'br');
             }
             break;
           }
@@ -13098,23 +13098,23 @@
         } else {
           tempNode = parentNode;
         }
-        while (tempNode && tempNode !== rootNode) {
+        while (tempNode && tempNode != rootNode) {
           parentNode = tempNode;
           tempNode = tempNode.parentNode;
         }
-        value = parentNode === rootNode ? rootNode.innerHTML : dom.getOuterHTML(parentNode);
+        value = parentNode == rootNode ? rootNode.innerHTML : dom.getOuterHTML(parentNode);
         const root = parser.parse(value);
         const markerNode = findMarkerNode(root);
         const editingHost = markerNode.bind(findClosestEditingHost).getOr(root);
         markerNode.each(marker => marker.replace(fragment));
         const toExtract = fragment.children();
-        const parent = (_b = fragment.parent) !== null && _b !== void 0 ? _b : root;
+        const parent = (_b = fragment.parent) != null && _b != void 0 ? _b : root;
         fragment.unwrap();
         const invalidChildren = filter$5(toExtract, node => isInvalid(editor.schema, node, parent));
         cleanInvalidNodes(invalidChildren, editor.schema, editingHost);
         filter$2(parser.getNodeFilters(), parser.getAttributeFilters(), root);
         value = serializer.serialize(root);
-        if (parentNode === rootNode) {
+        if (parentNode == rootNode) {
           dom.setHTML(rootNode, value);
         } else {
           dom.setOuterHTML(parentNode, value);
@@ -13141,15 +13141,15 @@
     };
     const setEditorHtml = (editor, html, noSelection) => {
       editor.dom.setHTML(editor.getBody(), html);
-      if (noSelection !== true) {
+      if (noSelection != true) {
         moveSelection(editor);
       }
     };
     const setContentString = (editor, body, content, args) => {
       content = trim$2(content);
-      if (content.length === 0 || /^\s+$/.test(content)) {
+      if (content.length == 0 || /^\s+$/.test(content)) {
         const padd = '<br data-mce-bogus="1">';
-        if (body.nodeName === 'TABLE') {
+        if (body.nodeName == 'TABLE') {
           content = '<tr><td>' + padd + '</td></tr>';
         } else if (/^(UL|OL)$/.test(body.nodeName)) {
           content = '<li>' + padd + '</li>';
@@ -13167,7 +13167,7 @@
           html: content
         };
       } else {
-        if (args.format !== 'raw') {
+        if (args.format != 'raw') {
           content = HtmlSerializer({ validate: false }, editor.schema).serialize(editor.parser.parse(content, {
             isRootContent: true,
             insert: true
@@ -13232,7 +13232,7 @@
       if (formatList) {
         for (let i = 0; i < formatList.length; i++) {
           const format = formatList[i];
-          if (isSelectorFormat(format) && format.inherit === false && ed.dom.is(node, format.selector)) {
+          if (isSelectorFormat(format) && format.inherit == false && ed.dom.is(node, format.selector)) {
             return true;
           }
         }
@@ -13241,14 +13241,14 @@
     };
     const matchParents = (editor, node, name, vars, similar) => {
       const root = editor.dom.getRoot();
-      if (node === root) {
+      if (node == root) {
         return false;
       }
       const matchedNode = editor.dom.getParent(node, elm => {
         if (matchesUnInheritedFormatSelector(editor, elm, name)) {
           return true;
         }
-        return elm.parentNode === root || !!matchNode(editor, elm, name, vars, true);
+        return elm.parentNode == root || !!matchNode(editor, elm, name, vars, true);
       });
       return !!matchNode(editor, matchedNode, name, vars, similar);
     };
@@ -13266,7 +13266,7 @@
     };
     const matchItems = (dom, node, format, itemName, similar, vars) => {
       const items = format[itemName];
-      const matchAttributes = itemName === 'attributes';
+      const matchAttributes = itemName == 'attributes';
       if (isFunction(format.onmatch)) {
         return format.onmatch(node, format, itemName);
       }
@@ -13328,7 +13328,7 @@
         return true;
       }
       const startNode = editor.selection.getStart();
-      if (startNode !== node) {
+      if (startNode != node) {
         if (matchParents(editor, startNode, name, vars, similar)) {
           return true;
         }
@@ -13413,7 +13413,7 @@
     };
     const trimZwspFromCaretContainer = caretContainerNode => {
       const textNode = findFirstTextNode(caretContainerNode);
-      if (textNode && textNode.data.charAt(0) === ZWSP) {
+      if (textNode && textNode.data.charAt(0) == ZWSP) {
         textNode.deleteData(0, 1);
       }
       return textNode;
@@ -13431,10 +13431,10 @@
         const endOffset = rng.endOffset;
         const textNode = trimZwspFromCaretContainer(node);
         dom.remove(node, true);
-        if (startContainer === textNode && startOffset > 0) {
+        if (startContainer == textNode && startOffset > 0) {
           rng.setStart(textNode, startOffset - 1);
         }
-        if (endContainer === textNode && endOffset > 0) {
+        if (endContainer == textNode && endOffset > 0) {
           rng.setEnd(textNode, endOffset - 1);
         }
         if (block && dom.isEmpty(block)) {
@@ -13461,11 +13461,11 @@
       const dom = editor.dom;
       const block = dom.getParent(formatNode, curry(isTextBlock$1, editor.schema));
       if (block && dom.isEmpty(block)) {
-        (_a = formatNode.parentNode) === null || _a === void 0 ? void 0 : _a.replaceChild(caretContainer, formatNode);
+        (_a = formatNode.parentNode) == null || _a == void 0 ? void 0 : _a.replaceChild(caretContainer, formatNode);
       } else {
         removeTrailingBr(SugarElement.fromDom(formatNode));
         if (dom.isEmpty(formatNode)) {
-          (_b = formatNode.parentNode) === null || _b === void 0 ? void 0 : _b.replaceChild(caretContainer, formatNode);
+          (_b = formatNode.parentNode) == null || _b == void 0 ? void 0 : _b.replaceChild(caretContainer, formatNode);
         } else {
           dom.insertAfter(caretContainer, formatNode);
         }
@@ -13480,13 +13480,13 @@
       const innerMostFormatNode = foldr(formatNodes, (parentNode, formatNode) => {
         return appendNode(parentNode, formatNode.cloneNode(false));
       }, caretContainer);
-      const doc = (_a = innerMostFormatNode.ownerDocument) !== null && _a !== void 0 ? _a : document;
+      const doc = (_a = innerMostFormatNode.ownerDocument) != null && _a != void 0 ? _a : document;
       return appendNode(innerMostFormatNode, doc.createTextNode(ZWSP));
     };
     const cleanFormatNode = (editor, caretContainer, formatNode, name, vars, similar) => {
       const formatter = editor.formatter;
       const dom = editor.dom;
-      const validFormats = filter$5(keys(formatter.get()), formatName => formatName !== name && !contains$1(formatName, 'removeformat'));
+      const validFormats = filter$5(keys(formatter.get()), formatName => formatName != name && !contains$1(formatName, 'removeformat'));
       const matchedFormats = matchAllOnNode(editor, formatNode, validFormats);
       const uniqueFormats = filter$5(matchedFormats, fmtName => !areSimilarFormats(editor, fmtName, name));
       if (uniqueFormats.length > 0) {
@@ -13521,7 +13521,7 @@
         selection.moveToBookmark(bookmark);
       } else {
         let textNode = caretContainer ? findFirstTextNode(caretContainer) : null;
-        if (!caretContainer || (textNode === null || textNode === void 0 ? void 0 : textNode.data) !== ZWSP) {
+        if (!caretContainer || (textNode == null || textNode == void 0 ? void 0 : textNode.data) != ZWSP) {
           caretContainer = importNode(editor.getDoc(), createCaretContainer(true).dom);
           textNode = caretContainer.firstChild;
           selectionRng.insertNode(caretContainer);
@@ -13546,7 +13546,7 @@
       const offset = rng.startOffset;
       let node = container;
       if (isText$a(container)) {
-        if (offset !== container.data.length) {
+        if (offset != container.data.length) {
           hasContentAfter = true;
         }
         node = node.parentNode;
@@ -13578,7 +13578,7 @@
         const caretContainer = getParentCaretContainer(editor.getBody(), formatNode);
         const parentsAfter = isNonNullable(caretContainer) ? dom.getParents(formatNode.parentNode, always, caretContainer) : [];
         const newCaretContainer = createCaretContainer(false).dom;
-        insertCaretContainerNode(editor, newCaretContainer, caretContainer !== null && caretContainer !== void 0 ? caretContainer : formatNode);
+        insertCaretContainerNode(editor, newCaretContainer, caretContainer != null && caretContainer != void 0 ? caretContainer : formatNode);
         const cleanedFormatNode = cleanFormatNode(editor, newCaretContainer, formatNode, name, vars, similar);
         const caretTextNode = insertFormatNodesIntoCaretContainer([
           ...parents,
@@ -13597,10 +13597,10 @@
     const disableCaretContainer = (editor, keyCode, moveCaret) => {
       const selection = editor.selection, body = editor.getBody();
       removeCaretContainer(editor, null, moveCaret);
-      if ((keyCode === 8 || keyCode === 46) && selection.isCollapsed() && selection.getStart().innerHTML === ZWSP) {
+      if ((keyCode == 8 || keyCode == 46) && selection.isCollapsed() && selection.getStart().innerHTML == ZWSP) {
         removeCaretContainer(editor, getParentCaretContainer(body, selection.getStart()), true);
       }
-      if (keyCode === 37 || keyCode === 39) {
+      if (keyCode == 37 || keyCode == 39) {
         removeCaretContainer(editor, getParentCaretContainer(body, selection.getStart()), true);
       }
     };
@@ -13686,14 +13686,14 @@
       'fontFamily'
     ];
     const hasListStyles = fmt => isObject(fmt.styles) && exists(keys(fmt.styles), name => contains$2(listItemStyles, name));
-    const findExpandedListItemFormat = formats => find$2(formats, fmt => isInlineFormat(fmt) && fmt.inline === 'span' && hasListStyles(fmt));
+    const findExpandedListItemFormat = formats => find$2(formats, fmt => isInlineFormat(fmt) && fmt.inline == 'span' && hasListStyles(fmt));
     const getExpandedListItemFormat = (formatter, format) => {
       const formatList = formatter.get(format);
       return isArray$1(formatList) ? findExpandedListItemFormat(formatList) : Optional.none();
     };
     const isRngStartAtStartOfElement = (rng, elm) => prevPosition(elm, CaretPosition.fromRangeStart(rng)).isNone();
     const isRngEndAtEndOfElement = (rng, elm) => {
-      return nextPosition(elm, CaretPosition.fromRangeEnd(rng)).exists(pos => !isBr$6(pos.getNode()) || nextPosition(elm, pos).isSome()) === false;
+      return nextPosition(elm, CaretPosition.fromRangeEnd(rng)).exists(pos => !isBr$6(pos.getNode()) || nextPosition(elm, pos).isSome()) == false;
     };
     const isEditableListItem = dom => elm => isListItem$2(elm) && dom.isEditable(elm);
     const getFullySelectedBlocks = selection => {
@@ -13702,7 +13702,7 @@
       if (selection.isCollapsed()) {
         return [];
       }
-      if (blocks.length === 1) {
+      if (blocks.length == 1) {
         return isRngStartAtStartOfElement(rng, blocks[0]) && isRngEndAtEndOfElement(rng, blocks[0]) ? blocks : [];
       } else {
         const first = head(blocks).filter(elm => isRngStartAtStartOfElement(rng, elm)).toArray();
@@ -13735,7 +13735,7 @@
         const prevSibling = findElementSibling(prev, 'previousSibling');
         const nextSibling = findElementSibling(next, 'nextSibling');
         if (elementUtils.compare(prevSibling, nextSibling)) {
-          for (let sibling = prevSibling.nextSibling; sibling && sibling !== nextSibling;) {
+          for (let sibling = prevSibling.nextSibling; sibling && sibling != nextSibling;) {
             const tmpSibling = sibling;
             sibling = sibling.nextSibling;
             prevSibling.appendChild(tmpSibling);
@@ -13751,8 +13751,8 @@
     };
     const mergeSiblings = (editor, format, vars, node) => {
       var _a;
-      if (node && format.merge_siblings !== false) {
-        const newNode = (_a = mergeSiblingsNodes(editor, getNonWhiteSpaceSibling(node), node)) !== null && _a !== void 0 ? _a : node;
+      if (node && format.merge_siblings != false) {
+        const newNode = (_a = mergeSiblingsNodes(editor, getNonWhiteSpaceSibling(node), node)) != null && _a != void 0 ? _a : node;
         mergeSiblingsNodes(editor, newNode, getNonWhiteSpaceSibling(newNode, true));
       }
     };
@@ -13781,14 +13781,14 @@
       });
     };
     const unwrapEmptySpan = (dom, node) => {
-      if (node.nodeName === 'SPAN' && dom.getAttribs(node).length === 0) {
+      if (node.nodeName == 'SPAN' && dom.getAttribs(node).length == 0) {
         dom.remove(node, true);
       }
     };
     const hasStyle = (dom, name) => node => !!(node && getStyle(dom, node, name));
     const applyStyle = (dom, name, value) => node => {
       dom.setStyle(node, name, value);
-      if (node.getAttribute('style') === '') {
+      if (node.getAttribute('style') == '') {
         node.removeAttribute('style');
       }
       unwrapEmptySpan(dom, node);
@@ -13803,7 +13803,7 @@
     const each$7 = Tools.each;
     const isEq$2 = isEq$5;
     const isTableCellOrRow = node => /^(TR|TH|TD)$/.test(node.nodeName);
-    const isChildOfInlineParent = (dom, node, parent) => dom.isChildOf(node, parent) && node !== parent && !dom.isBlock(parent);
+    const isChildOfInlineParent = (dom, node, parent) => dom.isChildOf(node, parent) && node != parent && !dom.isBlock(parent);
     const getContainer = (ed, rng, start) => {
       let container = rng[start ? 'startContainer' : 'endContainer'];
       let offset = rng[start ? 'startOffset' : 'endOffset'];
@@ -13817,7 +13817,7 @@
       if (isText$a(container) && start && offset >= container.data.length) {
         container = new DomTreeWalker(container, ed.getBody()).next() || container;
       }
-      if (isText$a(container) && !start && offset === 0) {
+      if (isText$a(container) && !start && offset == 0) {
         container = new DomTreeWalker(container, ed.getBody()).prev() || container;
       }
       return container;
@@ -13826,7 +13826,7 @@
       const prop = start ? 'firstChild' : 'lastChild';
       const childNode = node[prop];
       if (isTableCellOrRow(node) && childNode) {
-        if (node.nodeName === 'TR') {
+        if (node.nodeName == 'TR') {
           return childNode[prop] || childNode;
         } else {
           return childNode;
@@ -13837,7 +13837,7 @@
     const wrap$1 = (dom, node, name, attrs) => {
       var _a;
       const wrapper = dom.create(name, attrs);
-      (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(wrapper, node);
+      (_a = node.parentNode) == null || _a == void 0 ? void 0 : _a.insertBefore(wrapper, node);
       wrapper.appendChild(node);
       return wrapper;
     };
@@ -13855,14 +13855,14 @@
       }
       return wrapper.dom;
     };
-    const isColorFormatAndAnchor = (node, format) => format.links && node.nodeName === 'A';
+    const isColorFormatAndAnchor = (node, format) => format.links && node.nodeName == 'A';
     const removeNode = (ed, node, format) => {
       const parentNode = node.parentNode;
       let rootBlockElm;
       const dom = ed.dom;
       const forcedRootBlock = getForcedRootBlock(ed);
       if (isBlockFormat(format)) {
-        if (parentNode === dom.getRoot()) {
+        if (parentNode == dom.getRoot()) {
           if (!format.list_block || !isEq$2(node, format.list_block)) {
             each$e(from(node.childNodes), node => {
               if (isValid(ed, forcedRootBlock, node.nodeName.toLowerCase())) {
@@ -13898,7 +13898,7 @@
       }
     };
     const removeEmptyStyleAttributeIfNeeded = (dom, elm) => {
-      if (dom.getAttrib(elm, 'style') === '') {
+      if (dom.getAttrib(elm, 'style') == '') {
         elm.removeAttribute('style');
         elm.removeAttribute('data-mce-style');
       }
@@ -13921,7 +13921,7 @@
       }
     };
     const removeListStyleFormats = (editor, name, vars) => {
-      if (name === 'removeformat') {
+      if (name == 'removeformat') {
         each$e(getPartiallySelectedListItems(editor.selection), li => {
           each$e(listItemStyles, name => editor.dom.setStyle(li, name, ''));
           removeEmptyStyleAttributeIfNeeded(editor.dom, li);
@@ -13936,11 +13936,11 @@
       const dom = ed.dom;
       const elementUtils = ElementUtils(ed);
       const schema = ed.schema;
-      if (isInlineFormat(format) && isTransparentElementName(schema, format.inline) && isTransparentBlock(schema, node) && node.parentElement === ed.getBody()) {
+      if (isInlineFormat(format) && isTransparentElementName(schema, format.inline) && isTransparentBlock(schema, node) && node.parentElement == ed.getBody()) {
         removeNode(ed, node, format);
         return removeResult.removed();
       }
-      if (!format.ceFalseOverride && node && dom.getContentEditableParent(node) === 'false') {
+      if (!format.ceFalseOverride && node && dom.getContentEditableParent(node) == 'false') {
         return removeResult.keep();
       }
       if (node && !matchName(dom, node, format) && !isColorFormatAndAnchor(node, format)) {
@@ -13948,7 +13948,7 @@
       }
       const elm = node;
       const preserveAttributes = format.preserve_attributes;
-      if (isInlineFormat(format) && format.remove === 'all' && isArray$1(preserveAttributes)) {
+      if (isInlineFormat(format) && format.remove == 'all' && isArray$1(preserveAttributes)) {
         const attrsToPreserve = filter$5(dom.getAttribs(elm), attr => contains$2(preserveAttributes, attr.name.toLowerCase()));
         dom.removeAllAttribs(elm);
         each$e(attrsToPreserve, attr => dom.setAttrib(elm, attr.name, attr.value));
@@ -13956,7 +13956,7 @@
           return removeResult.rename('span');
         }
       }
-      if (format.remove !== 'all') {
+      if (format.remove != 'all') {
         removeStyles(dom, elm, format, vars, compareNode);
         each$7(format.attributes, (value, name) => {
           const {
@@ -13964,7 +13964,7 @@
             value: attrValue
           } = processFormatAttrOrStyle(name, value, vars);
           if (format.remove_similar || isNull(attrValue) || !isElement$6(compareNode) || isEq$2(dom.getAttrib(compareNode, attrName), attrValue)) {
-            if (attrName === 'class') {
+            if (attrName == 'class') {
               const currentValue = dom.getAttrib(elm, attrName);
               if (currentValue) {
                 let valueOut = '';
@@ -13982,12 +13982,12 @@
             if (MCE_ATTR_RE.test(attrName)) {
               elm.removeAttribute('data-mce-' + attrName);
             }
-            if (attrName === 'style' && matchNodeNames(['li'])(elm) && dom.getStyle(elm, 'list-style-type') === 'none') {
+            if (attrName == 'style' && matchNodeNames(['li'])(elm) && dom.getStyle(elm, 'list-style-type') == 'none') {
               elm.removeAttribute(attrName);
               dom.setStyle(elm, 'list-style-type', 'none');
               return;
             }
-            if (attrName === 'class') {
+            if (attrName == 'class') {
               elm.removeAttribute('className');
             }
             elm.removeAttribute(attrName);
@@ -14007,7 +14007,7 @@
           }
         }
       }
-      if (format.remove !== 'none') {
+      if (format.remove != 'none') {
         removeNode(ed, elm, format);
         return removeResult.removed();
       }
@@ -14017,9 +14017,9 @@
       let formatRoot;
       if (container.parentNode) {
         each$e(getParents$2(editor.dom, container.parentNode).reverse(), parent => {
-          if (!formatRoot && isElement$6(parent) && parent.id !== '_start' && parent.id !== '_end') {
+          if (!formatRoot && isElement$6(parent) && parent.id != '_start' && parent.id != '_end') {
             const format = matchNode(editor, parent, name, vars, similar);
-            if (format && format.split !== false) {
+            if (format && format.split != false) {
               formatRoot = parent;
             }
           }
@@ -14039,11 +14039,11 @@
       const dom = editor.dom;
       if (formatRoot) {
         const formatRootParent = formatRoot.parentNode;
-        for (let parent = container.parentNode; parent && parent !== formatRootParent; parent = parent.parentNode) {
+        for (let parent = container.parentNode; parent && parent != formatRootParent; parent = parent.parentNode) {
           let clone = dom.clone(parent, false);
           for (let i = 0; i < formatList.length; i++) {
             clone = removeNodeFormatFromClone(editor, formatList[i], vars, clone);
-            if (clone === null) {
+            if (clone == null) {
               break;
             }
           }
@@ -14058,10 +14058,10 @@
           }
         }
         if (split && (!format.mixed || !dom.isBlock(formatRoot))) {
-          container = (_a = dom.split(formatRoot, container)) !== null && _a !== void 0 ? _a : container;
+          container = (_a = dom.split(formatRoot, container)) != null && _a != void 0 ? _a : container;
         }
         if (lastClone && firstClone) {
-          (_b = target.parentNode) === null || _b === void 0 ? void 0 : _b.insertBefore(lastClone, target);
+          (_b = target.parentNode) == null || _b == void 0 ? void 0 : _b.insertBefore(lastClone, target);
           firstClone.appendChild(target);
           if (isInlineFormat(format)) {
             mergeSiblings(editor, format, vars, lastClone);
@@ -14079,7 +14079,7 @@
         const formatRoot = findFormatRoot(ed, container, name, vars, similar);
         return wrapAndSplit(ed, formatList, formatRoot, container, container, true, format, vars);
       };
-      const isRemoveBookmarkNode = node => isBookmarkNode$1(node) && isElement$6(node) && (node.id === '_start' || node.id === '_end');
+      const isRemoveBookmarkNode = node => isBookmarkNode$1(node) && isElement$6(node) && (node.id == '_start' || node.id == '_end');
       const removeFormatOnNode = node => exists(formatList, fmt => removeNodeFormat(ed, fmt, vars, node, node));
       const process = node => {
         const children = from(node.childNodes);
@@ -14102,7 +14102,7 @@
           'overline'
         ];
         each$e(textDecorations, decoration => {
-          if (isElement$6(node) && ed.dom.getStyle(node, 'text-decoration') === decoration && node.parentNode && getTextDecoration(dom, node.parentNode) === decoration) {
+          if (isElement$6(node) && ed.dom.getStyle(node, 'text-decoration') == decoration && node.parentNode && getTextDecoration(dom, node.parentNode) == decoration) {
             removeNodeFormat(ed, {
               deep: false,
               exact: true,
@@ -14119,7 +14119,7 @@
           if (isRemoveBookmarkNode(out)) {
             out = out[start ? 'firstChild' : 'lastChild'];
           }
-          if (isText$a(out) && out.data.length === 0) {
+          if (isText$a(out) && out.data.length == 0) {
             out = start ? node.previousSibling || node.nextSibling : node.nextSibling || node.previousSibling;
           }
           dom.remove(node, true);
@@ -14136,7 +14136,7 @@
           expandedRng = split(expandedRng);
           startContainer = getContainer(ed, expandedRng, true);
           endContainer = getContainer(ed, expandedRng);
-          if (startContainer !== endContainer) {
+          if (startContainer != endContainer) {
             startContainer = normalizeTableSelection(startContainer, true);
             endContainer = normalizeTableSelection(endContainer, false);
             if (isChildOfInlineParent(dom, startContainer, endContainer)) {
@@ -14231,7 +14231,7 @@
           const parentTextDecoration = getTextDecoration(dom, n.parentNode);
           if (dom.getStyle(n, 'color') && parentTextDecoration) {
             dom.setStyle(n, 'text-decoration', parentTextDecoration);
-          } else if (dom.getStyle(n, 'text-decoration') === parentTextDecoration) {
+          } else if (dom.getStyle(n, 'text-decoration') == parentTextDecoration) {
             dom.setStyle(n, 'text-decoration', null);
           }
         }
@@ -14248,10 +14248,10 @@
       }
     };
     const mergeSubSup = (dom, format, vars, node) => {
-      if (isInlineFormat(format) && (format.inline === 'sub' || format.inline === 'sup')) {
+      if (isInlineFormat(format) && (format.inline == 'sub' || format.inline == 'sup')) {
         const hasFontSize = hasStyle(dom, 'fontSize');
         processChildElements(node, elm => hasFontSize(elm) && dom.isEditable(elm), applyStyle(dom, 'fontSize', ''));
-        const inverseTagDescendants = filter$5(dom.select(format.inline === 'sup' ? 'sub' : 'sup', node), dom.isEditable);
+        const inverseTagDescendants = filter$5(dom.select(format.inline == 'sup' ? 'sub' : 'sup', node), dom.isEditable);
         dom.remove(inverseTagDescendants, true);
       }
     };
@@ -14334,10 +14334,10 @@
           if (!isSelectorFormat(format)) {
             return false;
           }
-          if (dom.getContentEditable(node) === 'false' && !format.ceFalseOverride) {
+          if (dom.getContentEditable(node) == 'false' && !format.ceFalseOverride) {
             return true;
           }
-          if (isNonNullable(format.collapsed) && format.collapsed !== isCollapsed) {
+          if (isNonNullable(format.collapsed) && format.collapsed != isCollapsed) {
             return true;
           }
           if (dom.is(node, format.selector) && !isCaretNode(node)) {
@@ -14387,7 +14387,7 @@
             const contentEditableValue = dom.getContentEditable(node);
             if (isNonNullable(contentEditableValue)) {
               lastContentEditable = contentEditable;
-              contentEditable = contentEditableValue === 'true';
+              contentEditable = contentEditableValue == 'true';
               hasContentEditableState = true;
               isWrappableNoneditableElm = isWrappableNoneditable(ed, node);
             }
@@ -14441,10 +14441,10 @@
           };
           each$e(nodes, process);
         });
-        if (format.links === true) {
+        if (format.links == true) {
           each$e(newWrappers, node => {
             const process = node => {
-              if (node.nodeName === 'A') {
+              if (node.nodeName == 'A') {
                 setElementFormat(node, format);
               }
               each$e(from(node.childNodes), process);
@@ -14463,7 +14463,7 @@
             return count;
           };
           const mergeStyles = node => {
-            const childElement = find$2(node.childNodes, isElementNode$1).filter(child => dom.getContentEditable(child) !== 'false' && matchName(dom, child, format));
+            const childElement = find$2(node.childNodes, isElementNode$1).filter(child => dom.getContentEditable(child) != 'false' && matchName(dom, child, format));
             return childElement.map(child => {
               const clone = dom.clone(child, false);
               setElementFormat(clone);
@@ -14473,12 +14473,12 @@
             }).getOr(node);
           };
           const childCount = getChildCount(node);
-          if ((newWrappers.length > 1 || !dom.isBlock(node)) && childCount === 0) {
+          if ((newWrappers.length > 1 || !dom.isBlock(node)) && childCount == 0) {
             dom.remove(node, true);
             return;
           }
           if (isInlineFormat(format) || isBlockFormat(format) && format.wrapper) {
-            if (!format.exact && childCount === 1) {
+            if (!format.exact && childCount == 1) {
               node = mergeStyles(node);
             }
             mergeWithChildren(ed, formatList, vars, node);
@@ -14491,7 +14491,7 @@
         });
       };
       const targetNode = isNode(node) ? node : selection.getNode();
-      if (dom.getContentEditable(targetNode) === 'false' && !isWrappableNoneditable(ed, targetNode)) {
+      if (dom.getContentEditable(targetNode) == 'false' && !isWrappableNoneditable(ed, targetNode)) {
         node = targetNode;
         applyNodeStyle(formatList, node);
         fireFormatApply(ed, name, node, vars);
@@ -14550,7 +14550,7 @@
     const fallbackElement = editor => editor.selection.getStart();
     const matchingNode = (editor, parents, format, similar, vars) => {
       const isMatchingNode = node => {
-        const matchingFormat = editor.formatter.matchNode(node, format, vars !== null && vars !== void 0 ? vars : {}, similar);
+        const matchingFormat = editor.formatter.matchNode(node, format, vars != null && vars != void 0 ? vars : {}, similar);
         return !isUndefined(matchingFormat);
       };
       const isUnableToMatch = node => {
@@ -14567,7 +14567,7 @@
       return findUntil$1(parents, isMatchingNode, isUnableToMatch);
     };
     const getParents = (editor, elm) => {
-      const element = elm !== null && elm !== void 0 ? elm : fallbackElement(editor);
+      const element = elm != null && elm != void 0 ? elm : fallbackElement(editor);
       return filter$5(getParents$2(editor.dom, element), node => isElement$6(node) && !isBogus$2(node));
     };
     const updateAndFireChangeCallbacks = (editor, elm, registeredCallbacks) => {
@@ -14576,7 +14576,7 @@
         const runIfChanged = spec => {
           const match = matchingNode(editor, parents, format, spec.similar, hasVars(spec) ? spec.vars : undefined);
           const isSet = match.isSome();
-          if (spec.state.get() !== isSet) {
+          if (spec.state.get() != isSet) {
             spec.state.set(isSet);
             const node = match.getOr(elm);
             if (hasVars(spec)) {
@@ -14628,7 +14628,7 @@
         if (isUndefined(vars)) {
           const toAppendTo = similar ? group.withSimilar : group.withoutSimilar;
           toAppendTo.callbacks.push(callback);
-          if (toAppendTo.callbacks.length === 1) {
+          if (toAppendTo.callbacks.length == 1) {
             toAppendTo.state.set(getCurrent());
           }
         } else {
@@ -14648,13 +14648,13 @@
         formatChangeItems[format] = {
           withSimilar: {
             ...group.withSimilar,
-            callbacks: filter$5(group.withSimilar.callbacks, cb => cb !== callback)
+            callbacks: filter$5(group.withSimilar.callbacks, cb => cb != callback)
           },
           withoutSimilar: {
             ...group.withoutSimilar,
-            callbacks: filter$5(group.withoutSimilar.callbacks, cb => cb !== callback)
+            callbacks: filter$5(group.withoutSimilar.callbacks, cb => cb != callback)
           },
-          withVars: filter$5(group.withVars, item => item.callback !== callback)
+          withVars: filter$5(group.withVars, item => item.callback != callback)
         };
       }));
       registeredFormatListeners.set(formatChangeItems);
@@ -14695,7 +14695,7 @@
           if (has$2(filters, name)) {
             if (isNonNullable(callback)) {
               const filter = filters[name];
-              const newCallbacks = filter$5(filter.callbacks, c => c !== callback);
+              const newCallbacks = filter$5(filter.callbacks, c => c != callback);
               if (newCallbacks.length > 0) {
                 filter.callbacks = newCallbacks;
               } else {
@@ -14749,7 +14749,7 @@
     };
     const addStrikeFilter = (domParser, schema, styles) => {
       domParser.addNodeFilter('strike', nodes => {
-        const convertToSTag = schema.type !== 'html4';
+        const convertToSTag = schema.type != 'html4';
         each$e(nodes, node => {
           if (convertToSTag) {
             node.name = 's';
@@ -14766,7 +14766,7 @@
       var _a;
       const styles = Styles();
       if (settings.convert_fonts_to_spans) {
-        addFontToSpansFilter(domParser, styles, Tools.explode((_a = settings.font_size_legacy_values) !== null && _a !== void 0 ? _a : ''));
+        addFontToSpansFilter(domParser, styles, Tools.explode((_a = settings.font_size_legacy_values) != null && _a != void 0 ? _a : ''));
       }
       addStrikeFilter(domParser, schema, styles);
     };
@@ -14786,12 +14786,12 @@
         for (let i = 0, l = nodes.length; i < l; i++) {
           let node = nodes[i];
           let parent = node.parent;
-          if (parent && isBlock(parent) && node === parent.lastChild) {
+          if (parent && isBlock(parent) && node == parent.lastChild) {
             let prev = node.prev;
             while (prev) {
               const prevName = prev.name;
-              if (prevName !== 'span' || prev.attr('data-mce-type') !== 'bookmark') {
-                if (prevName === 'br') {
+              if (prevName != 'span' || prev.attr('data-mce-type') != 'bookmark') {
+                if (prevName == 'br') {
                   node = null;
                 }
                 break;
@@ -14813,14 +14813,14 @@
             }
           } else {
             let lastParent = node;
-            while (parent && parent.firstChild === lastParent && parent.lastChild === lastParent) {
+            while (parent && parent.firstChild == lastParent && parent.lastChild == lastParent) {
               lastParent = parent;
               if (blockElements[parent.name]) {
                 break;
               }
               parent = parent.parent;
             }
-            if (lastParent === parent) {
+            if (lastParent == parent) {
               const textNode = new AstNode('#text', 3);
               textNode.value = nbsp;
               node.replace(textNode);
@@ -14843,7 +14843,7 @@
       const data = rest.join(',');
       const matches = /data:([^/]+\/[^;]+)(;.+)?/.exec(type);
       if (matches) {
-        const base64Encoded = matches[2] === ';base64';
+        const base64Encoded = matches[2] == ';base64';
         const extractedData = base64Encoded ? extractBase64Data(data) : decodeURIComponent(data);
         return Optional.some({
           type: matches[1],
@@ -14891,7 +14891,7 @@
         };
         reader.onerror = () => {
           var _a;
-          reject((_a = reader.error) === null || _a === void 0 ? void 0 : _a.message);
+          reject((_a = reader.error) == null || _a == void 0 ? void 0 : _a.message);
         };
         reader.readAsDataURL(blob);
       });
@@ -14942,7 +14942,7 @@
     };
 
     const isBogusImage = img => isNonNullable(img.attr('data-mce-bogus'));
-    const isInternalImageSource = img => img.attr('src') === Env.transparentSrc || isNonNullable(img.attr('data-mce-placeholder'));
+    const isInternalImageSource = img => img.attr('src') == Env.transparentSrc || isNonNullable(img.attr('data-mce-placeholder'));
     const registerBase64ImageFilter = (parser, settings) => {
       const {blob_cache: blobCache} = settings;
       if (blobCache) {
@@ -14973,15 +14973,15 @@
         name = 'iframe';
       }
       const embed = new AstNode(name, 1);
-      embed.attr(name === 'audio' ? { src } : {
+      embed.attr(name == 'audio' ? { src } : {
         src,
         width,
         height
       });
-      if (name === 'audio' || name === 'video') {
+      if (name == 'audio' || name == 'video') {
         embed.attr('controls', '');
       }
-      if (name === 'iframe' && sandboxIframes) {
+      if (name == 'iframe' && sandboxIframes) {
         embed.attr('sandbox', '');
       }
       return embed;
@@ -15008,7 +15008,7 @@
         if (!settings.allow_unsafe_link_target) {
           while (i--) {
             const node = nodes[i];
-            if (node.name === 'a' && node.attr('target') === '_blank') {
+            if (node.name == 'a' && node.attr('target') == '_blank') {
               node.attr('rel', addNoOpener(node.attr('rel')));
             }
           }
@@ -15019,7 +15019,7 @@
           let i = nodes.length, sibling, prevSibling, parent, node;
           while (i--) {
             node = nodes[i];
-            if (node.name === 'a' && node.firstChild && !node.attr('href')) {
+            if (node.name == 'a' && node.firstChild && !node.attr('href')) {
               parent = node.parent;
               sibling = node.lastChild;
               while (sibling && parent) {
@@ -15037,8 +15037,8 @@
           while (i--) {
             node = nodes[i];
             parentNode = node.parent;
-            if (parentNode && (parentNode.name === 'ul' || parentNode.name === 'ol')) {
-              if (node.prev && node.prev.name === 'li') {
+            if (parentNode && (parentNode.name == 'ul' || parentNode.name == 'ol')) {
+              if (node.prev && node.prev.name == 'li') {
                 node.prev.append(node);
               } else {
                 const li = new AstNode('li', 1);
@@ -15056,7 +15056,7 @@
           let i = nodes.length;
           while (i--) {
             const node = nodes[i];
-            const clazz = (_a = node.attr('class')) !== null && _a !== void 0 ? _a : '';
+            const clazz = (_a = node.attr('class')) != null && _a != void 0 ? _a : '';
             const classList = Tools.explode(clazz, ' ');
             let classValue = '';
             for (let ci = 0; ci < classList.length; ci++) {
@@ -15087,7 +15087,7 @@
       registerBase64ImageFilter(parser, settings);
       if (settings.convert_unsafe_embeds) {
         parser.addNodeFilter('object,embed', nodes => each$e(nodes, node => {
-          node.replace(createSafeEmbed(node.attr('type'), node.name === 'object' ? node.attr('data') : node.attr('src'), node.attr('width'), node.attr('height'), settings.sandbox_iframes));
+          node.replace(createSafeEmbed(node.attr('type'), node.name == 'object' ? node.attr('data') : node.attr('src'), node.attr('width'), node.attr('height'), settings.sandbox_iframes));
         }));
       }
       if (settings.sandbox_iframes) {
@@ -15097,7 +15097,7 @@
 
     const {entries, setPrototypeOf, isFrozen, getPrototypeOf, getOwnPropertyDescriptor} = Object;
     let {freeze, seal, create: create$7} = Object;
-    let {apply, construct} = typeof Reflect !== 'undefined' && Reflect;
+    let {apply, construct} = typeof Reflect != 'undefined' && Reflect;
     if (!apply) {
       apply = function apply(fun, thisValue, args) {
         return fun.apply(thisValue, args);
@@ -15147,16 +15147,16 @@
     }
     function addToSet(set, array, transformCaseFunc) {
       var _transformCaseFunc;
-      transformCaseFunc = (_transformCaseFunc = transformCaseFunc) !== null && _transformCaseFunc !== void 0 ? _transformCaseFunc : stringToLowerCase;
+      transformCaseFunc = (_transformCaseFunc = transformCaseFunc) != null && _transformCaseFunc != void 0 ? _transformCaseFunc : stringToLowerCase;
       if (setPrototypeOf) {
         setPrototypeOf(set, null);
       }
       let l = array.length;
       while (l--) {
         let element = array[l];
-        if (typeof element === 'string') {
+        if (typeof element == 'string') {
           const lcElement = transformCaseFunc(element);
-          if (lcElement !== element) {
+          if (lcElement != element) {
             if (!isFrozen(array)) {
               array[l] = lcElement;
             }
@@ -15175,13 +15175,13 @@
       return newObject;
     }
     function lookupGetter(object, prop) {
-      while (object !== null) {
+      while (object != null) {
         const desc = getOwnPropertyDescriptor(object, prop);
         if (desc) {
           if (desc.get) {
             return unapply(desc.get);
           }
-          if (typeof desc.value === 'function') {
+          if (typeof desc.value == 'function') {
             return unapply(desc.value);
           }
         }
@@ -15836,9 +15836,9 @@
       ATTR_WHITESPACE: ATTR_WHITESPACE,
       DOCTYPE_NAME: DOCTYPE_NAME
     });
-    const getGlobal = () => typeof window === 'undefined' ? null : window;
+    const getGlobal = () => typeof window == 'undefined' ? null : window;
     const _createTrustedTypesPolicy = function _createTrustedTypesPolicy(trustedTypes, purifyHostElement) {
-      if (typeof trustedTypes !== 'object' || typeof trustedTypes.createPolicy !== 'function') {
+      if (typeof trustedTypes != 'object' || typeof trustedTypes.createPolicy != 'function') {
         return null;
       }
       let suffix = null;
@@ -15862,11 +15862,11 @@
       }
     };
     function createDOMPurify() {
-      let window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getGlobal();
+      let window = arguments.length > 0 && arguments[0] != undefined ? arguments[0] : getGlobal();
       const DOMPurify = root => createDOMPurify(root);
       DOMPurify.version = '3.0.5';
       DOMPurify.removed = [];
-      if (!window || !window.document || window.document.nodeType !== 9) {
+      if (!window || !window.document || window.document.nodeType != 9) {
         DOMPurify.isSupported = false;
         return DOMPurify;
       }
@@ -15879,7 +15879,7 @@
       const getNextSibling = lookupGetter(ElementPrototype, 'nextSibling');
       const getChildNodes = lookupGetter(ElementPrototype, 'childNodes');
       const getParentNode = lookupGetter(ElementPrototype, 'parentNode');
-      if (typeof HTMLTemplateElement === 'function') {
+      if (typeof HTMLTemplateElement == 'function') {
         const template = document.createElement('template');
         if (template.content && template.content.ownerDocument) {
           document = template.content.ownerDocument;
@@ -15890,7 +15890,7 @@
       const {implementation, createNodeIterator, createDocumentFragment, getElementsByTagName} = document;
       const {importNode} = originalDocument;
       let hooks = {};
-      DOMPurify.isSupported = typeof entries === 'function' && typeof getParentNode === 'function' && implementation && implementation.createHTMLDocument !== undefined;
+      DOMPurify.isSupported = typeof entries == 'function' && typeof getParentNode == 'function' && implementation && implementation.createHTMLDocument != undefined;
       const {MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR, DATA_ATTR, ARIA_ATTR, IS_SCRIPT_OR_DATA, ATTR_WHITESPACE} = EXPRESSIONS;
       let {IS_ALLOWED_URI: IS_ALLOWED_URI$1} = EXPRESSIONS;
       let ALLOWED_TAGS = null;
@@ -16025,15 +16025,15 @@
         return testValue instanceof RegExp || testValue instanceof Function;
       };
       const _parseConfig = function _parseConfig(cfg) {
-        if (CONFIG && CONFIG === cfg) {
+        if (CONFIG && CONFIG == cfg) {
           return;
         }
-        if (!cfg || typeof cfg !== 'object') {
+        if (!cfg || typeof cfg != 'object') {
           cfg = {};
         }
         cfg = clone(cfg);
-        PARSER_MEDIA_TYPE = SUPPORTED_PARSER_MEDIA_TYPES.indexOf(cfg.PARSER_MEDIA_TYPE) === -1 ? PARSER_MEDIA_TYPE = DEFAULT_PARSER_MEDIA_TYPE : PARSER_MEDIA_TYPE = cfg.PARSER_MEDIA_TYPE;
-        transformCaseFunc = PARSER_MEDIA_TYPE === 'application/xhtml+xml' ? stringToString : stringToLowerCase;
+        PARSER_MEDIA_TYPE = SUPPORTED_PARSER_MEDIA_TYPES.indexOf(cfg.PARSER_MEDIA_TYPE) == -1 ? PARSER_MEDIA_TYPE = DEFAULT_PARSER_MEDIA_TYPE : PARSER_MEDIA_TYPE = cfg.PARSER_MEDIA_TYPE;
+        transformCaseFunc = PARSER_MEDIA_TYPE == 'application/xhtml+xml' ? stringToString : stringToLowerCase;
         ALLOWED_TAGS = 'ALLOWED_TAGS' in cfg ? addToSet({}, cfg.ALLOWED_TAGS, transformCaseFunc) : DEFAULT_ALLOWED_TAGS;
         ALLOWED_ATTR = 'ALLOWED_ATTR' in cfg ? addToSet({}, cfg.ALLOWED_ATTR, transformCaseFunc) : DEFAULT_ALLOWED_ATTR;
         ALLOWED_NAMESPACES = 'ALLOWED_NAMESPACES' in cfg ? addToSet({}, cfg.ALLOWED_NAMESPACES, stringToString) : DEFAULT_ALLOWED_NAMESPACES;
@@ -16043,19 +16043,19 @@
         FORBID_TAGS = 'FORBID_TAGS' in cfg ? addToSet({}, cfg.FORBID_TAGS, transformCaseFunc) : {};
         FORBID_ATTR = 'FORBID_ATTR' in cfg ? addToSet({}, cfg.FORBID_ATTR, transformCaseFunc) : {};
         USE_PROFILES = 'USE_PROFILES' in cfg ? cfg.USE_PROFILES : false;
-        ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR !== false;
-        ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR !== false;
+        ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR != false;
+        ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR != false;
         ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || false;
-        ALLOW_SELF_CLOSE_IN_ATTR = cfg.ALLOW_SELF_CLOSE_IN_ATTR !== false;
+        ALLOW_SELF_CLOSE_IN_ATTR = cfg.ALLOW_SELF_CLOSE_IN_ATTR != false;
         SAFE_FOR_TEMPLATES = cfg.SAFE_FOR_TEMPLATES || false;
         WHOLE_DOCUMENT = cfg.WHOLE_DOCUMENT || false;
         RETURN_DOM = cfg.RETURN_DOM || false;
         RETURN_DOM_FRAGMENT = cfg.RETURN_DOM_FRAGMENT || false;
         RETURN_TRUSTED_TYPE = cfg.RETURN_TRUSTED_TYPE || false;
         FORCE_BODY = cfg.FORCE_BODY || false;
-        SANITIZE_DOM = cfg.SANITIZE_DOM !== false;
+        SANITIZE_DOM = cfg.SANITIZE_DOM != false;
         SANITIZE_NAMED_PROPS = cfg.SANITIZE_NAMED_PROPS || false;
-        KEEP_CONTENT = cfg.KEEP_CONTENT !== false;
+        KEEP_CONTENT = cfg.KEEP_CONTENT != false;
         IN_PLACE = cfg.IN_PLACE || false;
         IS_ALLOWED_URI$1 = cfg.ALLOWED_URI_REGEXP || IS_ALLOWED_URI;
         NAMESPACE = cfg.NAMESPACE || HTML_NAMESPACE;
@@ -16066,7 +16066,7 @@
         if (cfg.CUSTOM_ELEMENT_HANDLING && isRegexOrFunction(cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck)) {
           CUSTOM_ELEMENT_HANDLING.attributeNameCheck = cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck;
         }
-        if (cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements === 'boolean') {
+        if (cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements == 'boolean') {
           CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements = cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements;
         }
         if (SAFE_FOR_TEMPLATES) {
@@ -16078,34 +16078,34 @@
         if (USE_PROFILES) {
           ALLOWED_TAGS = addToSet({}, [...text]);
           ALLOWED_ATTR = [];
-          if (USE_PROFILES.html === true) {
+          if (USE_PROFILES.html == true) {
             addToSet(ALLOWED_TAGS, html$1);
             addToSet(ALLOWED_ATTR, html);
           }
-          if (USE_PROFILES.svg === true) {
+          if (USE_PROFILES.svg == true) {
             addToSet(ALLOWED_TAGS, svg$1);
             addToSet(ALLOWED_ATTR, svg);
             addToSet(ALLOWED_ATTR, xml);
           }
-          if (USE_PROFILES.svgFilters === true) {
+          if (USE_PROFILES.svgFilters == true) {
             addToSet(ALLOWED_TAGS, svgFilters);
             addToSet(ALLOWED_ATTR, svg);
             addToSet(ALLOWED_ATTR, xml);
           }
-          if (USE_PROFILES.mathMl === true) {
+          if (USE_PROFILES.mathMl == true) {
             addToSet(ALLOWED_TAGS, mathMl$1);
             addToSet(ALLOWED_ATTR, mathMl);
             addToSet(ALLOWED_ATTR, xml);
           }
         }
         if (cfg.ADD_TAGS) {
-          if (ALLOWED_TAGS === DEFAULT_ALLOWED_TAGS) {
+          if (ALLOWED_TAGS == DEFAULT_ALLOWED_TAGS) {
             ALLOWED_TAGS = clone(ALLOWED_TAGS);
           }
           addToSet(ALLOWED_TAGS, cfg.ADD_TAGS, transformCaseFunc);
         }
         if (cfg.ADD_ATTR) {
-          if (ALLOWED_ATTR === DEFAULT_ALLOWED_ATTR) {
+          if (ALLOWED_ATTR == DEFAULT_ALLOWED_ATTR) {
             ALLOWED_ATTR = clone(ALLOWED_ATTR);
           }
           addToSet(ALLOWED_ATTR, cfg.ADD_ATTR, transformCaseFunc);
@@ -16114,7 +16114,7 @@
           addToSet(URI_SAFE_ATTRIBUTES, cfg.ADD_URI_SAFE_ATTR, transformCaseFunc);
         }
         if (cfg.FORBID_CONTENTS) {
-          if (FORBID_CONTENTS === DEFAULT_FORBID_CONTENTS) {
+          if (FORBID_CONTENTS == DEFAULT_FORBID_CONTENTS) {
             FORBID_CONTENTS = clone(FORBID_CONTENTS);
           }
           addToSet(FORBID_CONTENTS, cfg.FORBID_CONTENTS, transformCaseFunc);
@@ -16134,19 +16134,19 @@
           delete FORBID_TAGS.tbody;
         }
         if (cfg.TRUSTED_TYPES_POLICY) {
-          if (typeof cfg.TRUSTED_TYPES_POLICY.createHTML !== 'function') {
+          if (typeof cfg.TRUSTED_TYPES_POLICY.createHTML != 'function') {
             throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createHTML" hook.');
           }
-          if (typeof cfg.TRUSTED_TYPES_POLICY.createScriptURL !== 'function') {
+          if (typeof cfg.TRUSTED_TYPES_POLICY.createScriptURL != 'function') {
             throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createScriptURL" hook.');
           }
           trustedTypesPolicy = cfg.TRUSTED_TYPES_POLICY;
           emptyHTML = trustedTypesPolicy.createHTML('');
         } else {
-          if (trustedTypesPolicy === undefined) {
+          if (trustedTypesPolicy == undefined) {
             trustedTypesPolicy = _createTrustedTypesPolicy(trustedTypes, currentScript);
           }
-          if (trustedTypesPolicy !== null && typeof emptyHTML === 'string') {
+          if (trustedTypesPolicy != null && typeof emptyHTML == 'string') {
             emptyHTML = trustedTypesPolicy.createHTML('');
           }
         }
@@ -16193,34 +16193,34 @@
         if (!ALLOWED_NAMESPACES[element.namespaceURI]) {
           return false;
         }
-        if (element.namespaceURI === SVG_NAMESPACE) {
-          if (parent.namespaceURI === HTML_NAMESPACE) {
-            return tagName === 'svg';
+        if (element.namespaceURI == SVG_NAMESPACE) {
+          if (parent.namespaceURI == HTML_NAMESPACE) {
+            return tagName == 'svg';
           }
-          if (parent.namespaceURI === MATHML_NAMESPACE) {
-            return tagName === 'svg' && (parentTagName === 'annotation-xml' || MATHML_TEXT_INTEGRATION_POINTS[parentTagName]);
+          if (parent.namespaceURI == MATHML_NAMESPACE) {
+            return tagName == 'svg' && (parentTagName == 'annotation-xml' || MATHML_TEXT_INTEGRATION_POINTS[parentTagName]);
           }
           return Boolean(ALL_SVG_TAGS[tagName]);
         }
-        if (element.namespaceURI === MATHML_NAMESPACE) {
-          if (parent.namespaceURI === HTML_NAMESPACE) {
-            return tagName === 'math';
+        if (element.namespaceURI == MATHML_NAMESPACE) {
+          if (parent.namespaceURI == HTML_NAMESPACE) {
+            return tagName == 'math';
           }
-          if (parent.namespaceURI === SVG_NAMESPACE) {
-            return tagName === 'math' && HTML_INTEGRATION_POINTS[parentTagName];
+          if (parent.namespaceURI == SVG_NAMESPACE) {
+            return tagName == 'math' && HTML_INTEGRATION_POINTS[parentTagName];
           }
           return Boolean(ALL_MATHML_TAGS[tagName]);
         }
-        if (element.namespaceURI === HTML_NAMESPACE) {
-          if (parent.namespaceURI === SVG_NAMESPACE && !HTML_INTEGRATION_POINTS[parentTagName]) {
+        if (element.namespaceURI == HTML_NAMESPACE) {
+          if (parent.namespaceURI == SVG_NAMESPACE && !HTML_INTEGRATION_POINTS[parentTagName]) {
             return false;
           }
-          if (parent.namespaceURI === MATHML_NAMESPACE && !MATHML_TEXT_INTEGRATION_POINTS[parentTagName]) {
+          if (parent.namespaceURI == MATHML_NAMESPACE && !MATHML_TEXT_INTEGRATION_POINTS[parentTagName]) {
             return false;
           }
           return !ALL_MATHML_TAGS[tagName] && (COMMON_SVG_AND_HTML_ELEMENTS[tagName] || !ALL_SVG_TAGS[tagName]);
         }
-        if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && ALLOWED_NAMESPACES[element.namespaceURI]) {
+        if (PARSER_MEDIA_TYPE == 'application/xhtml+xml' && ALLOWED_NAMESPACES[element.namespaceURI]) {
           return true;
         }
         return false;
@@ -16246,7 +16246,7 @@
           });
         }
         node.removeAttribute(name);
-        if (name === 'is' && !ALLOWED_ATTR[name]) {
+        if (name == 'is' && !ALLOWED_ATTR[name]) {
           if (RETURN_DOM || RETURN_DOM_FRAGMENT) {
             try {
               _forceRemove(node);
@@ -16269,11 +16269,11 @@
           const matches = stringMatch(dirty, /^[\r\n\t ]+/);
           leadingWhitespace = matches && matches[0];
         }
-        if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && NAMESPACE === HTML_NAMESPACE) {
+        if (PARSER_MEDIA_TYPE == 'application/xhtml+xml' && NAMESPACE == HTML_NAMESPACE) {
           dirty = '<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>' + dirty + '</body></html>';
         }
         const dirtyPayload = trustedTypesPolicy ? trustedTypesPolicy.createHTML(dirty) : dirty;
-        if (NAMESPACE === HTML_NAMESPACE) {
+        if (NAMESPACE == HTML_NAMESPACE) {
           try {
             doc = new DOMParser().parseFromString(dirtyPayload, PARSER_MEDIA_TYPE);
           } catch (_) {
@@ -16290,7 +16290,7 @@
         if (dirty && leadingWhitespace) {
           body.insertBefore(document.createTextNode(leadingWhitespace), body.childNodes[0] || null);
         }
-        if (NAMESPACE === HTML_NAMESPACE) {
+        if (NAMESPACE == HTML_NAMESPACE) {
           return getElementsByTagName.call(doc, WHOLE_DOCUMENT ? 'html' : 'body')[0];
         }
         return WHOLE_DOCUMENT ? doc.documentElement : body;
@@ -16299,10 +16299,10 @@
         return createNodeIterator.call(root.ownerDocument || root, root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT, null, false);
       };
       const _isClobbered = function _isClobbered(elm) {
-        return elm instanceof HTMLFormElement && (typeof elm.nodeName !== 'string' || typeof elm.textContent !== 'string' || typeof elm.removeChild !== 'function' || !(elm.attributes instanceof NamedNodeMap) || typeof elm.removeAttribute !== 'function' || typeof elm.setAttribute !== 'function' || typeof elm.namespaceURI !== 'string' || typeof elm.insertBefore !== 'function' || typeof elm.hasChildNodes !== 'function');
+        return elm instanceof HTMLFormElement && (typeof elm.nodeName != 'string' || typeof elm.textContent != 'string' || typeof elm.removeChild != 'function' || !(elm.attributes instanceof NamedNodeMap) || typeof elm.removeAttribute != 'function' || typeof elm.setAttribute != 'function' || typeof elm.namespaceURI != 'string' || typeof elm.insertBefore != 'function' || typeof elm.hasChildNodes != 'function');
       };
       const _isNode = function _isNode(object) {
-        return typeof Node === 'object' ? object instanceof Node : object && typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string';
+        return typeof Node == 'object' ? object instanceof Node : object && typeof object == 'object' && typeof object.nodeType == 'number' && typeof object.nodeName == 'string';
       };
       const _executeHook = function _executeHook(entryPoint, currentNode, data) {
         if (!hooks[entryPoint]) {
@@ -16352,16 +16352,16 @@
           _forceRemove(currentNode);
           return true;
         }
-        if ((tagName === 'noscript' || tagName === 'noembed' || tagName === 'noframes') && regExpTest(/<\/no(script|embed|frames)/i, currentNode.innerHTML)) {
+        if ((tagName == 'noscript' || tagName == 'noembed' || tagName == 'noframes') && regExpTest(/<\/no(script|embed|frames)/i, currentNode.innerHTML)) {
           _forceRemove(currentNode);
           return true;
         }
-        if (SAFE_FOR_TEMPLATES && currentNode.nodeType === 3) {
+        if (SAFE_FOR_TEMPLATES && currentNode.nodeType == 3) {
           content = currentNode.textContent;
           content = stringReplace(content, MUSTACHE_EXPR, ' ');
           content = stringReplace(content, ERB_EXPR, ' ');
           content = stringReplace(content, TMPLIT_EXPR, ' ');
-          if (currentNode.textContent !== content) {
+          if (currentNode.textContent != content) {
             arrayPush(DOMPurify.removed, { element: currentNode.cloneNode() });
             currentNode.textContent = content;
           }
@@ -16370,19 +16370,19 @@
         return false;
       };
       const _isValidAttribute = function _isValidAttribute(lcTag, lcName, value) {
-        if (SANITIZE_DOM && (lcName === 'id' || lcName === 'name') && (value in document || value in formElement)) {
+        if (SANITIZE_DOM && (lcName == 'id' || lcName == 'name') && (value in document || value in formElement)) {
           return false;
         }
         if (ALLOW_DATA_ATTR && !FORBID_ATTR[lcName] && regExpTest(DATA_ATTR, lcName));
         else if (ALLOW_ARIA_ATTR && regExpTest(ARIA_ATTR, lcName));
         else if (!ALLOWED_ATTR[lcName] || FORBID_ATTR[lcName]) {
-          if (_basicCustomElementTest(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName)) || lcName === 'is' && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(value)));
+          if (_basicCustomElementTest(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName)) || lcName == 'is' && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(value)));
           else {
             return false;
           }
         } else if (URI_SAFE_ATTRIBUTES[lcName]);
         else if (regExpTest(IS_ALLOWED_URI$1, stringReplace(value, ATTR_WHITESPACE, '')));
-        else if ((lcName === 'src' || lcName === 'xlink:href' || lcName === 'href') && lcTag !== 'script' && stringIndexOf(value, 'data:') === 0 && DATA_URI_TAGS[lcTag]);
+        else if ((lcName == 'src' || lcName == 'xlink:href' || lcName == 'href') && lcTag != 'script' && stringIndexOf(value, 'data:') == 0 && DATA_URI_TAGS[lcTag]);
         else if (ALLOW_UNKNOWN_PROTOCOLS && !regExpTest(IS_SCRIPT_OR_DATA, stringReplace(value, ATTR_WHITESPACE, '')));
         else if (value) {
           return false;
@@ -16412,7 +16412,7 @@
         while (l--) {
           attr = attributes[l];
           const {name, namespaceURI} = attr;
-          value = name === 'value' ? attr.value : stringTrim(attr.value);
+          value = name == 'value' ? attr.value : stringTrim(attr.value);
           const initValue = value;
           lcName = transformCaseFunc(name);
           hookEvent.attrName = lcName;
@@ -16442,11 +16442,11 @@
             _removeAttribute(name, currentNode);
             continue;
           }
-          if (SANITIZE_NAMED_PROPS && (lcName === 'id' || lcName === 'name')) {
+          if (SANITIZE_NAMED_PROPS && (lcName == 'id' || lcName == 'name')) {
             _removeAttribute(name, currentNode);
             value = SANITIZE_NAMED_PROPS_PREFIX + value;
           }
-          if (trustedTypesPolicy && typeof trustedTypes === 'object' && typeof trustedTypes.getAttributeType === 'function') {
+          if (trustedTypesPolicy && typeof trustedTypes == 'object' && typeof trustedTypes.getAttributeType == 'function') {
             if (namespaceURI);
             else {
               switch (trustedTypes.getAttributeType(lcTag, lcName)) {
@@ -16461,7 +16461,7 @@
               }
             }
           }
-          if (value !== initValue) {
+          if (value != initValue) {
             try {
               if (namespaceURI) {
                 currentNode.setAttributeNS(namespaceURI, name, value);
@@ -16492,7 +16492,7 @@
         _executeHook('afterSanitizeShadowDOM', fragment, null);
       };
       DOMPurify.sanitize = function (dirty) {
-        let cfg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        let cfg = arguments.length > 1 && arguments[1] != undefined ? arguments[1] : {};
         let body;
         let importedNode;
         let currentNode;
@@ -16501,10 +16501,10 @@
         if (IS_EMPTY_INPUT) {
           dirty = '<!-->';
         }
-        if (typeof dirty !== 'string' && !_isNode(dirty)) {
-          if (typeof dirty.toString === 'function') {
+        if (typeof dirty != 'string' && !_isNode(dirty)) {
+          if (typeof dirty.toString == 'function') {
             dirty = dirty.toString();
-            if (typeof dirty !== 'string') {
+            if (typeof dirty != 'string') {
               throw typeErrorCreate('dirty is not a string, aborting');
             }
           } else {
@@ -16518,7 +16518,7 @@
           _parseConfig(cfg);
         }
         DOMPurify.removed = [];
-        if (typeof dirty === 'string') {
+        if (typeof dirty == 'string') {
           IN_PLACE = false;
         }
         if (IN_PLACE) {
@@ -16531,15 +16531,15 @@
         } else if (dirty instanceof Node) {
           body = _initDocument('<!---->');
           importedNode = body.ownerDocument.importNode(dirty, true);
-          if (importedNode.nodeType === 1 && importedNode.nodeName === 'BODY') {
+          if (importedNode.nodeType == 1 && importedNode.nodeName == 'BODY') {
             body = importedNode;
-          } else if (importedNode.nodeName === 'HTML') {
+          } else if (importedNode.nodeName == 'HTML') {
             body = importedNode;
           } else {
             body.appendChild(importedNode);
           }
         } else {
-          if (!RETURN_DOM && !SAFE_FOR_TEMPLATES && !WHOLE_DOCUMENT && dirty.indexOf('<') === -1) {
+          if (!RETURN_DOM && !SAFE_FOR_TEMPLATES && !WHOLE_DOCUMENT && dirty.indexOf('<') == -1) {
             return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? trustedTypesPolicy.createHTML(dirty) : dirty;
           }
           body = _initDocument(dirty);
@@ -16605,7 +16605,7 @@
         return _isValidAttribute(lcTag, lcName, value);
       };
       DOMPurify.addHook = function (entryPoint, hookFunction) {
-        if (typeof hookFunction !== 'function') {
+        if (typeof hookFunction != 'function') {
           return;
         }
         hooks[entryPoint] = hooks[entryPoint] || [];
@@ -16707,8 +16707,8 @@
       static getDocumentBaseUrl(loc) {
         var _a;
         let baseUrl;
-        if (loc.protocol.indexOf('http') !== 0 && loc.protocol !== 'file:') {
-          baseUrl = (_a = loc.href) !== null && _a !== void 0 ? _a : '';
+        if (loc.protocol.indexOf('http') != 0 && loc.protocol != 'file:') {
+          baseUrl = (_a = loc.href) != null && _a != void 0 ? _a : '';
         } else {
           baseUrl = loc.protocol + '//' + loc.host + loc.pathname;
         }
@@ -16731,13 +16731,13 @@
           self.source = url;
           return;
         }
-        const isProtocolRelative = url.indexOf('//') === 0;
-        if (url.indexOf('/') === 0 && !isProtocolRelative) {
+        const isProtocolRelative = url.indexOf('//') == 0;
+        if (url.indexOf('/') == 0 && !isProtocolRelative) {
           url = (baseUri ? baseUri.protocol || 'http' : 'http') + '://mce_host' + url;
         }
         if (!/^[\w\-]*:?\/\//.test(url)) {
           const baseUrl = baseUri ? baseUri.path : new URI(document.location.href).directory;
-          if ((baseUri === null || baseUri === void 0 ? void 0 : baseUri.protocol) === '') {
+          if ((baseUri == null || baseUri == void 0 ? void 0 : baseUri.protocol) == '') {
             url = '//mce_host' + self.toAbsPath(baseUrl, url);
           } else {
             const match = /([^#?]*)([#?]?.*)/.exec(url);
@@ -16764,10 +16764,10 @@
           if (!self.userInfo) {
             self.userInfo = baseUri.userInfo;
           }
-          if (!self.port && self.host === 'mce_host') {
+          if (!self.port && self.host == 'mce_host') {
             self.port = baseUri.port;
           }
-          if (!self.host || self.host === 'mce_host') {
+          if (!self.host || self.host == 'mce_host') {
             self.host = baseUri.host;
           }
           self.source = '';
@@ -16787,15 +16787,15 @@
         this.getURI();
       }
       toRelative(uri) {
-        if (uri === './') {
+        if (uri == './') {
           return uri;
         }
         const relativeUri = new URI(uri, { base_uri: this });
-        if (relativeUri.host !== 'mce_host' && this.host !== relativeUri.host && relativeUri.host || this.port !== relativeUri.port || this.protocol !== relativeUri.protocol && relativeUri.protocol !== '') {
+        if (relativeUri.host != 'mce_host' && this.host != relativeUri.host && relativeUri.host || this.port != relativeUri.port || this.protocol != relativeUri.protocol && relativeUri.protocol != '') {
           return relativeUri.getURI();
         }
         const tu = this.getURI(), uu = relativeUri.getURI();
-        if (tu === uu || tu.charAt(tu.length - 1) === '/' && tu.substr(0, tu.length - 1) === uu) {
+        if (tu == uu || tu.charAt(tu.length - 1) == '/' && tu.substr(0, tu.length - 1) == uu) {
           return tu;
         }
         let output = this.toRelPath(this.path, relativeUri.path);
@@ -16829,7 +16829,7 @@
         const items = path.split('/');
         if (normalizedBase.length >= items.length) {
           for (i = 0, l = normalizedBase.length; i < l; i++) {
-            if (i >= items.length || normalizedBase[i] !== items[i]) {
+            if (i >= items.length || normalizedBase[i] != items[i]) {
               breakPoint = i + 1;
               break;
             }
@@ -16837,20 +16837,20 @@
         }
         if (normalizedBase.length < items.length) {
           for (i = 0, l = items.length; i < l; i++) {
-            if (i >= normalizedBase.length || normalizedBase[i] !== items[i]) {
+            if (i >= normalizedBase.length || normalizedBase[i] != items[i]) {
               breakPoint = i + 1;
               break;
             }
           }
         }
-        if (breakPoint === 1) {
+        if (breakPoint == 1) {
           return path;
         }
         for (i = 0, l = normalizedBase.length - (breakPoint - 1); i < l; i++) {
           out += '../';
         }
         for (i = breakPoint - 1, l = items.length; i < l; i++) {
-          if (i !== breakPoint - 1) {
+          if (i != breakPoint - 1) {
             out += '/' + items[i];
           } else {
             out += items[i];
@@ -16871,10 +16871,10 @@
         });
         const pathParts = [];
         for (let i = normalizedPath.length - 1; i >= 0; i--) {
-          if (normalizedPath[i].length === 0 || normalizedPath[i] === '.') {
+          if (normalizedPath[i].length == 0 || normalizedPath[i] == '.') {
             continue;
           }
-          if (normalizedPath[i] === '..') {
+          if (normalizedPath[i] == '..') {
             nb++;
             continue;
           }
@@ -16891,10 +16891,10 @@
         } else {
           outPath = baseParts.slice(0, i).join('/') + '/' + reverse(pathParts).join('/');
         }
-        if (outPath.indexOf('/') !== 0) {
+        if (outPath.indexOf('/') != 0) {
           outPath = '/' + outPath;
         }
-        if (tr && outPath.lastIndexOf('/') !== outPath.length - 1) {
+        if (tr && outPath.lastIndexOf('/') != outPath.length - 1) {
           outPath += tr;
         }
         return outPath;
@@ -16941,24 +16941,24 @@
       var _a, _b, _c, _d;
       const validate = settings.validate;
       const specialElements = schema.getSpecialElements();
-      if (node.nodeType === COMMENT && !settings.allow_conditional_comments && /^\[if/i.test((_a = node.nodeValue) !== null && _a !== void 0 ? _a : '')) {
+      if (node.nodeType == COMMENT && !settings.allow_conditional_comments && /^\[if/i.test((_a = node.nodeValue) != null && _a != void 0 ? _a : '')) {
         node.nodeValue = ' ' + node.nodeValue;
       }
-      const lcTagName = (_b = evt === null || evt === void 0 ? void 0 : evt.tagName) !== null && _b !== void 0 ? _b : node.nodeName.toLowerCase();
-      if (scope !== 'html' && schema.isValid(scope)) {
+      const lcTagName = (_b = evt == null || evt == void 0 ? void 0 : evt.tagName) != null && _b != void 0 ? _b : node.nodeName.toLowerCase();
+      if (scope != 'html' && schema.isValid(scope)) {
         if (isNonNullable(evt)) {
           evt.allowedTags[lcTagName] = true;
         }
         return;
       }
-      if (node.nodeType !== ELEMENT || lcTagName === 'body') {
+      if (node.nodeType != ELEMENT || lcTagName == 'body') {
         return;
       }
       const element = SugarElement.fromDom(node);
       const isInternalElement = has$1(element, internalElementAttr);
       const bogus = get$9(element, 'data-mce-bogus');
       if (!isInternalElement && isString(bogus)) {
-        if (bogus === 'all') {
+        if (bogus == 'all') {
           remove$5(element);
         } else {
           unwrap(element);
@@ -16979,12 +16979,12 @@
         }
       }
       if (validate && rule && !isInternalElement) {
-        each$e((_c = rule.attributesForced) !== null && _c !== void 0 ? _c : [], attr => {
-          set$3(element, attr.name, attr.value === '{$uid}' ? `mce_${ uid++ }` : attr.value);
+        each$e((_c = rule.attributesForced) != null && _c != void 0 ? _c : [], attr => {
+          set$3(element, attr.name, attr.value == '{$uid}' ? `mce_${ uid++ }` : attr.value);
         });
-        each$e((_d = rule.attributesDefault) !== null && _d !== void 0 ? _d : [], attr => {
+        each$e((_d = rule.attributesDefault) != null && _d != void 0 ? _d : [], attr => {
           if (!has$1(element, attr.name)) {
-            set$3(element, attr.name, attr.value === '{$uid}' ? `mce_${ uid++ }` : attr.value);
+            set$3(element, attr.name, attr.value == '{$uid}' ? `mce_${ uid++ }` : attr.value);
           }
         });
         if (rule.attributesRequired && !exists(rule.attributesRequired, attr => has$1(element, attr))) {
@@ -16995,7 +16995,7 @@
           unwrap(element);
           return;
         }
-        if (rule.outputName && rule.outputName !== lcTagName) {
+        if (rule.outputName && rule.outputName != lcTagName) {
           mutate(element, rule.outputName);
         }
       }
@@ -17017,12 +17017,12 @@
       }
     };
     const shouldKeepAttribute = (settings, schema, scope, tagName, attrName, attrValue) => {
-      if (scope !== 'html' && !isNonHtmlElementRootName(tagName)) {
+      if (scope != 'html' && !isNonHtmlElementRootName(tagName)) {
         return true;
       }
       return !(attrName in filteredUrlAttrs && isInvalidUri(settings, attrValue, tagName)) && (!settings.validate || schema.isValid(tagName, attrName) || startsWith(attrName, 'data-') || startsWith(attrName, 'aria-'));
     };
-    const isRequiredAttributeOfInternalElement = (ele, attrName) => ele.hasAttribute(internalElementAttr) && (attrName === 'id' || attrName === 'class' || attrName === 'style');
+    const isRequiredAttributeOfInternalElement = (ele, attrName) => ele.hasAttribute(internalElementAttr) && (attrName == 'id' || attrName == 'class' || attrName == 'style');
     const isBooleanAttribute = (attrName, schema) => attrName in schema.getBoolAttrs();
     const filterAttributes = (ele, settings, schema, scope) => {
       const {attributes} = ele;
@@ -17129,7 +17129,7 @@
     const makeMap = Tools.makeMap, extend$1 = Tools.extend;
     const transferChildren = (parent, nativeParent, specialElements, nsSanitizer) => {
       const parentName = parent.name;
-      const isSpecial = parentName in specialElements && parentName !== 'title' && parentName !== 'textarea';
+      const isSpecial = parentName in specialElements && parentName != 'title' && parentName != 'textarea';
       const childNodes = nativeParent.childNodes;
       for (let ni = 0, nl = childNodes.length; ni < nl; ni++) {
         const nativeChild = childNodes[ni];
@@ -17163,7 +17163,7 @@
       for (let node = root, lastNode = node; node; lastNode = node, node = node.walk()) {
         const tempNode = node;
         each$e(preprocessors, preprocess => preprocess(tempNode));
-        if (isNullable(tempNode.parent) && tempNode !== root) {
+        if (isNullable(tempNode.parent) && tempNode != root) {
           node = lastNode;
         } else {
           traverseOrder.push(tempNode);
@@ -17205,24 +17205,24 @@
         }
         return false;
       };
-      const isBlock = node => node.name in blockElements || isTransparentAstBlock(schema, node) || isNonHtmlElementRootName(node.name) && node.parent === root;
+      const isBlock = node => node.name in blockElements || isTransparentAstBlock(schema, node) || isNonHtmlElementRootName(node.name) && node.parent == root;
       const isAtEdgeOfBlock = (node, start) => {
         const neighbour = start ? node.prev : node.next;
         if (isNonNullable(neighbour) || isNullable(node.parent)) {
           return false;
         }
-        return isBlock(node.parent) && (node.parent !== root || args.isRootContent === true);
+        return isBlock(node.parent) && (node.parent != root || args.isRootContent == true);
       };
       const preprocess = node => {
         var _a;
-        if (node.type === 3) {
+        if (node.type == 3) {
           if (!hasWhitespaceParent(node)) {
-            let text = (_a = node.value) !== null && _a !== void 0 ? _a : '';
+            let text = (_a = node.value) != null && _a != void 0 ? _a : '';
             text = text.replace(allWhiteSpaceRegExp, ' ');
             if (isLineBreakNode(node.prev, isBlock) || isAtEdgeOfBlock(node, true)) {
               text = text.replace(startWhiteSpaceRegExp, '');
             }
-            if (text.length === 0) {
+            if (text.length == 0) {
               node.remove();
             } else {
               node.value = text;
@@ -17232,7 +17232,7 @@
       };
       const postprocess = node => {
         var _a;
-        if (node.type === 1) {
+        if (node.type == 1) {
           const elementRule = schema.getElementRule(node.name);
           if (validate && elementRule) {
             const isNodeEmpty = isEmpty(schema, nonEmptyElements, whitespaceElements, node);
@@ -17248,13 +17248,13 @@
               paddEmptyNode(settings, args, isBlock, node);
             }
           }
-        } else if (node.type === 3) {
+        } else if (node.type == 3) {
           if (!hasWhitespaceParent(node)) {
-            let text = (_a = node.value) !== null && _a !== void 0 ? _a : '';
+            let text = (_a = node.value) != null && _a != void 0 ? _a : '';
             if (node.next && isBlock(node.next) || isAtEdgeOfBlock(node, false)) {
               text = text.replace(endWhiteSpaceRegExp, '');
             }
-            if (text.length === 0) {
+            if (text.length == 0) {
               node.remove();
             } else {
               node.value = text;
@@ -17269,10 +17269,10 @@
     };
     const getRootBlockName = (settings, args) => {
       var _a;
-      const name = (_a = args.forced_root_block) !== null && _a !== void 0 ? _a : settings.forced_root_block;
-      if (name === false) {
+      const name = (_a = args.forced_root_block) != null && _a != void 0 ? _a : settings.forced_root_block;
+      if (name == false) {
         return '';
-      } else if (name === true) {
+      } else if (name == true) {
         return 'p';
       } else {
         return name;
@@ -17290,10 +17290,10 @@
       const parser = new DOMParser();
       const sanitizer = getSanitizer(defaultedSettings, schema);
       const parseAndSanitizeWithContext = (html, rootName, format = 'html') => {
-        const mimeType = format === 'xhtml' ? 'application/xhtml+xml' : 'text/html';
+        const mimeType = format == 'xhtml' ? 'application/xhtml+xml' : 'text/html';
         const isSpecialRoot = has$2(schema.getSpecialElements(), rootName.toLowerCase());
         const content = isSpecialRoot ? `<${ rootName }>${ html }</${ rootName }>` : html;
-        const wrappedHtml = format === 'xhtml' ? `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${ content }</body></html>` : `<body>${ content }</body>`;
+        const wrappedHtml = format == 'xhtml' ? `<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>${ content }</body></html>` : `<body>${ content }</body>`;
         const body = parser.parseFromString(wrappedHtml, mimeType).body;
         sanitizer.sanitizeHtmlElement(body, mimeType);
         return isSpecialRoot ? body.firstChild : body;
@@ -17311,8 +17311,8 @@
       };
       const isWrappableNode = (blockElements, node) => {
         const isInternalElement = isString(node.attr(internalElementAttr));
-        const isInlineElement = node.type === 1 && (!has$2(blockElements, node.name) && !isTransparentAstBlock(schema, node)) && !isNonHtmlElementRootName(node.name);
-        return node.type === 3 || isInlineElement && !isInternalElement;
+        const isInlineElement = node.type == 1 && (!has$2(blockElements, node.name) && !isTransparentAstBlock(schema, node)) && !isNonHtmlElementRootName(node.name);
+        return node.type == 3 || isInlineElement && !isInternalElement;
       };
       const addRootBlocks = (rootNode, rootBlockName) => {
         const blockElements = extend$1(makeMap('script,style,head,html,body,title,meta,param'), schema.getBlockElements());
@@ -17323,12 +17323,12 @@
           var _a, _b;
           if (rootBlock) {
             node = rootBlock.firstChild;
-            if (node && node.type === 3) {
-              node.value = (_a = node.value) === null || _a === void 0 ? void 0 : _a.replace(startWhiteSpaceRegExp, '');
+            if (node && node.type == 3) {
+              node.value = (_a = node.value) == null || _a == void 0 ? void 0 : _a.replace(startWhiteSpaceRegExp, '');
             }
             node = rootBlock.lastChild;
-            if (node && node.type === 3) {
-              node.value = (_b = node.value) === null || _b === void 0 ? void 0 : _b.replace(endWhiteSpaceRegExp, '');
+            if (node && node.type == 3) {
+              node.value = (_b = node.value) == null || _b == void 0 ? void 0 : _b.replace(endWhiteSpaceRegExp, '');
             }
           }
         };
@@ -17357,7 +17357,7 @@
       const parse = (html, args = {}) => {
         var _a;
         const validate = defaultedSettings.validate;
-        const rootName = (_a = args.context) !== null && _a !== void 0 ? _a : defaultedSettings.root_name;
+        const rootName = (_a = args.context) != null && _a != void 0 ? _a : defaultedSettings.root_name;
         const element = parseAndSanitizeWithContext(html, rootName, args.format);
         updateChildren(schema, element);
         const rootNode = new AstNode(rootName, 11);
@@ -17384,7 +17384,7 @@
             const {
               pass: topLevelChildren,
               fail: otherChildren
-            } = partition$2(invalidChildren, child => child.parent === rootNode);
+            } = partition$2(invalidChildren, child => child.parent == rootNode);
             cleanInvalidNodes(otherChildren, schema, rootNode, matchFinder);
             args.invalid = topLevelChildren.length > 0;
           } else {
@@ -17392,7 +17392,7 @@
           }
         }
         const rootBlockName = getRootBlockName(defaultedSettings, args);
-        if (rootBlockName && (rootNode.name === 'body' || args.isRootContent)) {
+        if (rootBlockName && (rootNode.name == 'body' || args.isRootContent)) {
           addRootBlocks(rootNode, rootBlockName);
         }
         if (!args.invalid) {
@@ -17422,7 +17422,7 @@
       if (eventArgs.isDefaultPrevented()) {
         return eventArgs;
       } else if (isTreeNode(content)) {
-        if (eventArgs.content !== serializedContent) {
+        if (eventArgs.content != serializedContent) {
           const rootNode = DomParser({
             validate: false,
             forced_root_block: false,
@@ -17525,7 +17525,7 @@
         }
         for (let x2 = x; x2 < x + colspan; x2++) {
           const cells = rows[y2].cells;
-          cells[x2] = y2 === y && x2 === x ? td : shallow$1(td);
+          cells[x2] = y2 == y && x2 == x ? td : shallow$1(td);
         }
       }
     };
@@ -17613,8 +17613,8 @@
       });
     };
 
-    const findParentListContainer = parents => find$2(parents, elm => name(elm) === 'ul' || name(elm) === 'ol');
-    const getFullySelectedListWrappers = (parents, rng) => find$2(parents, elm => name(elm) === 'li' && hasAllContentsSelected(elm, rng)).fold(constant([]), _li => findParentListContainer(parents).map(listCont => {
+    const findParentListContainer = parents => find$2(parents, elm => name(elm) == 'ul' || name(elm) == 'ol');
+    const getFullySelectedListWrappers = (parents, rng) => find$2(parents, elm => name(elm) == 'li' && hasAllContentsSelected(elm, rng)).fold(constant([]), _li => findParentListContainer(parents).map(listCont => {
       const listElm = SugarElement.fromTag(name(listCont));
       const listStyles = filter$4(getAllRaw(listCont), (_style, name) => startsWith(name, 'list-style'));
       setAll(listElm, listStyles);
@@ -17681,13 +17681,13 @@
         'style': 'overflow: hidden; opacity: 0;'
       }, rangeContentClone.dom);
       const text = getInnerText(bin);
-      const nonRenderedText = trim$2((_a = bin.textContent) !== null && _a !== void 0 ? _a : '');
+      const nonRenderedText = trim$2((_a = bin.textContent) != null && _a != void 0 ? _a : '');
       editor.dom.remove(bin);
       if (isCollapsibleWhitespace(nonRenderedText, 0) || isCollapsibleWhitespace(nonRenderedText, nonRenderedText.length - 1)) {
         const parentBlock = parentBlockOpt.getOr(body);
         const parentBlockText = getInnerText(parentBlock);
         const textIndex = parentBlockText.indexOf(text);
-        if (textIndex === -1) {
+        if (textIndex == -1) {
           return text;
         } else {
           const hasProceedingSpace = isCollapsibleWhitespace(parentBlockText, textIndex - 1);
@@ -17709,11 +17709,11 @@
       return editor.selection.serializer.serialize(tmpElm, args);
     };
     const extractSelectedContent = (editor, args) => {
-      if (args.format === 'text') {
+      if (args.format == 'text') {
         return getTextContent(editor);
       } else {
         const content = getSerializedContent(editor, args);
-        if (args.format === 'tree') {
+        if (args.format == 'tree') {
           return content;
         } else {
           return editor.selection.isCollapsed() ? '' : content;
@@ -17749,11 +17749,11 @@
       };
       const buildScript = (start1, end1, start2, end2, script) => {
         const middle = getMiddleSnake(start1, end1, start2, end2);
-        if (middle === null || middle.start === end1 && middle.diag === end1 - end2 || middle.end === start1 && middle.diag === start1 - start2) {
+        if (middle == null || middle.start == end1 && middle.diag == end1 - end2 || middle.end == start1 && middle.diag == start1 - start2) {
           let i = start1;
           let j = start2;
           while (i < end1 || j < end2) {
-            if (i < end1 && j < end2 && left[i] === right[j]) {
+            if (i < end1 && j < end2 && left[i] == right[j]) {
               script.push([
                 KEEP,
                 left[i]
@@ -17789,7 +17789,7 @@
       };
       const buildSnake = (start, diag, end1, end2) => {
         let end = start;
-        while (end - diag < end2 && end < end1 && left[end] === right[end - diag]) {
+        while (end - diag < end2 && end < end1 && left[end] == right[end - diag]) {
           ++end;
         }
         return snake(start, end, diag);
@@ -17797,30 +17797,30 @@
       const getMiddleSnake = (start1, end1, start2, end2) => {
         const m = end1 - start1;
         const n = end2 - start2;
-        if (m === 0 || n === 0) {
+        if (m == 0 || n == 0) {
           return null;
         }
         const delta = m - n;
         const sum = n + m;
-        const offset = (sum % 2 === 0 ? sum : sum + 1) / 2;
+        const offset = (sum % 2 == 0 ? sum : sum + 1) / 2;
         vDown[1 + offset] = start1;
         vUp[1 + offset] = end1 + 1;
         let d, k, i, x, y;
         for (d = 0; d <= offset; ++d) {
           for (k = -d; k <= d; k += 2) {
             i = k + offset;
-            if (k === -d || k !== d && vDown[i - 1] < vDown[i + 1]) {
+            if (k == -d || k != d && vDown[i - 1] < vDown[i + 1]) {
               vDown[i] = vDown[i + 1];
             } else {
               vDown[i] = vDown[i - 1] + 1;
             }
             x = vDown[i];
             y = x - start1 + start2 - k;
-            while (x < end1 && y < end2 && left[x] === right[y]) {
+            while (x < end1 && y < end2 && left[x] == right[y]) {
               vDown[i] = ++x;
               ++y;
             }
-            if (delta % 2 !== 0 && delta - d <= k && k <= delta + d) {
+            if (delta % 2 != 0 && delta - d <= k && k <= delta + d) {
               if (vUp[i - delta] <= vDown[i]) {
                 return buildSnake(vUp[i - delta], k + start1 - start2, end1, end2);
               }
@@ -17828,18 +17828,18 @@
           }
           for (k = delta - d; k <= delta + d; k += 2) {
             i = k + offset - delta;
-            if (k === delta - d || k !== delta + d && vUp[i + 1] <= vUp[i - 1]) {
+            if (k == delta - d || k != delta + d && vUp[i + 1] <= vUp[i - 1]) {
               vUp[i] = vUp[i + 1] - 1;
             } else {
               vUp[i] = vUp[i - 1];
             }
             x = vUp[i] - 1;
             y = x - start1 + start2 - k;
-            while (x >= start1 && y >= start2 && left[x] === right[y]) {
+            while (x >= start1 && y >= start2 && left[x] == right[y]) {
               vUp[i] = x--;
               y--;
             }
-            if (delta % 2 === 0 && -d <= k && k <= d) {
+            if (delta % 2 == 0 && -d <= k && k <= d) {
               if (vUp[i] <= vDown[i + delta]) {
                 return buildSnake(vUp[i], k + start1 - start2, end1, end2);
               }
@@ -17893,12 +17893,12 @@
     const applyDiff = (diff, elm) => {
       let index = 0;
       each$e(diff, action => {
-        if (action[0] === KEEP) {
+        if (action[0] == KEEP) {
           index++;
-        } else if (action[0] === INSERT) {
+        } else if (action[0] == INSERT) {
           insertAt(elm, action[1], index);
           index++;
-        } else if (action[0] === DELETE) {
+        } else if (action[0] == DELETE) {
           removeAt(elm, index);
         }
       });
@@ -17913,7 +17913,7 @@
     };
 
     const lazyTempDocument = cached(() => document.implementation.createHTMLDocument('undo'));
-    const hasIframes = body => body.querySelector('iframe') !== null;
+    const hasIframes = body => body.querySelector('iframe') != null;
     const createFragmentedLevel = fragments => {
       return {
         type: 'fragmented',
@@ -17939,7 +17939,7 @@
     };
     const applyToEditor = (editor, level, before) => {
       const bookmark = before ? level.beforeBookmark : level.bookmark;
-      if (level.type === 'fragmented') {
+      if (level.type == 'fragmented') {
         write(level.fragments, editor.getBody());
       } else {
         editor.setContent(level.content, {
@@ -17953,7 +17953,7 @@
       }
     };
     const getLevelContent = level => {
-      return level.type === 'fragmented' ? level.fragments.join('') : level.content;
+      return level.type == 'fragmented' ? level.fragments.join('') : level.content;
     };
     const getCleanLevelContent = level => {
       const elm = SugarElement.fromTag('body', lazyTempDocument());
@@ -17961,8 +17961,8 @@
       each$e(descendants(elm, '*[data-mce-bogus]'), unwrap);
       return get$6(elm);
     };
-    const hasEqualContent = (level1, level2) => getLevelContent(level1) === getLevelContent(level2);
-    const hasEqualCleanedContent = (level1, level2) => getCleanLevelContent(level1) === getCleanLevelContent(level2);
+    const hasEqualContent = (level1, level2) => getLevelContent(level1) == getLevelContent(level2);
+    const hasEqualCleanedContent = (level1, level2) => getCleanLevelContent(level1) == getCleanLevelContent(level2);
     const isEq$1 = (level1, level2) => {
       if (!level1 || !level2) {
         return false;
@@ -17973,7 +17973,7 @@
       }
     };
 
-    const isUnlocked = locks => locks.get() === 0;
+    const isUnlocked = locks => locks.get() == 0;
 
     const setTyping = (undoManager, typing, locks) => {
       if (isUnlocked(locks)) {
@@ -18122,7 +18122,7 @@
         case 'TABLE':
           const cls = getVisualAidsTableClass(editor);
           const value = dom.getAttrib(matchedElm, 'border');
-          if ((!value || value === '0') && editor.hasVisual) {
+          if ((!value || value == '0') && editor.hasVisual) {
             dom.addClass(matchedElm, cls);
           } else {
             dom.removeClass(matchedElm, cls);
@@ -18358,7 +18358,7 @@
     };
 
     const removeEmpty = text => {
-      if (text.dom.length === 0) {
+      if (text.dom.length == 0) {
         remove$5(text);
         return Optional.none();
       } else {
@@ -18417,7 +18417,7 @@
       content
     });
     const cleanContent = (editor, args) => {
-      if (args.format !== 'raw') {
+      if (args.format != 'raw') {
         const rng = editor.selection.getRng();
         const contextBlock = editor.dom.getParent(rng.commonAncestorContainer, editor.dom.isBlock);
         const contextArgs = contextBlock ? { context: contextBlock.nodeName.toLowerCase() } : {};
@@ -18445,8 +18445,8 @@
 
     const deleteFromCallbackMap = (callbackMap, selector, callback) => {
       if (has$2(callbackMap, selector)) {
-        const newCallbacks = filter$5(callbackMap[selector], cb => cb !== callback);
-        if (newCallbacks.length === 0) {
+        const newCallbacks = filter$5(callbackMap[selector], cb => cb != callback);
+        if (newCallbacks.length == 0) {
           delete callbackMap[selector];
         } else {
           callbackMap[selector] = newCallbacks;
@@ -18558,7 +18558,7 @@
           return false;
         }
         if (rng.compareEndPoints) {
-          return rng.compareEndPoints('StartToEnd', rng) === 0;
+          return rng.compareEndPoints('StartToEnd', rng) == 0;
         }
         return !sel || rng.collapsed;
       };
@@ -18614,7 +18614,7 @@
           rng.setEnd(elm, 0);
         }
         if (selectedRange && explicitRange) {
-          if (tryCompareBoundaryPoints(rng.START_TO_START, rng, selectedRange) === 0 && tryCompareBoundaryPoints(rng.END_TO_END, rng, selectedRange) === 0) {
+          if (tryCompareBoundaryPoints(rng.START_TO_START, rng, selectedRange) == 0 && tryCompareBoundaryPoints(rng.END_TO_END, rng, selectedRange) == 0) {
             rng = explicitRange;
           } else {
             selectedRange = null;
@@ -18640,19 +18640,19 @@
             sel.addRange(rng);
           } catch (ex) {
           }
-          if (forward === false && sel.extend) {
+          if (forward == false && sel.extend) {
             sel.collapse(rng.endContainer, rng.endOffset);
             sel.extend(rng.startContainer, rng.startOffset);
           }
           selectedRange = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
         }
-        if (!rng.collapsed && rng.startContainer === rng.endContainer && (sel === null || sel === void 0 ? void 0 : sel.setBaseAndExtent)) {
+        if (!rng.collapsed && rng.startContainer == rng.endContainer && (sel == null || sel == void 0 ? void 0 : sel.setBaseAndExtent)) {
           if (rng.endOffset - rng.startOffset < 2) {
             if (rng.startContainer.hasChildNodes()) {
               const node = rng.startContainer.childNodes[rng.startOffset];
-              if (node && node.nodeName === 'IMG') {
+              if (node && node.nodeName == 'IMG') {
                 sel.setBaseAndExtent(rng.startContainer, rng.startOffset, rng.endContainer, rng.endOffset);
-                if (sel.anchorNode !== rng.startContainer || sel.focusNode !== rng.endContainer) {
+                if (sel.anchorNode != rng.startContainer || sel.focusNode != rng.endContainer) {
                   sel.setBaseAndExtent(node, 0, node, 1);
                 }
               }
@@ -18672,8 +18672,8 @@
       const getSelectedBlocks$1 = (startElm, endElm) => getSelectedBlocks(dom, getRng$1(), startElm, endElm);
       const isForward = () => {
         const sel = getSel();
-        const anchorNode = sel === null || sel === void 0 ? void 0 : sel.anchorNode;
-        const focusNode = sel === null || sel === void 0 ? void 0 : sel.focusNode;
+        const anchorNode = sel == null || sel == void 0 ? void 0 : sel.anchorNode;
+        const focusNode = sel == null || sel == void 0 ? void 0 : sel.focusNode;
         if (!sel || !anchorNode || !focusNode || isRestrictedNode(anchorNode) || isRestrictedNode(focusNode)) {
           return true;
         }
@@ -18708,7 +18708,7 @@
       const getScrollContainer = () => {
         let scrollContainer;
         let node = dom.getRoot();
-        while (node && node.nodeName !== 'BODY') {
+        while (node && node.nodeName != 'BODY') {
           if (node.scrollHeight > node.clientHeight) {
             scrollContainer = node;
             break;
@@ -18791,12 +18791,12 @@
         while (i--) {
           const node = nodes[i];
           let value = node.attr(internalName);
-          if (value !== undefined) {
+          if (value != undefined) {
             node.attr(name, value.length > 0 ? value : null);
             node.attr(internalName, null);
           } else {
             value = node.attr(name);
-            if (name === 'style') {
+            if (name == 'style') {
               value = dom.serializeStyle(dom.parseStyle(value), node.name);
             } else if (urlConverter) {
               value = urlConverter.call(urlConverterScope, value, name, node.name);
@@ -18820,10 +18820,10 @@
         let i = nodes.length;
         while (i--) {
           const node = nodes[i];
-          if (node.attr('data-mce-type') === 'bookmark' && !args.cleanup) {
+          if (node.attr('data-mce-type') == 'bookmark' && !args.cleanup) {
             const hasChildren = Optional.from(node.firstChild).exists(firstChild => {
               var _a;
-              return !isZwsp$1((_a = firstChild.value) !== null && _a !== void 0 ? _a : '');
+              return !isZwsp$1((_a = firstChild.value) != null && _a != void 0 ? _a : '');
             });
             if (hasChildren) {
               node.unwrap();
@@ -18839,7 +18839,7 @@
         while (i--) {
           const node = nodes[i].firstChild;
           if (node) {
-            node.value = Entities.decode((_a = node.value) !== null && _a !== void 0 ? _a : '');
+            node.value = Entities.decode((_a = node.value) != null && _a != void 0 ? _a : '');
           }
         }
       });
@@ -18852,17 +18852,17 @@
         while (i--) {
           const node = nodes[i];
           const firstChild = node.firstChild;
-          const value = (_a = firstChild === null || firstChild === void 0 ? void 0 : firstChild.value) !== null && _a !== void 0 ? _a : '';
-          if (name === 'script') {
+          const value = (_a = firstChild == null || firstChild == void 0 ? void 0 : firstChild.value) != null && _a != void 0 ? _a : '';
+          if (name == 'script') {
             const type = node.attr('type');
             if (type) {
-              node.attr('type', type === 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
+              node.attr('type', type == 'mce-no/type' ? null : type.replace(/^mce\-/, ''));
             }
-            if (settings.element_format === 'xhtml' && firstChild && value.length > 0) {
+            if (settings.element_format == 'xhtml' && firstChild && value.length > 0) {
               firstChild.value = '// <![CDATA[\n' + trim(value) + '\n// ]]>';
             }
           } else {
-            if (settings.element_format === 'xhtml' && firstChild && value.length > 0) {
+            if (settings.element_format == 'xhtml' && firstChild && value.length > 0) {
               firstChild.value = '<!--\n' + trim(value) + '\n-->';
             }
           }
@@ -18873,11 +18873,11 @@
         while (i--) {
           const node = nodes[i];
           const value = node.value;
-          if (settings.preserve_cdata && (value === null || value === void 0 ? void 0 : value.indexOf('[CDATA[')) === 0) {
+          if (settings.preserve_cdata && (value == null || value == void 0 ? void 0 : value.indexOf('[CDATA[')) == 0) {
             node.name = '#cdata';
             node.type = 4;
             node.value = dom.decode(value.replace(/^\[CDATA\[|\]\]$/g, ''));
-          } else if ((value === null || value === void 0 ? void 0 : value.indexOf('mce:protected ')) === 0) {
+          } else if ((value == null || value == void 0 ? void 0 : value.indexOf('mce:protected ')) == 0) {
             node.name = '#text';
             node.type = 3;
             node.raw = true;
@@ -18889,10 +18889,10 @@
         let i = nodes.length;
         while (i--) {
           const node = nodes[i];
-          if (node.type === 7) {
+          if (node.type == 7) {
             node.remove();
-          } else if (node.type === 1) {
-            if (name === 'input' && !node.attr('type')) {
+          } else if (node.type == 1) {
+            if (name == 'input' && !node.attr('type')) {
               node.attr('type', 'text');
             }
           }
@@ -18900,7 +18900,7 @@
       });
       htmlParser.addAttributeFilter('data-mce-type', nodes => {
         each$e(nodes, node => {
-          if (node.attr('data-mce-type') === 'format-caret') {
+          if (node.attr('data-mce-type') == 'format-caret') {
             if (node.isEmpty(htmlParser.schema.getNonEmptyElements())) {
               node.remove();
             } else {
@@ -18921,7 +18921,7 @@
     };
     const trimTrailingBr = rootNode => {
       const isBr = node => {
-        return (node === null || node === void 0 ? void 0 : node.name) === 'br';
+        return (node == null || node == void 0 ? void 0 : node.name) == 'br';
       };
       const brNode1 = rootNode.lastChild;
       if (isBr(brNode1)) {
@@ -18940,10 +18940,10 @@
       const impl = document.implementation;
       if (impl.createHTMLDocument) {
         const doc = impl.createHTMLDocument('');
-        Tools.each(clonedNode.nodeName === 'BODY' ? clonedNode.childNodes : [clonedNode], node => {
+        Tools.each(clonedNode.nodeName == 'BODY' ? clonedNode.childNodes : [clonedNode], node => {
           doc.body.appendChild(doc.importNode(node, true));
         });
-        if (clonedNode.nodeName !== 'BODY') {
+        if (clonedNode.nodeName != 'BODY') {
           clonedNode = doc.body.firstChild;
         } else {
           clonedNode = doc.body;
@@ -18968,7 +18968,7 @@
     };
 
     const addTempAttr = (htmlParser, tempAttrs, name) => {
-      if (Tools.inArray(tempAttrs, name) === -1) {
+      if (Tools.inArray(tempAttrs, name) == -1) {
         htmlParser.addAttributeFilter(name, (nodes, name) => {
           let i = nodes.length;
           while (i--) {
@@ -19030,7 +19030,7 @@
         const targetNode = process$1(editor, node, args);
         const html = getHtmlFromNode(dom, targetNode, args);
         const rootNode = parseHtml(htmlParser, html, args);
-        return args.format === 'tree' ? rootNode : toHtml(editor, defaultedSettings, schema, rootNode, args);
+        return args.format == 'tree' ? rootNode : toHtml(editor, defaultedSettings, schema, rootNode, args);
       };
       return {
         schema,
@@ -19115,7 +19115,7 @@
     const getRemovedOptions = options => {
       const settingNames = getMatchingOptions(options, removedOptions);
       const forcedRootBlock = options.forced_root_block;
-      if (forcedRootBlock === false || forcedRootBlock === '') {
+      if (forcedRootBlock == false || forcedRootBlock == '') {
         settingNames.push('forced_root_block (false only)');
       }
       return sort(settingNames);
@@ -19134,7 +19134,7 @@
       const removedPlugins = getRemovedPlugins(normalizedOptions);
       const hasRemovedPlugins = removedPlugins.length > 0;
       const hasRemovedOptions = removedOptions.length > 0;
-      const isLegacyMobileTheme = normalizedOptions.theme === 'mobile';
+      const isLegacyMobileTheme = normalizedOptions.theme == 'mobile';
       if (hasRemovedPlugins || hasRemovedOptions || isLegacyMobileTheme) {
         const listJoiner = '\n- ';
         const themesMessage = isLegacyMobileTheme ? `\n\nThemes:${ listJoiner }mobile` : '';
@@ -19143,7 +19143,7 @@
         console.warn('The following deprecated features are currently enabled and have been removed in TinyMCE 6.0. These features will no longer work and should be removed from the TinyMCE configuration. ' + 'See https://www.tiny.cloud/docs/tinymce/6/migration-from-5x/ for more information.' + themesMessage + pluginsMessage + optionsMessage);
       }
     };
-    const getPluginDescription = name => find$2(deprecatedPlugins, entry => entry.name === name).fold(() => name, entry => {
+    const getPluginDescription = name => find$2(deprecatedPlugins, entry => entry.name == name).fold(() => name, entry => {
       if (entry.replacedWith) {
         return `${ name }, replaced by ${ entry.replacedWith }`;
       } else {
@@ -19203,7 +19203,7 @@
         }
         editor.removed = true;
         editor.unbindAllNativeEvents();
-        if (editor.hasHiddenInput && isNonNullable(element === null || element === void 0 ? void 0 : element.nextSibling)) {
+        if (editor.hasHiddenInput && isNonNullable(element == null || element == void 0 ? void 0 : element.nextSibling)) {
           DOM$8.remove(element.nextSibling);
         }
         fireRemove(editor);
@@ -19322,7 +19322,7 @@
         return Optional.from(notifications[0]);
       };
       const isEqual = (a, b) => {
-        return a.type === b.type && a.text === b.text && !a.progressBar && !a.timeout && !b.progressBar && !b.timeout;
+        return a.type == b.type && a.text == b.text && !a.progressBar && !a.timeout && !b.progressBar && !b.timeout;
       };
       const reposition = () => {
         each$e(notifications, notification => {
@@ -19334,7 +19334,7 @@
       };
       const closeNotification = notification => {
         findIndex$2(notifications, otherNotification => {
-          return otherNotification === notification;
+          return otherNotification == notification;
         }).each(index => {
           notifications.splice(index, 1);
         });
@@ -19441,9 +19441,9 @@
       const closeDialog = dialog => {
         fireCloseEvent(dialog);
         dialogs = filter$5(dialogs, otherDialog => {
-          return otherDialog !== dialog;
+          return otherDialog != dialog;
         });
-        if (dialogs.length === 0) {
+        if (dialogs.length == 0) {
           editor.focus();
         }
       };
@@ -19594,7 +19594,7 @@
           if (img.hasAttribute('data-mce-placeholder')) {
             return false;
           }
-          if (!src || src === Env.transparentSrc) {
+          if (!src || src == Env.transparentSrc) {
             return false;
           }
           if (startsWith(src, 'blob:')) {
@@ -19655,10 +19655,10 @@
         return result ? result.resultUri : null;
       };
       const isPending = blobUri => {
-        return hasBlobUri(blobUri) ? blobUriStatuses[blobUri].status === PENDING : false;
+        return hasBlobUri(blobUri) ? blobUriStatuses[blobUri].status == PENDING : false;
       };
       const isUploaded = blobUri => {
-        return hasBlobUri(blobUri) ? blobUriStatuses[blobUri].status === UPLOADED : false;
+        return hasBlobUri(blobUri) ? blobUriStatuses[blobUri].status == UPLOADED : false;
       };
       const markPending = blobUri => {
         blobUriStatuses[blobUri] = createStatus(PENDING, null);
@@ -19752,12 +19752,12 @@
         }
       };
       const findFirst = predicate => find$2(cache, predicate).getOrUndefined();
-      const get = id => findFirst(cachedBlobInfo => cachedBlobInfo.id() === id);
-      const getByUri = blobUri => findFirst(blobInfo => blobInfo.blobUri() === blobUri);
-      const getByData = (base64, type) => findFirst(blobInfo => blobInfo.base64() === base64 && blobInfo.blob().type === type);
+      const get = id => findFirst(cachedBlobInfo => cachedBlobInfo.id() == id);
+      const getByUri = blobUri => findFirst(blobInfo => blobInfo.blobUri() == blobUri);
+      const getByData = (base64, type) => findFirst(blobInfo => blobInfo.base64() == base64 && blobInfo.blob().type == type);
       const removeByUri = blobUri => {
         cache = filter$5(cache, blobInfo => {
-          if (blobInfo.blobUri() === blobUri) {
+          if (blobInfo.blobUri() == blobUri) {
             URL.revokeObjectURL(blobInfo.blobUri());
             return false;
           }
@@ -19878,7 +19878,7 @@
           }
         });
       };
-      const isDefaultHandler = handler => handler === defaultHandler;
+      const isDefaultHandler = handler => handler == defaultHandler;
       const pendingUploadBlobInfo = blobInfo => {
         const blobUri = blobInfo.blobUri();
         return new Promise(resolve => {
@@ -19931,27 +19931,27 @@
           return [];
         };
       };
-      const cacheInvalidator = url => url + (url.indexOf('?') === -1 ? '?' : '&') + new Date().getTime();
+      const cacheInvalidator = url => url + (url.indexOf('?') == -1 ? '?' : '&') + new Date().getTime();
       const replaceString = (content, search, replace) => {
         let index = 0;
         do {
           index = content.indexOf(search, index);
-          if (index !== -1) {
+          if (index != -1) {
             content = content.substring(0, index) + replace + content.substr(index + search.length);
             index += replace.length - search.length + 1;
           }
-        } while (index !== -1);
+        } while (index != -1);
         return content;
       };
       const replaceImageUrl = (content, targetUrl, replacementUrl) => {
-        const replacementString = `src="${ replacementUrl }"${ replacementUrl === Env.transparentSrc ? ' data-mce-placeholder="1"' : '' }`;
+        const replacementString = `src="${ replacementUrl }"${ replacementUrl == Env.transparentSrc ? ' data-mce-placeholder="1"' : '' }`;
         content = replaceString(content, `src="${ targetUrl }"`, replacementString);
         content = replaceString(content, 'data-mce-src="' + targetUrl + '"', 'data-mce-src="' + replacementUrl + '"');
         return content;
       };
       const replaceUrlInUndoStack = (targetUrl, replacementUrl) => {
         each$e(editor.undoManager.data, level => {
-          if (level.type === 'fragmented') {
+          if (level.type == 'fragmented') {
             level.fragments = map$3(level.fragments, fragment => replaceImageUrl(fragment, targetUrl, replacementUrl));
           } else {
             level.content = replaceImageUrl(level.content, targetUrl, replacementUrl);
@@ -20032,7 +20032,7 @@
             if (isString(resultItem)) {
               displayError(editor, resultItem);
               return false;
-            } else if (resultItem.uriType === 'blob') {
+            } else if (resultItem.uriType == 'blob') {
               return false;
             } else {
               return true;
@@ -20083,7 +20083,7 @@
         e.content = replaceBlobUris(e.content);
       });
       editor.on('GetContent', e => {
-        if (e.source_view || e.format === 'raw' || e.format === 'tree') {
+        if (e.source_view || e.format == 'raw' || e.format == 'tree') {
           return;
         }
         e.content = replaceBlobUris(e.content);
@@ -20345,7 +20345,7 @@
               'style'
             ]
           };
-          return schemaType !== 'html4' ? [
+          return schemaType != 'html4' ? [
             s,
             span,
             strike
@@ -20420,7 +20420,7 @@
             'lang': '%value',
             'data-mce-lang': vars => {
               var _a;
-              return (_a = vars === null || vars === void 0 ? void 0 : vars.customValue) !== null && _a !== void 0 ? _a : null;
+              return (_a = vars == null || vars == void 0 ? void 0 : vars.customValue) != null && _a != void 0 ? _a : null;
             }
           }
         },
@@ -20582,7 +20582,7 @@
       };
       const getRequiredParent = (elm, candidate) => {
         const elmRule = schema.getElementRule(elm.nodeName.toLowerCase());
-        const parentsRequired = elmRule === null || elmRule === void 0 ? void 0 : elmRule.parentsRequired;
+        const parentsRequired = elmRule == null || elmRule == void 0 ? void 0 : elmRule.parentsRequired;
         if (parentsRequired && parentsRequired.length) {
           return candidate && contains$2(parentsRequired, candidate) ? candidate : parentsRequired[0];
         } else {
@@ -20595,7 +20595,7 @@
         const ancestorName = isPreviewItem(ancestor) ? ancestor.name : undefined;
         const parentRequired = getRequiredParent(elm, ancestorName);
         if (parentRequired) {
-          if (ancestorName === parentRequired) {
+          if (ancestorName == parentRequired) {
             parentCandidate = ancestor;
             ancestors = ancestors.slice(1);
           } else {
@@ -20636,7 +20636,7 @@
         attrs: {},
         selector: item
       };
-      if (item !== '*') {
+      if (item != '*') {
         tagName = item.replace(/(?:([#\.]|::?)([\w\-]+)|(\[)([^\]]+)\]?)/g, ($0, $1, $2, $3, $4) => {
           switch ($1) {
           case '#':
@@ -20646,12 +20646,12 @@
             obj.classes.push($2);
             break;
           case ':':
-            if (Tools.inArray('checked disabled enabled read-only required'.split(' '), $2) !== -1) {
+            if (Tools.inArray('checked disabled enabled read-only required'.split(' '), $2) != -1) {
               obj.attrs[$2] = $2;
             }
             break;
           }
-          if ($3 === '[') {
+          if ($3 == '[') {
             const m = $4.match(/([\w\-]+)(?:\=\"([^\"]+))?/);
             if (m) {
               obj.attrs[m[1]] = m[2];
@@ -20681,14 +20681,14 @@
     const getCssText = (editor, format) => {
       let previewCss = '';
       let previewStyles = getPreviewStyles(editor);
-      if (previewStyles === '') {
+      if (previewStyles == '') {
         return '';
       }
       const removeVars = val => {
         return isString(val) ? val.replace(/%(\w+)/g, '') : '';
       };
       const getComputedStyle = (name, elm) => {
-        return dom.getStyle(elm !== null && elm !== void 0 ? elm : editor.getBody(), name, true);
+        return dom.getStyle(elm != null && elm != void 0 ? elm : editor.getBody(), name, true);
       };
       if (isString(format)) {
         const formats = editor.formatter.get(format);
@@ -20699,7 +20699,7 @@
       }
       if ('preview' in format) {
         const preview = format.preview;
-        if (preview === false) {
+        if (preview == false) {
           return '';
         } else {
           previewStyles = preview || previewStyles;
@@ -20746,27 +20746,27 @@
       const parentFontSize = /px$/.test(rawParentFontSize) ? parseInt(rawParentFontSize, 10) : 0;
       each$3(previewStyles.split(' '), name => {
         let value = getComputedStyle(name, previewElm);
-        if (name === 'background-color' && /transparent|rgba\s*\([^)]+,\s*0\)/.test(value)) {
+        if (name == 'background-color' && /transparent|rgba\s*\([^)]+,\s*0\)/.test(value)) {
           value = getComputedStyle(name);
-          if (rgbaToHexString(value).toLowerCase() === '#ffffff') {
+          if (rgbaToHexString(value).toLowerCase() == '#ffffff') {
             return;
           }
         }
-        if (name === 'color') {
-          if (rgbaToHexString(value).toLowerCase() === '#000000') {
+        if (name == 'color') {
+          if (rgbaToHexString(value).toLowerCase() == '#000000') {
             return;
           }
         }
-        if (name === 'font-size') {
+        if (name == 'font-size') {
           if (/em|%$/.test(value)) {
-            if (parentFontSize === 0) {
+            if (parentFontSize == 0) {
               return;
             }
             const numValue = parseFloat(value) / (/%$/.test(value) ? 100 : 1);
             value = numValue * parentFontSize + 'px';
           }
         }
-        if (name === 'border' && value) {
+        if (name == 'border' && value) {
           previewCss += 'padding:0 2px;';
         }
         previewCss += name + ':' + value + ';';
@@ -20878,12 +20878,12 @@
         if (e.isDefaultPrevented()) {
           return;
         }
-        const isMeta = Env.os.isMacOS() && e.key === 'Meta';
-        if (keyCode >= 33 && keyCode <= 36 || keyCode >= 37 && keyCode <= 40 || keyCode === 45 || e.ctrlKey || isMeta) {
+        const isMeta = Env.os.isMacOS() && e.key == 'Meta';
+        if (keyCode >= 33 && keyCode <= 36 || keyCode >= 37 && keyCode <= 40 || keyCode == 45 || e.ctrlKey || isMeta) {
           addNonTypingUndoLevel();
           editor.nodeChanged();
         }
-        if (keyCode === 46 || keyCode === 8) {
+        if (keyCode == 46 || keyCode == 8) {
           editor.nodeChanged();
         }
         if (isFirstTypedCharacter.get() && undoManager.typing && !isEq$1(createFromEditor(editor), undoManager.data[0])) {
@@ -20900,14 +20900,14 @@
         if (e.isDefaultPrevented()) {
           return;
         }
-        if (keyCode >= 33 && keyCode <= 36 || keyCode >= 37 && keyCode <= 40 || keyCode === 45) {
+        if (keyCode >= 33 && keyCode <= 36 || keyCode >= 37 && keyCode <= 40 || keyCode == 45) {
           if (undoManager.typing) {
             addNonTypingUndoLevel(e);
           }
           return;
         }
         const modKey = e.ctrlKey && !e.altKey || e.metaKey;
-        if ((keyCode < 16 || keyCode > 20) && keyCode !== 224 && keyCode !== 91 && !undoManager.typing && !modKey) {
+        if ((keyCode < 16 || keyCode > 20) && keyCode != 224 && keyCode != 91 && !undoManager.typing && !modKey) {
           undoManager.beforeChange();
           setTyping(undoManager, true, locks);
           undoManager.add({}, e);
@@ -20924,9 +20924,9 @@
           addNonTypingUndoLevel(e);
         }
       });
-      const isInsertReplacementText = event => event.inputType === 'insertReplacementText';
-      const isInsertTextDataNull = event => event.inputType === 'insertText' && event.data === null;
-      const isInsertFromPasteOrDrop = event => event.inputType === 'insertFromPaste' || event.inputType === 'insertFromDrop';
+      const isInsertReplacementText = event => event.inputType == 'insertReplacementText';
+      const isInsertTextDataNull = event => event.inputType == 'insertText' && event.data == null;
+      const isInsertFromPasteOrDrop = event => event.inputType == 'insertFromPaste' || event.inputType == 'insertFromDrop';
       editor.on('input', e => {
         if (e.inputType && (isInsertReplacementText(e) || isInsertTextDataNull(e) || isInsertFromPasteOrDrop(e))) {
           addNonTypingUndoLevel(e);
@@ -21025,10 +21025,10 @@
       VK.RIGHT
     ].concat(Env.browser.isFirefox() ? [224] : []);
     const placeholderAttr = 'data-mce-placeholder';
-    const isKeyboardEvent = e => e.type === 'keydown' || e.type === 'keyup';
+    const isKeyboardEvent = e => e.type == 'keydown' || e.type == 'keyup';
     const isDeleteEvent = e => {
       const keyCode = e.keyCode;
-      return keyCode === VK.BACKSPACE || keyCode === VK.DELETE;
+      return keyCode == VK.BACKSPACE || keyCode == VK.DELETE;
     };
     const isNonTypingKeyboardEvent = e => {
       if (isKeyboardEvent(e)) {
@@ -21038,7 +21038,7 @@
         return false;
       }
     };
-    const isTypingKeyboardEvent = e => isKeyboardEvent(e) && !(isDeleteEvent(e) || e.type === 'keyup' && e.keyCode === 229);
+    const isTypingKeyboardEvent = e => isKeyboardEvent(e) && !(isDeleteEvent(e) || e.type == 'keyup' && e.keyCode == 229);
     const isVisuallyEmpty = (dom, rootElm, forcedRootBlock) => {
       if (isEmpty$2(SugarElement.fromDom(rootElm), false)) {
         const firstElement = rootElm.firstElementChild;
@@ -21047,7 +21047,7 @@
         } else if (dom.getStyle(rootElm.firstElementChild, 'padding-left') || dom.getStyle(rootElm.firstElementChild, 'padding-right')) {
           return false;
         } else {
-          return forcedRootBlock === firstElement.nodeName.toLowerCase();
+          return forcedRootBlock == firstElement.nodeName.toLowerCase();
         }
       } else {
         return false;
@@ -21057,15 +21057,15 @@
       var _a;
       const dom = editor.dom;
       const rootBlock = getForcedRootBlock(editor);
-      const placeholder = (_a = getPlaceholder(editor)) !== null && _a !== void 0 ? _a : '';
+      const placeholder = (_a = getPlaceholder(editor)) != null && _a != void 0 ? _a : '';
       const updatePlaceholder = (e, initial) => {
         if (isNonTypingKeyboardEvent(e)) {
           return;
         }
         const body = editor.getBody();
         const showPlaceholder = isTypingKeyboardEvent(e) ? false : isVisuallyEmpty(dom, body, rootBlock);
-        const isPlaceholderShown = dom.getAttrib(body, placeholderAttr) !== '';
-        if (isPlaceholderShown !== showPlaceholder || initial) {
+        const isPlaceholderShown = dom.getAttrib(body, placeholderAttr) != '';
+        if (isPlaceholderShown != showPlaceholder || initial) {
           dom.setAttrib(body, placeholderAttr, showPlaceholder ? placeholder : null);
           dom.setAttrib(body, 'aria-placeholder', showPlaceholder ? placeholder : null);
           firePlaceholderToggle(editor, showPlaceholder);
@@ -21105,7 +21105,7 @@
       const root = SugarElement.fromDom(rootNode);
       return eq(getClosestHost(root, blockBoundary.from.block), getClosestHost(root, blockBoundary.to.block));
     };
-    const isEditable$1 = blockBoundary => isContentEditableFalse$b(blockBoundary.from.block.dom) === false && isContentEditableFalse$b(blockBoundary.to.block.dom) === false;
+    const isEditable$1 = blockBoundary => isContentEditableFalse$b(blockBoundary.from.block.dom) == false && isContentEditableFalse$b(blockBoundary.to.block.dom) == false;
     const hasValidBlocks = blockBoundary => {
       const isValidBlock = block => isTextBlock$2(block) || hasBlockAttr(block.dom);
       return isValidBlock(blockBoundary.from.block) && isValidBlock(blockBoundary.to.block);
@@ -21143,7 +21143,7 @@
       const parents = parentsAndSelf(block, rootNode);
       return find$2(parents.reverse(), element => isEmpty$2(element)).each(remove$5);
     };
-    const isEmptyBefore = el => filter$5(prevSiblings(el), el => !isEmpty$2(el)).length === 0;
+    const isEmptyBefore = el => filter$5(prevSiblings(el), el => !isEmpty$2(el)).length == 0;
     const nestedBlockMerge = (rootNode, fromBlock, toBlock, schema, insertionPoint) => {
       if (isEmpty$2(toBlock)) {
         fillWithPaddingBr(toBlock);
@@ -21283,7 +21283,7 @@
     const isBeforeBoundary = pos => isBeforeContentEditableFalse(pos) || isBeforeMedia(pos);
     const isAfterBoundary = pos => isAfterContentEditableFalse(pos) || isAfterMedia(pos);
     const trimEmptyTextNode = (dom, node) => {
-      if (isText$a(node) && node.data.length === 0) {
+      if (isText$a(node) && node.data.length == 0) {
         dom.remove(node);
       }
     };
@@ -21349,7 +21349,7 @@
     const isAtContentEditableBlockCaret = (forward, from) => {
       const elm = from.getNode(!forward);
       const caretLocation = forward ? 'after' : 'before';
-      return isElement$6(elm) && elm.getAttribute('data-mce-caret') === caretLocation;
+      return isElement$6(elm) && elm.getAttribute('data-mce-caret') == caretLocation;
     };
     const isDeleteFromCefDifferentBlocks = (root, forward, from, to, schema) => {
       const inSameBlock = elm => schema.isInline(elm.nodeName.toLowerCase()) && !isInSameBlock(from, to, root);
@@ -21483,11 +21483,11 @@
     const backspaceDelete$5 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret$2(editor, forward) : Optional.none();
 
     const isText$2 = isText$a;
-    const startsWithCaretContainer = node => isText$2(node) && node.data[0] === ZWSP$1;
-    const endsWithCaretContainer = node => isText$2(node) && node.data[node.data.length - 1] === ZWSP$1;
+    const startsWithCaretContainer = node => isText$2(node) && node.data[0] == ZWSP$1;
+    const endsWithCaretContainer = node => isText$2(node) && node.data[node.data.length - 1] == ZWSP$1;
     const createZwsp = node => {
       var _a;
-      const doc = (_a = node.ownerDocument) !== null && _a !== void 0 ? _a : document;
+      const doc = (_a = node.ownerDocument) != null && _a != void 0 ? _a : document;
       return doc.createTextNode(ZWSP$1);
     };
     const insertBefore$1 = node => {
@@ -21508,7 +21508,7 @@
         }
       } else {
         const newNode = createZwsp(node);
-        (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(newNode, node);
+        (_a = node.parentNode) == null || _a == void 0 ? void 0 : _a.insertBefore(newNode, node);
         return newNode;
       }
     };
@@ -21531,9 +21531,9 @@
       } else {
         const newNode = createZwsp(node);
         if (node.nextSibling) {
-          (_a = node.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(newNode, node.nextSibling);
+          (_a = node.parentNode) == null || _a == void 0 ? void 0 : _a.insertBefore(newNode, node.nextSibling);
         } else {
-          (_b = node.parentNode) === null || _b === void 0 ? void 0 : _b.appendChild(newNode);
+          (_b = node.parentNode) == null || _b == void 0 ? void 0 : _b.appendChild(newNode);
         }
         return newNode;
       }
@@ -21551,7 +21551,7 @@
     };
     const isPosCaretContainer = (pos, caret) => {
       const caretNode = caret.get();
-      return caretNode && pos.container() === caretNode && isCaretContainerInline(caretNode);
+      return caretNode && pos.container() == caretNode && isCaretContainerInline(caretNode);
     };
     const renderCaret = (caret, location) => location.fold(element => {
       remove$3(caret.get());
@@ -21610,7 +21610,7 @@
       const scope = rescope$1(rootNode, nPos.container());
       return findRootInline(isInlineTarget, scope, nPos).fold(() => nextPosition(scope, nPos).bind(curry(findRootInline, isInlineTarget, scope)).map(inline => Location.before(inline)), Optional.none);
     };
-    const isNotInsideFormatCaretContainer = (rootNode, elm) => getParentCaretContainer(rootNode, elm) === null;
+    const isNotInsideFormatCaretContainer = (rootNode, elm) => getParentCaretContainer(rootNode, elm) == null;
     const findInsideRootInline = (isInlineTarget, rootNode, pos) => findRootInline(isInlineTarget, rootNode, pos).filter(curry(isNotInsideFormatCaretContainer, rootNode));
     const start$1 = (isInlineTarget, rootNode, pos) => {
       const nPos = normalizeBackwards(pos);
@@ -21649,9 +21649,9 @@
     const getName = location => location.fold(constant('before'), constant('start'), constant('end'), constant('after'));
     const outside = location => location.fold(Location.before, Location.before, Location.after, Location.after);
     const inside = location => location.fold(Location.start, Location.start, Location.end, Location.end);
-    const isEq = (location1, location2) => getName(location1) === getName(location2) && getElement(location1) === getElement(location2);
+    const isEq = (location1, location2) => getName(location1) == getName(location2) && getElement(location1) == getElement(location2);
     const betweenInlines = (forward, isInlineTarget, rootNode, from, to, location) => lift2(findRootInline(isInlineTarget, rootNode, from), findRootInline(isInlineTarget, rootNode, to), (fromInline, toInline) => {
-      if (fromInline !== toInline && hasSameParentBlock(rootNode, fromInline, toInline)) {
+      if (fromInline != toInline && hasSameParentBlock(rootNode, fromInline, toInline)) {
         return Location.after(forward ? fromInline : toInline);
       } else {
         return location;
@@ -21707,12 +21707,12 @@
       BreakType[BreakType['Wrap'] = 2] = 'Wrap';
       BreakType[BreakType['Eol'] = 3] = 'Eol';
     }(BreakType || (BreakType = {})));
-    const flip = (direction, positions) => direction === HDirection.Backwards ? reverse(positions) : positions;
-    const walk$1 = (direction, caretWalker, pos) => direction === HDirection.Forwards ? caretWalker.next(pos) : caretWalker.prev(pos);
+    const flip = (direction, positions) => direction == HDirection.Backwards ? reverse(positions) : positions;
+    const walk$1 = (direction, caretWalker, pos) => direction == HDirection.Forwards ? caretWalker.next(pos) : caretWalker.prev(pos);
     const getBreakType = (scope, direction, currentPos, nextPos) => {
-      if (isBr$6(nextPos.getNode(direction === HDirection.Forwards))) {
+      if (isBr$6(nextPos.getNode(direction == HDirection.Forwards))) {
         return BreakType.Br;
-      } else if (isInSameBlock(currentPos, nextPos) === false) {
+      } else if (isInSameBlock(currentPos, nextPos) == false) {
         return BreakType.Block;
       } else {
         return BreakType.Wrap;
@@ -21728,7 +21728,7 @@
           break;
         }
         if (isBr$6(nextPos.getNode(false))) {
-          if (direction === HDirection.Forwards) {
+          if (direction == HDirection.Forwards) {
             return {
               positions: flip(direction, positions).concat([nextPos]),
               breakType: BreakType.Br,
@@ -21765,7 +21765,7 @@
     };
     const getAdjacentLinePositions = (direction, getPositionsUntilBreak, scope, start) => getPositionsUntilBreak(scope, start).breakAt.map(pos => {
       const positions = getPositionsUntilBreak(scope, pos).positions;
-      return direction === HDirection.Backwards ? positions.concat(pos) : [pos].concat(positions);
+      return direction == HDirection.Backwards ? positions.concat(pos) : [pos].concat(positions);
     }).getOr([]);
     const findClosestHorizontalPositionFromPoint = (positions, x) => foldl(positions, (acc, newPos) => acc.fold(() => Optional.some(newPos), lastPos => lift2(head(lastPos.getClientRects()), head(newPos.getClientRects()), (lastRect, newRect) => {
       const lastDist = Math.abs(x - lastRect.left);
@@ -21791,7 +21791,7 @@
     const findClosestClientRect = (clientRects, clientX) => reduce(clientRects, (oldClientRect, clientRect) => {
       const oldDistance = Math.min(distanceToRectLeft$1(oldClientRect, clientX), distanceToRectRight$1(oldClientRect, clientX));
       const newDistance = Math.min(distanceToRectLeft$1(clientRect, clientX), distanceToRectRight$1(clientRect, clientX));
-      if (newDistance === oldDistance && isNodeClientRect(clientRect) && isContentEditableFalse$4(clientRect.node)) {
+      if (newDistance == oldDistance && isNodeClientRect(clientRect) && isContentEditableFalse$4(clientRect.node)) {
         return clientRect;
       }
       if (newDistance < oldDistance) {
@@ -21839,7 +21839,7 @@
       const result = [];
       const add = node => {
         let clientRects = getClientRects([node]);
-        if (direction === -1) {
+        if (direction == -1) {
           clientRects = clientRects.reverse();
         }
         for (let i = 0; i < clientRects.length; i++) {
@@ -21870,7 +21870,7 @@
       return result;
     };
     const aboveLineNumber = (lineNumber, clientRect) => clientRect.line > lineNumber;
-    const isLineNumber = (lineNumber, clientRect) => clientRect.line === lineNumber;
+    const isLineNumber = (lineNumber, clientRect) => clientRect.line == lineNumber;
     const upUntil = curry(walkUntil, VDirection.Up, isAbove$1, isBelow$1);
     const downUntil = curry(walkUntil, VDirection.Down, isBelow$1, isAbove$1);
     const getLastClientRect = caretPosition => {
@@ -21884,7 +21884,7 @@
       let caretPosition;
       const result = [];
       let line = 0;
-      if (direction === 1) {
+      if (direction == 1) {
         walkFn = caretWalker.next;
         isBelowFn = isBelow$1;
         isAboveFn = isAbove$1;
@@ -21926,17 +21926,17 @@
     };
     const renderRangeCaretOpt = (editor, range, scrollIntoView) => Optional.some(renderRangeCaret(editor, range, scrollIntoView));
     const moveHorizontally = (editor, direction, range, isBefore, isAfter, isElement) => {
-      const forwards = direction === HDirection.Forwards;
+      const forwards = direction == HDirection.Forwards;
       const caretWalker = CaretWalker(editor.getBody());
       const getNextPosFn = curry(getVisualCaretPosition, forwards ? caretWalker.next : caretWalker.prev);
       const isBeforeFn = forwards ? isBefore : isAfter;
       if (!range.collapsed) {
         const node = getSelectedNode(range);
         if (isElement(node)) {
-          return showCaret(direction, editor, node, direction === HDirection.Backwards, false);
+          return showCaret(direction, editor, node, direction == HDirection.Backwards, false);
         } else if (isCefAtEdgeSelected(editor)) {
           const newRange = range.cloneRange();
-          newRange.collapse(direction === HDirection.Backwards);
+          newRange.collapse(direction == HDirection.Backwards);
           return Optional.from(newRange);
         }
       }
@@ -21968,7 +21968,7 @@
     const moveVertically = (editor, direction, range, isBefore, isAfter, isElement) => {
       const caretPosition = getNormalizedRangeEndPoint(direction, editor.getBody(), range);
       const caretClientRect = last$2(caretPosition.getClientRects());
-      const forwards = direction === VDirection.Down;
+      const forwards = direction == VDirection.Down;
       const root = editor.getBody();
       if (!caretClientRect) {
         return Optional.none();
@@ -22007,7 +22007,7 @@
           return renderRangeCaretOpt(editor, closestNextLineRect.position.toRange(), false);
         }
       }
-      if (nextLinePositions.length === 0) {
+      if (nextLinePositions.length == 0) {
         return getLineEndPoint(editor, forwards).filter(forwards ? isAfter : isBefore).map(pos => renderRangeCaret(editor, pos.toRange(), false));
       }
       return Optional.none();
@@ -22196,7 +22196,7 @@
       const parents = parentsAndSelf(startElm, rootElm);
       return findIndex$2(parents, pred).fold(constant(parents), index => parents.slice(0, index));
     };
-    const hasOnlyOneChild = elm => childNodesCount(elm) === 1;
+    const hasOnlyOneChild = elm => childNodesCount(elm) == 1;
     const getParentInlinesUntilMultichildInline = editor => getParentsUntil(editor, elm => editor.schema.isBlock(name(elm)) || hasMultipleChildren(elm));
     const getParentInlines = editor => getParentsUntil(editor, el => editor.schema.isBlock(name(el)));
     const getFormatNodes = (editor, parentInlines) => {
@@ -22209,7 +22209,7 @@
     };
     const deleteLastPosition = (forward, editor, target, parentInlines) => {
       const formatNodes = getFormatNodes(editor, parentInlines);
-      if (formatNodes.length === 0) {
+      if (formatNodes.length == 0) {
         deleteElement$2(editor, forward, target);
       } else {
         const pos = replaceWithCaretFormat(target.dom, formatNodes);
@@ -22244,7 +22244,7 @@
       }
     };
     const rangeStartsAtTextContainer = rng => isText$a(rng.startContainer);
-    const rangeStartsAtStartOfTextContainer = rng => rng.startOffset === 0 && rangeStartsAtTextContainer(rng);
+    const rangeStartsAtStartOfTextContainer = rng => rng.startOffset == 0 && rangeStartsAtTextContainer(rng);
     const rangeStartParentIsFormatElement = (editor, rng) => {
       const startParent = rng.startContainer.parentElement;
       return !isNull(startParent) && isFormatElement(editor, SugarElement.fromDom(startParent));
@@ -22256,7 +22256,7 @@
     };
     const rangeEndsAtEndOfEndContainer = rng => {
       const endContainer = rng.endContainer;
-      return rng.endOffset === (isText$a(endContainer) ? endContainer.length : endContainer.childNodes.length);
+      return rng.endOffset == (isText$a(endContainer) ? endContainer.length : endContainer.childNodes.length);
     };
     const rangeEndsAtEndOfStartContainer = rng => rangeStartAndEndHaveSameParent(rng) && rangeEndsAtEndOfEndContainer(rng);
     const rangeEndsAfterEndOfStartContainer = rng => !rng.endContainer.isEqualNode(rng.commonAncestorContainer);
@@ -22317,16 +22317,16 @@
     const backspaceDelete$2 = (editor, forward) => editor.selection.isCollapsed() ? deleteCaret(editor, forward) : deleteRange(editor, forward);
 
     const isEditable = target => closest$4(target, elm => isContentEditableTrue$3(elm.dom) || isContentEditableFalse$b(elm.dom)).exists(elm => isContentEditableTrue$3(elm.dom));
-    const parseIndentValue = value => toInt(value !== null && value !== void 0 ? value : '').getOr(0);
+    const parseIndentValue = value => toInt(value != null && value != void 0 ? value : '').getOr(0);
     const getIndentStyleName = (useMargin, element) => {
       const indentStyleName = useMargin || isTable$1(element) ? 'margin' : 'padding';
-      const suffix = get$7(element, 'direction') === 'rtl' ? '-right' : '-left';
+      const suffix = get$7(element, 'direction') == 'rtl' ? '-right' : '-left';
       return indentStyleName + suffix;
     };
     const indentElement = (dom, command, useMargin, value, unit, element) => {
       const indentStyleName = getIndentStyleName(useMargin, SugarElement.fromDom(element));
       const parsedValue = parseIndentValue(dom.getStyle(element, indentStyleName));
-      if (command === 'outdent') {
+      if (command == 'outdent') {
         const styleValue = Math.max(0, parsedValue - value);
         dom.setStyle(element, indentStyleName, styleValue ? styleValue + unit : '');
       } else {
@@ -22338,7 +22338,7 @@
       const indentStyleName = getIndentStyleName(shouldIndentUseMargin(editor), block);
       const intentValue = getRaw(block, indentStyleName).map(parseIndentValue).getOr(0);
       const contentEditable = editor.dom.getContentEditable(block.dom);
-      return contentEditable !== 'false' && intentValue > 0;
+      return contentEditable != 'false' && intentValue > 0;
     });
     const canOutdent = editor => {
       const blocks = getBlocksToIndent(editor);
@@ -22351,7 +22351,7 @@
       var _a, _b;
       const {dom} = editor;
       const indentation = getIndentation(editor);
-      const indentUnit = (_b = (_a = /[a-z%]+$/i.exec(indentation)) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : 'px';
+      const indentUnit = (_b = (_a = /[a-z%]+$/i.exec(indentation)) == null || _a == void 0 ? void 0 : _a[0]) != null && _b != void 0 ? _b : 'px';
       const indentValue = parseIndentValue(indentation);
       const useMargin = shouldIndentUseMargin(editor);
       each$e(getBlocksToIndent(editor), block => {
@@ -22367,7 +22367,7 @@
         const rng = editor.selection.getRng();
         const pos = CaretPosition.fromRangeStart(rng);
         const block = dom.getParent(rng.startContainer, dom.isBlock);
-        if (block !== null && isAtStartOfBlock(SugarElement.fromDom(block), pos, editor.schema)) {
+        if (block != null && isAtStartOfBlock(SugarElement.fromDom(block), pos, editor.schema)) {
           return Optional.some(() => outdent(editor));
         }
       }
@@ -22415,7 +22415,7 @@
     const SIGNIFICANT_MOVE = 5;
     const LONGPRESS_DELAY = 400;
     const getTouch = event => {
-      if (event.touches === undefined || event.touches.length !== 1) {
+      if (event.touches == undefined || event.touches.length != 1) {
         return Optional.none();
       }
       return Optional.some(event.touches[0]);
@@ -22462,7 +22462,7 @@
       }, true);
       editor.on('touchend touchcancel', e => {
         debounceLongpress.cancel();
-        if (e.type === 'touchcancel') {
+        if (e.type == 'touchcancel') {
           return;
         }
         startData.get().filter(data => data.target.isEqualNode(e.target)).each(() => {
@@ -22495,7 +22495,7 @@
     };
     const shouldRemoveTextNode = (blockElements, node) => {
       if (isText$a(node)) {
-        if (node.data.length === 0) {
+        if (node.data.length == 0) {
           return true;
         } else if (/^\s+$/.test(node.data)) {
           return !node.nextSibling || isBlockElement(blockElements, node.nextSibling) || isNonHtmlElementRoot(node.nextSibling);
@@ -22570,29 +22570,29 @@
       editor.on('NodeChange', curry(addRootBlocks, editor));
     };
 
-    const hasClass = checkClassName => node => (' ' + node.attr('class') + ' ').indexOf(checkClassName) !== -1;
+    const hasClass = checkClassName => node => (' ' + node.attr('class') + ' ').indexOf(checkClassName) != -1;
     const replaceMatchWithSpan = (editor, content, cls) => {
       return function (match) {
         const args = arguments, index = args[args.length - 2];
         const prevChar = index > 0 ? content.charAt(index - 1) : '';
-        if (prevChar === '"') {
+        if (prevChar == '"') {
           return match;
         }
-        if (prevChar === '>') {
+        if (prevChar == '>') {
           const findStartTagIndex = content.lastIndexOf('<', index);
-          if (findStartTagIndex !== -1) {
+          if (findStartTagIndex != -1) {
             const tagHtml = content.substring(findStartTagIndex, index);
-            if (tagHtml.indexOf('contenteditable="false"') !== -1) {
+            if (tagHtml.indexOf('contenteditable="false"') != -1) {
               return match;
             }
           }
         }
-        return '<span class="' + cls + '" data-mce-content="' + editor.dom.encode(args[0]) + '">' + editor.dom.encode(typeof args[1] === 'string' ? args[1] : args[0]) + '</span>';
+        return '<span class="' + cls + '" data-mce-content="' + editor.dom.encode(args[0]) + '">' + editor.dom.encode(typeof args[1] == 'string' ? args[1] : args[0]) + '</span>';
       };
     };
     const convertRegExpsToNonEditable = (editor, nonEditableRegExps, e) => {
       let i = nonEditableRegExps.length, content = e.content;
-      if (e.format === 'raw') {
+      if (e.format == 'raw') {
         return;
       }
       while (i--) {
@@ -22655,7 +22655,7 @@
       if (!blockCaretContainer) {
         return;
       }
-      if (e.type === 'compositionstart') {
+      if (e.type == 'compositionstart') {
         e.preventDefault();
         e.stopPropagation();
         showBlockCaretContainer(editor, blockCaretContainer);
@@ -22684,7 +22684,7 @@
     };
     const exitPreBlock = (editor, direction, range) => {
       const caretWalker = CaretWalker(editor.getBody());
-      const getVisualCaretPosition$1 = curry(getVisualCaretPosition, direction === 1 ? caretWalker.next : caretWalker.prev);
+      const getVisualCaretPosition$1 = curry(getVisualCaretPosition, direction == 1 ? caretWalker.next : caretWalker.prev);
       if (range.collapsed) {
         const pre = editor.dom.getParent(range.startContainer, 'PRE');
         if (!pre) {
@@ -22693,7 +22693,7 @@
         const caretPos = getVisualCaretPosition$1(CaretPosition.fromRangeStart(range));
         if (!caretPos) {
           const newBlock = SugarElement.fromDom(createTextBlock(editor));
-          if (direction === 1) {
+          if (direction == 1) {
             after$4(SugarElement.fromDom(pre), newBlock);
           } else {
             before$3(SugarElement.fromDom(pre), newBlock);
@@ -22781,7 +22781,7 @@
       const rng = editor.selection.getRng();
       const pos = CaretPosition.fromRangeStart(rng);
       const root = editor.getBody();
-      if (root.firstChild === details && isAtFirstLine(summary, pos)) {
+      if (root.firstChild == details && isAtFirstLine(summary, pos)) {
         editor.execCommand('InsertNewBlockBefore');
         return true;
       } else {
@@ -22792,7 +22792,7 @@
       const rng = editor.selection.getRng();
       const pos = CaretPosition.fromRangeStart(rng);
       const root = editor.getBody();
-      if (root.lastChild === details && isAtLastLine(details, pos)) {
+      if (root.lastChild == details && isAtLastLine(details, pos)) {
         editor.execCommand('InsertNewBlockAfter');
         return true;
       } else {
@@ -22823,7 +22823,7 @@
       ...baseKeyPattern,
       ...pattern
     }));
-    const matchesEvent = (pattern, evt) => evt.keyCode === pattern.keyCode && evt.shiftKey === pattern.shiftKey && evt.altKey === pattern.altKey && evt.ctrlKey === pattern.ctrlKey && evt.metaKey === pattern.metaKey;
+    const matchesEvent = (pattern, evt) => evt.keyCode == pattern.keyCode && evt.shiftKey == pattern.shiftKey && evt.altKey == pattern.altKey && evt.ctrlKey == pattern.ctrlKey && evt.metaKey == pattern.metaKey;
     const match$1 = (patterns, evt) => bind$3(defaultPatterns(patterns), pattern => matchesEvent(pattern, evt) ? [pattern] : []);
     const matchDelayed = (patterns, evt) => bind$3(defaultDelayedPatterns(patterns), pattern => matchesEvent(pattern, evt) ? [pattern] : []);
     const action = (f, ...x) => () => f.apply(null, x);
@@ -22899,7 +22899,7 @@
     const table = (element, isRoot) => closest$3(element, 'table', isRoot);
 
     const walk = (all, current, index, direction, isEligible = always) => {
-      const forwards = direction === 1;
+      const forwards = direction == 1;
       if (!forwards && index <= 0) {
         return CellLocation.first(all[0]);
       } else if (forwards && index >= all.length - 1) {
@@ -22980,8 +22980,8 @@
     const findClosestPositionInBelowCell = (table, pos) => last$3(pos.getClientRects()).bind(rect => getClosestCellBelow(table, rect.left, rect.top)).bind(cell => findClosestHorizontalPosition(getFirstLinePositions(cell), pos));
 
     const hasNextBreak = (getPositionsUntil, scope, lineInfo) => lineInfo.breakAt.exists(breakPos => getPositionsUntil(scope, breakPos).breakAt.isSome());
-    const startsWithWrapBreak = lineInfo => lineInfo.breakType === BreakType.Wrap && lineInfo.positions.length === 0;
-    const startsWithBrBreak = lineInfo => lineInfo.breakType === BreakType.Br && lineInfo.positions.length === 1;
+    const startsWithWrapBreak = lineInfo => lineInfo.breakType == BreakType.Wrap && lineInfo.positions.length == 0;
+    const startsWithBrBreak = lineInfo => lineInfo.breakType == BreakType.Br && lineInfo.positions.length == 1;
     const isAtTableCellLine = (getPositionsUntil, scope, pos) => {
       const lineInfo = getPositionsUntil(scope, pos);
       if (startsWithWrapBreak(lineInfo) || !isBr$6(pos.getNode()) && startsWithBrBreak(lineInfo)) {
@@ -23022,7 +23022,7 @@
     };
     const moveCaret = (editor, down, pos) => {
       const table = down ? getTable(true, pos) : getTable(false, pos);
-      const last = down === false;
+      const last = down == false;
       table.fold(() => moveToRange(editor, pos.toRange()), table => positionIn(last, editor.getBody()).filter(lastPos => lastPos.isEqual(pos)).fold(() => moveToRange(editor, pos.toRange()), _ => renderBlock(down, editor, table)));
     };
     const navigateVertically = (editor, down, table, td) => {
@@ -23210,13 +23210,13 @@
     });
 
     const DOM$7 = DOMUtils.DOM;
-    const alwaysNext = startNode => node => startNode === node ? -1 : 0;
+    const alwaysNext = startNode => node => startNode == node ? -1 : 0;
     const isBoundary = dom => node => dom.isBlock(node) || contains$2([
       'BR',
       'IMG',
       'HR',
       'INPUT'
-    ], node.nodeName) || dom.getContentEditable(node) === 'false';
+    ], node.nodeName) || dom.getContentEditable(node) == 'false';
     const textBefore = (node, offset, rootNode) => {
       if (isText$a(node) && offset >= 0) {
         return Optional.some(point(node, offset));
@@ -23267,7 +23267,7 @@
 
     const isValidTextRange = rng => rng.collapsed && isText$a(rng.startContainer);
     const getText = rng => trim$2(rng.toString().replace(/\u00A0/g, ' '));
-    const isWhitespace = chr => chr !== '' && ' \xA0\f\n\r\t\x0B'.indexOf(chr) !== -1;
+    const isWhitespace = chr => chr != '' && ' \xA0\f\n\r\t\x0B'.indexOf(chr) != -1;
 
     const stripTrigger = (text, trigger) => text.substring(trigger.length);
     const findTrigger = (text, index, trigger) => {
@@ -23278,7 +23278,7 @@
         if (isWhitespace(char)) {
           return Optional.none();
         }
-        if (firstChar === char && contains$1(text, trigger, i, index)) {
+        if (firstChar == char && contains$1(text, trigger, i, index)) {
           break;
         }
       }
@@ -23307,7 +23307,7 @@
         }
         const text = getText(range);
         const triggerIndex = text.lastIndexOf(trigger);
-        if (triggerIndex !== 0 || stripTrigger(text, trigger).length < minChars) {
+        if (triggerIndex != 0 || stripTrigger(text, trigger).length < minChars) {
           return Optional.none();
         } else {
           return Optional.some({
@@ -23329,8 +23329,8 @@
       });
     });
 
-    const isText$1 = node => node.nodeType === TEXT;
-    const isElement = node => node.nodeType === ELEMENT;
+    const isText$1 = node => node.nodeType == TEXT;
+    const isElement = node => node.nodeType == ELEMENT;
     const toLast = node => {
       if (isText$1(node)) {
         return point(node, node.data.length);
@@ -23343,7 +23343,7 @@
       const children = node.childNodes;
       if (children.length > 0 && offset < children.length) {
         return toLeaf(children[offset], 0);
-      } else if (children.length > 0 && isElement(node) && children.length === offset) {
+      } else if (children.length > 0 && isElement(node) && children.length == offset) {
         return toLast(children[children.length - 1]);
       } else {
         return point(node, offset);
@@ -23352,8 +23352,8 @@
 
     const isPreviousCharContent = (dom, leaf) => {
       var _a;
-      const root = (_a = dom.getParent(leaf.container, dom.isBlock)) !== null && _a !== void 0 ? _a : dom.getRoot();
-      return repeatLeft(dom, leaf.container, leaf.offset, (_element, offset) => offset === 0 ? -1 : offset, root).filter(spot => {
+      const root = (_a = dom.getParent(leaf.container, dom.isBlock)) != null && _a != void 0 ? _a : dom.getRoot();
+      return repeatLeft(dom, leaf.container, leaf.offset, (_element, offset) => offset == 0 ? -1 : offset, root).filter(spot => {
         const char = spot.container.data.charAt(spot.offset - 1);
         return !isWhitespace(char);
       }).isSome();
@@ -23372,9 +23372,9 @@
       var _a;
       const database = getDatabase();
       const rng = editor.selection.getRng();
-      const startText = (_a = rng.startContainer.nodeValue) !== null && _a !== void 0 ? _a : '';
+      const startText = (_a = rng.startContainer.nodeValue) != null && _a != void 0 ? _a : '';
       const autocompleters = filter$5(database.lookupByTrigger(context.trigger), autocompleter => context.text.length >= autocompleter.minChars && autocompleter.matches.getOrThunk(() => isStartOfWord(editor.dom))(context.range, startText, context.text));
-      if (autocompleters.length === 0) {
+      if (autocompleters.length == 0) {
         return Optional.none();
       }
       const lookupData = Promise.all(map$3(autocompleters, ac => {
@@ -23398,7 +23398,7 @@
       SimpleResultType[SimpleResultType['Error'] = 0] = 'Error';
       SimpleResultType[SimpleResultType['Value'] = 1] = 'Value';
     }(SimpleResultType || (SimpleResultType = {})));
-    const fold$1 = (res, onError, onValue) => res.stype === SimpleResultType.Error ? onError(res.serror) : onValue(res.svalue);
+    const fold$1 = (res, onError, onValue) => res.stype == SimpleResultType.Error ? onError(res.serror) : onValue(res.svalue);
     const partition = results => {
       const values = [];
       const errors = [];
@@ -23411,7 +23411,7 @@
       };
     };
     const mapError = (res, f) => {
-      if (res.stype === SimpleResultType.Error) {
+      if (res.stype == SimpleResultType.Error) {
         return {
           stype: SimpleResultType.Error,
           serror: f(res.serror)
@@ -23421,7 +23421,7 @@
       }
     };
     const map = (res, f) => {
-      if (res.stype === SimpleResultType.Value) {
+      if (res.stype == SimpleResultType.Value) {
         return {
           stype: SimpleResultType.Value,
           svalue: f(res.svalue)
@@ -23431,14 +23431,14 @@
       }
     };
     const bind$1 = (res, f) => {
-      if (res.stype === SimpleResultType.Value) {
+      if (res.stype == SimpleResultType.Value) {
         return f(res.svalue);
       } else {
         return res;
       }
     };
     const bindError = (res, f) => {
-      if (res.stype === SimpleResultType.Error) {
+      if (res.stype == SimpleResultType.Error) {
         return f(res.serror);
       } else {
         return res;
@@ -23516,7 +23516,7 @@
     };
     const baseMerge = merger => {
       return (...objects) => {
-        if (objects.length === 0) {
+        if (objects.length == 0) {
           throw new Error(`Can't merge zero objects`);
         }
         const ret = {};
@@ -23603,7 +23603,7 @@
     };
     const optionAccess = (obj, key, bundle) => bundle(get$a(obj, key));
     const optionDefaultedAccess = (obj, key, fallback, bundle) => {
-      const opt = get$a(obj, key).map(val => val === true ? fallback(obj) : val);
+      const opt = get$a(obj, key).map(val => val == true ? fallback(obj) : val);
       return bundle(opt);
     };
     const extractField = (field, path, obj, key, prop) => {
@@ -23801,7 +23801,7 @@
       }, identity));
       const triggers = stringArray(mapToArray(dataset, v => v.trigger));
       const datasetValues = values(dataset);
-      const lookupByTrigger = trigger => filter$5(datasetValues, dv => dv.trigger === trigger);
+      const lookupByTrigger = trigger => filter$5(datasetValues, dv => dv.trigger == trigger);
       return {
         dataset,
         triggers,
@@ -23812,16 +23812,16 @@
     const setupEditorInput = (editor, api) => {
       const update = last$1(api.load, 50);
       editor.on('keypress compositionend', e => {
-        if (e.which === 27) {
+        if (e.which == 27) {
           return;
         }
         update.throttle();
       });
       editor.on('keydown', e => {
         const keyCode = e.which;
-        if (keyCode === 8) {
+        if (keyCode == 8) {
           update.throttle();
-        } else if (keyCode === 27) {
+        } else if (keyCode == 27) {
           api.cancelIfNecessary();
         }
       });
@@ -23856,7 +23856,7 @@
           lookupInfo.lookupData.then(lookupData => {
             activeAutocompleter.get().map(ac => {
               const context = lookupInfo.context;
-              if (ac.trigger === context.trigger) {
+              if (ac.trigger == context.trigger) {
                 if (context.text.length - ac.matchLength >= 10) {
                   cancelIfNecessary();
                 } else {
@@ -23892,7 +23892,7 @@
     const emptyNodeContents = node => fillWithPaddingBr(SugarElement.fromDom(node));
     const isEntireNodeSelected = (rng, node) => {
       var _a;
-      return rng.startOffset === 0 && rng.endOffset === ((_a = node.textContent) === null || _a === void 0 ? void 0 : _a.length);
+      return rng.startOffset == 0 && rng.endOffset == ((_a = node.textContent) == null || _a == void 0 ? void 0 : _a.length);
     };
     const getParentDetailsElementAtPos = (dom, pos) => Optional.from(dom.getParent(pos.container(), 'details'));
     const isInDetailsElement = (dom, pos) => getParentDetailsElementAtPos(dom, pos).isSome();
@@ -23947,20 +23947,20 @@
       const containsEnd = element => element.contains(rng.endContainer);
       const startInSummary = detailsElements.startSummary.exists(containsStart);
       const endInSummary = detailsElements.startSummary.exists(containsEnd);
-      const isPartiallySelectedDetailsElements = detailsElements.startDetails.forall(startDetails => detailsElements.endDetails.forall(endDetails => startDetails !== endDetails));
+      const isPartiallySelectedDetailsElements = detailsElements.startDetails.forall(startDetails => detailsElements.endDetails.forall(endDetails => startDetails != endDetails));
       const isInPartiallySelectedSummary = (startInSummary || endInSummary) && !(startInSummary && endInSummary);
       return isInPartiallySelectedSummary || isPartiallySelectedDetailsElements;
     };
     const shouldPreventDeleteIntoDetails = (editor, forward, granularity) => {
       const {dom, selection} = editor;
       const root = editor.getBody();
-      if (granularity === 'character') {
+      if (granularity == 'character') {
         const caretPos = CaretPosition.fromRangeStart(selection.getRng());
         const parentBlock = dom.getParent(caretPos.container(), dom.isBlock);
         const parentDetailsAtCaret = getParentDetailsElementAtPos(dom, caretPos);
         const inEmptyParentBlock = parentBlock && dom.isEmpty(parentBlock);
-        const isFirstBlock = isNull(parentBlock === null || parentBlock === void 0 ? void 0 : parentBlock.previousSibling);
-        const isLastBlock = isNull(parentBlock === null || parentBlock === void 0 ? void 0 : parentBlock.nextSibling);
+        const isFirstBlock = isNull(parentBlock == null || parentBlock == void 0 ? void 0 : parentBlock.previousSibling);
+        const isLastBlock = isNull(parentBlock == null || parentBlock == void 0 ? void 0 : parentBlock.nextSibling);
         if (inEmptyParentBlock) {
           const firstOrLast = forward ? isLastBlock : isFirstBlock;
           if (firstOrLast) {
@@ -24001,7 +24001,7 @@
       const rng = selection.getRng();
       const caretPos = CaretPosition.fromRangeStart(rng);
       const root = editor.getBody();
-      if (granularity === 'selection') {
+      if (granularity == 'selection') {
         return isPartialDelete(rng, detailElements);
       } else if (forward) {
         return isCaretAtEndOfSummary(caretPos, detailElements) || isCaretInLastPositionInBody(root, caretPos, detailElements);
@@ -24016,22 +24016,22 @@
       const rng = selection.getRng();
       const caretPos = CaretPosition.fromRangeStart(rng);
       if (isSummary$1(node)) {
-        if (granularity === 'selection' && isEntireNodeSelected(rng, node) || willDeleteLastPositionInElement(forward, caretPos, node)) {
+        if (granularity == 'selection' && isEntireNodeSelected(rng, node) || willDeleteLastPositionInElement(forward, caretPos, node)) {
           emptyNodeContents(node);
         } else {
           editor.undoManager.transact(() => {
             const sel = selection.getSel();
-            let {anchorNode, anchorOffset, focusNode, focusOffset} = sel !== null && sel !== void 0 ? sel : {};
+            let {anchorNode, anchorOffset, focusNode, focusOffset} = sel != null && sel != void 0 ? sel : {};
             const applySelection = () => {
               if (isNonNullable(anchorNode) && isNonNullable(anchorOffset) && isNonNullable(focusNode) && isNonNullable(focusOffset)) {
-                sel === null || sel === void 0 ? void 0 : sel.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+                sel == null || sel == void 0 ? void 0 : sel.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
               }
             };
             const updateSelection = () => {
-              anchorNode = sel === null || sel === void 0 ? void 0 : sel.anchorNode;
-              anchorOffset = sel === null || sel === void 0 ? void 0 : sel.anchorOffset;
-              focusNode = sel === null || sel === void 0 ? void 0 : sel.focusNode;
-              focusOffset = sel === null || sel === void 0 ? void 0 : sel.focusOffset;
+              anchorNode = sel == null || sel == void 0 ? void 0 : sel.anchorNode;
+              anchorOffset = sel == null || sel == void 0 ? void 0 : sel.anchorOffset;
+              focusNode = sel == null || sel == void 0 ? void 0 : sel.focusNode;
+              focusOffset = sel == null || sel == void 0 ? void 0 : sel.focusOffset;
             };
             const appendAllChildNodes = (from, to) => {
               each$e(from.childNodes, child => {
@@ -24044,8 +24044,8 @@
             appendAllChildNodes(node, container);
             node.appendChild(container);
             applySelection();
-            if (granularity === 'word' || granularity === 'line') {
-              sel === null || sel === void 0 ? void 0 : sel.modify('extend', forward ? 'right' : 'left', granularity);
+            if (granularity == 'word' || granularity == 'line') {
+              sel == null || sel == void 0 ? void 0 : sel.modify('extend', forward ? 'right' : 'left', granularity);
             }
             if (!selection.isCollapsed() && isEntireNodeSelected(selection.getRng(), container)) {
               emptyNodeContents(node);
@@ -24101,7 +24101,7 @@
     const browser = platform$2.browser;
     const isFirefox = browser.isFirefox();
     const executeKeydownOverride$3 = (editor, caret, evt) => {
-      const inputType = evt.keyCode === VK.BACKSPACE ? 'deleteContentBackward' : 'deleteContentForward';
+      const inputType = evt.keyCode == VK.BACKSPACE ? 'deleteContentBackward' : 'deleteContentForward';
       const isCollapsed = editor.selection.isCollapsed();
       const unmodifiedGranularity = isCollapsed ? 'character' : 'selection';
       const getModifiedGranularity = isWord => {
@@ -24273,7 +24273,7 @@
     const setup$j = (editor, caret) => {
       let isBackspaceKeydown = false;
       editor.on('keydown', evt => {
-        isBackspaceKeydown = evt.keyCode === VK.BACKSPACE;
+        isBackspaceKeydown = evt.keyCode == VK.BACKSPACE;
         if (!evt.isDefaultPrevented()) {
           executeKeydownOverride$3(editor, caret, evt);
         }
@@ -24352,14 +24352,14 @@
       const root = dom.getRoot();
       let editableRoot;
       let parent = node;
-      while (parent !== root && parent && dom.getContentEditable(parent) !== 'false') {
-        if (dom.getContentEditable(parent) === 'true') {
+      while (parent != root && parent && dom.getContentEditable(parent) != 'false') {
+        if (dom.getContentEditable(parent) == 'true') {
           editableRoot = parent;
           break;
         }
         parent = parent.parentNode;
       }
-      return parent !== root ? editableRoot : root;
+      return parent != root ? editableRoot : root;
     };
     const getParentBlock$1 = editor => {
       return Optional.from(editor.dom.getParent(editor.selection.getStart(true), editor.dom.isBlock));
@@ -24388,7 +24388,7 @@
         dom.setStyles(node, newStyles);
       });
       const attrClassesOpt = Optional.from(forcedRootBlockAttrs.class).map(attrClasses => attrClasses.split(/\s+/));
-      const currentClassesOpt = Optional.from(node.className).map(currentClasses => filter$5(currentClasses.split(/\s+/), clazz => clazz !== ''));
+      const currentClassesOpt = Optional.from(node.className).map(currentClasses => filter$5(currentClasses.split(/\s+/), clazz => clazz != ''));
       lift2(attrClassesOpt, currentClassesOpt, (attrClasses, currentClasses) => {
         const filteredClasses = filter$5(currentClasses, clazz => !contains$2(attrClasses, clazz));
         const newClasses = [
@@ -24406,7 +24406,7 @@
     };
     const setForcedBlockAttrs = (editor, node) => {
       const forcedRootBlockName = getForcedRootBlock(editor);
-      if (forcedRootBlockName.toLowerCase() === node.tagName.toLowerCase()) {
+      if (forcedRootBlockName.toLowerCase() == node.tagName.toLowerCase()) {
         const forcedRootBlockAttrs = getForcedRootBlockAttrs(editor);
         applyAttributes(editor, node, forcedRootBlockAttrs);
       }
@@ -24419,7 +24419,7 @@
       let node = container;
       const textInlineElements = schema.getTextInlineElements();
       let block;
-      if (name || parentBlockName === 'TABLE' || parentBlockName === 'HR') {
+      if (name || parentBlockName == 'TABLE' || parentBlockName == 'HR') {
         block = dom.create(name || newBlockName, styles || {});
       } else {
         block = parentBlock.cloneNode(false);
@@ -24444,7 +24444,7 @@
               block.appendChild(clonedNode);
             }
           }
-        } while ((node = node.parentNode) && node !== editableRoot);
+        } while ((node = node.parentNode) && node != editableRoot);
       }
       setForcedBlockAttrs(editor, block);
       emptyBlock(caretNode);
@@ -24454,7 +24454,7 @@
     const getDetailsRoot = (editor, element) => editor.dom.getParent(element, isDetails);
     const isAtDetailsEdge = (root, element, isTextBlock) => {
       let node = element;
-      while (node && node !== root && isNull(node.nextSibling)) {
+      while (node && node != root && isNull(node.nextSibling)) {
         const parent = node.parentElement;
         if (!parent || !isTextBlock(parent)) {
           return isDetails(parent);
@@ -24463,7 +24463,7 @@
       }
       return false;
     };
-    const isLastEmptyBlockInDetails = (editor, shiftKey, element) => !shiftKey && element.nodeName.toLowerCase() === getForcedRootBlock(editor) && editor.dom.isEmpty(element) && isAtDetailsEdge(editor.getBody(), element, el => has$2(editor.schema.getTextBlockElements(), el.nodeName.toLowerCase()));
+    const isLastEmptyBlockInDetails = (editor, shiftKey, element) => !shiftKey && element.nodeName.toLowerCase() == getForcedRootBlock(editor) && editor.dom.isEmpty(element) && isAtDetailsEdge(editor.getBody(), element, el => has$2(editor.schema.getTextBlockElements(), el.nodeName.toLowerCase()));
     const insertNewLine = (editor, createNewBlock, parentBlock) => {
       var _a, _b, _c;
       const newBlock = createNewBlock(getForcedRootBlock(editor));
@@ -24473,21 +24473,21 @@
       }
       editor.dom.insertAfter(newBlock, root);
       moveToCaretPosition(editor, newBlock);
-      if (((_c = (_b = (_a = parentBlock.parentElement) === null || _a === void 0 ? void 0 : _a.childNodes) === null || _b === void 0 ? void 0 : _b.length) !== null && _c !== void 0 ? _c : 0) > 1) {
+      if (((_c = (_b = (_a = parentBlock.parentElement) == null || _a == void 0 ? void 0 : _a.childNodes) == null || _b == void 0 ? void 0 : _b.length) != null && _c != void 0 ? _c : 0) > 1) {
         editor.dom.remove(parentBlock);
       }
     };
 
     const hasFirstChild = (elm, name) => {
-      return elm.firstChild && elm.firstChild.nodeName === name;
+      return elm.firstChild && elm.firstChild.nodeName == name;
     };
     const isFirstChild = elm => {
       var _a;
-      return ((_a = elm.parentNode) === null || _a === void 0 ? void 0 : _a.firstChild) === elm;
+      return ((_a = elm.parentNode) == null || _a == void 0 ? void 0 : _a.firstChild) == elm;
     };
     const hasParent = (elm, parentName) => {
-      const parentNode = elm === null || elm === void 0 ? void 0 : elm.parentNode;
-      return isNonNullable(parentNode) && parentNode.nodeName === parentName;
+      const parentNode = elm == null || elm == void 0 ? void 0 : elm.parentNode;
+      return isNonNullable(parentNode) && parentNode.nodeName == parentName;
     };
     const isListBlock = elm => {
       return isNonNullable(elm) && /^(OL|UL|LI)$/.test(elm.nodeName);
@@ -24510,14 +24510,14 @@
         }
         node = node[first ? 'nextSibling' : 'previousSibling'];
       }
-      return node === parentBlock;
+      return node == parentBlock;
     };
     const getStyles = elm => foldl(mapToArray(getAllRaw(SugarElement.fromDom(elm)), (style, styleName) => `${ styleName }: ${ style };`), (acc, s) => acc + s, '');
     const insert$4 = (editor, createNewBlock, containerBlock, parentBlock, newBlockName) => {
       const dom = editor.dom;
       const rng = editor.selection.getRng();
       const containerParent = containerBlock.parentNode;
-      if (containerBlock === editor.getBody() || !containerParent) {
+      if (containerBlock == editor.getBody() || !containerParent) {
         return;
       }
       if (isNestedList(containerBlock)) {
@@ -24555,7 +24555,7 @@
         tmpRng.setStartAfter(parentBlock);
         tmpRng.setEndAfter(containerBlock);
         const fragment = tmpRng.extractContents();
-        if (newBlockName === 'LI' && hasFirstChild(fragment, 'LI')) {
+        if (newBlockName == 'LI' && hasFirstChild(fragment, 'LI')) {
           const previousChildren = filter$5(map$3(newBlock.children, SugarElement.fromDom), not(isTag('br')));
           newBlock = fragment.firstChild;
           dom.insertAfter(fragment, containerBlock);
@@ -24580,16 +24580,16 @@
     };
     const isWithinNonEditableList = (editor, node) => {
       const parentList = editor.dom.getParent(node, 'ol,ul,dl');
-      return parentList !== null && editor.dom.getContentEditableParent(parentList) === 'false';
+      return parentList != null && editor.dom.getContentEditableParent(parentList) == 'false';
     };
     const isEmptyAnchor = (dom, elm) => {
-      return elm && elm.nodeName === 'A' && dom.isEmpty(elm);
+      return elm && elm.nodeName == 'A' && dom.isEmpty(elm);
     };
     const containerAndSiblingName = (container, nodeName) => {
-      return container.nodeName === nodeName || container.previousSibling && container.previousSibling.nodeName === nodeName;
+      return container.nodeName == nodeName || container.previousSibling && container.previousSibling.nodeName == nodeName;
     };
     const canSplitBlock = (dom, node) => {
-      return isNonNullable(node) && dom.isBlock(node) && !/^(TD|TH|CAPTION|FORM)$/.test(node.nodeName) && !/^(fixed|absolute)/i.test(node.style.position) && dom.isEditable(node.parentNode) && dom.getContentEditable(node) !== 'false';
+      return isNonNullable(node) && dom.isBlock(node) && !/^(TD|TH|CAPTION|FORM)$/.test(node.nodeName) && !/^(fixed|absolute)/i.test(node.style.position) && dom.isEditable(node.parentNode) && dom.getContentEditable(node) != 'false';
     };
     const trimInlineElementsOnLeftSideOfBlock = (dom, nonEmptyElementsMap, block) => {
       var _a;
@@ -24609,7 +24609,7 @@
       let i = firstChilds.length;
       while (i--) {
         currentNode = firstChilds[i];
-        if (!currentNode.hasChildNodes() || currentNode.firstChild === currentNode.lastChild && ((_a = currentNode.firstChild) === null || _a === void 0 ? void 0 : _a.nodeValue) === '') {
+        if (!currentNode.hasChildNodes() || currentNode.firstChild == currentNode.lastChild && ((_a = currentNode.firstChild) == null || _a == void 0 ? void 0 : _a.nodeValue) == '') {
           dom.remove(currentNode);
         } else {
           if (isEmptyAnchor(dom, currentNode)) {
@@ -24622,9 +24622,9 @@
       if (!isText$a(container)) {
         return offset;
       } else if (start) {
-        return offset === 1 && container.data.charAt(offset - 1) === ZWSP$1 ? 0 : offset;
+        return offset == 1 && container.data.charAt(offset - 1) == ZWSP$1 ? 0 : offset;
       } else {
-        return offset === container.data.length - 1 && container.data.charAt(offset) === ZWSP$1 ? container.data.length : offset;
+        return offset == container.data.length - 1 && container.data.charAt(offset) == ZWSP$1 ? container.data.length : offset;
       }
     };
     const includeZwspInRange = rng => {
@@ -24645,7 +24645,7 @@
     const wrapSelfAndSiblingsInDefaultBlock = (editor, newBlockName, rng, container, offset) => {
       var _a, _b;
       const dom = editor.dom;
-      const editableRoot = (_a = getEditableRoot(dom, container)) !== null && _a !== void 0 ? _a : dom.getRoot();
+      const editableRoot = (_a = getEditableRoot(dom, container)) != null && _a != void 0 ? _a : dom.getRoot();
       let parentBlock = dom.getParent(container, dom.isBlock);
       if (!parentBlock || !canSplitBlock(dom, parentBlock)) {
         parentBlock = parentBlock || editableRoot;
@@ -24658,7 +24658,7 @@
           return newBlock;
         }
         let node = container;
-        while (node && node.parentNode !== parentBlock) {
+        while (node && node.parentNode != parentBlock) {
           node = node.parentNode;
         }
         let startNode;
@@ -24666,7 +24666,7 @@
           startNode = node;
           node = node.previousSibling;
         }
-        const startNodeName = (_b = startNode === null || startNode === void 0 ? void 0 : startNode.parentElement) === null || _b === void 0 ? void 0 : _b.nodeName;
+        const startNodeName = (_b = startNode == null || startNode == void 0 ? void 0 : startNode.parentElement) == null || _b == void 0 ? void 0 : _b.nodeName;
         if (startNode && startNodeName && editor.schema.isValidChild(startNodeName, newBlockName.toLowerCase())) {
           const startNodeParent = startNode.parentNode;
           const newBlock = dom.create(newBlockName);
@@ -24723,10 +24723,10 @@
         if (isText$a(container) && (start ? normalizedOffset > 0 : normalizedOffset < container.data.length)) {
           return false;
         }
-        if (container.parentNode === parentBlock && isAfterLastNodeInContainer && !start) {
+        if (container.parentNode == parentBlock && isAfterLastNodeInContainer && !start) {
           return true;
         }
-        if (start && isElement$6(container) && container === parentBlock.firstChild) {
+        if (start && isElement$6(container) && container == parentBlock.firstChild) {
           return true;
         }
         if (containerAndSiblingName(container, 'TABLE') || containerAndSiblingName(container, 'HR')) {
@@ -24734,9 +24734,9 @@
         }
         const walker = new DomTreeWalker(container, parentBlock);
         if (isText$a(container)) {
-          if (start && normalizedOffset === 0) {
+          if (start && normalizedOffset == 0) {
             walker.prev();
-          } else if (!start && normalizedOffset === container.data.length) {
+          } else if (!start && normalizedOffset == container.data.length) {
             walker.next();
           }
         }
@@ -24745,7 +24745,7 @@
           if (isElement$6(node)) {
             if (!node.getAttribute('data-mce-bogus')) {
               const name = node.nodeName.toLowerCase();
-              if (nonEmptyElementsMap[name] && name !== 'br') {
+              if (nonEmptyElementsMap[name] && name != 'br') {
                 return false;
               }
             }
@@ -24762,7 +24762,7 @@
       };
       const insertNewBlockAfter = () => {
         let block;
-        if (/^(H[1-6]|PRE|FIGURE)$/.test(parentBlockName) && containerBlockName !== 'HGROUP') {
+        if (/^(H[1-6]|PRE|FIGURE)$/.test(parentBlockName) && containerBlockName != 'HGROUP') {
           block = createNewBlock$1(newBlockName);
         } else {
           block = createNewBlock$1();
@@ -24800,10 +24800,10 @@
         container = wrapSelfAndSiblingsInDefaultBlock(editor, newBlockName, rng, container, offset);
       }
       let parentBlock = dom.getParent(container, dom.isBlock) || dom.getRoot();
-      containerBlock = isNonNullable(parentBlock === null || parentBlock === void 0 ? void 0 : parentBlock.parentNode) ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
+      containerBlock = isNonNullable(parentBlock == null || parentBlock == void 0 ? void 0 : parentBlock.parentNode) ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
       parentBlockName = parentBlock ? parentBlock.nodeName.toUpperCase() : '';
       const containerBlockName = containerBlock ? containerBlock.nodeName.toUpperCase() : '';
-      if (containerBlockName === 'LI' && !ctrlKey) {
+      if (containerBlockName == 'LI' && !ctrlKey) {
         const liBlock = containerBlock;
         parentBlock = liBlock;
         containerBlock = liBlock.parentNode;
@@ -24818,7 +24818,7 @@
           return;
         }
       }
-      if (!collapsedAndCef && (parentBlock === editor.getBody() || !canSplitBlock(dom, parentBlock))) {
+      if (!collapsedAndCef && (parentBlock == editor.getBody() || !canSplitBlock(dom, parentBlock))) {
         return;
       }
       const parentBlockParent = parentBlock.parentNode;
@@ -24923,7 +24923,7 @@
       const containerBlock = parentBlock && parentBlock.parentNode ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
       const containerBlockName = containerBlock ? containerBlock.nodeName.toUpperCase() : '';
       const isControlKey = !!(evt && evt.ctrlKey);
-      if (containerBlockName === 'LI' && !isControlKey) {
+      if (containerBlockName == 'LI' && !isControlKey) {
         parentBlock = containerBlock;
       }
       if (isText$a(container) && offset >= container.data.length) {
@@ -24967,7 +24967,7 @@
       }
     };
     const isAnchorLink = elm => {
-      return elm && elm.nodeName === 'A' && 'href' in elm;
+      return elm && elm.nodeName == 'A' && 'href' in elm;
     };
     const isInsideAnchor = location => {
       return location.fold(never, isAnchorLink, isAnchorLink, never);
@@ -25016,12 +25016,12 @@
     };
     const inListBlock = requiredState => {
       return (editor, _shiftKey) => {
-        return isListItemParentBlock(editor) === requiredState;
+        return isListItemParentBlock(editor) == requiredState;
       };
     };
     const inBlock = (blockName, requiredState) => (editor, _shiftKey) => {
-      const state = getParentBlockName(editor) === blockName.toUpperCase();
-      return state === requiredState;
+      const state = getParentBlockName(editor) == blockName.toUpperCase();
+      return state == requiredState;
     };
     const inCefBlock = editor => {
       const editableRoot = getEditableRoot(editor.dom, editor.selection.getStart());
@@ -25031,7 +25031,7 @@
     const inSummaryBlock = () => inBlock('summary', true);
     const shouldPutBrInPre = requiredState => {
       return (editor, _shiftKey) => {
-        return shouldPutBrInPre$1(editor) === requiredState;
+        return shouldPutBrInPre$1(editor) == requiredState;
       };
     };
     const inBrContext = (editor, _shiftKey) => {
@@ -25174,7 +25174,7 @@
         iOSSafariKeydownBookmark = Optional.none();
       };
       editor.on('keydown', event => {
-        if (event.keyCode === VK.ENTER) {
+        if (event.keyCode == VK.ENTER) {
           if (isIOSSafari && isCaretAfterKoreanCharacter(editor.selection.getRng())) {
             iOSSafariKeydownOverride(editor);
           } else {
@@ -25183,7 +25183,7 @@
         }
       });
       editor.on('keyup', event => {
-        if (event.keyCode === VK.ENTER) {
+        if (event.keyCode == VK.ENTER) {
           iOSSafariKeydownBookmark.each(() => iOSSafariKeyupOverride(editor, event));
         }
       });
@@ -25264,7 +25264,7 @@
       ], evt);
     };
     const stopImmediatePropagation = e => e.stopImmediatePropagation();
-    const isPageUpDown = evt => evt.keyCode === VK.PAGE_UP || evt.keyCode === VK.PAGE_DOWN;
+    const isPageUpDown = evt => evt.keyCode == VK.PAGE_UP || evt.keyCode == VK.PAGE_DOWN;
     const setNodeChangeBlocker = (blocked, editor, block) => {
       if (block && !blocked.get()) {
         editor.on('NodeChange', stopImmediatePropagation, true);
@@ -25447,7 +25447,7 @@
               endContainer: nativeRng.endContainer,
               endOffset: nativeRng.endOffset
             };
-            if (e.type === 'nodechange' || !isEq$4(fakeRng, lastRng)) {
+            if (e.type == 'nodechange' || !isEq$4(fakeRng, lastRng)) {
               editor.dispatch('SelectionChange');
             }
             lastRng = fakeRng;
@@ -25467,7 +25467,7 @@
         });
         editor.on('mouseup', e => {
           if (!e.isDefaultPrevented() && hasAnyRanges(editor)) {
-            if (editor.selection.getNode().nodeName === 'IMG') {
+            if (editor.selection.getNode().nodeName == 'IMG') {
               Delay.setEditorTimeout(editor, () => {
                 editor.nodeChanged();
               });
@@ -25483,12 +25483,12 @@
         if (this.editor.initialized && selection && !shouldDisableNodeChange(this.editor) && !this.editor.mode.isReadOnly()) {
           const root = this.editor.getBody();
           node = selection.getStart(true) || root;
-          if (node.ownerDocument !== this.editor.getDoc() || !this.editor.dom.isChildOf(node, root)) {
+          if (node.ownerDocument != this.editor.getDoc() || !this.editor.dom.isChildOf(node, root)) {
             node = root;
           }
           const parents = [];
           this.editor.dom.getParent(node, node => {
-            if (node === root) {
+            if (node == root) {
               return true;
             } else {
               parents.push(node);
@@ -25506,13 +25506,13 @@
         let i;
         const editor = this.editor;
         const currentPath = reverse(editor.dom.getParents(startElm, always, editor.getBody()));
-        if (currentPath.length === this.lastPath.length) {
+        if (currentPath.length == this.lastPath.length) {
           for (i = currentPath.length; i >= 0; i--) {
-            if (currentPath[i] !== this.lastPath[i]) {
+            if (currentPath[i] != this.lastPath[i]) {
               break;
             }
           }
-          if (i === -1) {
+          if (i == -1) {
             this.lastPath = currentPath;
             return true;
           }
@@ -25547,7 +25547,7 @@
     const setDragendEvent = mkSetEventFn(1);
     const checkEvent = expectedType => transfer => {
       const dt = transfer;
-      return Optional.from(dt[eventId]).exists(type => type === expectedType);
+      return Optional.from(dt[eventId]).exists(type => type == expectedType);
     };
     const isInDragStartEvent = checkEvent(0);
 
@@ -25571,7 +25571,7 @@
     const setProtectedMode = mkSetModeFn(1);
     const checkMode = expectedMode => transfer => {
       const dt = transfer;
-      return Optional.from(dt[modeId]).exists(mode => mode === expectedMode);
+      return Optional.from(dt[modeId]).exists(mode => mode == expectedMode);
     };
     const isInReadWriteMode = checkMode(0);
     const isInProtectedMode = checkMode(1);
@@ -25696,7 +25696,7 @@
       clone.effectAllowed = original.effectAllowed;
       getDragImage(original).each(imageData => clone.setDragImage(imageData.image, imageData.x, imageData.y));
       each$e(original.types, type => {
-        if (type !== 'Files') {
+        if (type != 'Files') {
           clone.setData(type, original.getData(type));
         }
       });
@@ -25713,7 +25713,7 @@
 
     const getHtmlData = dataTransfer => {
       const html = dataTransfer.getData('text/html');
-      return html === '' ? Optional.none() : Optional.some(html);
+      return html == '' ? Optional.none() : Optional.some(html);
     };
     const setHtmlData = (dataTransfer, html) => dataTransfer.setData('text/html', html);
 
@@ -25722,7 +25722,7 @@
     const internalMark = '<!-- ' + internalMimeType + ' -->';
     const mark = html => internalMark + html;
     const unmark = html => html.replace(internalMark, '');
-    const isMarked = html => html.indexOf(internalMark) !== -1;
+    const isMarked = html => html.indexOf(internalMark) != -1;
 
     const isPlainText = text => {
       return !/<(?:\/?(?!(?:div|p|br|span)>)\w+|(?:(?!(?:span style="white-space:\s?pre;?">)|br\s?\/>))\w+\s[^>]+)>/i.test(text);
@@ -25745,7 +25745,7 @@
       const stitch = p => {
         return tagOpen + p + tagClose;
       };
-      return paragraphs.length === 1 ? paragraphs[0] : map$3(paragraphs, stitch).join('');
+      return paragraphs.length == 1 ? paragraphs[0] : map$3(paragraphs, stitch).join('');
     };
 
     const pasteBinDefaultContent = '%MCEPASTEBIN%';
@@ -25761,7 +25761,7 @@
         'style': 'position: fixed; top: 50%; width: 10px; height: 10px; overflow: hidden; opacity: 0'
       }, pasteBinDefaultContent);
       if (Env.browser.isFirefox()) {
-        dom.setStyle(pasteBinElm, 'left', dom.getStyle(body, 'direction', true) === 'rtl' ? 65535 : -65535);
+        dom.setStyle(pasteBinElm, 'left', dom.getStyle(body, 'direction', true) == 'rtl' ? 65535 : -65535);
       }
       dom.bind(pasteBinElm, 'beforedeactivate focusin focusout', e => {
         e.stopPropagation();
@@ -25785,7 +25785,7 @@
       lastRngCell.set(null);
     };
     const getEl = editor => editor.dom.get('mcepastebin');
-    const isPasteBin = elm => isNonNullable(elm) && elm.id === 'mcepastebin';
+    const isPasteBin = elm => isNonNullable(elm) && elm.id == 'mcepastebin';
     const getHtml = editor => {
       const dom = editor.dom;
       const copyAndRemove = (toElm, fromElm) => {
@@ -25804,7 +25804,7 @@
       }
       return pasteBinElm ? pasteBinElm.innerHTML : '';
     };
-    const isDefaultPasteBinContent = content => content === pasteBinDefaultContent;
+    const isDefaultPasteBinContent = content => content == pasteBinDefaultContent;
     const PasteBin = editor => {
       const lastRng = Cell(null);
       return {
@@ -25835,11 +25835,11 @@
       const blockElements = schema.getBlockElements();
       const walk = node => {
         const name = node.name, currentNode = node;
-        if (name === 'br') {
+        if (name == 'br') {
           text += '\n';
           return;
         }
-        if (name === 'wbr') {
+        if (name == 'wbr') {
           return;
         }
         if (voidElements[name]) {
@@ -25849,7 +25849,7 @@
           text += ' ';
           return;
         }
-        if (node.type === 3) {
+        if (node.type == 3) {
           text += node.value;
         }
         if (!(node.name in schema.getVoidElements())) {
@@ -25862,7 +25862,7 @@
         }
         if (blockElements[name] && currentNode.next) {
           text += '\n';
-          if (name === 'p') {
+          if (name == 'p') {
             text += '\n';
           }
         }
@@ -26063,11 +26063,11 @@
         const file = imageItem.file;
         const blobCache = editor.editorUpload.blobCache;
         const existingBlobInfo = blobCache.getByData(base64, type);
-        const blobInfo = existingBlobInfo !== null && existingBlobInfo !== void 0 ? existingBlobInfo : createBlobInfo(editor, blobCache, file, base64);
+        const blobInfo = existingBlobInfo != null && existingBlobInfo != void 0 ? existingBlobInfo : createBlobInfo(editor, blobCache, file, base64);
         pasteHtml(editor, `<img src="${ blobInfo.blobUri() }">`, false, true);
       });
     };
-    const isClipboardEvent = event => event.type === 'paste';
+    const isClipboardEvent = event => event.type == 'paste';
     const readFilesAsDataUris = items => Promise.all(map$3(items, file => {
       return blobToDataUri(file).then(uri => ({
         file,
@@ -26077,12 +26077,12 @@
     const isImage = editor => {
       const allowedExtensions = getAllowedImageFileTypes(editor);
       return file => startsWith(file.type, 'image/') && exists(allowedExtensions, extension => {
-        return getImageMimeType(extension) === file.type;
+        return getImageMimeType(extension) == file.type;
       });
     };
     const getImagesFromDataTransfer = (editor, dataTransfer) => {
       const items = dataTransfer.items ? bind$3(from(dataTransfer.items), item => {
-        return item.kind === 'file' ? [item.getAsFile()] : [];
+        return item.kind == 'file' ? [item.getAsFile()] : [];
       }) : [];
       const files = dataTransfer.files ? from(dataTransfer.files) : [];
       return filter$5(items.length > 0 ? items : files, isImage(editor));
@@ -26108,9 +26108,9 @@
     };
     const isBrokenAndroidClipboardEvent = e => {
       var _a, _b;
-      return Env.os.isAndroid() && ((_b = (_a = e.clipboardData) === null || _a === void 0 ? void 0 : _a.items) === null || _b === void 0 ? void 0 : _b.length) === 0;
+      return Env.os.isAndroid() && ((_b = (_a = e.clipboardData) == null || _a == void 0 ? void 0 : _a.items) == null || _b == void 0 ? void 0 : _b.length) == 0;
     };
-    const isKeyboardPasteEvent = e => VK.metaKeyPressed(e) && e.keyCode === 86 || e.shiftKey && e.keyCode === 45;
+    const isKeyboardPasteEvent = e => VK.metaKeyPressed(e) && e.keyCode == 86 || e.shiftKey && e.keyCode == 45;
     const insertClipboardContent = (editor, clipboardContent, html, plainTextMode, shouldSimulateInputEvent) => {
       let content = trimHtml(html);
       const isInternal = hasContentType(clipboardContent, internalHtmlMime()) || isMarked(html);
@@ -26140,14 +26140,14 @@
       const getLastRng = () => pasteBin.getLastRng() || editor.selection.getRng();
       editor.on('keydown', e => {
         if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
-          keyboardPastePlainTextState = e.shiftKey && e.keyCode === 86;
+          keyboardPastePlainTextState = e.shiftKey && e.keyCode == 86;
         }
       });
       editor.on('paste', e => {
         if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e)) {
           return;
         }
-        const plainTextMode = pasteFormat.get() === 'text' || keyboardPastePlainTextState;
+        const plainTextMode = pasteFormat.get() == 'text' || keyboardPastePlainTextState;
         keyboardPastePlainTextState = false;
         const clipboardContent = getDataTransferItems(e.clipboardData);
         if (!hasHtmlOrText(clipboardContent) && pasteImageData(editor, e, getLastRng())) {
@@ -26174,13 +26174,13 @@
       const isDataUri = src => startsWith(src, 'data:');
       const isPasteInsert = args => {
         var _a;
-        return ((_a = args.data) === null || _a === void 0 ? void 0 : _a.paste) === true;
+        return ((_a = args.data) == null || _a == void 0 ? void 0 : _a.paste) == true;
       };
       editor.parser.addNodeFilter('img', (nodes, name, args) => {
         if (!shouldPasteDataImages(editor) && isPasteInsert(args)) {
           for (const node of nodes) {
             const src = node.attr('src');
-            if (isString(src) && !node.attr('data-mce-object') && src !== Env.transparentSrc) {
+            if (isString(src) && !node.attr('data-mce-object') && src != Env.transparentSrc) {
               if (isWebKitFakeUrl(src)) {
                 node.remove();
               } else if (!shouldAllowHtmlDataUrls(editor) && isDataUri(src)) {
@@ -26197,7 +26197,7 @@
     };
 
     const togglePlainTextPaste = (editor, pasteFormat) => {
-      if (pasteFormat.get() === 'text') {
+      if (pasteFormat.get() == 'text') {
         pasteFormat.set('html');
         firePastePlainTextToggle(editor, false);
       } else {
@@ -26303,11 +26303,11 @@
 
     const getCaretRangeFromEvent = (editor, e) => {
       var _a, _b;
-      return RangeUtils.getCaretRangeFromPoint((_a = e.clientX) !== null && _a !== void 0 ? _a : 0, (_b = e.clientY) !== null && _b !== void 0 ? _b : 0, editor.getDoc());
+      return RangeUtils.getCaretRangeFromPoint((_a = e.clientX) != null && _a != void 0 ? _a : 0, (_b = e.clientY) != null && _b != void 0 ? _b : 0, editor.getDoc());
     };
     const isPlainTextFileUrl = content => {
       const plainTextContent = content['text/plain'];
-      return plainTextContent ? plainTextContent.indexOf('file://') === 0 : false;
+      return plainTextContent ? plainTextContent.indexOf('file://') == 0 : false;
     };
     const setFocusedRange = (editor, rng) => {
       editor.focus();
@@ -26331,7 +26331,7 @@
     const setupSummaryDeleteByDragFix = editor => {
       editor.on('input', e => {
         const hasNoSummary = el => isNull(el.querySelector('summary'));
-        if (e.inputType === 'deleteByDrag') {
+        if (e.inputType == 'deleteByDrag') {
           const brokenDetailElements = filter$5(editor.dom.select('details'), hasNoSummary);
           each$e(brokenDetailElements, details => {
             if (isBr$6(details.firstChild)) {
@@ -26405,7 +26405,7 @@
           e.preventDefault();
           setFocusedRange(editor, getCaretRangeFromEvent(editor, e));
         }
-        if (e.type === 'dragend') {
+        if (e.type == 'dragend') {
           draggingInternallyState.set(false);
         }
       });
@@ -26435,11 +26435,11 @@
     const rgbToHex = value => Tools.trim(value).replace(rgbRegExp, rgbaToHexString).toLowerCase();
     const removeWebKitStyles = (editor, content, internal) => {
       const webKitStylesOption = getPasteWebkitStyles(editor);
-      if (internal || webKitStylesOption === 'all' || !shouldPasteRemoveWebKitStyles(editor)) {
+      if (internal || webKitStylesOption == 'all' || !shouldPasteRemoveWebKitStyles(editor)) {
         return content;
       }
       const webKitStyles = webKitStylesOption ? webKitStylesOption.split(/[, ]/) : [];
-      if (webKitStyles && webKitStylesOption !== 'none') {
+      if (webKitStyles && webKitStylesOption != 'none') {
         const dom = editor.dom, node = editor.selection.getNode();
         content = content.replace(/(<[^>]+) style="([^"]*)"([^>]*>)/gi, (all, before, value, after) => {
           const inputStyles = dom.parseStyle(dom.decode(value));
@@ -26452,7 +26452,7 @@
               compareInput = rgbToHex(compareInput);
               currentValue = rgbToHex(currentValue);
             }
-            if (currentValue !== compareInput) {
+            if (currentValue != compareInput) {
               outputStyles[webKitStyles[i]] = inputValue;
             }
           }
@@ -26501,9 +26501,9 @@
       editor.parser.addNodeFilter('details', elms => {
         const initialStateOption = getDetailsInitialState(editor);
         each$e(elms, details => {
-          if (initialStateOption === 'expanded') {
+          if (initialStateOption == 'expanded') {
             details.attr('open', 'open');
-          } else if (initialStateOption === 'collapsed') {
+          } else if (initialStateOption == 'collapsed') {
             details.attr('open', null);
           }
         });
@@ -26511,9 +26511,9 @@
       editor.serializer.addNodeFilter('details', elms => {
         const serializedStateOption = getDetailsSerializedState(editor);
         each$e(elms, details => {
-          if (serializedStateOption === 'expanded') {
+          if (serializedStateOption == 'expanded') {
             details.attr('open', 'open');
-          } else if (serializedStateOption === 'collapsed') {
+          } else if (serializedStateOption == 'collapsed') {
             details.attr('open', null);
           }
         });
@@ -26652,7 +26652,7 @@
         const isDragGhostContainer = node => isElement$6(node) && node.classList.contains('mce-drag-container');
         const childNodesWithoutGhost = filter$5(scope.dom.childNodes, not(isDragGhostContainer));
         return prevScope.fold(() => closestChildCaretCandidateNodeRect(childNodesWithoutGhost, clientX, clientY, true), prevScope => {
-          const uncheckedChildren = filter$5(childNodesWithoutGhost, node => node !== prevScope.dom);
+          const uncheckedChildren = filter$5(childNodesWithoutGhost, node => node != prevScope.dom);
           return closestChildCaretCandidateNodeRect(uncheckedChildren, clientX, clientY, true);
         }).orThunk(() => {
           const parent = eq(scope, rootElm) ? Optional.none() : parentElement(scope);
@@ -26677,8 +26677,8 @@
       const docElem = doc.documentElement;
       const win = doc.defaultView;
       return {
-        top: clientRect.top + ((_a = win === null || win === void 0 ? void 0 : win.scrollY) !== null && _a !== void 0 ? _a : 0) - docElem.clientTop,
-        left: clientRect.left + ((_b = win === null || win === void 0 ? void 0 : win.scrollX) !== null && _b !== void 0 ? _b : 0) - docElem.clientLeft
+        top: clientRect.top + ((_a = win == null || win == void 0 ? void 0 : win.scrollY) != null && _a != void 0 ? _a : 0) - docElem.clientTop,
+        left: clientRect.left + ((_b = win == null || win == void 0 ? void 0 : win.scrollX) != null && _b != void 0 ? _b : 0) - docElem.clientLeft
       };
     };
     const getBodyPosition = editor => editor.inline ? getAbsolutePosition(editor.getBody()) : {
@@ -26708,7 +26708,7 @@
       return editor.inline ? inlineScroll : iframeScroll;
     };
     const getMousePosition = (editor, event) => {
-      if (event.target.ownerDocument !== editor.getDoc()) {
+      if (event.target.ownerDocument != editor.getDoc()) {
         const iframePosition = getAbsolutePosition(editor.getContentAreaContainer());
         const scrollPosition = getBodyScroll(editor);
         return {
@@ -26792,10 +26792,10 @@
     };
     const makeDataTransferCopyForDragEvent = (dataTransfer, eventType) => {
       const copy = cloneDataTransfer(dataTransfer);
-      if (eventType === 'dragstart') {
+      if (eventType == 'dragstart') {
         setDragstartEvent(copy);
         setReadWriteMode(copy);
-      } else if (eventType === 'drop') {
+      } else if (eventType == 'drop') {
         setDropEvent(copy);
         setReadOnlyMode(copy);
       } else {
@@ -26815,11 +26815,11 @@
     const mouseRangeToTriggerScrollOutsideEditor = 16;
     const isContentEditableFalse$1 = isContentEditableFalse$b;
     const isContentEditable = or(isContentEditableFalse$1, isContentEditableTrue$3);
-    const isDraggable = (dom, rootElm, elm) => isContentEditableFalse$1(elm) && elm !== rootElm && dom.isEditable(elm.parentElement);
+    const isDraggable = (dom, rootElm, elm) => isContentEditableFalse$1(elm) && elm != rootElm && dom.isEditable(elm.parentElement);
     const isValidDropTarget = (editor, targetElement, dragElement) => {
       if (isNullable(targetElement)) {
         return false;
-      } else if (targetElement === dragElement || editor.dom.isChildOf(targetElement, dragElement)) {
+      } else if (targetElement == dragElement || editor.dom.isChildOf(targetElement, dragElement)) {
         return false;
       } else {
         return editor.dom.isEditable(targetElement);
@@ -26857,12 +26857,12 @@
       return ghostElm;
     };
     const appendGhostToBody = (ghostElm, bodyElm) => {
-      if (ghostElm.parentNode !== bodyElm) {
+      if (ghostElm.parentNode != bodyElm) {
         bodyElm.appendChild(ghostElm);
       }
     };
     const scrollEditor = (direction, amount) => win => () => {
-      const current = direction === 'left' ? win.scrollX : win.scrollY;
+      const current = direction == 'left' ? win.scrollX : win.scrollY;
       win.scroll({
         [direction]: current + amount,
         behavior: 'smooth'
@@ -26919,11 +26919,11 @@
     const removeElementWithPadding = (dom, elm) => {
       const parentBlock = dom.getParent(elm.parentNode, dom.isBlock);
       removeElement(elm);
-      if (parentBlock && parentBlock !== dom.getRoot() && dom.isEmpty(parentBlock)) {
+      if (parentBlock && parentBlock != dom.getRoot() && dom.isEmpty(parentBlock)) {
         fillWithPaddingBr(SugarElement.fromDom(parentBlock));
       }
     };
-    const isLeftMouseButtonPressed = e => e.button === 0;
+    const isLeftMouseButtonPressed = e => e.button == 0;
     const applyRelPos = (state, position) => ({
       pageX: position.pageX - state.relX,
       pageY: position.pageY + 5
@@ -26956,7 +26956,7 @@
     const placeCaretAt = (editor, clientX, clientY) => {
       editor._selectionOverrides.hideFakeCaret();
       closestFakeCaretCandidate(editor.getBody(), clientX, clientY).fold(() => editor.selection.placeCaretAt(clientX, clientY), caretInfo => {
-        const range = editor._selectionOverrides.showCaret(1, caretInfo.node, caretInfo.position === FakeCaretPosition.Before, false);
+        const range = editor._selectionOverrides.showCaret(1, caretInfo.node, caretInfo.position == FakeCaretPosition.Before, false);
         if (range) {
           editor.selection.setRng(range);
         } else {
@@ -26965,7 +26965,7 @@
       });
     };
     const dispatchDragEvent = (editor, type, target, dataTransfer, mouseEvent) => {
-      if (type === 'dragstart') {
+      if (type == 'dragstart') {
         setHtmlData(dataTransfer, editor.dom.getOuterHTML(target));
       }
       const event = makeDragEvent(type, target, dataTransfer, mouseEvent);
@@ -26990,7 +26990,7 @@
           editor.focus();
         }
         if (state.dragging) {
-          const mouseEventOriginatedFromWithinTheEditor = e.currentTarget === editor.getDoc().documentElement;
+          const mouseEventOriginatedFromWithinTheEditor = e.currentTarget == editor.getDoc().documentElement;
           const targetPos = applyRelPos(state, calc(editor, e));
           appendGhostToBody(state.ghost, editor.getBody());
           moveGhost(state.ghost, targetPos, state.width, state.height, state.maxX, state.maxY, e.clientY, e.clientX, editor.getContentAreaContainer(), editor.getWin(), state_, mouseEventOriginatedFromWithinTheEditor);
@@ -27014,7 +27014,7 @@
         state.intervalId.clear();
         if (state.dragging) {
           if (isValidDropTarget(editor, getRawTarget(editor.selection), state.element)) {
-            const dropTarget = (_a = editor.getDoc().elementFromPoint(e.clientX, e.clientY)) !== null && _a !== void 0 ? _a : editor.getBody();
+            const dropTarget = (_a = editor.getDoc().elementFromPoint(e.clientX, e.clientY)) != null && _a != void 0 ? _a : editor.getBody();
             const args = dispatchDragEvent(editor, 'drop', dropTarget, state.dataTransfer, e);
             if (!args.isDefaultPrevented()) {
               editor.undoManager.transact(() => {
@@ -27064,7 +27064,7 @@
         pageDom.unbind(rootDocument, 'mouseup', dragEndHandler);
       });
       editor.on('keydown', e => {
-        if (e.keyCode === VK.ESC) {
+        if (e.keyCode == VK.ESC) {
           stopDragging(state, editor, Optional.none());
         }
       });
@@ -27075,7 +27075,7 @@
           const dataTransfer = e.dataTransfer;
           if (dataTransfer && (contains$2(dataTransfer.types, 'Files') || dataTransfer.files.length > 0)) {
             e.preventDefault();
-            if (e.type === 'drop') {
+            if (e.type == 'drop') {
               displayError(editor, 'Dropped file type is not supported');
             }
           }
@@ -27142,7 +27142,7 @@
           if (isMedia$2(target)) {
             const ceRoot = getContentEditableRoot$1(editor.getBody(), target);
             const node = isContentEditableFalse$b(ceRoot) ? ceRoot : target;
-            if (editor.selection.getNode() !== node) {
+            if (editor.selection.getNode() != node) {
               selectNode(editor, node).each(rng => editor.selection.setRng(rng));
             }
           }
@@ -27160,7 +27160,7 @@
       const elementSelectionAttr = 'data-mce-selected';
       let selectedElement;
       const isFakeSelectionElement = node => isNonNullable(node) && dom.hasClass(node, 'mce-offscreen-selection');
-      const isFakeSelectionTargetElement = node => node !== rootNode && (isContentEditableFalse(node) || isMedia$2(node)) && dom.isChildOf(node, rootNode) && dom.isEditable(node.parentNode);
+      const isFakeSelectionTargetElement = node => node != rootNode && (isContentEditableFalse(node) || isMedia$2(node)) && dom.isChildOf(node, rootNode) && dom.isEditable(node.parentNode);
       const setRange = range => {
         if (range) {
           selection.setRng(range);
@@ -27176,7 +27176,7 @@
           return null;
         }
         if (scrollIntoView) {
-          selection.scrollIntoView(node, direction === -1);
+          selection.scrollIntoView(node, direction == -1);
         }
         return fakeCaret.show(before, node);
       };
@@ -27207,7 +27207,7 @@
         }, true);
         editor.on('mousedown', e => {
           const targetElm = e.target;
-          if (targetElm !== rootNode && targetElm.nodeName !== 'HTML' && !dom.isChildOf(targetElm, rootNode)) {
+          if (targetElm != rootNode && targetElm.nodeName != 'HTML' && !dom.isChildOf(targetElm, rootNode)) {
             return;
           }
           if (!isXYInContentArea(editor, e.clientX, e.clientY)) {
@@ -27222,7 +27222,7 @@
           } else {
             closestFakeCaretCandidate(rootNode, e.clientX, e.clientY).each(caretInfo => {
               e.preventDefault();
-              const range = showCaret(1, caretInfo.node, caretInfo.position === FakeCaretPosition.Before, false);
+              const range = showCaret(1, caretInfo.node, caretInfo.position == FakeCaretPosition.Before, false);
               setRange(range);
               if (isHTMLElement(closestContentEditable)) {
                 closestContentEditable.focus();
@@ -27259,7 +27259,7 @@
             e.range = rng;
           }
         });
-        const isPasteBin = node => isElement$6(node) && node.id === 'mcepastebin';
+        const isPasteBin = node => isElement$6(node) && node.id == 'mcepastebin';
         editor.on('AfterSetSelectionRange', e => {
           const rng = e.range;
           const parent = rng.startContainer.parentElement;
@@ -27284,7 +27284,7 @@
         const endContainer = rng.endContainer;
         const endOffset = rng.endOffset;
         if (has$2(voidElements, startContainer.nodeName.toLowerCase())) {
-          if (startOffset === 0) {
+          if (startOffset == 0) {
             newRng.setStartBefore(startContainer);
           } else {
             newRng.setStartAfter(startContainer);
@@ -27293,7 +27293,7 @@
           newRng.setStart(startContainer, startOffset);
         }
         if (has$2(voidElements, endContainer.nodeName.toLowerCase())) {
-          if (endOffset === 0) {
+          if (endOffset == 0) {
             newRng.setEndBefore(endContainer);
           } else {
             newRng.setEndAfter(endContainer);
@@ -27391,7 +27391,7 @@
         let startContainer = range.startContainer;
         let startOffset = range.startOffset;
         const endOffset = range.endOffset;
-        if (isText$a(startContainer) && startOffset === 0 && isContentEditableFalse(startContainer.parentNode)) {
+        if (isText$a(startContainer) && startOffset == 0 && isContentEditableFalse(startContainer.parentNode)) {
           startContainer = startContainer.parentNode;
           startOffset = dom.nodeIndex(startContainer);
           startContainer = startContainer.parentNode;
@@ -27399,7 +27399,7 @@
         if (!isElement$6(startContainer)) {
           return null;
         }
-        if (endOffset === startOffset + 1 && startContainer === range.endContainer) {
+        if (endOffset == startOffset + 1 && startContainer == range.endContainer) {
           const node = startContainer.childNodes[startOffset];
           if (isFakeSelectionTargetElement(node)) {
             return selectElement(node);
@@ -27445,11 +27445,11 @@
       }
       const p = normalized && isText$a(node) ? [getNormalizedTextOffset(node, offset)] : [offset];
       let current = node;
-      while (current !== root && current.parentNode) {
+      while (current != root && current.parentNode) {
         p.push(dom.nodeIndex(current, normalized));
         current = current.parentNode;
       }
-      return current === root ? p.reverse() : [];
+      return current == root ? p.reverse() : [];
     };
     const generatePathRange = (dom, root, startNode, startOffset, endNode, endOffset, normalized = false) => {
       const start = generatePath(dom, root, startNode, startOffset, normalized);
@@ -27504,14 +27504,14 @@
       const endParent = rng.endContainer.parentNode;
       rng.deleteContents();
       if (clean && !isRoot(rng.startContainer)) {
-        if (isText$a(rng.startContainer) && rng.startContainer.data.length === 0) {
+        if (isText$a(rng.startContainer) && rng.startContainer.data.length == 0) {
           dom.remove(rng.startContainer);
         }
-        if (isText$a(rng.endContainer) && rng.endContainer.data.length === 0) {
+        if (isText$a(rng.endContainer) && rng.endContainer.data.length == 0) {
           dom.remove(rng.endContainer);
         }
         cleanEmptyNodes(dom, startParent, isRoot);
-        if (startParent !== endParent) {
+        if (startParent != endParent) {
           cleanEmptyNodes(dom, endParent, isRoot);
         }
       }
@@ -27544,7 +27544,7 @@
           const rng = dom.createRng();
           rng.setStart(node, 0);
           rng.setEnd(end.container, end.offset);
-          deleteRng(dom, rng, e => e === block);
+          deleteRng(dom, rng, e => e == block);
         });
         const text = SugarElement.fromDom(node);
         const textContent = get$3(text);
@@ -27562,14 +27562,14 @@
         return isArray$1(formatSet) && head(formatSet).exists(format => has$2(format, 'block'));
       };
       getParentBlock(editor, rng).each(block => {
-        if (pattern.type === 'block-format') {
+        if (pattern.type == 'block-format') {
           if (isBlockFormatName(pattern.format, editor.formatter)) {
             editor.undoManager.transact(() => {
               stripPattern(editor.dom, block, pattern);
               editor.formatter.apply(pattern.format);
             });
           }
-        } else if (pattern.type === 'block-command') {
+        } else if (pattern.type == 'block-command') {
           editor.undoManager.transact(() => {
             stripPattern(editor.dom, block, pattern);
             editor.execCommand(pattern.cmd, false, pattern.value);
@@ -27582,7 +27582,7 @@
     const findPattern$1 = (patterns, text) => {
       const sortedPatterns = sortPatterns$1(patterns);
       const nuText = text.replace(nbsp, ' ');
-      return find$2(sortedPatterns, pattern => text.indexOf(pattern.start) === 0 || nuText.indexOf(pattern.start) === 0);
+      return find$2(sortedPatterns, pattern => text.indexOf(pattern.start) == 0 || nuText.indexOf(pattern.start) == 0);
     };
     const findPatterns$1 = (editor, block, patternSet, normalizedMatches) => {
       var _a;
@@ -27591,9 +27591,9 @@
       if (!dom.is(block, forcedRootBlock)) {
         return [];
       }
-      const blockText = (_a = block.textContent) !== null && _a !== void 0 ? _a : '';
+      const blockText = (_a = block.textContent) != null && _a != void 0 ? _a : '';
       return findPattern$1(patternSet.blockPatterns, blockText).map(pattern => {
-        if (Tools.trim(blockText).length === pattern.start.length) {
+        if (Tools.trim(blockText).length == pattern.start.length) {
           return [];
         }
         return [{
@@ -27603,7 +27603,7 @@
       }).getOr([]);
     };
     const applyMatches$1 = (editor, matches) => {
-      if (matches.length === 0) {
+      if (matches.length == 0) {
         return;
       }
       const bookmark = editor.selection.getBookmark();
@@ -27625,8 +27625,8 @@
       const rng = resolvePathRange(dom.getRoot(), pathRange).getOrDie('Unable to resolve path range');
       const startNode = rng.startContainer;
       const endNode = rng.endContainer;
-      const textEnd = rng.endOffset === 0 ? endNode : endNode.splitText(rng.endOffset);
-      const textStart = rng.startOffset === 0 ? startNode : startNode.splitText(rng.startOffset);
+      const textEnd = rng.endOffset == 0 ? endNode : endNode.splitText(rng.endOffset);
+      const textStart = rng.startOffset == 0 ? startNode : startNode.splitText(rng.startOffset);
       const startParentNode = textStart.parentNode;
       const endParentNode = textEnd.parentNode;
       return {
@@ -27640,15 +27640,15 @@
       cleanEmptyNodes(dom, dom.get(marker.prefix + '-start'), isRoot);
     };
 
-    const isReplacementPattern = pattern => pattern.start.length === 0;
+    const isReplacementPattern = pattern => pattern.start.length == 0;
     const matchesPattern = patternContent => (element, offset) => {
       const text = element.data;
       const searchText = text.substring(0, offset);
       const startEndIndex = searchText.lastIndexOf(patternContent.charAt(patternContent.length - 1));
       const startIndex = searchText.lastIndexOf(patternContent);
-      if (startIndex !== -1) {
+      if (startIndex != -1) {
         return startIndex + patternContent.length;
-      } else if (startEndIndex !== -1) {
+      } else if (startEndIndex != -1) {
         return startEndIndex + 1;
       } else {
         return -1;
@@ -27659,8 +27659,8 @@
       const startSpot = repeatLeft(dom, spot.container, spot.offset, matchesPattern(startPattern), block);
       return startSpot.bind(spot => {
         var _a, _b;
-        const startPatternIndex = (_b = (_a = block.textContent) === null || _a === void 0 ? void 0 : _a.indexOf(startPattern)) !== null && _b !== void 0 ? _b : -1;
-        const isCompleteMatch = startPatternIndex !== -1 && spot.offset >= startPatternIndex + startPattern.length;
+        const startPatternIndex = (_b = (_a = block.textContent) == null || _a == void 0 ? void 0 : _a.indexOf(startPattern)) != null && _b != void 0 ? _b : -1;
+        const isCompleteMatch = startPatternIndex != -1 && spot.offset >= startPatternIndex + startPattern.length;
         if (isCompleteMatch) {
           const rng = dom.createRng();
           rng.setStart(spot.container, spot.offset - startPattern.length);
@@ -27673,12 +27673,12 @@
             rng.setStart(nextSpot.container, nextSpot.offset);
             rng.setEnd(spot.container, spot.offset);
             return rng;
-          }).filter(rng => rng.toString() === startPattern).orThunk(() => findPatternStartFromSpot(dom, pattern, block, point(spot.container, 0)));
+          }).filter(rng => rng.toString() == startPattern).orThunk(() => findPatternStartFromSpot(dom, pattern, block, point(spot.container, 0)));
         }
       });
     };
     const findPatternStart = (dom, pattern, node, offset, block, requireGap = false) => {
-      if (pattern.start.length === 0 && !requireGap) {
+      if (pattern.start.length == 0 && !requireGap) {
         const rng = dom.createRng();
         rng.setStart(node, offset);
         rng.setEnd(node, offset);
@@ -27689,9 +27689,9 @@
         return start.bind(startRange => {
           var _a;
           if (requireGap) {
-            if (startRange.endContainer === spot.container && startRange.endOffset === spot.offset) {
+            if (startRange.endContainer == spot.container && startRange.endOffset == spot.offset) {
               return Optional.none();
-            } else if (spot.offset === 0 && ((_a = startRange.endContainer.textContent) === null || _a === void 0 ? void 0 : _a.length) === startRange.endOffset) {
+            } else if (spot.offset == 0 && ((_a = startRange.endContainer.textContent) == null || _a == void 0 ? void 0 : _a.length) == startRange.endOffset) {
               return Optional.none();
             }
           }
@@ -27766,7 +27766,7 @@
     };
     const applyPattern = (editor, pattern, patternRange) => {
       editor.selection.setRng(patternRange);
-      if (pattern.type === 'inline-format') {
+      if (pattern.type == 'inline-format') {
         each$e(pattern.format, format => {
           editor.formatter.apply(format);
         });
@@ -27813,8 +27813,8 @@
     };
     const sortPatterns = patterns => sort(patterns, (a, b) => b.end.length - a.end.length);
     const getBestMatches = (matches, matchesWithSortedPatterns) => {
-      const hasSameMatches = forall(matches, match => exists(matchesWithSortedPatterns, sortedMatch => match.pattern.start === sortedMatch.pattern.start && match.pattern.end === sortedMatch.pattern.end));
-      if (matches.length === matchesWithSortedPatterns.length) {
+      const hasSameMatches = forall(matches, match => exists(matchesWithSortedPatterns, sortedMatch => match.pattern.start == sortedMatch.pattern.start && match.pattern.end == sortedMatch.pattern.end));
+      if (matches.length == matchesWithSortedPatterns.length) {
         if (hasSameMatches) {
           return matches;
         } else {
@@ -27829,7 +27829,7 @@
       return getBestMatches(matches, matchesWithSortedPatterns);
     };
     const applyMatches = (editor, matches) => {
-      if (matches.length === 0) {
+      if (matches.length == 0) {
         return;
       }
       const dom = editor.dom;
@@ -27837,7 +27837,7 @@
       const matchesWithMarkers = addMarkers(dom, matches);
       each$e(matchesWithMarkers, match => {
         const block = dom.getParent(match.startMarker.start, dom.isBlock);
-        const isRoot = node => node === block;
+        const isRoot = node => node == block;
         if (isReplacementPattern(match.pattern)) {
           applyReplacementPattern(editor, match.pattern, match.endMarker, isRoot);
         } else {
@@ -27854,7 +27854,7 @@
       return getParentBlock(editor, rng).map(block => {
         var _a;
         const offset = Math.max(0, rng.startOffset);
-        const dynamicPatternSet = resolveFromDynamicPatterns(patternSet, block, (_a = block.textContent) !== null && _a !== void 0 ? _a : '');
+        const dynamicPatternSet = resolveFromDynamicPatterns(patternSet, block, (_a = block.textContent) != null && _a != void 0 ? _a : '');
         const inlineMatches = findPatterns(editor, block, rng.startContainer, offset, dynamicPatternSet, true);
         const blockMatches = findPatterns$1(editor, block, dynamicPatternSet, true);
         if (blockMatches.length > 0 || inlineMatches.length > 0) {
@@ -27870,9 +27870,9 @@
             editor.execCommand('mceInsertNewLine');
             spot.each(s => {
               const node = s.container;
-              if (node.data.charAt(s.offset - 1) === zeroWidth) {
+              if (node.data.charAt(s.offset - 1) == zeroWidth) {
                 node.deleteData(s.offset - 1, 1);
-                cleanEmptyNodes(editor.dom, node.parentNode, e => e === editor.dom.getRoot());
+                cleanEmptyNodes(editor.dom, node.parentNode, e => e == editor.dom.getRoot());
               }
             });
           });
@@ -27904,10 +27904,10 @@
       return false;
     };
     const checkKeyCode = (codes, event) => checkKeyEvent(codes, event, (code, event) => {
-      return code === event.keyCode && !VK.modifierPressed(event);
+      return code == event.keyCode && !VK.modifierPressed(event);
     });
     const checkCharCode = (chars, event) => checkKeyEvent(chars, event, (chr, event) => {
-      return chr.charCodeAt(0) === event.charCode;
+      return chr.charCodeAt(0) == event.charCode;
     });
 
     const setup$2 = editor => {
@@ -27923,7 +27923,7 @@
       const getPatternSet = () => createPatternSet(getTextPatterns(editor), getTextPatternsLookup(editor));
       const hasDynamicPatterns = () => hasTextPatternsLookup(editor);
       editor.on('keydown', e => {
-        if (e.keyCode === 13 && !VK.modifierPressed(e) && editor.selection.isCollapsed()) {
+        if (e.keyCode == 13 && !VK.modifierPressed(e) && editor.selection.isCollapsed()) {
           const patternSet = getPatternSet();
           const hasPatterns = patternSet.inlinePatterns.length > 0 || patternSet.blockPatterns.length > 0 || hasDynamicPatterns();
           if (hasPatterns && handleEnter(editor, patternSet)) {
@@ -27985,11 +27985,11 @@
           const allRng = dom.createRng();
           allRng.selectNode(editor.getBody());
           const allSelection = serializeRng(allRng);
-          return selection === allSelection;
+          return selection == allSelection;
         };
         editor.on('keydown', e => {
           const keyCode = e.keyCode;
-          if (!isDefaultPrevented(e) && (keyCode === DELETE || keyCode === BACKSPACE) && editor.selection.isEditable()) {
+          if (!isDefaultPrevented(e) && (keyCode == DELETE || keyCode == BACKSPACE) && editor.selection.isEditable()) {
             const isCollapsed = editor.selection.isCollapsed();
             const body = editor.getBody();
             if (isCollapsed && !isEmpty$2(SugarElement.fromDom(body))) {
@@ -28016,10 +28016,10 @@
         if (!editor.inline) {
           dom.bind(editor.getDoc(), 'mousedown mouseup', e => {
             let rng;
-            if (e.target === editor.getDoc().documentElement) {
+            if (e.target == editor.getDoc().documentElement) {
               rng = selection.getRng();
               editor.getBody().focus();
-              if (e.type === 'mousedown') {
+              if (e.type == 'mousedown') {
                 if (isCaretContainer$2(rng.startContainer)) {
                   return;
                 }
@@ -28033,19 +28033,19 @@
       };
       const removeHrOnBackspace = () => {
         editor.on('keydown', e => {
-          if (!isDefaultPrevented(e) && e.keyCode === BACKSPACE) {
+          if (!isDefaultPrevented(e) && e.keyCode == BACKSPACE) {
             if (!editor.getBody().getElementsByTagName('hr').length) {
               return;
             }
-            if (selection.isCollapsed() && selection.getRng().startOffset === 0) {
+            if (selection.isCollapsed() && selection.getRng().startOffset == 0) {
               const node = selection.getNode();
               const previousSibling = node.previousSibling;
-              if (node.nodeName === 'HR') {
+              if (node.nodeName == 'HR') {
                 dom.remove(node);
                 e.preventDefault();
                 return;
               }
-              if (previousSibling && previousSibling.nodeName && previousSibling.nodeName.toLowerCase() === 'hr') {
+              if (previousSibling && previousSibling.nodeName && previousSibling.nodeName.toLowerCase() == 'hr') {
                 dom.remove(previousSibling);
                 e.preventDefault();
               }
@@ -28056,7 +28056,7 @@
       const focusBody = () => {
         if (!Range.prototype.getClientRects) {
           editor.on('mousedown', e => {
-            if (!isDefaultPrevented(e) && e.target.nodeName === 'HTML') {
+            if (!isDefaultPrevented(e) && e.target.nodeName == 'HTML') {
               const body = editor.getBody();
               body.blur();
               Delay.setEditorTimeout(editor, () => {
@@ -28075,7 +28075,7 @@
             editor.selection.select(target);
             editor.nodeChanged();
           }
-          if (target.nodeName === 'A' && dom.hasClass(target, visualAidsAnchorClass) && target.childNodes.length === 0 && dom.isEditable(target.parentNode)) {
+          if (target.nodeName == 'A' && dom.hasClass(target, visualAidsAnchorClass) && target.childNodes.length == 0 && dom.isEditable(target.parentNode)) {
             e.preventDefault();
             selection.select(target);
           }
@@ -28086,7 +28086,7 @@
           const template = dom.getAttribs(selection.getStart().cloneNode(false));
           return () => {
             const target = selection.getStart();
-            if (target !== editor.getBody()) {
+            if (target != editor.getBody()) {
               dom.setAttrib(target, 'style', null);
               each(template, attr => {
                 target.setAttributeNode(attr.cloneNode(true));
@@ -28095,11 +28095,11 @@
           };
         };
         const isSelectionAcrossElements = () => {
-          return !selection.isCollapsed() && dom.getParent(selection.getStart(), dom.isBlock) !== dom.getParent(selection.getEnd(), dom.isBlock);
+          return !selection.isCollapsed() && dom.getParent(selection.getStart(), dom.isBlock) != dom.getParent(selection.getEnd(), dom.isBlock);
         };
         editor.on('keypress', e => {
           let applyAttributes;
-          if (!isDefaultPrevented(e) && (e.keyCode === 8 || e.keyCode === 46) && isSelectionAcrossElements()) {
+          if (!isDefaultPrevented(e) && (e.keyCode == 8 || e.keyCode == 46) && isSelectionAcrossElements()) {
             applyAttributes = getAttributeApplyFunction();
             editor.getDoc().execCommand('delete', false);
             applyAttributes();
@@ -28120,10 +28120,10 @@
       };
       const disableBackspaceIntoATable = () => {
         editor.on('keydown', e => {
-          if (!isDefaultPrevented(e) && e.keyCode === BACKSPACE) {
-            if (selection.isCollapsed() && selection.getRng().startOffset === 0) {
+          if (!isDefaultPrevented(e) && e.keyCode == BACKSPACE) {
+            if (selection.isCollapsed() && selection.getRng().startOffset == 0) {
               const previousSibling = selection.getNode().previousSibling;
-              if (previousSibling && previousSibling.nodeName && previousSibling.nodeName.toLowerCase() === 'table') {
+              if (previousSibling && previousSibling.nodeName && previousSibling.nodeName.toLowerCase() == 'table') {
                 e.preventDefault();
                 return false;
               }
@@ -28134,7 +28134,7 @@
       };
       const removeBlockQuoteOnBackSpace = () => {
         editor.on('keydown', e => {
-          if (isDefaultPrevented(e) || e.keyCode !== VK.BACKSPACE) {
+          if (isDefaultPrevented(e) || e.keyCode != VK.BACKSPACE) {
             return;
           }
           let rng = selection.getRng();
@@ -28142,13 +28142,13 @@
           const offset = rng.startOffset;
           const root = dom.getRoot();
           let parent = container;
-          if (!rng.collapsed || offset !== 0) {
+          if (!rng.collapsed || offset != 0) {
             return;
           }
-          while (parent.parentNode && parent.parentNode.firstChild === parent && parent.parentNode !== root) {
+          while (parent.parentNode && parent.parentNode.firstChild == parent && parent.parentNode != root) {
             parent = parent.parentNode;
           }
-          if (parent.nodeName === 'BLOCKQUOTE') {
+          if (parent.nodeName == 'BLOCKQUOTE') {
             editor.formatter.toggle('blockquote', undefined, parent);
             rng = dom.createRng();
             rng.setStart(container, 0);
@@ -28175,9 +28175,9 @@
             var _a;
             let parentNode = node.parentNode;
             const root = dom.getRoot();
-            if ((parentNode === null || parentNode === void 0 ? void 0 : parentNode.lastChild) === node) {
+            if ((parentNode == null || parentNode == void 0 ? void 0 : parentNode.lastChild) == node) {
               while (parentNode && !dom.isBlock(parentNode)) {
-                if (((_a = parentNode.parentNode) === null || _a === void 0 ? void 0 : _a.lastChild) !== parentNode || parentNode === root) {
+                if (((_a = parentNode.parentNode) == null || _a == void 0 ? void 0 : _a.lastChild) != parentNode || parentNode == root) {
                   return;
                 }
                 parentNode = parentNode.parentNode;
@@ -28187,7 +28187,7 @@
           });
         };
         editor.on('SetContent ExecCommand', e => {
-          if (e.type === 'setcontent' || e.command === 'mceInsertLink') {
+          if (e.type == 'setcontent' || e.command == 'mceInsertLink') {
             fixLinks();
           }
         });
@@ -28200,7 +28200,7 @@
       const isAllContentSelected = editor => {
         const body = editor.getBody();
         const rng = editor.selection.getRng();
-        return rng.startContainer === rng.endContainer && rng.startContainer === body && rng.startOffset === 0 && rng.endOffset === body.childNodes.length;
+        return rng.startContainer == rng.endContainer && rng.startContainer == body && rng.startOffset == 0 && rng.endOffset == body.childNodes.length;
       };
       const normalizeSelection = () => {
         editor.on('keyup focusin mouseup', e => {
@@ -28215,7 +28215,7 @@
       const restoreFocusOnKeyDown = () => {
         if (!editor.inline) {
           editor.on('keydown', () => {
-            if (document.activeElement === document.body) {
+            if (document.activeElement == document.body) {
               editor.getWin().focus();
             }
           });
@@ -28226,7 +28226,7 @@
           editor.contentStyles.push('body {min-height: 150px}');
           editor.on('click', e => {
             let rng;
-            if (e.target.nodeName === 'HTML') {
+            if (e.target.nodeName == 'HTML') {
               rng = editor.selection.getRng();
               editor.getBody().focus();
               editor.selection.setRng(rng);
@@ -28239,10 +28239,10 @@
       const blockCmdArrowNavigation = () => {
         if (isMac) {
           editor.on('keydown', e => {
-            if (VK.metaKeyPressed(e) && !e.shiftKey && (e.keyCode === 37 || e.keyCode === 39)) {
+            if (VK.metaKeyPressed(e) && !e.shiftKey && (e.keyCode == 37 || e.keyCode == 39)) {
               e.preventDefault();
               const selection = editor.selection.getSel();
-              selection.modify('move', e.keyCode === 37 ? 'backward' : 'forward', 'lineboundary');
+              selection.modify('move', e.keyCode == 37 ? 'backward' : 'forward', 'lineboundary');
             }
           });
         }
@@ -28251,7 +28251,7 @@
         editor.on('click', e => {
           let elm = e.target;
           do {
-            if (elm.tagName === 'A') {
+            if (elm.tagName == 'A') {
               e.preventDefault();
               return;
             }
@@ -28270,7 +28270,7 @@
         parser.addNodeFilter('br', nodes => {
           let i = nodes.length;
           while (i--) {
-            if (nodes[i].attr('class') === 'Apple-interchange-newline') {
+            if (nodes[i].attr('class') == 'Apple-interchange-newline') {
               nodes[i].remove();
             }
           }
@@ -28282,7 +28282,7 @@
           return false;
         }
         const sel = editor.selection.getSel();
-        return !sel || !sel.rangeCount || sel.rangeCount === 0;
+        return !sel || !sel.rangeCount || sel.rangeCount == 0;
       };
       const setupRtc = () => {
         if (isWebKit) {
@@ -28306,7 +28306,7 @@
       const dropDragEndEvent = () => {
         editor.on('drop', event => {
           var _a;
-          const data = (_a = event.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData('text/html');
+          const data = (_a = event.dataTransfer) == null || _a == void 0 ? void 0 : _a.getData('text/html');
           if (isString(data) && /^<img[^>]*>$/.test(data)) {
             editor.dispatch('dragend', new window.DragEvent('dragend', event));
           }
@@ -28369,7 +28369,7 @@
       });
     };
     const getRootName = editor => editor.inline ? editor.getElement().nodeName.toLowerCase() : undefined;
-    const removeUndefined = obj => filter$4(obj, v => isUndefined(v) === false);
+    const removeUndefined = obj => filter$4(obj, v => isUndefined(v) == false);
     const mkParserSettings = editor => {
       const getOption = editor.options.get;
       const blobCache = editor.editorUpload.blobCache;
@@ -28441,17 +28441,17 @@
           const node = nodes[i];
           let value = node.attr(name);
           if (value && !node.attr(internalName)) {
-            if (value.indexOf('data:') === 0 || value.indexOf('blob:') === 0) {
+            if (value.indexOf('data:') == 0 || value.indexOf('blob:') == 0) {
               continue;
             }
-            if (name === 'style') {
+            if (name == 'style') {
               value = dom.serializeStyle(dom.parseStyle(value), node.name);
               if (!value.length) {
                 value = null;
               }
               node.attr(internalName, value);
               node.attr(name, value);
-            } else if (name === 'tabindex') {
+            } else if (name == 'tabindex') {
               node.attr(internalName, value);
               node.attr(name, null);
             } else {
@@ -28465,7 +28465,7 @@
         while (i--) {
           const node = nodes[i];
           const type = node.attr('type') || 'no/type';
-          if (type.indexOf('mce-') !== 0) {
+          if (type.indexOf('mce-') != 0) {
             node.attr('type', 'mce-' + type);
           }
         }
@@ -28478,7 +28478,7 @@
             const node = nodes[i];
             node.type = 8;
             node.name = '#comment';
-            node.value = '[CDATA[' + editor.dom.encode((_a = node.value) !== null && _a !== void 0 ? _a : '') + ']]';
+            node.value = '[CDATA[' + editor.dom.encode((_a = node.value) != null && _a != void 0 ? _a : '') + ']]';
           }
         });
       }
@@ -28487,7 +28487,7 @@
         const nonEmptyElements = editor.schema.getNonEmptyElements();
         while (i--) {
           const node = nodes[i];
-          if (node.isEmpty(nonEmptyElements) && node.getAll('br').length === 0) {
+          if (node.isEmpty(nonEmptyElements) && node.getAll('br').length == 0) {
             node.append(new AstNode('br', 1));
           }
         }
@@ -28499,7 +28499,7 @@
       if (autoFocus) {
         Delay.setEditorTimeout(editor, () => {
           let focusEditor;
-          if (autoFocus === true) {
+          if (autoFocus == true) {
             focusEditor = editor;
           } else {
             focusEditor = editor.editorManager.get(autoFocus);
@@ -28513,7 +28513,7 @@
     };
     const moveSelectionToFirstCaretPosition = editor => {
       const root = editor.dom.getRoot();
-      if (!editor.inline && (!hasAnyRanges(editor) || editor.selection.getStart(true) === root)) {
+      if (!editor.inline && (!hasAnyRanges(editor) || editor.selection.getStart(true) == root)) {
         firstPositionIn(root).each(pos => {
           const node = pos.getNode();
           const caretPos = isTable$2(node) ? firstPositionIn(node).getOr(pos) : pos;
@@ -28598,7 +28598,7 @@
       editor.quirks = Quirks(editor);
       firePostRender(editor);
       const directionality = getDirectionality(editor);
-      if (directionality !== undefined) {
+      if (directionality != undefined) {
         body.dir = directionality;
       }
       const protect = getProtect(editor);
@@ -28615,7 +28615,7 @@
         editor.addVisual(editor.getBody());
       });
       editor.on('compositionstart compositionend', e => {
-        editor.composing = e.type === 'compositionstart';
+        editor.composing = e.type == 'compositionstart';
       });
     };
     const loadInitialContent = editor => {
@@ -28628,7 +28628,7 @@
       editor.startContent = editor.getContent({ format: 'raw' });
     };
     const initEditorWithInitialContent = editor => {
-      if (editor.removed !== true) {
+      if (editor.removed != true) {
         loadInitialContent(editor);
         initEditor(editor);
       }
@@ -28661,7 +28661,7 @@
       editor.readonly = isReadOnly$1(editor);
       editor._editableRoot = hasEditableRoot$1(editor);
       if (!editor.readonly && editor.hasEditableRoot()) {
-        if (editor.inline && DOM$6.getStyle(body, 'position', true) === 'static') {
+        if (editor.inline && DOM$6.getStyle(body, 'position', true) == 'static') {
           body.style.position = 'relative';
         }
         body.contentEditable = 'true';
@@ -28750,7 +28750,7 @@
     };
     const getIframeHtml = editor => {
       let iframeHTML = getDocType(editor) + '<html><head>';
-      if (getDocumentBaseUrl(editor) !== editor.documentBaseUrl) {
+      if (getDocumentBaseUrl(editor) != editor.documentBaseUrl) {
         iframeHTML += '<base href="' + editor.documentBaseURI.getURI() + '" />';
       }
       iframeHTML += '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />';
@@ -28813,7 +28813,7 @@
       const Plugin = PluginManager.get(plugin);
       const pluginUrl = PluginManager.urls[plugin] || editor.documentBaseUrl.replace(/\/$/, '');
       plugin = Tools.trim(plugin);
-      if (Plugin && Tools.inArray(initializedPlugins, plugin) === -1) {
+      if (Plugin && Tools.inArray(initializedPlugins, plugin) == -1) {
         if (editor.plugins[plugin]) {
           return;
         }
@@ -28949,11 +28949,11 @@
     };
 
     const DOM$3 = DOMUtils.DOM;
-    const hasSkipLoadPrefix = name => name.charAt(0) === '-';
+    const hasSkipLoadPrefix = name => name.charAt(0) == '-';
     const loadLanguage = (scriptLoader, editor) => {
       const languageCode = getLanguageCode(editor);
       const languageUrl = getLanguageUrl(editor);
-      if (!I18n.hasCode(languageCode) && languageCode !== 'en') {
+      if (!I18n.hasCode(languageCode) && languageCode != 'en') {
         const url = isNotEmpty(languageUrl) ? languageUrl : `${ editor.editorManager.baseURL }/langs/${ languageCode }.js`;
         scriptLoader.add(url).catch(() => {
           languageLoadError(editor, url, languageCode);
@@ -28972,7 +28972,7 @@
     };
     const loadModel = (editor, suffix) => {
       const model = getModel(editor);
-      if (model !== 'plugin' && !has$2(ModelManager.urls, model)) {
+      if (model != 'plugin' && !has$2(ModelManager.urls, model)) {
         const modelUrl = getModelUrl(editor);
         const url = isString(modelUrl) ? editor.documentBaseURI.toAbsolute(modelUrl) : `models/${ model }/model${ suffix }.js`;
         ModelManager.load(model, url).catch(() => {
@@ -29129,7 +29129,7 @@
     };
 
     const setEditableRoot = (editor, state) => {
-      if (editor._editableRoot !== state) {
+      if (editor._editableRoot != state) {
         editor._editableRoot = state;
         if (!editor.readonly) {
           editor.getBody().contentEditable = String(editor.hasEditableRoot());
@@ -29189,7 +29189,7 @@
     };
     const getExternalPlugins = (overrideOptions, options) => {
       var _a;
-      const userDefinedExternalPlugins = (_a = options.external_plugins) !== null && _a !== void 0 ? _a : {};
+      const userDefinedExternalPlugins = (_a = options.external_plugins) != null && _a != void 0 ? _a : {};
       if (overrideOptions && overrideOptions.external_plugins) {
         return Tools.extend({}, overrideOptions.external_plugins, userDefinedExternalPlugins);
       } else {
@@ -29224,7 +29224,7 @@
     };
     const combineOptions = (isMobileDevice, isPhone, defaultOptions, defaultOverrideOptions, options) => {
       var _a;
-      const deviceOverrideOptions = isMobileDevice ? { mobile: getMobileOverrideOptions((_a = options.mobile) !== null && _a !== void 0 ? _a : {}, isPhone) } : {};
+      const deviceOverrideOptions = isMobileDevice ? { mobile: getMobileOverrideOptions((_a = options.mobile) != null && _a != void 0 ? _a : {}, isPhone) } : {};
       const sectionResult = extractSections(['mobile'], deepMerge(deviceOverrideOptions, options));
       const extendedOptions = Tools.extend(defaultOptions, defaultOverrideOptions, sectionResult.options(), isOnMobile(isMobileDevice, sectionResult) ? getSection(sectionResult, 'mobile') : {}, { external_plugins: getExternalPlugins(defaultOverrideOptions, sectionResult.options()) });
       return processPlugins(isMobileDevice, sectionResult, defaultOverrideOptions, extendedOptions);
@@ -29240,11 +29240,11 @@
       };
       const toggleAlign = align => () => {
         each$e('left,center,right,justify'.split(','), name => {
-          if (align !== name) {
+          if (align != name) {
             editor.formatter.remove('align' + name);
           }
         });
-        if (align !== 'none') {
+        if (align != 'none') {
           toggleFormat('align' + align);
         }
       };
@@ -29284,7 +29284,7 @@
           } catch (ex) {
             failed = true;
           }
-          if (command === 'paste' && !doc.queryCommandEnabled(command)) {
+          if (command == 'paste' && !doc.queryCommandEnabled(command)) {
             failed = true;
           }
           if (failed || !doc.queryCommandSupported(command)) {
@@ -29317,7 +29317,7 @@
     };
 
     const processValue$1 = value => {
-      if (typeof value !== 'string') {
+      if (typeof value != 'string') {
         const details = Tools.extend({
           paste: value.paste,
           data: { paste: value.paste }
@@ -29420,7 +29420,7 @@
     });
     const getCaretElement = editor => Optional.from(editor.selection.getRng()).bind(rng => {
       const root = editor.getBody();
-      const atStartOfNode = rng.startContainer === root && rng.startOffset === 0;
+      const atStartOfNode = rng.startContainer == root && rng.startOffset == 0;
       return atStartOfNode ? Optional.none() : Optional.from(editor.selection.getStart(true));
     });
     const bindRange = (editor, binder) => getCaretElement(editor).orThunk(curry(findFirstCaretElement, editor)).map(SugarElement.fromDom).filter(isElement$7).bind(binder);
@@ -29447,7 +29447,7 @@
     const normalizeFontNames = font => {
       const fonts = font.split(/\s*,\s*/);
       return map$3(fonts, font => {
-        if (font.indexOf(' ') !== -1 && !(startsWith(font, '"') || startsWith(font, `'`))) {
+        if (font.indexOf(' ') != -1 && !(startsWith(font, '"') || startsWith(font, `'`))) {
           return `'${ font }'`;
         } else {
           return font;
@@ -29509,7 +29509,7 @@
           var _a;
           toggleFormat(command, {
             value: lang.code,
-            customValue: (_a = lang.customCode) !== null && _a !== void 0 ? _a : null
+            customValue: (_a = lang.customCode) != null && _a != void 0 ? _a : null
           });
         },
         'RemoveFormat': command => {
@@ -29622,7 +29622,7 @@
       editor.editorCommands.addCommands({
         'InsertUnorderedList,InsertOrderedList': command => {
           const list = editor.dom.getParent(editor.selection.getNode(), 'ul,ol');
-          return list && (command === 'insertunorderedlist' && list.tagName === 'UL' || command === 'insertorderedlist' && list.tagName === 'OL');
+          return list && (command == 'insertunorderedlist' && list.tagName == 'UL' || command == 'insertorderedlist' && list.tagName == 'OL');
         }
       }, 'state');
     };
@@ -29633,7 +29633,7 @@
 
     const getTopParentBlock = (editor, node, root, container) => {
       const dom = editor.dom;
-      const selector = node => dom.isBlock(node) && node.parentElement === root;
+      const selector = node => dom.isBlock(node) && node.parentElement == root;
       const topParentBlock = selector(node) ? node : dom.getParent(container, selector, root);
       return Optional.from(topParentBlock).map(SugarElement.fromDom);
     };
@@ -29689,7 +29689,7 @@
         mceSelectNodeDepth: (_command, _ui, value) => {
           let counter = 0;
           editor.dom.getParent(editor.selection.getNode(), node => {
-            if (isElement$6(node) && counter++ === value) {
+            if (isElement$6(node) && counter++ == value) {
               editor.selection.select(node);
               return false;
             } else {
@@ -29714,8 +29714,8 @@
     const registerExecCommands = editor => {
       editor.editorCommands.addCommands({
         mceRemoveNode: (_command, _ui, value) => {
-          const node = value !== null && value !== void 0 ? value : editor.selection.getNode();
-          if (node !== editor.getBody()) {
+          const node = value != null && value != void 0 ? value : editor.selection.getNode();
+          if (node != editor.getBody()) {
             const bm = editor.selection.getBookmark();
             editor.dom.remove(node, true);
             editor.selection.moveToBookmark(bm);
@@ -29725,7 +29725,7 @@
           editor.getWin().print();
         },
         mceFocus: (_command, _ui, value) => {
-          focus(editor, value === true);
+          focus(editor, value == true);
         },
         mceToggleVisualAid: () => {
           editor.hasVisual = !editor.hasVisual;
@@ -29762,11 +29762,11 @@
       execCommand(command, ui = false, value, args) {
         const editor = this.editor;
         const lowerCaseCommand = command.toLowerCase();
-        const skipFocus = args === null || args === void 0 ? void 0 : args.skip_focus;
+        const skipFocus = args == null || args == void 0 ? void 0 : args.skip_focus;
         if (editor.removed) {
           return false;
         }
-        if (lowerCaseCommand !== 'mcefocus') {
+        if (lowerCaseCommand != 'mcefocus') {
           if (!/^(mceAddUndoLevel|mceEndUndoLevel)$/i.test(lowerCaseCommand) && !skipFocus) {
             editor.focus();
           } else {
@@ -29825,7 +29825,7 @@
       }
       addCommand(command, callback, scope) {
         const lowerCaseCommand = command.toLowerCase();
-        this.commands.exec[lowerCaseCommand] = (_command, ui, value) => callback.call(scope !== null && scope !== void 0 ? scope : this.editor, ui, value);
+        this.commands.exec[lowerCaseCommand] = (_command, ui, value) => callback.call(scope != null && scope != void 0 ? scope : this.editor, ui, value);
       }
       queryCommandSupported(command) {
         const lowerCaseCommand = command.toLowerCase();
@@ -29836,10 +29836,10 @@
         }
       }
       addQueryStateHandler(command, callback, scope) {
-        this.commands.state[command.toLowerCase()] = () => callback.call(scope !== null && scope !== void 0 ? scope : this.editor);
+        this.commands.state[command.toLowerCase()] = () => callback.call(scope != null && scope != void 0 ? scope : this.editor);
       }
       addQueryValueHandler(command, callback, scope) {
-        this.commands.value[command.toLowerCase()] = () => callback.call(scope !== null && scope !== void 0 ? scope : this.editor);
+        this.commands.value[command.toLowerCase()] = () => callback.call(scope != null && scope != void 0 ? scope : this.editor);
       }
     }
 
@@ -29934,7 +29934,7 @@
         });
       }
     };
-    const isClickEvent = e => e.type === 'click';
+    const isClickEvent = e => e.type == 'click';
     const allowedEvents = ['copy'];
     const isReadOnlyAllowedEvent = e => contains$2(allowedEvents, e.type);
     const getAnchorHrefOpt = (editor, elm) => {
@@ -29988,7 +29988,7 @@
       }
       dispatch(name, args) {
         const lcName = name.toLowerCase();
-        const event = normalize$3(lcName, args !== null && args !== void 0 ? args : {}, this.scope);
+        const event = normalize$3(lcName, args != null && args != void 0 ? args : {}, this.scope);
         if (this.settings.beforeFire) {
           this.settings.beforeFire(event);
         }
@@ -30005,7 +30005,7 @@
             if (event.isImmediatePropagationStopped()) {
               return event;
             }
-            if (callback.func.call(this.scope, event) === false) {
+            if (callback.func.call(this.scope, event) == false) {
               event.preventDefault();
               return event;
             }
@@ -30014,7 +30014,7 @@
         return event;
       }
       on(name, callback, prepend, extra) {
-        if (callback === false) {
+        if (callback == false) {
           callback = never;
         }
         if (callback) {
@@ -30068,7 +30068,7 @@
               if (!callback) {
                 handlers.length = 0;
               } else {
-                const filteredHandlers = partition$2(handlers, handler => handler.func === callback);
+                const filteredHandlers = partition$2(handlers, handler => handler.func == callback);
                 handlers = filteredHandlers.fail;
                 this.bindings[currentName] = handlers;
                 each$e(filteredHandlers.pass, handler => {
@@ -30095,7 +30095,7 @@
       has(name) {
         name = name.toLowerCase();
         const binding = this.bindings[name];
-        return !(!binding || binding.length === 0);
+        return !(!binding || binding.length == 0);
       }
     }
 
@@ -30118,11 +30118,11 @@
       },
       dispatch(name, args, bubble) {
         const self = this;
-        if (self.removed && name !== 'remove' && name !== 'detach') {
-          return normalize$3(name.toLowerCase(), args !== null && args !== void 0 ? args : {}, self);
+        if (self.removed && name != 'remove' && name != 'detach') {
+          return normalize$3(name.toLowerCase(), args != null && args != void 0 ? args : {}, self);
         }
         const dispatcherArgs = getEventDispatcher(self).dispatch(name, args);
-        if (bubble !== false && self.parent) {
+        if (bubble != false && self.parent) {
           let parent = self.parent();
           while (parent && !dispatcherArgs.isPropagationStopped()) {
             parent.dispatch(name, dispatcherArgs, false);
@@ -30148,7 +30148,7 @@
     const DOM$2 = DOMUtils.DOM;
     let customEventRootDelegates;
     const getEventTarget = (editor, eventName) => {
-      if (eventName === 'selectionchange') {
+      if (eventName == 'selectionchange') {
         return editor.getDoc();
       }
       if (!editor.inline && /^(?:mouse|touch|click|contextmenu|drop|dragover|dragend)/.test(eventName)) {
@@ -30202,7 +30202,7 @@
           let i = editors.length;
           while (i--) {
             const body = editors[i].getBody();
-            if (body === target || DOM$2.isChildOf(target, body)) {
+            if (body == target || DOM$2.isChildOf(target, body)) {
               fireEvent(editors[i], eventName, e);
             }
           }
@@ -30227,7 +30227,7 @@
       },
       toggleNativeEvent(name, state) {
         const self = this;
-        if (name === 'focus' || name === 'blur') {
+        if (name == 'focus' || name == 'blur') {
           return;
         }
         if (self.removed) {
@@ -30418,14 +30418,14 @@
         return;
       }
       oldMode.deactivate();
-      if (oldMode.editorReadOnly !== newMode.editorReadOnly) {
+      if (oldMode.editorReadOnly != newMode.editorReadOnly) {
         toggleReadOnly(editor, newMode.editorReadOnly);
       }
       activeMode.set(mode);
       fireSwitchMode(editor, mode);
     };
     const setMode = (editor, availableModes, activeMode, mode) => {
-      if (mode === activeMode.get()) {
+      if (mode == activeMode.get()) {
         return;
       } else if (!has$2(availableModes, mode)) {
         throw new Error(`Editor mode '${ mode }' is invalid`);
@@ -30552,14 +30552,14 @@
             each$2(self.shortcuts, shortcut => {
               if (self.matchShortcut(e, shortcut)) {
                 self.pendingPatterns = shortcut.subpatterns.slice(0);
-                if (e.type === 'keydown') {
+                if (e.type == 'keydown') {
                   self.executeShortcutAction(shortcut);
                 }
               }
             });
             if (self.matchShortcut(e, self.pendingPatterns[0])) {
-              if (self.pendingPatterns.length === 1) {
-                if (e.type === 'keydown') {
+              if (self.pendingPatterns.length == 1) {
+                if (e.type == 'keydown') {
                   self.executeShortcutAction(self.pendingPatterns[0]);
                 }
               }
@@ -30588,7 +30588,7 @@
       normalizeCommandFunc(cmdFunc) {
         const self = this;
         const cmd = cmdFunc;
-        if (typeof cmd === 'string') {
+        if (typeof cmd == 'string') {
           return () => {
             self.editor.execCommand(cmd, false, null);
           };
@@ -30615,19 +30615,19 @@
         return e.altKey || e.ctrlKey || e.metaKey;
       }
       isFunctionKey(e) {
-        return e.type === 'keydown' && e.keyCode >= 112 && e.keyCode <= 123;
+        return e.type == 'keydown' && e.keyCode >= 112 && e.keyCode <= 123;
       }
       matchShortcut(e, shortcut) {
         if (!shortcut) {
           return false;
         }
-        if (shortcut.ctrl !== e.ctrlKey || shortcut.meta !== e.metaKey) {
+        if (shortcut.ctrl != e.ctrlKey || shortcut.meta != e.metaKey) {
           return false;
         }
-        if (shortcut.alt !== e.altKey || shortcut.shift !== e.shiftKey) {
+        if (shortcut.alt != e.altKey || shortcut.shift != e.shiftKey) {
           return false;
         }
-        if (e.keyCode === shortcut.keyCode || e.charCode && e.charCode === shortcut.charCode) {
+        if (e.keyCode == shortcut.keyCode || e.charCode && e.charCode == shortcut.charCode) {
           e.preventDefault();
           return true;
         }
@@ -30818,7 +30818,7 @@
       hasPlugin(name, loaded) {
         const hasPlugin = contains$2(getPlugins(this), name);
         if (hasPlugin) {
-          return loaded ? PluginManager.get(name) !== undefined : true;
+          return loaded ? PluginManager.get(name) != undefined : true;
         } else {
           return false;
         }
@@ -30870,7 +30870,7 @@
           self.save();
           if (self.inline) {
             self.getBody().contentEditable = 'false';
-            if (self === self.editorManager.focusedEditor) {
+            if (self == self.editorManager.focusedEditor) {
               self.editorManager.focusedEditor = null;
             }
           } else {
@@ -30933,7 +30933,7 @@
         if (!saveArgs.no_events) {
           self.dispatch('SaveContent', saveArgs);
         }
-        if (saveArgs.format === 'raw') {
+        if (saveArgs.format == 'raw') {
           self.dispatch('RawSaveContent', saveArgs);
         }
         html = saveArgs.content;
@@ -30944,7 +30944,7 @@
           const form = DOM$1.getParent(self.id, 'form');
           if (form) {
             each$1(form.elements, elm => {
-              if (elm.name === self.id) {
+              if (elm.name == self.id) {
                 elm.value = html;
                 return false;
               } else {
@@ -30956,7 +30956,7 @@
           elm.value = html;
         }
         saveArgs.element = getArgs.element = elm = null;
-        if (saveArgs.set_dirty !== false) {
+        if (saveArgs.set_dirty != false) {
           self.setDirty(false);
         }
         return html;
@@ -30974,7 +30974,7 @@
         this.execCommand('mceInsertContent', false, content);
       }
       resetContent(initialContent) {
-        if (initialContent === undefined) {
+        if (initialContent == undefined) {
           setContent(this, this.startContent, { format: 'raw' });
         } else {
           setContent(this, initialContent);
@@ -30989,7 +30989,7 @@
       setDirty(state) {
         const oldState = !this.isNotDirty;
         this.isNotDirty = !state;
-        if (state && state !== oldState) {
+        if (state && state != oldState) {
           this.dispatch('dirty');
         }
       }
@@ -31032,7 +31032,7 @@
       getBody() {
         var _a, _b;
         const doc = this.getDoc();
-        return (_b = (_a = this.bodyElement) !== null && _a !== void 0 ? _a : doc === null || doc === void 0 ? void 0 : doc.body) !== null && _b !== void 0 ? _b : null;
+        return (_b = (_a = this.bodyElement) != null && _a != void 0 ? _a : doc == null || doc == void 0 ? void 0 : doc.body) != null && _b != void 0 ? _b : null;
       }
       convertURL(url, name, elm) {
         const self = this, getOption = self.options.get;
@@ -31040,11 +31040,11 @@
         if (isFunction(urlConverterCallback)) {
           return urlConverterCallback.call(self, url, elm, true, name);
         }
-        if (!getOption('convert_urls') || elm === 'link' || isObject(elm) && elm.nodeName === 'LINK' || url.indexOf('file:') === 0 || url.length === 0) {
+        if (!getOption('convert_urls') || elm == 'link' || isObject(elm) && elm.nodeName == 'LINK' || url.indexOf('file:') == 0 || url.length == 0) {
           return url;
         }
         const urlObject = new URI(url);
-        if (urlObject.protocol !== 'http' && urlObject.protocol !== 'https' && urlObject.protocol !== '') {
+        if (urlObject.protocol != 'http' && urlObject.protocol != 'https' && urlObject.protocol != '') {
           return url;
         }
         if (getOption('relative_urls')) {
@@ -31095,7 +31095,7 @@
       });
     };
     const toggleGlobalEvents = state => {
-      if (state !== boundGlobalEvents) {
+      if (state != boundGlobalEvents) {
         const DOM = DOMUtils.DOM;
         if (state) {
           DOM.bind(window, 'resize', globalEventDelegate);
@@ -31110,15 +31110,15 @@
     const removeEditorFromList = targetEditor => {
       const oldEditors = editors;
       editors = filter$5(editors, editor => {
-        return targetEditor !== editor;
+        return targetEditor != editor;
       });
-      if (EditorManager.activeEditor === targetEditor) {
+      if (EditorManager.activeEditor == targetEditor) {
         EditorManager.activeEditor = editors.length > 0 ? editors[0] : null;
       }
-      if (EditorManager.focusedEditor === targetEditor) {
+      if (EditorManager.focusedEditor == targetEditor) {
         EditorManager.focusedEditor = null;
       }
-      return oldEditors.length !== editors.length;
+      return oldEditors.length != editors.length;
     };
     const purgeDestroyedEditor = editor => {
       if (editor && editor.initialized && !(editor.getContainer() || editor.getBody()).parentNode) {
@@ -31128,7 +31128,7 @@
         editor.removed = true;
       }
     };
-    const isQuirksMode = document.compatMode !== 'CSS1Compat';
+    const isQuirksMode = document.compatMode != 'CSS1Compat';
     const EditorManager = {
       ...Observable,
       baseURI: null,
@@ -31161,12 +31161,12 @@
           const scripts = document.getElementsByTagName('script');
           for (let i = 0; i < scripts.length; i++) {
             const src = scripts[i].src || '';
-            if (src === '') {
+            if (src == '') {
               continue;
             }
             const srcScript = src.substring(src.lastIndexOf('/'));
             if (/tinymce(\.full|\.jquery|)(\.min|\.dev|)\.js/.test(src)) {
-              if (srcScript.indexOf('.min') !== -1) {
+              if (srcScript.indexOf('.min') != -1) {
                 suffix = '.min';
               }
               baseURL = src.substring(0, src.lastIndexOf('/'));
@@ -31175,7 +31175,7 @@
           }
           if (!baseURL && document.currentScript) {
             const src = document.currentScript.src;
-            if (src.indexOf('.min') !== -1) {
+            if (src.indexOf('.min') != -1) {
               suffix = '.min';
             }
             baseURL = src.substring(0, src.lastIndexOf('/'));
@@ -31198,7 +31198,7 @@
         }
         this.defaultOptions = defaultOptions;
         const pluginBaseUrls = defaultOptions.plugin_base_urls;
-        if (pluginBaseUrls !== undefined) {
+        if (pluginBaseUrls != undefined) {
           each$d(pluginBaseUrls, (pluginBaseUrl, pluginName) => {
             AddOnManager.PluginManager.urls[pluginName] = pluginBaseUrl;
           });
@@ -31250,7 +31250,7 @@
             const editor = new Editor(id, options, self);
             editors.push(editor);
             editor.on('init', () => {
-              if (++initCount === targets.length) {
+              if (++initCount == targets.length) {
                 provideResults(editors);
               }
             });
@@ -31266,7 +31266,7 @@
           targets = Tools.grep(targets, elm => {
             return !self.get(elm.id);
           });
-          if (targets.length === 0) {
+          if (targets.length == 0) {
             provideResults([]);
           } else {
             each(targets, elm => {
@@ -31290,11 +31290,11 @@
         });
       },
       get(id) {
-        if (arguments.length === 0) {
+        if (arguments.length == 0) {
           return editors.slice(0);
         } else if (isString(id)) {
           return find$2(editors, editor => {
-            return editor.id === id;
+            return editor.id == id;
           }).getOr(null);
         } else if (isNumber(id)) {
           return editors[id] ? editors[id] : null;
@@ -31305,10 +31305,10 @@
       add(editor) {
         const self = this;
         const existingEditor = self.get(editor.id);
-        if (existingEditor === editor) {
+        if (existingEditor == editor) {
           return editor;
         }
-        if (existingEditor === null) {
+        if (existingEditor == null) {
           editors.push(editor);
         }
         toggleGlobalEvents(true);
@@ -31355,7 +31355,7 @@
         if (removeEditorFromList(editor)) {
           self.dispatch('RemoveEditor', { editor });
         }
-        if (editors.length === 0) {
+        if (editors.length == 0) {
           window.removeEventListener('beforeunload', beforeUnloadDelegate);
         }
         editor.remove();
@@ -31365,7 +31365,7 @@
       execCommand(cmd, ui, value) {
         var _a;
         const self = this;
-        const editorId = isObject(value) ? (_a = value.id) !== null && _a !== void 0 ? _a : value.index : value;
+        const editorId = isObject(value) ? (_a = value.id) != null && _a != void 0 ? _a : value.index : value;
         switch (cmd) {
         case 'mceAddEditor': {
             if (!self.get(editorId)) {
@@ -31413,7 +31413,7 @@
       },
       setActive(editor) {
         const activeEditor = this.activeEditor;
-        if (this.activeEditor !== editor) {
+        if (this.activeEditor != editor) {
           if (activeEditor) {
             activeEditor.dispatch('deactivate', { relatedTarget: editor });
           }
@@ -31458,28 +31458,28 @@
       const targetW = targetRect.w;
       const targetH = targetRect.h;
       const relChars = (rel || '').split('');
-      if (relChars[0] === 'b') {
+      if (relChars[0] == 'b') {
         y += targetH;
       }
-      if (relChars[1] === 'r') {
+      if (relChars[1] == 'r') {
         x += targetW;
       }
-      if (relChars[0] === 'c') {
+      if (relChars[0] == 'c') {
         y += round(targetH / 2);
       }
-      if (relChars[1] === 'c') {
+      if (relChars[1] == 'c') {
         x += round(targetW / 2);
       }
-      if (relChars[3] === 'b') {
+      if (relChars[3] == 'b') {
         y -= h;
       }
-      if (relChars[4] === 'r') {
+      if (relChars[4] == 'r') {
         x -= w;
       }
-      if (relChars[3] === 'c') {
+      if (relChars[3] == 'c') {
         y -= round(h / 2);
       }
-      if (relChars[4] === 'c') {
+      if (relChars[4] == 'c') {
         x -= round(w / 2);
       }
       return create$2(x, y, w, h);
@@ -31556,7 +31556,7 @@
       const complete = completer => (...args) => {
         if (!done) {
           done = true;
-          if (timer !== null) {
+          if (timer != null) {
             clearTimeout(timer);
             timer = null;
           }
@@ -31566,7 +31566,7 @@
       const resolve = complete(resolveCb);
       const reject = complete(rejectCb);
       const start = (...args) => {
-        if (!done && timer === null) {
+        if (!done && timer == null) {
           timer = setTimeout(() => reject.apply(null, args), timeout);
         }
       };
@@ -31583,7 +31583,7 @@
       const load = (id, url) => {
         const loadErrMsg = `Script at URL "${ url }" failed to load`;
         const runErrMsg = `Script at URL "${ url }" did not call \`tinymce.Resource.add('${ id }', data)\` within 1 second`;
-        if (tasks[id] !== undefined) {
+        if (tasks[id] != undefined) {
           return tasks[id];
         } else {
           const task = new Promise((resolve, reject) => {
@@ -31596,7 +31596,7 @@
         }
       };
       const add = (id, data) => {
-        if (resultFns[id] !== undefined) {
+        if (resultFns[id] != undefined) {
           resultFns[id](data);
           delete resultFns[id];
         }
@@ -31636,7 +31636,7 @@
           return keys[index];
         },
         removeItem: key => {
-          keys = keys.filter(k => k === key);
+          keys = keys.filter(k => k == key);
           delete data[key];
         },
         clear: () => {
@@ -31739,7 +31739,7 @@
     const tinymce$1 = Tools.extend(EditorManager, publicApi);
 
     const exportToModuleLoaders = tinymce => {
-      if (typeof module === 'object') {
+      if (typeof module == 'object') {
         try {
           module.exports = tinymce;
         } catch (_) {

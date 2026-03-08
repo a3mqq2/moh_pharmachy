@@ -145,7 +145,7 @@ class ForeignCompanyController extends Controller
     {
         $company = ForeignCompany::with('representative')->findOrFail($id);
 
-        if ($company->status !== 'pending') {
+        if ($company->status != 'pending') {
             return redirect()->back()
                 ->with('error', 'لا يمكن الموافقة على الشركة في الحالة الحالية');
         }
@@ -220,7 +220,7 @@ class ForeignCompanyController extends Controller
     {
         $company = ForeignCompany::findOrFail($id);
 
-        if ($company->status !== 'rejected') {
+        if ($company->status != 'rejected') {
             return redirect()->back()
                 ->with('error', 'يمكن فقط إعادة الشركات المرفوضة للمراجعة');
         }
@@ -235,7 +235,7 @@ class ForeignCompanyController extends Controller
     {
         $company = ForeignCompany::with('representative')->findOrFail($id);
 
-        if ($company->status !== 'approved') {
+        if ($company->status != 'approved') {
             return redirect()->back()
                 ->with('error', 'لا يمكن تفعيل الشركة في الحالة الحالية');
         }
@@ -270,7 +270,7 @@ class ForeignCompanyController extends Controller
     {
         $company = ForeignCompany::findOrFail($id);
 
-        if ($company->status !== 'active') {
+        if ($company->status != 'active') {
             return redirect()->back()
                 ->with('error', 'يمكن فقط تعليق الشركات المفعلة');
         }
@@ -292,7 +292,7 @@ class ForeignCompanyController extends Controller
     {
         $company = ForeignCompany::findOrFail($id);
 
-        if ($company->status !== 'suspended') {
+        if ($company->status != 'suspended') {
             return redirect()->back()
                 ->with('error', 'الشركة غير معلقة');
         }

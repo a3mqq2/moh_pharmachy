@@ -11,25 +11,25 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType$1 = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
-    const eq$1 = t => a => t === a;
-    const is$2 = (value, constructor) => isObject(value) && hasProto(value, constructor, (o, proto) => getPrototypeOf$2(o) === proto);
+    const isType$1 = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
+    const eq$1 = t => a => t == a;
+    const is$2 = (value, constructor) => isObject(value) && hasProto(value, constructor, (o, proto) => getPrototypeOf$2(o) == proto);
     const isString = isType$1('string');
     const isObject = isType$1('object');
     const isPlainObject = value => is$2(value, Object);
@@ -37,7 +37,7 @@
     const isNull = eq$1(null);
     const isBoolean = isSimpleType('boolean');
     const isUndefined = eq$1(undefined);
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
     const isNumber = isSimpleType('number');
@@ -71,7 +71,7 @@
       return x;
     };
     const tripleEquals = (a, b) => {
-      return a === b;
+      return a == b;
     };
     function curry(fn, ...initialArgs) {
       return (...restArgs) => {
@@ -156,7 +156,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -190,7 +190,7 @@
     const rawIndexOf = (ts, t) => nativeIndexOf.call(ts, t);
     const indexOf = (xs, x) => {
       const r = rawIndexOf(xs, x);
-      return r === -1 ? Optional.none() : Optional.some(r);
+      return r == -1 ? Optional.none() : Optional.some(r);
     };
     const contains$2 = (xs, x) => rawIndexOf(xs, x) > -1;
     const exists = (xs, pred) => {
@@ -310,7 +310,7 @@
     const forall = (xs, pred) => {
       for (let i = 0, len = xs.length; i < len; ++i) {
         const x = xs[i];
-        if (pred(x, i) !== true) {
+        if (pred(x, i) != true) {
           return false;
         }
       }
@@ -421,7 +421,7 @@
       return has$2(obj, key) ? Optional.from(obj[key]) : Optional.none();
     };
     const has$2 = (obj, key) => hasOwnProperty.call(obj, key);
-    const hasNonNullableKey = (obj, key) => has$2(obj, key) && obj[key] !== undefined && obj[key] !== null;
+    const hasNonNullableKey = (obj, key) => has$2(obj, key) && obj[key] != undefined && obj[key] != null;
 
     const is$1 = (lhs, rhs, comparator = tripleEquals) => lhs.exists(left => comparator(left, rhs));
     const equals = (lhs, rhs, comparator = tripleEquals) => lift2(lhs, rhs, comparator).getOr(lhs.isNone() && rhs.isNone());
@@ -449,7 +449,7 @@
     };
     const lift2 = (oa, ob, f) => oa.isSome() && ob.isSome() ? Optional.some(f(oa.getOrDie(), ob.getOrDie())) : Optional.none();
     const lift3 = (oa, ob, oc, f) => oa.isSome() && ob.isSome() && oc.isSome() ? Optional.some(f(oa.getOrDie(), ob.getOrDie(), oc.getOrDie())) : Optional.none();
-    const mapFrom = (a, f) => a !== undefined && a !== null ? Optional.some(f(a)) : Optional.none();
+    const mapFrom = (a, f) => a != undefined && a != null ? Optional.some(f(a)) : Optional.none();
     const someIf = (b, a) => b ? Optional.some(a) : Optional.none();
 
     const addToEnd = (str, suffix) => {
@@ -459,7 +459,7 @@
       return str.substring(numChars);
     };
 
-    const checkRange = (str, substr, start) => substr === '' || str.length >= substr.length && str.substr(start, start + substr.length) === substr;
+    const checkRange = (str, substr, start) => substr == '' || str.length >= substr.length && str.substr(start, start + substr.length) == substr;
     const removeLeading = (str, prefix) => {
       return startsWith(str, prefix) ? removeFromStart(str, prefix.length) : str;
     };
@@ -468,7 +468,7 @@
     };
     const contains$1 = (str, substr, start = 0, end) => {
       const idx = str.indexOf(substr, start);
-      if (idx !== -1) {
+      if (idx != -1) {
         return isUndefined(end) ? true : idx + substr.length <= end;
       } else {
         return false;
@@ -485,7 +485,7 @@
     const isNotEmpty = s => s.length > 0;
     const isEmpty = s => !isNotEmpty(s);
 
-    const isSupported$1 = dom => dom.style !== undefined && isFunction(dom.style.getPropertyValue);
+    const isSupported$1 = dom => dom.style != undefined && isFunction(dom.style.getPropertyValue);
 
     const fromHtml$2 = (html, scope) => {
       const doc = scope || document;
@@ -509,7 +509,7 @@
       return fromDom(node);
     };
     const fromDom = node => {
-      if (node === null || node === undefined) {
+      if (node == null || node == undefined) {
         throw new Error('Node cannot be null or undefined');
       }
       return { dom: node };
@@ -523,11 +523,11 @@
       fromPoint
     };
 
-    const Global = typeof window !== 'undefined' ? window : Function('return this;')();
+    const Global = typeof window != 'undefined' ? window : Function('return this;')();
 
     const path$1 = (parts, scope) => {
-      let o = scope !== undefined && scope !== null ? scope : Global;
-      for (let i = 0; i < parts.length && o !== undefined && o !== null; ++i) {
+      let o = scope != undefined && scope != null ? scope : Global;
+      for (let i = 0; i < parts.length && o != undefined && o != null; ++i) {
         o = o[parts[i]];
       }
       return o;
@@ -542,7 +542,7 @@
     };
     const getOrDie$1 = (name, scope) => {
       const actual = unsafe(name, scope);
-      if (actual === undefined || actual === null) {
+      if (actual == undefined || actual == null) {
         throw new Error(name + ' not available on this browser');
       }
       return actual;
@@ -567,48 +567,48 @@
       return r.toLowerCase();
     };
     const type$1 = element => element.dom.nodeType;
-    const isType = t => element => type$1(element) === t;
+    const isType = t => element => type$1(element) == t;
     const isHTMLElement = element => isElement$1(element) && isPrototypeOf(element.dom);
     const isElement$1 = isType(ELEMENT);
     const isText = isType(TEXT);
     const isDocument = isType(DOCUMENT);
     const isDocumentFragment = isType(DOCUMENT_FRAGMENT);
-    const isTag = tag => e => isElement$1(e) && name$3(e) === tag;
+    const isTag = tag => e => isElement$1(e) && name$3(e) == tag;
 
     const is = (element, selector) => {
       const dom = element.dom;
-      if (dom.nodeType !== ELEMENT) {
+      if (dom.nodeType != ELEMENT) {
         return false;
       } else {
         const elem = dom;
-        if (elem.matches !== undefined) {
+        if (elem.matches != undefined) {
           return elem.matches(selector);
-        } else if (elem.msMatchesSelector !== undefined) {
+        } else if (elem.msMatchesSelector != undefined) {
           return elem.msMatchesSelector(selector);
-        } else if (elem.webkitMatchesSelector !== undefined) {
+        } else if (elem.webkitMatchesSelector != undefined) {
           return elem.webkitMatchesSelector(selector);
-        } else if (elem.mozMatchesSelector !== undefined) {
+        } else if (elem.mozMatchesSelector != undefined) {
           return elem.mozMatchesSelector(selector);
         } else {
           throw new Error('Browser lacks native selectors');
         }
       }
     };
-    const bypassSelector = dom => dom.nodeType !== ELEMENT && dom.nodeType !== DOCUMENT && dom.nodeType !== DOCUMENT_FRAGMENT || dom.childElementCount === 0;
+    const bypassSelector = dom => dom.nodeType != ELEMENT && dom.nodeType != DOCUMENT && dom.nodeType != DOCUMENT_FRAGMENT || dom.childElementCount == 0;
     const all$3 = (selector, scope) => {
-      const base = scope === undefined ? document : scope.dom;
+      const base = scope == undefined ? document : scope.dom;
       return bypassSelector(base) ? [] : map$2(base.querySelectorAll(selector), SugarElement.fromDom);
     };
     const one = (selector, scope) => {
-      const base = scope === undefined ? document : scope.dom;
+      const base = scope == undefined ? document : scope.dom;
       return bypassSelector(base) ? Optional.none() : Optional.from(base.querySelector(selector)).map(SugarElement.fromDom);
     };
 
-    const eq = (e1, e2) => e1.dom === e2.dom;
+    const eq = (e1, e2) => e1.dom == e2.dom;
     const contains = (e1, e2) => {
       const d1 = e1.dom;
       const d2 = e2.dom;
-      return d1 === d2 ? false : d1.contains(d2);
+      return d1 == d2 ? false : d1.contains(d2);
     };
 
     const owner$4 = element => SugarElement.fromDom(element.dom.ownerDocument);
@@ -622,11 +622,11 @@
       const stop = isFunction(isRoot) ? isRoot : never;
       let dom = element.dom;
       const ret = [];
-      while (dom.parentNode !== null && dom.parentNode !== undefined) {
+      while (dom.parentNode != null && dom.parentNode != undefined) {
         const rawParent = dom.parentNode;
         const p = SugarElement.fromDom(rawParent);
         ret.push(p);
-        if (stop(p) === true) {
+        if (stop(p) == true) {
           break;
         } else {
           dom = rawParent;
@@ -680,7 +680,7 @@
 
     const inBody = element => {
       const dom = isText(element) ? element.dom.parentNode : element.dom;
-      if (dom === undefined || dom === null || dom.ownerDocument === null) {
+      if (dom == undefined || dom == null || dom.ownerDocument == null) {
         return false;
       }
       const doc = dom.ownerDocument;
@@ -689,7 +689,7 @@
     const body = () => getBody(SugarElement.fromDom(document));
     const getBody = doc => {
       const b = doc.dom.body;
-      if (b === null || b === undefined) {
+      if (b == null || b == undefined) {
         throw new Error('Body is not available yet');
       }
       return SugarElement.fromDom(b);
@@ -714,7 +714,7 @@
     };
     const get$f = (element, key) => {
       const v = element.dom.getAttribute(key);
-      return v === null ? undefined : v;
+      return v == null ? undefined : v;
     };
     const getOpt = (element, key) => Optional.from(get$f(element, key));
     const has$1 = (element, key) => {
@@ -767,7 +767,7 @@
       const dom = element.dom;
       const styles = window.getComputedStyle(dom);
       const r = styles.getPropertyValue(property);
-      return r === '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
+      return r == '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
     };
     const getUnsafeProperty = (dom, property) => isSupported$1(dom) ? dom.style.getPropertyValue(property) : '';
     const getRaw = (element, property) => {
@@ -813,7 +813,7 @@
       };
       const get = element => {
         const r = getOffset(element);
-        if (r <= 0 || r === null) {
+        if (r <= 0 || r == null) {
           const css = get$e(element, name);
           return parseFloat(css) || 0;
         }
@@ -822,7 +822,7 @@
       const getOuter = get;
       const aggregate = (element, properties) => foldl(properties, (acc, property) => {
         const val = get$e(element, property);
-        const value = val === undefined ? 0 : parseInt(val, 10);
+        const value = val == undefined ? 0 : parseInt(val, 10);
         return isNaN(value) ? acc : acc + value;
       }, 0);
       const max = (element, value, properties) => {
@@ -873,10 +873,10 @@
       return SugarPosition(box.left, box.top);
     };
     const firstDefinedOrZero = (a, b) => {
-      if (a !== undefined) {
+      if (a != undefined) {
         return a;
       } else {
-        return b !== undefined ? b : 0;
+        return b != undefined ? b : 0;
       }
     };
     const absolute$3 = element => {
@@ -884,11 +884,11 @@
       const body = doc.body;
       const win = doc.defaultView;
       const html = doc.documentElement;
-      if (body === element.dom) {
+      if (body == element.dom) {
         return SugarPosition(body.offsetLeft, body.offsetTop);
       }
-      const scrollTop = firstDefinedOrZero(win === null || win === void 0 ? void 0 : win.pageYOffset, html.scrollTop);
-      const scrollLeft = firstDefinedOrZero(win === null || win === void 0 ? void 0 : win.pageXOffset, html.scrollLeft);
+      const scrollTop = firstDefinedOrZero(win == null || win == void 0 ? void 0 : win.pageYOffset, html.scrollTop);
+      const scrollLeft = firstDefinedOrZero(win == null || win == void 0 ? void 0 : win.pageXOffset, html.scrollLeft);
       const clientTop = firstDefinedOrZero(html.clientTop, body.clientTop);
       const clientLeft = firstDefinedOrZero(html.clientLeft, body.clientLeft);
       return viewport$1(element).translate(scrollLeft - clientLeft, scrollTop - clientTop);
@@ -897,7 +897,7 @@
       const dom = element.dom;
       const doc = dom.ownerDocument;
       const body = doc.body;
-      if (body === dom) {
+      if (body == dom) {
         return SugarPosition(body.offsetLeft, body.offsetTop);
       }
       if (!inBody(element)) {
@@ -936,13 +936,13 @@
     };
 
     const DeviceType = (os, browser, userAgent, mediaMatch) => {
-      const isiPad = os.isiOS() && /ipad/i.test(userAgent) === true;
+      const isiPad = os.isiOS() && /ipad/i.test(userAgent) == true;
       const isiPhone = os.isiOS() && !isiPad;
       const isMobile = os.isiOS() || os.isAndroid();
       const isTouch = isMobile || mediaMatch('(pointer:coarse)');
       const isTablet = isiPad || !isiPhone && isMobile && mediaMatch('(min-device-width:768px)');
       const isPhone = isiPhone || isMobile && !isTablet;
-      const iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) === false;
+      const iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) == false;
       const isDesktop = !isPhone && !isTablet && !iOSwebview;
       return {
         isiPad: constant$1(isiPad),
@@ -981,7 +981,7 @@
     };
     const detect$5 = (versionRegexes, agent) => {
       const cleanedAgent = String(agent).toLowerCase();
-      if (versionRegexes.length === 0) {
+      if (versionRegexes.length == 0) {
         return unknown$3();
       }
       return find$3(versionRegexes, cleanedAgent);
@@ -1006,7 +1006,7 @@
         const lcBrand = uaBrand.brand.toLowerCase();
         return find$5(browsers, browser => {
           var _a;
-          return lcBrand === ((_a = browser.brand) === null || _a === void 0 ? void 0 : _a.toLowerCase());
+          return lcBrand == ((_a = browser.brand) == null || _a == void 0 ? void 0 : _a.toLowerCase());
         }).map(info => ({
           current: info.name,
           version: Version.nu(parseInt(uaBrand.version, 10), 0)
@@ -1166,7 +1166,7 @@
     const nu$c = info => {
       const current = info.current;
       const version = info.version;
-      const isBrowser = name => () => current === name;
+      const isBrowser = name => () => current == name;
       return {
         current,
         version,
@@ -1206,7 +1206,7 @@
     const nu$b = info => {
       const current = info.current;
       const version = info.version;
-      const isOS = name => () => current === name;
+      const isOS = name => () => current == name;
       return {
         current,
         version,
@@ -1333,19 +1333,19 @@
     };
     const remove$5 = element => {
       const dom = element.dom;
-      if (dom.parentNode !== null) {
+      if (dom.parentNode != null) {
         dom.parentNode.removeChild(dom);
       }
     };
 
     const get$b = _DOC => {
-      const doc = _DOC !== undefined ? _DOC.dom : document;
+      const doc = _DOC != undefined ? _DOC.dom : document;
       const x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
       const y = doc.body.scrollTop || doc.documentElement.scrollTop;
       return SugarPosition(x, y);
     };
     const to = (x, y, _DOC) => {
-      const doc = _DOC !== undefined ? _DOC.dom : document;
+      const doc = _DOC != undefined ? _DOC.dom : document;
       const win = doc.defaultView;
       if (win) {
         win.scrollTo(x, y);
@@ -1353,7 +1353,7 @@
     };
 
     const get$a = _win => {
-      const win = _win === undefined ? window : _win;
+      const win = _win == undefined ? window : _win;
       if (detect$2().browser.isFirefox()) {
         return Optional.none();
       } else {
@@ -1369,7 +1369,7 @@
       bottom: y + height
     });
     const getBounds$3 = _win => {
-      const win = _win === undefined ? window : _win;
+      const win = _win == undefined ? window : _win;
       const doc = win.document;
       const scroll = get$b(SugarElement.fromDom(doc));
       return get$a(win).fold(() => {
@@ -1398,7 +1398,7 @@
 
     const view = doc => {
       var _a;
-      const element = doc.dom === document ? Optional.none() : Optional.from((_a = doc.dom.defaultView) === null || _a === void 0 ? void 0 : _a.frameElement);
+      const element = doc.dom == document ? Optional.none() : Optional.from((_a = doc.dom.defaultView) == null || _a == void 0 ? void 0 : _a.frameElement);
       return element.map(SugarElement.fromDom);
     };
     const owner$3 = element => owner$4(element);
@@ -1538,7 +1538,7 @@
       SimpleResultType[SimpleResultType['Error'] = 0] = 'Error';
       SimpleResultType[SimpleResultType['Value'] = 1] = 'Value';
     }(SimpleResultType || (SimpleResultType = {})));
-    const fold$1 = (res, onError, onValue) => res.stype === SimpleResultType.Error ? onError(res.serror) : onValue(res.svalue);
+    const fold$1 = (res, onError, onValue) => res.stype == SimpleResultType.Error ? onError(res.serror) : onValue(res.svalue);
     const partition$2 = results => {
       const values = [];
       const errors = [];
@@ -1551,7 +1551,7 @@
       };
     };
     const mapError = (res, f) => {
-      if (res.stype === SimpleResultType.Error) {
+      if (res.stype == SimpleResultType.Error) {
         return {
           stype: SimpleResultType.Error,
           serror: f(res.serror)
@@ -1561,7 +1561,7 @@
       }
     };
     const map = (res, f) => {
-      if (res.stype === SimpleResultType.Value) {
+      if (res.stype == SimpleResultType.Value) {
         return {
           stype: SimpleResultType.Value,
           svalue: f(res.svalue)
@@ -1571,14 +1571,14 @@
       }
     };
     const bind$1 = (res, f) => {
-      if (res.stype === SimpleResultType.Value) {
+      if (res.stype == SimpleResultType.Value) {
         return f(res.svalue);
       } else {
         return res;
       }
     };
     const bindError = (res, f) => {
-      if (res.stype === SimpleResultType.Error) {
+      if (res.stype == SimpleResultType.Error) {
         return f(res.serror);
       } else {
         return res;
@@ -1637,7 +1637,7 @@
     };
     const baseMerge = merger => {
       return (...objects) => {
-        if (objects.length === 0) {
+        if (objects.length == 0) {
           throw new Error(`Can't merge zero objects`);
         }
         const ret = {};
@@ -1733,7 +1733,7 @@
     };
     const optionAccess = (obj, key, bundle) => bundle(get$g(obj, key));
     const optionDefaultedAccess = (obj, key, fallback, bundle) => {
-      const opt = get$g(obj, key).map(val => val === true ? fallback(obj) : val);
+      const opt = get$g(obj, key).map(val => val == true ? fallback(obj) : val);
       return bundle(opt);
     };
     const extractField = (field, path, obj, key, prop) => {
@@ -1793,7 +1793,7 @@
       const extract = (path, o) => {
         const keys = isBoolean(o) ? [] : getSetKeys(o);
         const extra = filter$2(keys, k => !hasNonNullableKey(fieldNames, k));
-        return extra.length === 0 ? delegate.extract(path, o) : unsupportedFields(path, extra);
+        return extra.length == 0 ? delegate.extract(path, o) : unsupportedFields(path, extra);
       };
       return {
         extract,
@@ -1823,12 +1823,12 @@
       };
     };
     const oneOf = (props, rawF) => {
-      const f = rawF !== undefined ? rawF : identity;
+      const f = rawF != undefined ? rawF : identity;
       const extract = (path, val) => {
         const errors = [];
         for (const prop of props) {
           const res = prop.extract(path, val);
-          if (res.stype === SimpleResultType.Value) {
+          if (res.stype == SimpleResultType.Value) {
             return {
               stype: SimpleResultType.Value,
               svalue: f(res.svalue)
@@ -1883,7 +1883,7 @@
     const boolean = typedValue(isBoolean, 'boolean');
     const functionProcessor = typedValue(isFunction, 'function');
     const isPostMessageable = val => {
-      if (Object(val) !== val) {
+      if (Object(val) != val) {
         return true;
       }
       switch ({}.toString.call(val).slice(8, -1)) {
@@ -2004,21 +2004,21 @@
       if (!isArray(cases)) {
         throw new Error('cases must be an array');
       }
-      if (cases.length === 0) {
+      if (cases.length == 0) {
         throw new Error('there must be at least one case');
       }
       const constructors = [];
       const adt = {};
       each$1(cases, (acase, count) => {
         const keys$1 = keys(acase);
-        if (keys$1.length !== 1) {
+        if (keys$1.length != 1) {
           throw new Error('one and only one name per case');
         }
         const key = keys$1[0];
         const value = acase[key];
-        if (adt[key] !== undefined) {
+        if (adt[key] != undefined) {
           throw new Error('duplicate key detected:' + key);
-        } else if (key === 'cata') {
+        } else if (key == 'cata') {
           throw new Error('cannot have a case named cata (sorry)');
         } else if (!isArray(value)) {
           throw new Error('case arguments must be an array');
@@ -2026,12 +2026,12 @@
         constructors.push(key);
         adt[key] = (...args) => {
           const argLength = args.length;
-          if (argLength !== value.length) {
+          if (argLength != value.length) {
             throw new Error('Wrong number of arguments to case ' + key + '. Expected ' + value.length + ' (' + value + '), got ' + argLength);
           }
           const match = branches => {
             const branchKeys = keys(branches);
-            if (constructors.length !== branchKeys.length) {
+            if (constructors.length != branchKeys.length) {
               throw new Error('Wrong number of arguments to match. Expected: ' + constructors.join(',') + '\nActual: ' + branchKeys.join(','));
             }
             const allReqd = forall(constructors, reqKey => {
@@ -2044,7 +2044,7 @@
           };
           return {
             fold: (...foldArgs) => {
-              if (foldArgs.length !== cases.length) {
+              if (foldArgs.length != cases.length) {
                 throw new Error('Wrong number of arguments to fold. Expected ' + cases.length + ', got ' + foldArgs.length);
               }
               const target = foldArgs[count];
@@ -2130,7 +2130,7 @@
     const wrap$1 = (key, value) => wrap$2(key, value);
     const wrapAll = keyvalues => wrapAll$1(keyvalues);
     const mergeValues = (values, base) => {
-      return values.length === 0 ? Result.value(base) : Result.value(deepMerge(base, merge$1.apply(undefined, values)));
+      return values.length == 0 ? Result.value(base) : Result.value(deepMerge(base, merge$1.apply(undefined, values)));
     };
     const mergeErrors = errors => Result.error(flatten(errors));
     const consolidate = (objs, base) => {
@@ -2625,10 +2625,10 @@
           const bKey = b[keyName];
           const aIndex = order.indexOf(aKey);
           const bIndex = order.indexOf(bKey);
-          if (aIndex === -1) {
+          if (aIndex == -1) {
             throw new Error('The ordering for ' + label + ' does not have an entry for ' + aKey + '.\nOrder specified: ' + JSON.stringify(order, null, 2));
           }
-          if (bIndex === -1) {
+          if (bIndex == -1) {
             throw new Error('The ordering for ' + label + ' does not have an entry for ' + bKey + '.\nOrder specified: ' + JSON.stringify(order, null, 2));
           }
           if (aIndex < bIndex) {
@@ -2706,10 +2706,10 @@
     };
     const combineGroups = (byEventName, eventOrder) => {
       const r = mapToArray(byEventName, (tuples, eventName) => {
-        const combined = tuples.length === 1 ? Result.value(tuples[0].handler) : fuse(tuples, eventOrder, eventName);
+        const combined = tuples.length == 1 ? Result.value(tuples[0].handler) : fuse(tuples, eventOrder, eventName);
         return combined.map(handler => {
           const assembled = assemble(handler);
-          const purpose = tuples.length > 1 ? filter$2(eventOrder[eventName], o => exists(tuples, t => t.name === o)).join(' > ') : tuples[0].name;
+          const purpose = tuples.length > 1 ? filter$2(eventOrder[eventName], o => exists(tuples, t => t.name == o)).join(' > ') : tuples[0].name;
           return wrap$1(eventName, uncurried(assembled, purpose));
         });
       });
@@ -2793,7 +2793,7 @@
 
     const read = (element, attr) => {
       const value = get$f(element, attr);
-      return value === undefined || value === '' ? [] : value.split(' ');
+      return value == undefined || value == '' ? [] : value.split(' ');
     };
     const add$4 = (element, attr, id) => {
       const old = read(element, attr);
@@ -2802,7 +2802,7 @@
       return true;
     };
     const remove$4 = (element, attr, id) => {
-      const nu = filter$2(read(element, attr), v => v !== id);
+      const nu = filter$2(read(element, attr), v => v != id);
       if (nu.length > 0) {
         set$9(element, attr, nu.join(' '));
       } else {
@@ -2811,7 +2811,7 @@
       return false;
     };
 
-    const supports = element => element.dom.classList !== undefined;
+    const supports = element => element.dom.classList != undefined;
     const get$8 = element => read(element, 'class');
     const add$3 = (element, clazz) => add$4(element, 'class', clazz);
     const remove$3 = (element, clazz) => remove$4(element, 'class', clazz);
@@ -2832,7 +2832,7 @@
     };
     const cleanClass = element => {
       const classList = supports(element) ? element.dom.classList : get$8(element);
-      if (classList.length === 0) {
+      if (classList.length == 0) {
         remove$7(element, 'class');
       }
     };
@@ -2873,7 +2873,7 @@
       const r = new Array(classList.length);
       for (let i = 0; i < classList.length; i++) {
         const item = classList.item(i);
-        if (item !== null) {
+        if (item != null) {
           r[i] = item;
         }
       }
@@ -2883,7 +2883,7 @@
 
     const get$6 = element => element.dom.value;
     const set$5 = (element, value) => {
-      if (value === undefined) {
+      if (value == undefined) {
         throw new Error('Value.set was undefined');
       }
       element.dom.value = value;
@@ -2936,7 +2936,7 @@
       const oldKeys = keys(oldObj);
       const toRemove = difference(oldKeys, newKeys);
       const toSet = bifilter(newObj, (v, k) => {
-        return !has$2(oldObj, k) || v !== oldObj[k];
+        return !has$2(oldObj, k) || v != oldObj[k];
       }).t;
       return {
         toRemove,
@@ -2983,8 +2983,8 @@
       const updateValue = () => {
         const valueElement = obsoleted;
         const value = definition.value.getOrUndefined();
-        if (value !== get$6(valueElement)) {
-          set$5(valueElement, value !== null && value !== void 0 ? value : '');
+        if (value != get$6(valueElement)) {
+          set$5(valueElement, value != null && value != void 0 ? value : '');
         }
       };
       updateAttrs();
@@ -3018,7 +3018,7 @@
     };
     const hasMixedChildren = definition => definition.innerHtml.isSome() && definition.domChildren.length > 0;
     const renderToDom = (definition, optObsoleted) => {
-      const canBePatched = candidate => name$3(candidate) === definition.tag && !hasMixedChildren(definition) && !isPremade(candidate);
+      const canBePatched = candidate => name$3(candidate) == definition.tag && !hasMixedChildren(definition) && !isPremade(candidate);
       const elem = optObsoleted.filter(canBePatched).bind(obsoleted => attemptPatch(definition, obsoleted)).getOrThunk(() => introduceToDom(definition));
       writeOnly(elem, definition.uid);
       return elem;
@@ -3234,7 +3234,7 @@
           return false;
         }
         const id = get$f(elem, 'id');
-        return id !== undefined && id.indexOf(attribute) > -1;
+        return id != undefined && id.indexOf(attribute) > -1;
       });
       return dependent.bind(dep => {
         const id = get$f(dep, 'id');
@@ -3359,7 +3359,7 @@
     ];
     const getTrace = () => {
       const err = new Error();
-      if (err.stack !== undefined) {
+      if (err.stack != undefined) {
         const lines = err.stack.split('\n');
         return find$5(lines, line => line.indexOf('alloy') > 0 && !exists(path, p => line.indexOf(p) > -1)).getOr(unknown);
       } else {
@@ -3474,9 +3474,9 @@
     ], dir => get$g(restrictions, dir).map(restriction => getRestriction(anchor, restriction)));
     const adjustBounds = (bounds$1, restriction, bubbleOffset) => {
       const applyRestriction = (dir, current) => restriction[dir].map(pos => {
-        const isVerticalAxis = dir === 'top' || dir === 'bottom';
+        const isVerticalAxis = dir == 'top' || dir == 'bottom';
         const offset = isVerticalAxis ? bubbleOffset.top : bubbleOffset.left;
-        const comparator = dir === 'left' || dir === 'top' ? Math.max : Math.min;
+        const comparator = dir == 'left' || dir == 'top' ? Math.max : Math.min;
         const newPos = comparator(pos, current) + offset;
         return isVerticalAxis ? clamp(newPos, bounds$1.y, bounds$1.bottom) : clamp(newPos, bounds$1.x, bounds$1.right);
       }).getOr(current);
@@ -3715,7 +3715,7 @@
     const blur$1 = element => element.dom.blur();
     const hasFocus = element => {
       const root = getRootNode(element).dom;
-      return element.dom === root.activeElement;
+      return element.dom == root.activeElement;
     };
     const active$1 = (root = getDocument()) => Optional.from(root.dom.activeElement).map(SugarElement.fromDom);
     const search = element => active$1(getRootNode(element)).filter(e => element.dom.contains(e.dom));
@@ -3931,7 +3931,7 @@
         const next = layout(anchorBox, elementBox, bubbles, element, bounds);
         const attemptLayout = attempt(next, panelWidth, panelHeight, bounds);
         return attemptLayout.fold(constant$1(attemptLayout), (newReposition, newVisibleW, newVisibleH, newIsVisible) => {
-          const improved = isVisible === newIsVisible ? newVisibleH > visibleH || newVisibleW > visibleW : !isVisible && newIsVisible;
+          const improved = isVisible == newIsVisible ? newVisibleH > visibleH || newVisibleW > visibleW : !isVisible && newIsVisible;
           return improved ? attemptLayout : adt$8.nofit(reposition, visibleW, visibleH, isVisible);
         });
       };
@@ -4001,7 +4001,7 @@
     const shouldApplyTransitionCss = (transition, decision, lastPlacement) => {
       return lastPlacement.exists(placer => {
         const mode = transition.mode;
-        return mode === 'all' ? true : placer[mode] !== decision[mode];
+        return mode == 'all' ? true : placer[mode] != decision[mode];
       });
     };
     const hasChanges = (position, intermediate) => {
@@ -4039,15 +4039,15 @@
       let timer;
       const isSourceTransition = e => {
         var _a;
-        const pseudoElement = (_a = e.raw.pseudoElement) !== null && _a !== void 0 ? _a : '';
+        const pseudoElement = (_a = e.raw.pseudoElement) != null && _a != void 0 ? _a : '';
         return eq(e.target, element) && isEmpty(pseudoElement) && contains$2(properties, e.raw.propertyName);
       };
       const transitionDone = e => {
         if (isNullable(e) || isSourceTransition(e)) {
           transitionEnd.clear();
           transitionCancel.clear();
-          const type = e === null || e === void 0 ? void 0 : e.raw.type;
-          if (isNullable(type) || type === transitionend()) {
+          const type = e == null || e == void 0 ? void 0 : e.raw.type;
+          if (isNullable(type) || type == transitionend()) {
             clearTimeout(timer);
             remove$7(element, timerAttr);
             remove$1(element, transition.classes);
@@ -4145,7 +4145,7 @@
       setMaxHeight(element, available);
     });
 
-    const defaultOr = (options, key, dephault) => options[key] === undefined ? dephault : options[key];
+    const defaultOr = (options, key, dephault) => options[key] == undefined ? dephault : options[key];
     const simple = (anchor, element, bubble, layouts, lastPlacement, optBounds, overrideOptions, transition) => {
       const maxHeightFunction = defaultOr(overrideOptions, 'maxHeightFunction', anchored());
       const maxWidthFunction = defaultOr(overrideOptions, 'maxWidthFunction', noop);
@@ -4277,8 +4277,8 @@
 
     const nu$4 = identity;
 
-    const onDirection = (isLtr, isRtl) => element => getDirection(element) === 'rtl' ? isRtl : isLtr;
-    const getDirection = element => get$e(element, 'direction') === 'rtl' ? 'rtl' : 'ltr';
+    const onDirection = (isLtr, isRtl) => element => getDirection(element) == 'rtl' ? isRtl : isLtr;
+    const getDirection = element => get$e(element, 'direction') == 'rtl' ? 'rtl' : 'ltr';
 
     var AttributeValue;
     (function (AttributeValue) {
@@ -4286,7 +4286,7 @@
       AttributeValue['BottomToTop'] = 'bottomtotop';
     }(AttributeValue || (AttributeValue = {})));
     const Attribute = 'data-alloy-vertical-dir';
-    const isBottomToTopDir = el => closest$2(el, current => isElement$1(current) && get$f(current, 'data-alloy-vertical-dir') === AttributeValue.BottomToTop);
+    const isBottomToTopDir = el => closest$2(el, current => isElement$1(current) && get$f(current, 'data-alloy-vertical-dir') == AttributeValue.BottomToTop);
 
     const schema$y = () => optionObjOf('layouts', [
       required$1('onLtr'),
@@ -4590,7 +4590,7 @@
     const doDiagnose = (win, ranges) => {
       const rng = ranges.ltr();
       if (rng.collapsed) {
-        const reversed = ranges.rtl().filter(rev => rev.collapsed === false);
+        const reversed = ranges.rtl().filter(rev => rev.collapsed == false);
         return reversed.map(rev => adt$4.rtl(SugarElement.fromDom(rev.endContainer), rev.endOffset, SugarElement.fromDom(rev.startContainer), rev.startOffset)).getOrThunk(() => fromRange(win, adt$4.ltr, rng));
       } else {
         return fromRange(win, adt$4.ltr, rng);
@@ -4633,7 +4633,7 @@
     };
     const after = (start, soffset, finish, foffset) => {
       const r = makeRange(start, soffset, finish, foffset);
-      const same = eq(start, finish) && soffset === foffset;
+      const same = eq(start, finish) && soffset == foffset;
       return r.collapsed && !same;
     };
 
@@ -4648,7 +4648,7 @@
       }
     };
     const doGetExact = selection => {
-      if (selection.anchorNode === null || selection.focusNode === null) {
+      if (selection.anchorNode == null || selection.focusNode == null) {
         return readRange(selection);
       } else {
         const anchor = SugarElement.fromDom(selection.anchorNode);
@@ -4696,7 +4696,7 @@
     });
     const descendOnce$1 = (element, offset) => {
       const children$1 = children(element);
-      if (children$1.length === 0) {
+      if (children$1.length == 0) {
         return point(element, offset);
       } else if (offset < children$1.length) {
         return point(children$1[offset], 0);
@@ -4708,7 +4708,7 @@
     };
 
     const descendOnce = (element, offset) => isText(element) ? point(element, offset) : descendOnce$1(element, offset);
-    const isSimRange = detail => detail.foffset !== undefined;
+    const isSimRange = detail => detail.foffset != undefined;
     const getAnchorSelection = (win, anchorInfo) => {
       const getSelection = anchorInfo.getSelection.getOrThunk(() => () => getExact(win));
       return getSelection().map(sel => {
@@ -5269,7 +5269,7 @@
         mode: 'memory',
         value: data.get()
       });
-      const isNotSet = () => data.get() === null;
+      const isNotSet = () => data.get() == null;
       const clear = () => {
         data.set(null);
       };
@@ -5473,7 +5473,7 @@
     ]);
     const isSubstituted = spec => has$2(spec, 'uiType');
     const subPlaceholder = (owner, detail, compSpec, placeholders) => {
-      if (owner.exists(o => o !== compSpec.owner)) {
+      if (owner.exists(o => o != compSpec.owner)) {
         return adt$3.single(true, constant$1(compSpec));
       }
       return get$g(placeholders, compSpec.name).fold(() => {
@@ -5481,7 +5481,7 @@
       }, newSpec => newSpec.replace());
     };
     const scan = (owner, detail, compSpec, placeholders) => {
-      if (isSubstituted(compSpec) && compSpec.uiType === _placeholder) {
+      if (isSubstituted(compSpec) && compSpec.uiType == _placeholder) {
         return subPlaceholder(owner, detail, compSpec, placeholders);
       } else {
         return adt$3.single(false, constant$1(compSpec));
@@ -5530,7 +5530,7 @@
       const ps = map$1(placeholders, (ph, name) => oneReplace(name, ph));
       const outcome = substituteAll(owner, detail, components, ps);
       each(ps, p => {
-        if (p.used() === false && p.required()) {
+        if (p.used() == false && p.required()) {
           throw new Error('Placeholder: ' + p.name() + ' was not found in components list\nNamespace: ' + owner.getOr('none') + '\nComponents: ' + JSON.stringify(detail.components, null, 2));
         }
       });
@@ -5768,7 +5768,7 @@
     };
 
     const isSketchSpec = spec => {
-      return spec.uid !== undefined;
+      return spec.uid != undefined;
     };
     const singleSchema = objOfOnly([
       required$1('name'),
@@ -5815,7 +5815,7 @@
       };
     };
 
-    const inside = target => isTag('input')(target) && get$f(target, 'type') !== 'radio' || isTag('textarea')(target);
+    const inside = target => isTag('input')(target) && get$f(target, 'type') != 'radio' || isTag('textarea')(target);
 
     const getCurrent = (component, composeConfig, _composeState) => composeConfig.find(component);
 
@@ -5842,7 +5842,7 @@
       const f = disableConfig.disabled() ? disable : enable;
       f(component, disableConfig);
     };
-    const hasNative = (component, config) => config.useNative === true && contains$2(nativeDisabled, name$3(component.element));
+    const hasNative = (component, config) => config.useNative == true && contains$2(nativeDisabled, name$3(component.element));
     const nativeIsDisabled = component => has$1(component.element, 'disabled');
     const nativeDisable = component => {
       set$9(component.element, 'disabled', 'disabled');
@@ -5850,7 +5850,7 @@
     const nativeEnable = component => {
       remove$7(component.element, 'disabled');
     };
-    const ariaIsDisabled = component => get$f(component.element, 'aria-disabled') === 'true';
+    const ariaIsDisabled = component => get$f(component.element, 'aria-disabled') == 'true';
     const ariaDisable = component => {
       set$9(component.element, 'aria-disabled', 'true');
     };
@@ -6062,11 +6062,11 @@
     const and = preds => event => forall(preds, pred => pred(event));
     const isShift$1 = event => {
       const raw = event.raw;
-      return raw.shiftKey === true;
+      return raw.shiftKey == true;
     };
     const isControl = event => {
       const raw = event.raw;
-      return raw.ctrlKey === true;
+      return raw.ctrlKey == true;
     };
     const isNotShift = not(isShift$1);
 
@@ -6141,13 +6141,13 @@
         return choose(rules, simulatedEvent.event).bind(rule => rule(component, simulatedEvent, keyingConfig, keyingState));
       };
       const toEvents = (keyingConfig, keyingState) => {
-        const onFocusHandler = keyingConfig.focusInside !== FocusInsideModes.OnFocusMode ? Optional.none() : optFocusIn(keyingConfig).map(focusIn => run$1(focus$4(), (component, simulatedEvent) => {
+        const onFocusHandler = keyingConfig.focusInside != FocusInsideModes.OnFocusMode ? Optional.none() : optFocusIn(keyingConfig).map(focusIn => run$1(focus$4(), (component, simulatedEvent) => {
           focusIn(component, keyingConfig, keyingState);
           simulatedEvent.stop();
         }));
         const tryGoInsideComponent = (component, simulatedEvent) => {
           const isEnterOrSpace = inSet(SPACE.concat(ENTER))(simulatedEvent.event);
-          if (keyingConfig.focusInside === FocusInsideModes.OnEnterOrSpaceMode && isEnterOrSpace && isSource(component, simulatedEvent)) {
+          if (keyingConfig.focusInside == FocusInsideModes.OnEnterOrSpaceMode && isEnterOrSpace && isSource(component, simulatedEvent)) {
             optFocusIn(keyingConfig).each(focusIn => {
               focusIn(component, keyingConfig, keyingState);
               simulatedEvent.stop();
@@ -6359,7 +6359,7 @@
       });
     };
     const cycleHorizontal$1 = (values, index, numRows, numCols, delta) => withGrid(values, index, numCols, (oldRow, oldColumn) => {
-      const onLastRow = oldRow === numRows - 1;
+      const onLastRow = oldRow == numRows - 1;
       const colsInRow = onLastRow ? values.length - oldRow * numCols : numCols;
       const newColumn = cycleBy(oldColumn, delta, 0, colsInRow - 1);
       return Optional.some({
@@ -6369,7 +6369,7 @@
     });
     const cycleVertical$1 = (values, index, numRows, numCols, delta) => withGrid(values, index, numCols, (oldRow, oldColumn) => {
       const newRow = cycleBy(oldRow, delta, 0, numRows - 1);
-      const onLastRow = newRow === numRows - 1;
+      const onLastRow = newRow == numRows - 1;
       const colsInRow = onLastRow ? values.length - newRow * numCols : numCols;
       const newCol = clamp(oldColumn, 0, colsInRow - 1);
       return Optional.some({
@@ -6425,7 +6425,7 @@
     var FlatgridType = typical(schema$u, flatgrid$1, getKeydownRules$4, getKeyupRules$4, () => Optional.some(focusIn$3));
 
     const f = (container, selector, current, delta, getNewIndex) => {
-      const isDisabledButton = candidate => name$3(candidate) === 'button' && get$f(candidate, 'disabled') === 'disabled';
+      const isDisabledButton = candidate => name$3(candidate) == 'button' && get$f(candidate, 'disabled') == 'disabled';
       const tryNewIndex = (initial, index, candidates) => getNewIndex(initial, index, delta, 0, candidates.length - 1, candidates[index], newIndex => isDisabledButton(candidates[newIndex]) ? tryNewIndex(initial, newIndex, candidates) : Optional.from(candidates[newIndex]));
       return locateVisible(container, current, selector).bind(identified => {
         const index = identified.index;
@@ -6435,11 +6435,11 @@
     };
     const horizontalWithoutCycles = (container, selector, current, delta) => f(container, selector, current, delta, (prevIndex, v, d, min, max, oldCandidate, onNewIndex) => {
       const newIndex = clamp(v + d, min, max);
-      return newIndex === prevIndex ? Optional.from(oldCandidate) : onNewIndex(newIndex);
+      return newIndex == prevIndex ? Optional.from(oldCandidate) : onNewIndex(newIndex);
     });
     const horizontal = (container, selector, current, delta) => f(container, selector, current, delta, (prevIndex, v, d, min, max, _oldCandidate, onNewIndex) => {
       const newIndex = cycleBy(v, d, min, max);
-      return newIndex === prevIndex ? Optional.none() : onNewIndex(newIndex);
+      return newIndex == prevIndex ? Optional.none() : onNewIndex(newIndex);
     });
 
     const schema$t = [
@@ -6873,7 +6873,7 @@
       toggleState.set(state);
       updateClass(component, toggleConfig, toggleState);
       updateAriaState(component, toggleConfig, toggleState);
-      if (initialState !== state) {
+      if (initialState != state) {
         toggleConfig.onToggled(component, state);
       }
     };
@@ -7008,7 +7008,7 @@
     const getItemRole = detail => detail.toggling.map(toggling => toggling.exclusive ? 'menuitemradio' : 'menuitemcheckbox').getOr('menuitem');
     const getTogglingSpec = tConfig => ({
       aria: { mode: 'checked' },
-      ...filter$1(tConfig, (_value, name) => name !== 'exclusive'),
+      ...filter$1(tConfig, (_value, name) => name != 'exclusive'),
       onToggled: (component, state) => {
         if (isFunction(tConfig.onToggled)) {
           tConfig.onToggled(component, state);
@@ -7324,7 +7324,7 @@
         }),
         run$1(toggled(), (menu, simulatedEvent) => {
           const {item, state} = simulatedEvent.event;
-          if (state && get$f(item.element, 'role') === 'menuitemradio') {
+          if (state && get$f(item.element, 'role') == 'menuitemradio') {
             deselectOtherRadioItems(menu, item);
           }
         })
@@ -7392,7 +7392,7 @@
         const sPaths = generate$2(dir, sExpansions);
         paths.set(sPaths);
       };
-      const getTriggeringItem = menuValue => find$4(expansions.get(), (v, _k) => v === menuValue);
+      const getTriggeringItem = menuValue => find$4(expansions.get(), (v, _k) => v == menuValue);
       const getTriggerData = (menuValue, getItemByValue, path) => getPreparedMenu(menuValue).bind(menu => getTriggeringItem(menuValue).bind(triggeringItemValue => getItemByValue(triggeringItemValue).map(triggeredItem => ({
         triggeredMenu: menu,
         triggeringItem: triggeredItem,
@@ -7437,7 +7437,7 @@
         getTriggeringPath
       };
     };
-    const extractPreparedMenu = prep => prep.type === 'prepared' ? Optional.some(prep.menu) : Optional.none();
+    const extractPreparedMenu = prep => prep.type == 'prepared' ? Optional.some(prep.menu) : Optional.none();
     const LayeredState = {
       init: init$c,
       extractPreparedMenu
@@ -7477,7 +7477,7 @@
           },
           focusManager: detail.fakeFocus ? highlights() : dom$2()
         });
-        return name === primaryName ? {
+        return name == primaryName ? {
           type: 'prepared',
           menu: container.getSystem().build(makeSketch())
         } : {
@@ -7498,9 +7498,9 @@
           return Optional.none();
         }
         const candidates = Highlighting.getCandidates(menu);
-        return find$5(candidates, c => getItemValue(c) === itemValue);
+        return find$5(candidates, c => getItemValue(c) == itemValue);
       });
-      const toDirectory = _container => map$1(detail.data.menus, (data, _menuName) => bind$3(data.items, item => item.type === 'separator' ? [] : [item.data.value]));
+      const toDirectory = _container => map$1(detail.data.menus, (data, _menuName) => bind$3(data.items, item => item.type == 'separator' ? [] : [item.data.value]));
       const setActiveMenu = Highlighting.highlight;
       const setActiveMenuAndItem = (container, menu) => {
         setActiveMenu(container, menu);
@@ -7512,7 +7512,7 @@
           }
         });
       };
-      const getMenus = (state, menuValues) => cat(map$2(menuValues, mv => state.lookupMenu(mv).bind(prep => prep.type === 'prepared' ? Optional.some(prep.menu) : Optional.none())));
+      const getMenus = (state, menuValues) => cat(map$2(menuValues, mv => state.lookupMenu(mv).bind(prep => prep.type == 'prepared' ? Optional.some(prep.menu) : Optional.none())));
       const closeOthers = (container, state, path) => {
         const others = getMenus(state, state.otherMenus(path));
         each$1(others, o => {
@@ -7525,7 +7525,7 @@
       const getSubmenuParents = container => submenuParentItems.get().getOrThunk(() => {
         const r = {};
         const items = descendants(container.element, `.${ detail.markers.item }`);
-        const parentItems = filter$2(items, i => get$f(i, 'aria-haspopup') === 'true');
+        const parentItems = filter$2(items, i => get$f(i, 'aria-haspopup') == 'true');
         each$1(parentItems, i => {
           container.getSystem().getByDom(i).each(itemComp => {
             const key = getItemValue(itemComp);
@@ -7543,7 +7543,7 @@
         });
       };
       const updateMenuPath = (container, state, path) => Optional.from(path[0]).bind(latestMenuName => state.lookupMenu(latestMenuName).bind(menuPrep => {
-        if (menuPrep.type === 'notbuilt') {
+        if (menuPrep.type == 'notbuilt') {
           return Optional.none();
         } else {
           const activeMenu = menuPrep.menu;
@@ -7566,7 +7566,7 @@
         ExpandHighlightDecision[ExpandHighlightDecision['HighlightParent'] = 1] = 'HighlightParent';
       }(ExpandHighlightDecision || (ExpandHighlightDecision = {})));
       const buildIfRequired = (container, menuName, menuPrep) => {
-        if (menuPrep.type === 'notbuilt') {
+        if (menuPrep.type == 'notbuilt') {
           const menu = container.getSystem().build(menuPrep.nbMenu());
           layeredState.setMenuBuilt(menuName, menu);
           return menu;
@@ -7587,7 +7587,7 @@
                 Replacing.append(container, premade(activeMenu));
               }
               detail.onOpenSubmenu(container, item, activeMenu, reverse(path));
-              if (decision === ExpandHighlightDecision.HighlightSubmenu) {
+              if (decision == ExpandHighlightDecision.HighlightSubmenu) {
                 Highlighting.highlightFirst(activeMenu);
                 return updateMenuPath(container, layeredState, path);
               } else {
@@ -7635,7 +7635,7 @@
           const target = simulatedEvent.event.target;
           component.getSystem().getByDom(target).each(item => {
             const itemValue = getItemValue(item);
-            if (itemValue.indexOf('collapse-item') === 0) {
+            if (itemValue.indexOf('collapse-item') == 0) {
               collapseLeft(component, item);
             }
             expandRight(component, item, ExpandHighlightDecision.HighlightSubmenu).fold(() => {
@@ -7647,9 +7647,9 @@
           setup(container).each(primary => {
             Replacing.append(container, premade(primary));
             detail.onOpenMenu(container, primary);
-            if (detail.highlightOnOpen === HighlightOnOpen.HighlightMenuAndItem) {
+            if (detail.highlightOnOpen == HighlightOnOpen.HighlightMenuAndItem) {
               setActiveMenuAndItem(container, primary);
-            } else if (detail.highlightOnOpen === HighlightOnOpen.HighlightJustMenu) {
+            } else if (detail.highlightOnOpen == HighlightOnOpen.HighlightJustMenu) {
               setActiveMenu(container, primary);
             }
           });
@@ -7678,7 +7678,7 @@
           setActiveMenuAndItem(container, primary);
         });
       };
-      const extractMenuFromContainer = container => Optional.from(container.components()[0]).filter(comp => get$f(comp.element, 'role') === 'menu');
+      const extractMenuFromContainer = container => Optional.from(container.components()[0]).filter(comp => get$f(comp.element, 'role') == 'menu');
       const repositionMenus = container => {
         const maybeActivePrimary = layeredState.getPrimary().bind(primary => getActiveItem(container).bind(currentItem => {
           const itemValue = getItemValue(currentItem);
@@ -7802,13 +7802,13 @@
 
     const makeMenu = (detail, menuSandbox, placementSpec, menuSpec, getBounds) => {
       const lazySink = () => detail.lazySink(menuSandbox);
-      const layouts = menuSpec.type === 'horizontal' ? {
+      const layouts = menuSpec.type == 'horizontal' ? {
         layouts: {
           onLtr: () => belowOrAbove(),
           onRtl: () => belowOrAboveRtl()
         }
       } : {};
-      const isFirstTierSubmenu = triggeringPaths => triggeringPaths.length === 2;
+      const isFirstTierSubmenu = triggeringPaths => triggeringPaths.length == 2;
       const getSubmenuLayouts = triggeringPaths => isFirstTierSubmenu(triggeringPaths) ? layouts : {};
       return tieredMenu.sketch({
         dom: { tag: 'div' },
@@ -8012,7 +8012,7 @@
       const tag = detail.dom.tag;
       const lookupAttr = attr => get$g(detail.dom, 'attributes').bind(attrs => get$g(attrs, attr));
       const getModAttributes = () => {
-        if (tag === 'button') {
+        if (tag == 'button') {
           const type = lookupAttr('type').getOr('button');
           const roleAttrs = lookupAttr('role').map(role => ({ role })).getOr({});
           return {
@@ -8059,9 +8059,9 @@
     });
 
     const getAttrs = elem => {
-      const attributes = elem.dom.attributes !== undefined ? elem.dom.attributes : [];
+      const attributes = elem.dom.attributes != undefined ? elem.dom.attributes : [];
       return foldl(attributes, (b, attr) => {
-        if (attr.name === 'class') {
+        if (attr.name == 'class') {
           return b;
         } else {
           return {
@@ -8077,7 +8077,7 @@
       const children$1 = children(elem);
       const attrs = getAttrs(elem);
       const classes = getClasses(elem);
-      const contents = children$1.length === 0 ? {} : { innerHtml: get$9(elem) };
+      const contents = children$1.length == 0 ? {} : { innerHtml: get$9(elem) };
       return {
         tag: name$3(elem),
         classes,
@@ -8103,7 +8103,7 @@
 
     const {entries, setPrototypeOf, isFrozen, getPrototypeOf, getOwnPropertyDescriptor} = Object;
     let {freeze, seal, create: create$1} = Object;
-    let {apply, construct} = typeof Reflect !== 'undefined' && Reflect;
+    let {apply, construct} = typeof Reflect != 'undefined' && Reflect;
     if (!apply) {
       apply = function apply(fun, thisValue, args) {
         return fun.apply(thisValue, args);
@@ -8153,16 +8153,16 @@
     }
     function addToSet(set, array, transformCaseFunc) {
       var _transformCaseFunc;
-      transformCaseFunc = (_transformCaseFunc = transformCaseFunc) !== null && _transformCaseFunc !== void 0 ? _transformCaseFunc : stringToLowerCase;
+      transformCaseFunc = (_transformCaseFunc = transformCaseFunc) != null && _transformCaseFunc != void 0 ? _transformCaseFunc : stringToLowerCase;
       if (setPrototypeOf) {
         setPrototypeOf(set, null);
       }
       let l = array.length;
       while (l--) {
         let element = array[l];
-        if (typeof element === 'string') {
+        if (typeof element == 'string') {
           const lcElement = transformCaseFunc(element);
-          if (lcElement !== element) {
+          if (lcElement != element) {
             if (!isFrozen(array)) {
               array[l] = lcElement;
             }
@@ -8181,13 +8181,13 @@
       return newObject;
     }
     function lookupGetter(object, prop) {
-      while (object !== null) {
+      while (object != null) {
         const desc = getOwnPropertyDescriptor(object, prop);
         if (desc) {
           if (desc.get) {
             return unapply(desc.get);
           }
-          if (typeof desc.value === 'function') {
+          if (typeof desc.value == 'function') {
             return unapply(desc.value);
           }
         }
@@ -8842,9 +8842,9 @@
       ATTR_WHITESPACE: ATTR_WHITESPACE,
       DOCTYPE_NAME: DOCTYPE_NAME
     });
-    const getGlobal = () => typeof window === 'undefined' ? null : window;
+    const getGlobal = () => typeof window == 'undefined' ? null : window;
     const _createTrustedTypesPolicy = function _createTrustedTypesPolicy(trustedTypes, purifyHostElement) {
-      if (typeof trustedTypes !== 'object' || typeof trustedTypes.createPolicy !== 'function') {
+      if (typeof trustedTypes != 'object' || typeof trustedTypes.createPolicy != 'function') {
         return null;
       }
       let suffix = null;
@@ -8868,11 +8868,11 @@
       }
     };
     function createDOMPurify() {
-      let window = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getGlobal();
+      let window = arguments.length > 0 && arguments[0] != undefined ? arguments[0] : getGlobal();
       const DOMPurify = root => createDOMPurify(root);
       DOMPurify.version = '3.0.5';
       DOMPurify.removed = [];
-      if (!window || !window.document || window.document.nodeType !== 9) {
+      if (!window || !window.document || window.document.nodeType != 9) {
         DOMPurify.isSupported = false;
         return DOMPurify;
       }
@@ -8885,7 +8885,7 @@
       const getNextSibling = lookupGetter(ElementPrototype, 'nextSibling');
       const getChildNodes = lookupGetter(ElementPrototype, 'childNodes');
       const getParentNode = lookupGetter(ElementPrototype, 'parentNode');
-      if (typeof HTMLTemplateElement === 'function') {
+      if (typeof HTMLTemplateElement == 'function') {
         const template = document.createElement('template');
         if (template.content && template.content.ownerDocument) {
           document = template.content.ownerDocument;
@@ -8896,7 +8896,7 @@
       const {implementation, createNodeIterator, createDocumentFragment, getElementsByTagName} = document;
       const {importNode} = originalDocument;
       let hooks = {};
-      DOMPurify.isSupported = typeof entries === 'function' && typeof getParentNode === 'function' && implementation && implementation.createHTMLDocument !== undefined;
+      DOMPurify.isSupported = typeof entries == 'function' && typeof getParentNode == 'function' && implementation && implementation.createHTMLDocument != undefined;
       const {MUSTACHE_EXPR, ERB_EXPR, TMPLIT_EXPR, DATA_ATTR, ARIA_ATTR, IS_SCRIPT_OR_DATA, ATTR_WHITESPACE} = EXPRESSIONS;
       let {IS_ALLOWED_URI: IS_ALLOWED_URI$1} = EXPRESSIONS;
       let ALLOWED_TAGS = null;
@@ -9031,15 +9031,15 @@
         return testValue instanceof RegExp || testValue instanceof Function;
       };
       const _parseConfig = function _parseConfig(cfg) {
-        if (CONFIG && CONFIG === cfg) {
+        if (CONFIG && CONFIG == cfg) {
           return;
         }
-        if (!cfg || typeof cfg !== 'object') {
+        if (!cfg || typeof cfg != 'object') {
           cfg = {};
         }
         cfg = clone(cfg);
-        PARSER_MEDIA_TYPE = SUPPORTED_PARSER_MEDIA_TYPES.indexOf(cfg.PARSER_MEDIA_TYPE) === -1 ? PARSER_MEDIA_TYPE = DEFAULT_PARSER_MEDIA_TYPE : PARSER_MEDIA_TYPE = cfg.PARSER_MEDIA_TYPE;
-        transformCaseFunc = PARSER_MEDIA_TYPE === 'application/xhtml+xml' ? stringToString : stringToLowerCase;
+        PARSER_MEDIA_TYPE = SUPPORTED_PARSER_MEDIA_TYPES.indexOf(cfg.PARSER_MEDIA_TYPE) == -1 ? PARSER_MEDIA_TYPE = DEFAULT_PARSER_MEDIA_TYPE : PARSER_MEDIA_TYPE = cfg.PARSER_MEDIA_TYPE;
+        transformCaseFunc = PARSER_MEDIA_TYPE == 'application/xhtml+xml' ? stringToString : stringToLowerCase;
         ALLOWED_TAGS = 'ALLOWED_TAGS' in cfg ? addToSet({}, cfg.ALLOWED_TAGS, transformCaseFunc) : DEFAULT_ALLOWED_TAGS;
         ALLOWED_ATTR = 'ALLOWED_ATTR' in cfg ? addToSet({}, cfg.ALLOWED_ATTR, transformCaseFunc) : DEFAULT_ALLOWED_ATTR;
         ALLOWED_NAMESPACES = 'ALLOWED_NAMESPACES' in cfg ? addToSet({}, cfg.ALLOWED_NAMESPACES, stringToString) : DEFAULT_ALLOWED_NAMESPACES;
@@ -9049,19 +9049,19 @@
         FORBID_TAGS = 'FORBID_TAGS' in cfg ? addToSet({}, cfg.FORBID_TAGS, transformCaseFunc) : {};
         FORBID_ATTR = 'FORBID_ATTR' in cfg ? addToSet({}, cfg.FORBID_ATTR, transformCaseFunc) : {};
         USE_PROFILES = 'USE_PROFILES' in cfg ? cfg.USE_PROFILES : false;
-        ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR !== false;
-        ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR !== false;
+        ALLOW_ARIA_ATTR = cfg.ALLOW_ARIA_ATTR != false;
+        ALLOW_DATA_ATTR = cfg.ALLOW_DATA_ATTR != false;
         ALLOW_UNKNOWN_PROTOCOLS = cfg.ALLOW_UNKNOWN_PROTOCOLS || false;
-        ALLOW_SELF_CLOSE_IN_ATTR = cfg.ALLOW_SELF_CLOSE_IN_ATTR !== false;
+        ALLOW_SELF_CLOSE_IN_ATTR = cfg.ALLOW_SELF_CLOSE_IN_ATTR != false;
         SAFE_FOR_TEMPLATES = cfg.SAFE_FOR_TEMPLATES || false;
         WHOLE_DOCUMENT = cfg.WHOLE_DOCUMENT || false;
         RETURN_DOM = cfg.RETURN_DOM || false;
         RETURN_DOM_FRAGMENT = cfg.RETURN_DOM_FRAGMENT || false;
         RETURN_TRUSTED_TYPE = cfg.RETURN_TRUSTED_TYPE || false;
         FORCE_BODY = cfg.FORCE_BODY || false;
-        SANITIZE_DOM = cfg.SANITIZE_DOM !== false;
+        SANITIZE_DOM = cfg.SANITIZE_DOM != false;
         SANITIZE_NAMED_PROPS = cfg.SANITIZE_NAMED_PROPS || false;
-        KEEP_CONTENT = cfg.KEEP_CONTENT !== false;
+        KEEP_CONTENT = cfg.KEEP_CONTENT != false;
         IN_PLACE = cfg.IN_PLACE || false;
         IS_ALLOWED_URI$1 = cfg.ALLOWED_URI_REGEXP || IS_ALLOWED_URI;
         NAMESPACE = cfg.NAMESPACE || HTML_NAMESPACE;
@@ -9072,7 +9072,7 @@
         if (cfg.CUSTOM_ELEMENT_HANDLING && isRegexOrFunction(cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck)) {
           CUSTOM_ELEMENT_HANDLING.attributeNameCheck = cfg.CUSTOM_ELEMENT_HANDLING.attributeNameCheck;
         }
-        if (cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements === 'boolean') {
+        if (cfg.CUSTOM_ELEMENT_HANDLING && typeof cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements == 'boolean') {
           CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements = cfg.CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements;
         }
         if (SAFE_FOR_TEMPLATES) {
@@ -9084,34 +9084,34 @@
         if (USE_PROFILES) {
           ALLOWED_TAGS = addToSet({}, [...text$1]);
           ALLOWED_ATTR = [];
-          if (USE_PROFILES.html === true) {
+          if (USE_PROFILES.html == true) {
             addToSet(ALLOWED_TAGS, html$1);
             addToSet(ALLOWED_ATTR, html);
           }
-          if (USE_PROFILES.svg === true) {
+          if (USE_PROFILES.svg == true) {
             addToSet(ALLOWED_TAGS, svg$1);
             addToSet(ALLOWED_ATTR, svg);
             addToSet(ALLOWED_ATTR, xml);
           }
-          if (USE_PROFILES.svgFilters === true) {
+          if (USE_PROFILES.svgFilters == true) {
             addToSet(ALLOWED_TAGS, svgFilters);
             addToSet(ALLOWED_ATTR, svg);
             addToSet(ALLOWED_ATTR, xml);
           }
-          if (USE_PROFILES.mathMl === true) {
+          if (USE_PROFILES.mathMl == true) {
             addToSet(ALLOWED_TAGS, mathMl$1);
             addToSet(ALLOWED_ATTR, mathMl);
             addToSet(ALLOWED_ATTR, xml);
           }
         }
         if (cfg.ADD_TAGS) {
-          if (ALLOWED_TAGS === DEFAULT_ALLOWED_TAGS) {
+          if (ALLOWED_TAGS == DEFAULT_ALLOWED_TAGS) {
             ALLOWED_TAGS = clone(ALLOWED_TAGS);
           }
           addToSet(ALLOWED_TAGS, cfg.ADD_TAGS, transformCaseFunc);
         }
         if (cfg.ADD_ATTR) {
-          if (ALLOWED_ATTR === DEFAULT_ALLOWED_ATTR) {
+          if (ALLOWED_ATTR == DEFAULT_ALLOWED_ATTR) {
             ALLOWED_ATTR = clone(ALLOWED_ATTR);
           }
           addToSet(ALLOWED_ATTR, cfg.ADD_ATTR, transformCaseFunc);
@@ -9120,7 +9120,7 @@
           addToSet(URI_SAFE_ATTRIBUTES, cfg.ADD_URI_SAFE_ATTR, transformCaseFunc);
         }
         if (cfg.FORBID_CONTENTS) {
-          if (FORBID_CONTENTS === DEFAULT_FORBID_CONTENTS) {
+          if (FORBID_CONTENTS == DEFAULT_FORBID_CONTENTS) {
             FORBID_CONTENTS = clone(FORBID_CONTENTS);
           }
           addToSet(FORBID_CONTENTS, cfg.FORBID_CONTENTS, transformCaseFunc);
@@ -9140,19 +9140,19 @@
           delete FORBID_TAGS.tbody;
         }
         if (cfg.TRUSTED_TYPES_POLICY) {
-          if (typeof cfg.TRUSTED_TYPES_POLICY.createHTML !== 'function') {
+          if (typeof cfg.TRUSTED_TYPES_POLICY.createHTML != 'function') {
             throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createHTML" hook.');
           }
-          if (typeof cfg.TRUSTED_TYPES_POLICY.createScriptURL !== 'function') {
+          if (typeof cfg.TRUSTED_TYPES_POLICY.createScriptURL != 'function') {
             throw typeErrorCreate('TRUSTED_TYPES_POLICY configuration option must provide a "createScriptURL" hook.');
           }
           trustedTypesPolicy = cfg.TRUSTED_TYPES_POLICY;
           emptyHTML = trustedTypesPolicy.createHTML('');
         } else {
-          if (trustedTypesPolicy === undefined) {
+          if (trustedTypesPolicy == undefined) {
             trustedTypesPolicy = _createTrustedTypesPolicy(trustedTypes, currentScript);
           }
-          if (trustedTypesPolicy !== null && typeof emptyHTML === 'string') {
+          if (trustedTypesPolicy != null && typeof emptyHTML == 'string') {
             emptyHTML = trustedTypesPolicy.createHTML('');
           }
         }
@@ -9199,34 +9199,34 @@
         if (!ALLOWED_NAMESPACES[element.namespaceURI]) {
           return false;
         }
-        if (element.namespaceURI === SVG_NAMESPACE) {
-          if (parent.namespaceURI === HTML_NAMESPACE) {
-            return tagName === 'svg';
+        if (element.namespaceURI == SVG_NAMESPACE) {
+          if (parent.namespaceURI == HTML_NAMESPACE) {
+            return tagName == 'svg';
           }
-          if (parent.namespaceURI === MATHML_NAMESPACE) {
-            return tagName === 'svg' && (parentTagName === 'annotation-xml' || MATHML_TEXT_INTEGRATION_POINTS[parentTagName]);
+          if (parent.namespaceURI == MATHML_NAMESPACE) {
+            return tagName == 'svg' && (parentTagName == 'annotation-xml' || MATHML_TEXT_INTEGRATION_POINTS[parentTagName]);
           }
           return Boolean(ALL_SVG_TAGS[tagName]);
         }
-        if (element.namespaceURI === MATHML_NAMESPACE) {
-          if (parent.namespaceURI === HTML_NAMESPACE) {
-            return tagName === 'math';
+        if (element.namespaceURI == MATHML_NAMESPACE) {
+          if (parent.namespaceURI == HTML_NAMESPACE) {
+            return tagName == 'math';
           }
-          if (parent.namespaceURI === SVG_NAMESPACE) {
-            return tagName === 'math' && HTML_INTEGRATION_POINTS[parentTagName];
+          if (parent.namespaceURI == SVG_NAMESPACE) {
+            return tagName == 'math' && HTML_INTEGRATION_POINTS[parentTagName];
           }
           return Boolean(ALL_MATHML_TAGS[tagName]);
         }
-        if (element.namespaceURI === HTML_NAMESPACE) {
-          if (parent.namespaceURI === SVG_NAMESPACE && !HTML_INTEGRATION_POINTS[parentTagName]) {
+        if (element.namespaceURI == HTML_NAMESPACE) {
+          if (parent.namespaceURI == SVG_NAMESPACE && !HTML_INTEGRATION_POINTS[parentTagName]) {
             return false;
           }
-          if (parent.namespaceURI === MATHML_NAMESPACE && !MATHML_TEXT_INTEGRATION_POINTS[parentTagName]) {
+          if (parent.namespaceURI == MATHML_NAMESPACE && !MATHML_TEXT_INTEGRATION_POINTS[parentTagName]) {
             return false;
           }
           return !ALL_MATHML_TAGS[tagName] && (COMMON_SVG_AND_HTML_ELEMENTS[tagName] || !ALL_SVG_TAGS[tagName]);
         }
-        if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && ALLOWED_NAMESPACES[element.namespaceURI]) {
+        if (PARSER_MEDIA_TYPE == 'application/xhtml+xml' && ALLOWED_NAMESPACES[element.namespaceURI]) {
           return true;
         }
         return false;
@@ -9252,7 +9252,7 @@
           });
         }
         node.removeAttribute(name);
-        if (name === 'is' && !ALLOWED_ATTR[name]) {
+        if (name == 'is' && !ALLOWED_ATTR[name]) {
           if (RETURN_DOM || RETURN_DOM_FRAGMENT) {
             try {
               _forceRemove(node);
@@ -9275,11 +9275,11 @@
           const matches = stringMatch(dirty, /^[\r\n\t ]+/);
           leadingWhitespace = matches && matches[0];
         }
-        if (PARSER_MEDIA_TYPE === 'application/xhtml+xml' && NAMESPACE === HTML_NAMESPACE) {
+        if (PARSER_MEDIA_TYPE == 'application/xhtml+xml' && NAMESPACE == HTML_NAMESPACE) {
           dirty = '<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body>' + dirty + '</body></html>';
         }
         const dirtyPayload = trustedTypesPolicy ? trustedTypesPolicy.createHTML(dirty) : dirty;
-        if (NAMESPACE === HTML_NAMESPACE) {
+        if (NAMESPACE == HTML_NAMESPACE) {
           try {
             doc = new DOMParser().parseFromString(dirtyPayload, PARSER_MEDIA_TYPE);
           } catch (_) {
@@ -9296,7 +9296,7 @@
         if (dirty && leadingWhitespace) {
           body.insertBefore(document.createTextNode(leadingWhitespace), body.childNodes[0] || null);
         }
-        if (NAMESPACE === HTML_NAMESPACE) {
+        if (NAMESPACE == HTML_NAMESPACE) {
           return getElementsByTagName.call(doc, WHOLE_DOCUMENT ? 'html' : 'body')[0];
         }
         return WHOLE_DOCUMENT ? doc.documentElement : body;
@@ -9305,10 +9305,10 @@
         return createNodeIterator.call(root.ownerDocument || root, root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_COMMENT | NodeFilter.SHOW_TEXT, null, false);
       };
       const _isClobbered = function _isClobbered(elm) {
-        return elm instanceof HTMLFormElement && (typeof elm.nodeName !== 'string' || typeof elm.textContent !== 'string' || typeof elm.removeChild !== 'function' || !(elm.attributes instanceof NamedNodeMap) || typeof elm.removeAttribute !== 'function' || typeof elm.setAttribute !== 'function' || typeof elm.namespaceURI !== 'string' || typeof elm.insertBefore !== 'function' || typeof elm.hasChildNodes !== 'function');
+        return elm instanceof HTMLFormElement && (typeof elm.nodeName != 'string' || typeof elm.textContent != 'string' || typeof elm.removeChild != 'function' || !(elm.attributes instanceof NamedNodeMap) || typeof elm.removeAttribute != 'function' || typeof elm.setAttribute != 'function' || typeof elm.namespaceURI != 'string' || typeof elm.insertBefore != 'function' || typeof elm.hasChildNodes != 'function');
       };
       const _isNode = function _isNode(object) {
-        return typeof Node === 'object' ? object instanceof Node : object && typeof object === 'object' && typeof object.nodeType === 'number' && typeof object.nodeName === 'string';
+        return typeof Node == 'object' ? object instanceof Node : object && typeof object == 'object' && typeof object.nodeType == 'number' && typeof object.nodeName == 'string';
       };
       const _executeHook = function _executeHook(entryPoint, currentNode, data) {
         if (!hooks[entryPoint]) {
@@ -9358,16 +9358,16 @@
           _forceRemove(currentNode);
           return true;
         }
-        if ((tagName === 'noscript' || tagName === 'noembed' || tagName === 'noframes') && regExpTest(/<\/no(script|embed|frames)/i, currentNode.innerHTML)) {
+        if ((tagName == 'noscript' || tagName == 'noembed' || tagName == 'noframes') && regExpTest(/<\/no(script|embed|frames)/i, currentNode.innerHTML)) {
           _forceRemove(currentNode);
           return true;
         }
-        if (SAFE_FOR_TEMPLATES && currentNode.nodeType === 3) {
+        if (SAFE_FOR_TEMPLATES && currentNode.nodeType == 3) {
           content = currentNode.textContent;
           content = stringReplace(content, MUSTACHE_EXPR, ' ');
           content = stringReplace(content, ERB_EXPR, ' ');
           content = stringReplace(content, TMPLIT_EXPR, ' ');
-          if (currentNode.textContent !== content) {
+          if (currentNode.textContent != content) {
             arrayPush(DOMPurify.removed, { element: currentNode.cloneNode() });
             currentNode.textContent = content;
           }
@@ -9376,19 +9376,19 @@
         return false;
       };
       const _isValidAttribute = function _isValidAttribute(lcTag, lcName, value) {
-        if (SANITIZE_DOM && (lcName === 'id' || lcName === 'name') && (value in document || value in formElement)) {
+        if (SANITIZE_DOM && (lcName == 'id' || lcName == 'name') && (value in document || value in formElement)) {
           return false;
         }
         if (ALLOW_DATA_ATTR && !FORBID_ATTR[lcName] && regExpTest(DATA_ATTR, lcName));
         else if (ALLOW_ARIA_ATTR && regExpTest(ARIA_ATTR, lcName));
         else if (!ALLOWED_ATTR[lcName] || FORBID_ATTR[lcName]) {
-          if (_basicCustomElementTest(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName)) || lcName === 'is' && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(value)));
+          if (_basicCustomElementTest(lcTag) && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, lcTag) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(lcTag)) && (CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.attributeNameCheck, lcName) || CUSTOM_ELEMENT_HANDLING.attributeNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.attributeNameCheck(lcName)) || lcName == 'is' && CUSTOM_ELEMENT_HANDLING.allowCustomizedBuiltInElements && (CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof RegExp && regExpTest(CUSTOM_ELEMENT_HANDLING.tagNameCheck, value) || CUSTOM_ELEMENT_HANDLING.tagNameCheck instanceof Function && CUSTOM_ELEMENT_HANDLING.tagNameCheck(value)));
           else {
             return false;
           }
         } else if (URI_SAFE_ATTRIBUTES[lcName]);
         else if (regExpTest(IS_ALLOWED_URI$1, stringReplace(value, ATTR_WHITESPACE, '')));
-        else if ((lcName === 'src' || lcName === 'xlink:href' || lcName === 'href') && lcTag !== 'script' && stringIndexOf(value, 'data:') === 0 && DATA_URI_TAGS[lcTag]);
+        else if ((lcName == 'src' || lcName == 'xlink:href' || lcName == 'href') && lcTag != 'script' && stringIndexOf(value, 'data:') == 0 && DATA_URI_TAGS[lcTag]);
         else if (ALLOW_UNKNOWN_PROTOCOLS && !regExpTest(IS_SCRIPT_OR_DATA, stringReplace(value, ATTR_WHITESPACE, '')));
         else if (value) {
           return false;
@@ -9418,7 +9418,7 @@
         while (l--) {
           attr = attributes[l];
           const {name, namespaceURI} = attr;
-          value = name === 'value' ? attr.value : stringTrim(attr.value);
+          value = name == 'value' ? attr.value : stringTrim(attr.value);
           const initValue = value;
           lcName = transformCaseFunc(name);
           hookEvent.attrName = lcName;
@@ -9448,11 +9448,11 @@
             _removeAttribute(name, currentNode);
             continue;
           }
-          if (SANITIZE_NAMED_PROPS && (lcName === 'id' || lcName === 'name')) {
+          if (SANITIZE_NAMED_PROPS && (lcName == 'id' || lcName == 'name')) {
             _removeAttribute(name, currentNode);
             value = SANITIZE_NAMED_PROPS_PREFIX + value;
           }
-          if (trustedTypesPolicy && typeof trustedTypes === 'object' && typeof trustedTypes.getAttributeType === 'function') {
+          if (trustedTypesPolicy && typeof trustedTypes == 'object' && typeof trustedTypes.getAttributeType == 'function') {
             if (namespaceURI);
             else {
               switch (trustedTypes.getAttributeType(lcTag, lcName)) {
@@ -9467,7 +9467,7 @@
               }
             }
           }
-          if (value !== initValue) {
+          if (value != initValue) {
             try {
               if (namespaceURI) {
                 currentNode.setAttributeNS(namespaceURI, name, value);
@@ -9498,7 +9498,7 @@
         _executeHook('afterSanitizeShadowDOM', fragment, null);
       };
       DOMPurify.sanitize = function (dirty) {
-        let cfg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        let cfg = arguments.length > 1 && arguments[1] != undefined ? arguments[1] : {};
         let body;
         let importedNode;
         let currentNode;
@@ -9507,10 +9507,10 @@
         if (IS_EMPTY_INPUT) {
           dirty = '<!-->';
         }
-        if (typeof dirty !== 'string' && !_isNode(dirty)) {
-          if (typeof dirty.toString === 'function') {
+        if (typeof dirty != 'string' && !_isNode(dirty)) {
+          if (typeof dirty.toString == 'function') {
             dirty = dirty.toString();
-            if (typeof dirty !== 'string') {
+            if (typeof dirty != 'string') {
               throw typeErrorCreate('dirty is not a string, aborting');
             }
           } else {
@@ -9524,7 +9524,7 @@
           _parseConfig(cfg);
         }
         DOMPurify.removed = [];
-        if (typeof dirty === 'string') {
+        if (typeof dirty == 'string') {
           IN_PLACE = false;
         }
         if (IN_PLACE) {
@@ -9537,15 +9537,15 @@
         } else if (dirty instanceof Node) {
           body = _initDocument('<!---->');
           importedNode = body.ownerDocument.importNode(dirty, true);
-          if (importedNode.nodeType === 1 && importedNode.nodeName === 'BODY') {
+          if (importedNode.nodeType == 1 && importedNode.nodeName == 'BODY') {
             body = importedNode;
-          } else if (importedNode.nodeName === 'HTML') {
+          } else if (importedNode.nodeName == 'HTML') {
             body = importedNode;
           } else {
             body.appendChild(importedNode);
           }
         } else {
-          if (!RETURN_DOM && !SAFE_FOR_TEMPLATES && !WHOLE_DOCUMENT && dirty.indexOf('<') === -1) {
+          if (!RETURN_DOM && !SAFE_FOR_TEMPLATES && !WHOLE_DOCUMENT && dirty.indexOf('<') == -1) {
             return trustedTypesPolicy && RETURN_TRUSTED_TYPE ? trustedTypesPolicy.createHTML(dirty) : dirty;
           }
           body = _initDocument(dirty);
@@ -9611,7 +9611,7 @@
         return _isValidAttribute(lcTag, lcName, value);
       };
       DOMPurify.addHook = function (entryPoint, hookFunction) {
-        if (typeof hookFunction !== 'function') {
+        if (typeof hookFunction != 'function') {
           return;
         }
         hooks[entryPoint] = hooks[entryPoint] || [];
@@ -9681,12 +9681,12 @@
       return {
         dom: {
           tag: spec.tag,
-          attributes: (_a = spec.attributes) !== null && _a !== void 0 ? _a : {},
+          attributes: (_a = spec.attributes) != null && _a != void 0 ? _a : {},
           classes: spec.classes.concat(rtlIconClasses),
           innerHtml: iconHtml
         },
         behaviours: derive$1([
-          ...(_b = spec.behaviours) !== null && _b !== void 0 ? _b : [],
+          ...(_b = spec.behaviours) != null && _b != void 0 ? _b : [],
           addFocusableBehaviour()
         ])
       };
@@ -9883,7 +9883,7 @@
             'warn',
             'info'
           ], settings.type) ? settings.type : undefined,
-          progress: settings.progressBar === true,
+          progress: settings.progressBar == true,
           icon: settings.icon,
           closeButton: settings.closeButton,
           onAction: close,
@@ -9909,7 +9909,7 @@
           const notificationSpec = premade(notification);
           const anchorOverrides = { maxHeightFunction: expandable$1() };
           const allNotifications = editor.notificationManager.getNotifications();
-          if (allNotifications[0] === thisNotification) {
+          if (allNotifications[0] == thisNotification) {
             const anchor = {
               ...sharedBackstage.anchors.banner(),
               overrides: anchorOverrides
@@ -9986,10 +9986,10 @@
       const isPhone = global$5.deviceType.isPhone();
       const isMobile = global$5.deviceType.isTablet() || isPhone;
       const registerOption = editor.options.register;
-      const stringOrFalseProcessor = value => isString(value) || value === false;
+      const stringOrFalseProcessor = value => isString(value) || value == false;
       const stringOrNumberProcessor = value => isString(value) || isNumber(value);
       registerOption('skin', {
-        processor: value => isString(value) || value === false,
+        processor: value => isString(value) || value == false,
         default: 'oxide'
       });
       registerOption('skin_url', { processor: 'string' });
@@ -10138,7 +10138,7 @@
         default: true
       });
       registerOption('resize', {
-        processor: value => value === 'both' || isBoolean(value),
+        processor: value => value == 'both' || isBoolean(value),
         default: !global$5.deviceType.isTouch()
       });
       registerOption('sidebar_show', { processor: 'string' });
@@ -10189,8 +10189,8 @@
     const promotionEnabled = option$2('promotion');
     const useHelpAccessibility = option$2('help_accessibility');
     const getDefaultFontStack = option$2('default_font_stack');
-    const isSkinDisabled = editor => editor.options.get('skin') === false;
-    const isMenubarEnabled = editor => editor.options.get('menubar') !== false;
+    const isSkinDisabled = editor => editor.options.get('skin') == false;
+    const isMenubarEnabled = editor => editor.options.get('menubar') != false;
     const getSkinUrl = editor => {
       const skinUrl = editor.options.get('skin_url');
       if (isSkinDisabled(editor)) {
@@ -10210,7 +10210,7 @@
       const toolbar = getToolbar(editor);
       const isToolbarString = isString(toolbar);
       const isToolbarObjectArray = isArray(toolbar) && toolbar.length > 0;
-      return !isMultipleToolbars(editor) && (isToolbarObjectArray || isToolbarString || toolbar === true);
+      return !isMultipleToolbars(editor) && (isToolbarObjectArray || isToolbarString || toolbar == true);
     };
     const getMultipleToolbarsOption = editor => {
       const toolbars = range$2(9, num => editor.options.get('toolbar' + (num + 1)));
@@ -10221,13 +10221,13 @@
       const toolbar = getToolbar(editor);
       return isArrayOf(toolbar, isString) && toolbar.length > 0;
     }, always);
-    const isToolbarLocationBottom = editor => getToolbarLocation(editor) === ToolbarLocation$1.bottom;
+    const isToolbarLocationBottom = editor => getToolbarLocation(editor) == ToolbarLocation$1.bottom;
     const fixedContainerTarget = editor => {
       var _a;
       if (!editor.inline) {
         return Optional.none();
       }
-      const selector = (_a = fixedContainerSelector(editor)) !== null && _a !== void 0 ? _a : '';
+      const selector = (_a = fixedContainerSelector(editor)) != null && _a != void 0 ? _a : '';
       if (selector.length > 0) {
         return descendant(body(), selector);
       }
@@ -10247,7 +10247,7 @@
       const isStickyToolbar = editor.options.get('toolbar_sticky');
       return (isStickyToolbar || editor.inline) && !useFixedContainer(editor) && !isDistractionFree(editor);
     };
-    const isSplitUiMode = editor => !useFixedContainer(editor) && editor.options.get('ui_mode') === 'split';
+    const isSplitUiMode = editor => !useFixedContainer(editor) && editor.options.get('ui_mode') == 'split';
     const getMenus = editor => {
       const menu = editor.options.get('menu');
       return map$1(menu, menu => ({
@@ -10329,10 +10329,10 @@
           return;
         }
         if (api.isMenuOpen()) {
-          if (keyCode === 13) {
+          if (keyCode == 13) {
             getItem().each(emitExecute);
             e.preventDefault();
-          } else if (keyCode === 40) {
+          } else if (keyCode == 40) {
             getItem().fold(() => {
               api.getMenu().each(Highlighting.highlightFirst);
             }, item => {
@@ -10340,7 +10340,7 @@
             });
             e.preventDefault();
             e.stopImmediatePropagation();
-          } else if (keyCode === 37 || keyCode === 38 || keyCode === 39) {
+          } else if (keyCode == 37 || keyCode == 38 || keyCode == 39) {
             getItem().each(item => {
               redirectKeyToItem(item, e);
               e.preventDefault();
@@ -10348,7 +10348,7 @@
             });
           }
         } else {
-          if (keyCode === 13 || keyCode === 38 || keyCode === 40) {
+          if (keyCode == 13 || keyCode == 38 || keyCode == 40) {
             api.cancelIfNecessary();
           }
         }
@@ -10394,7 +10394,7 @@
     const classForPreset = presets => get$g(presetClasses, presets).getOr(navClass);
 
     const forMenu = presets => {
-      if (presets === 'color') {
+      if (presets == 'color') {
         return 'tox-swatches';
       } else {
         return 'tox-menu';
@@ -10478,7 +10478,7 @@
             },
             setValue: (input, data) => {
               const current = get$6(input.element);
-              if (current !== data) {
+              if (current != data) {
                 set$5(input.element, data);
               }
             }
@@ -10570,7 +10570,7 @@
                   emit(inputComp, refetchTriggerEvent);
                 }),
                 run$1(keydown(), (inputComp, se) => {
-                  if (se.event.raw.key === 'Escape') {
+                  if (se.event.raw.key == 'Escape') {
                     se.stop();
                   }
                 })
@@ -10605,7 +10605,7 @@
           dom: {
             ...item.dom,
             attributes: {
-              ...(_a = item.dom.attributes) !== null && _a !== void 0 ? _a : {},
+              ...(_a = item.dom.attributes) != null && _a != void 0 ? _a : {},
               'id': generate$6('aria-item-search-result-id'),
               'aria-selected': 'false'
             }
@@ -10637,7 +10637,7 @@
             classes: ['tox-swatches']
           },
           components: [Menu.parts.items({
-              preprocess: columns !== 'auto' ? chunk({
+              preprocess: columns != 'auto' ? chunk({
                 tag: 'div',
                 classes: ['tox-swatches__row']
               }, columns) : identity
@@ -10692,13 +10692,13 @@
       return Menu.parts.items({
         preprocess: rawItems => {
           const enrichedItems = map$2(rawItems, onItem);
-          if (columns !== 'auto' && columns > 1) {
+          if (columns != 'auto' && columns > 1) {
             return chunk({
               tag: 'div',
               classes: ['tox-collection__group']
             }, columns)(enrichedItems);
           } else {
-            return preprocessCollection(enrichedItems, (_item, i) => initItems[i].type === 'separator');
+            return preprocessCollection(enrichedItems, (_item, i) => initItems[i].type == 'separator');
           }
         }
       });
@@ -10709,7 +10709,7 @@
         classes: [
           'tox-menu',
           'tox-collection'
-        ].concat(columns === 1 ? ['tox-collection--list'] : ['tox-collection--grid'])
+        ].concat(columns == 1 ? ['tox-collection--list'] : ['tox-collection--grid'])
       },
       components: [insertItemsPlaceholder(columns, initItems, identity)]
     });
@@ -10722,7 +10722,7 @@
             'tox-menu',
             'tox-collection',
             searchResultsClass
-          ].concat(columns === 1 ? ['tox-collection--list'] : ['tox-collection--grid']),
+          ].concat(columns == 1 ? ['tox-collection--list'] : ['tox-collection--grid']),
           attributes: { id: ariaControlsSearchResults }
         },
         components: [insertItemsPlaceholder(columns, initItems, augmentWithAria)]
@@ -10736,7 +10736,7 @@
           classes: [
             'tox-menu',
             'tox-collection'
-          ].concat(columns === 1 ? ['tox-collection--list'] : ['tox-collection--grid'])
+          ].concat(columns == 1 ? ['tox-collection--list'] : ['tox-collection--grid'])
         },
         components: [
           renderMenuSearcher({
@@ -10747,7 +10747,7 @@
             dom: {
               tag: 'div',
               classes: [
-                ...columns === 1 ? ['tox-collection--list'] : ['tox-collection--grid'],
+                ...columns == 1 ? ['tox-collection--list'] : ['tox-collection--grid'],
                 searchResultsClass
               ],
               attributes: { id: ariaControlsSearchResults }
@@ -10765,10 +10765,10 @@
           'tox-collection--horizontal'
         ]
       },
-      components: [Menu.parts.items({ preprocess: items => preprocessCollection(items, (_item, i) => initItems[i].type === 'separator') })]
+      components: [Menu.parts.items({ preprocess: items => preprocessCollection(items, (_item, i) => initItems[i].type == 'separator') })]
     });
 
-    const menuHasIcons = xs => exists(xs, item => 'icon' in item && item.icon !== undefined);
+    const menuHasIcons = xs => exists(xs, item => 'icon' in item && item.icon != undefined);
     const handleError = error => {
       console.error(formatError(error));
       console.log(error);
@@ -10785,13 +10785,13 @@
     };
     const createPartialMenuWithAlloyItems = (value, hasIcons, items, columns, menuLayout) => {
       const getNormalStructure = () => {
-        if (menuLayout.menuType !== 'searchable') {
+        if (menuLayout.menuType != 'searchable') {
           return forCollection(columns, items);
         } else {
-          return menuLayout.searchMode.searchMode === 'search-with-field' ? forCollectionWithSearchField(columns, items, menuLayout.searchMode) : forCollectionWithSearchResults(columns, items);
+          return menuLayout.searchMode.searchMode == 'search-with-field' ? forCollectionWithSearchField(columns, items, menuLayout.searchMode) : forCollectionWithSearchResults(columns, items);
         }
       };
-      if (menuLayout.menuType === 'color') {
+      if (menuLayout.menuType == 'color') {
         const structure = forSwatch(columns);
         return {
           value,
@@ -10799,7 +10799,7 @@
           components: structure.components,
           items
         };
-      } else if (menuLayout.menuType === 'normal' && columns === 'auto') {
+      } else if (menuLayout.menuType == 'normal' && columns == 'auto') {
         const structure = forCollection(columns, items);
         return {
           value,
@@ -10807,7 +10807,7 @@
           components: structure.components,
           items
         };
-      } else if (menuLayout.menuType === 'normal' || menuLayout.menuType === 'searchable') {
+      } else if (menuLayout.menuType == 'normal' || menuLayout.menuType == 'searchable') {
         const structure = getNormalStructure();
         return {
           value,
@@ -10815,7 +10815,7 @@
           components: structure.components,
           items
         };
-      } else if (menuLayout.menuType === 'listpreview' && columns !== 'auto') {
+      } else if (menuLayout.menuType == 'listpreview' && columns != 'auto') {
         const structure = forToolbar(columns);
         return {
           value,
@@ -11109,7 +11109,7 @@
           const popup = comp.getSystem().build({
             dom: tooltipConfig.tooltipDom,
             components: tooltipConfig.tooltipComponents,
-            events: derive$2(tooltipConfig.mode === 'normal' ? [
+            events: derive$2(tooltipConfig.mode == 'normal' ? [
               run$1(mouseover(), _ => {
                 emit(comp, ShowTooltipEvent);
               }),
@@ -11149,7 +11149,7 @@
             hide(comp);
           })
         ],
-        tooltipConfig.mode === 'normal' ? [
+        tooltipConfig.mode == 'normal' ? [
           run$1(focusin(), comp => {
             emit(comp, ShowTooltipEvent);
           }),
@@ -11331,7 +11331,7 @@
 
     const onMenuItemExecute = (info, itemResponse) => runOnExecute$1((comp, simulatedEvent) => {
       runWithApi(info, comp)(info.onAction);
-      if (!info.triggersSubmenu && itemResponse === ItemResponse$1.CLOSE_ON_EXECUTE) {
+      if (!info.triggersSubmenu && itemResponse == ItemResponse$1.CLOSE_ON_EXECUTE) {
         if (comp.getSystem().isConnected()) {
           emit(comp, sandboxClose());
         }
@@ -11441,8 +11441,8 @@
     const renderSubmenuCaret = icons => renderIcon$2('chevron-right', icons, [caretClass]);
     const renderDownwardsCaret = icons => renderIcon$2('chevron-down', icons, [caretClass]);
     const renderContainer = (container, components) => {
-      const directionClass = container.direction === 'vertical' ? containerColumnClass : containerRowClass;
-      const alignClass = container.align === 'left' ? containerAlignLeftClass : containerAlignRightClass;
+      const directionClass = container.direction == 'vertical' ? containerColumnClass : containerRowClass;
+      const alignClass = container.align == 'left' ? containerAlignLeftClass : containerAlignRightClass;
       const getValignClass = () => {
         switch (container.valign) {
         case 'top':
@@ -11492,7 +11492,7 @@
           attributes,
           classes: [common]
         };
-        if (itemValue === colorPickerCommand) {
+        if (itemValue == colorPickerCommand) {
           return {
             ...baseDom,
             tag: 'button',
@@ -11502,7 +11502,7 @@
             ],
             innerHtml: icon
           };
-        } else if (itemValue === removeColorCommand) {
+        } else if (itemValue == removeColorCommand) {
           return {
             ...baseDom,
             classes: [
@@ -11570,7 +11570,7 @@
       return menuItem;
     };
     const renderItemStructure = (info, providersBackstage, renderIcons, fallbackIcon = Optional.none()) => {
-      if (info.presets === 'color') {
+      if (info.presets == 'color') {
         return renderColorStructure(info, providersBackstage, fallbackIcon);
       } else {
         return renderNormalItemStructure(info, providersBackstage, renderIcons, fallbackIcon);
@@ -11739,7 +11739,7 @@
     const extractValues = hex => {
       const longForm = getLongForm(hex);
       const splitForm = longformRegex.exec(longForm.value);
-      return splitForm === null ? [
+      return splitForm == null ? [
         'FFFFFF',
         'FF',
         'FF',
@@ -11748,7 +11748,7 @@
     };
     const toHex = component => {
       const hex = component.toString(16);
-      return (hex.length === 1 ? '0' + hex : hex).toUpperCase();
+      return (hex.length == 1 ? '0' + hex : hex).toUpperCase();
     };
     const fromRgba = rgbaColour => {
       const value = toHex(rgbaColour.red) + toHex(rgbaColour.green) + toHex(rgbaColour.blue);
@@ -11768,7 +11768,7 @@
     });
     const isRgbaComponent = value => {
       const num = parseInt(value, 10);
-      return num.toString() === value && num >= 0 && num <= 255;
+      return num.toString() == value && num >= 0 && num <= 255;
     };
     const fromHsv = hsv => {
       let r;
@@ -11779,7 +11779,7 @@
       let brightness = hsv.value / 100;
       saturation = max(0, min(saturation, 1));
       brightness = max(0, min(brightness, 1));
-      if (saturation === 0) {
+      if (saturation == 0) {
         r = g = b = round$1(255 * brightness);
         return rgbaColour(r, g, b, 1);
       }
@@ -11841,15 +11841,15 @@
       return rgbaColour(r, g, b, a);
     };
     const fromString = rgbaString => {
-      if (rgbaString === 'transparent') {
+      if (rgbaString == 'transparent') {
         return Optional.some(rgbaColour(0, 0, 0, 0));
       }
       const rgbMatch = rgbRegex.exec(rgbaString);
-      if (rgbMatch !== null) {
+      if (rgbMatch != null) {
         return Optional.some(fromStringValues(rgbMatch[1], rgbMatch[2], rgbMatch[3], '1'));
       }
       const rgbaMatch = rgbaRegex.exec(rgbaString);
-      if (rgbaMatch !== null) {
+      if (rgbaMatch != null) {
         return Optional.some(fromStringValues(rgbaMatch[1], rgbaMatch[2], rgbaMatch[3], rgbaMatch[4]));
       }
       return Optional.none();
@@ -12015,12 +12015,12 @@
       const b = rgbaColour.blue / 255;
       const minRGB = Math.min(r, Math.min(g, b));
       const maxRGB = Math.max(r, Math.max(g, b));
-      if (minRGB === maxRGB) {
+      if (minRGB == maxRGB) {
         v = minRGB;
         return hsvColour(0, 0, v * 100);
       }
-      const d = r === minRGB ? g - b : b === minRGB ? r - g : b - r;
-      h = r === minRGB ? 3 : b === minRGB ? 1 : 5;
+      const d = r == minRGB ? g - b : b == minRGB ? r - g : b - r;
+      h = r == minRGB ? 3 : b == minRGB ? 1 : 5;
       h = 60 * (h - d / (maxRGB - minRGB));
       s = (maxRGB - minRGB) / maxRGB;
       v = maxRGB;
@@ -12168,9 +12168,9 @@
       });
     };
     const getColors$2 = (editor, id) => {
-      if (id === foregroundId && editor.options.isSet('color_map_foreground')) {
+      if (id == foregroundId && editor.options.isSet('color_map_foreground')) {
         return option$1('color_map_foreground')(editor);
-      } else if (id === backgroundId && editor.options.isSet('color_map_background')) {
+      } else if (id == backgroundId && editor.options.isSet('color_map_background')) {
         return option$1('color_map_background')(editor);
       } else {
         return option$1('color_map')(editor);
@@ -12180,7 +12180,7 @@
     const defaultCols = (editor, id) => {
       const defaultCols = option$1('color_cols')(editor);
       const calculatedCols = calcCols(editor, id);
-      if (defaultCols === calcCols(editor)) {
+      if (defaultCols == calcCols(editor)) {
         return calculatedCols;
       } else {
         return defaultCols;
@@ -12188,9 +12188,9 @@
     };
     const getColorCols$1 = (editor, id = 'default') => {
       const getCols = () => {
-        if (id === foregroundId) {
+        if (id == foregroundId) {
           return option$1('color_cols_foreground')(editor);
-        } else if (id === backgroundId) {
+        } else if (id == backgroundId) {
           return option$1('color_cols_background')(editor);
         } else {
           return option$1('color_cols')(editor);
@@ -12203,7 +12203,7 @@
     const getDefaultBackgroundColor = option$1('color_default_background');
 
     const defaultBackgroundColor = 'rgba(0, 0, 0, 0)';
-    const isValidBackgroundColor = value => fromString(value).exists(c => c.alpha !== 0);
+    const isValidBackgroundColor = value => fromString(value).exists(c => c.alpha != 0);
     const getClosestCssBackgroundColorValue = scope => {
       return closest$4(scope, node => {
         if (isElement$1(node)) {
@@ -12216,7 +12216,7 @@
     };
     const getCurrentColor = (editor, format) => {
       const node = SugarElement.fromDom(editor.selection.getStart());
-      const cssRgbValue = format === 'hilitecolor' ? getClosestCssBackgroundColorValue(node) : get$e(node, 'color');
+      const cssRgbValue = format == 'hilitecolor' ? getClosestCssBackgroundColorValue(node) : get$e(node, 'color');
       return fromString(cssRgbValue).map(rgba => '#' + fromRgba(rgba).value);
     };
     const applyFormat = (editor, format, value) => {
@@ -12261,7 +12261,7 @@
       ] : [remove];
     };
     const applyColor = (editor, format, value, onChoice) => {
-      if (value === 'custom') {
+      if (value == 'custom') {
         const dialog = colorPickerDialog(editor);
         dialog(colorOpt => {
           colorOpt.each(color => {
@@ -12270,7 +12270,7 @@
             onChoice(color);
           });
         }, getCurrentColor(editor, format).getOr(fallbackColor));
-      } else if (value === 'remove') {
+      } else if (value == 'remove') {
         onChoice('');
         editor.execCommand('mceRemoveTextcolor', format);
       } else {
@@ -12283,7 +12283,7 @@
       callback(getColors$1(colors, id, hasCustom));
     };
     const setIconColor = (splitButtonApi, name, newColor) => {
-      const id = name === 'forecolor' ? 'tox-icon-text-color__color' : 'tox-icon-highlight-bg-color__color';
+      const id = name == 'forecolor' ? 'tox-icon-text-color__color' : 'tox-icon-highlight-bg-color__color';
       splitButtonApi.setIconFill(id, newColor);
     };
     const setTooltip = (buttonApi, tooltip) => {
@@ -12295,11 +12295,11 @@
     };
     const getToolTipText = (editor, format, lastColor) => {
       if (isEmpty(lastColor)) {
-        return format === 'forecolor' ? 'Text color' : 'Background color';
+        return format == 'forecolor' ? 'Text color' : 'Background color';
       }
-      const tooltipPrefix = format === 'forecolor' ? 'Text color {0}' : 'Background color {0}';
+      const tooltipPrefix = format == 'forecolor' ? 'Text color {0}' : 'Background color {0}';
       const colors = getColors$1(getColors$2(editor, format), format, false);
-      const colorText = find$5(colors, c => c.value === lastColor).getOr({ text: '' }).text;
+      const colorText = find$5(colors, c => c.value == lastColor).getOr({ text: '' }).text;
       return editor.translate([
         tooltipPrefix,
         editor.translate(colorText)
@@ -12309,7 +12309,7 @@
       editor.ui.registry.addSplitButton(name, {
         tooltip: getToolTipText(editor, format, lastColor.get()),
         presets: 'color',
-        icon: name === 'forecolor' ? 'text-color' : 'highlight-bg-color',
+        icon: name == 'forecolor' ? 'text-color' : 'highlight-bg-color',
         select: select$1(editor, format),
         columns: getColorCols$1(editor, format),
         fetch: getFetch$1(getColors$2(editor, format), format, hasCustomColors$1(editor)),
@@ -12328,7 +12328,7 @@
         onSetup: splitButtonApi => {
           setIconColor(splitButtonApi, name, lastColor.get());
           const handler = e => {
-            if (e.name === name) {
+            if (e.name == name) {
               setIconColor(splitButtonApi, e.name, e.color);
               setTooltip(splitButtonApi, getToolTipText(editor, format, e.color));
             }
@@ -12343,7 +12343,7 @@
     const registerTextColorMenuItem = (editor, name, format, text, lastColor) => {
       editor.ui.registry.addNestedMenuItem(name, {
         text,
-        icon: name === 'forecolor' ? 'text-color' : 'highlight-bg-color',
+        icon: name == 'forecolor' ? 'text-color' : 'highlight-bg-color',
         onSetup: api => {
           setTooltip(api, getToolTipText(editor, format, lastColor.get()));
           setIconColor(api, name, lastColor.get());
@@ -12382,7 +12382,7 @@
         }
       };
       const onAction = (_api, details) => {
-        if (details.name === 'hex-valid') {
+        if (details.name == 'hex-valid') {
           isValid = details.value;
         }
       };
@@ -12434,14 +12434,14 @@
 
     const createPartialChoiceMenu = (value, items, onItemValueHandler, columns, presets, itemResponse, select, providersBackstage) => {
       const hasIcons = menuHasIcons(items);
-      const presetItemTypes = presets !== 'color' ? 'normal' : 'color';
+      const presetItemTypes = presets != 'color' ? 'normal' : 'color';
       const alloyItems = createChoiceItems(items, onItemValueHandler, columns, presetItemTypes, itemResponse, select, providersBackstage);
       const menuLayout = { menuType: presets };
       return createPartialMenuWithAlloyItems(value, hasIcons, alloyItems, columns, menuLayout);
     };
     const createChoiceItems = (items, onItemValueHandler, columns, itemPresets, itemResponse, select, providersBackstage) => cat(map$2(items, item => {
-      if (item.type === 'choiceitem') {
-        return createChoiceMenuItem(item).fold(handleError, d => Optional.some(renderChoiceItem(d, columns === 1, itemPresets, onItemValueHandler, select(d.value), itemResponse, providersBackstage, menuHasIcons(items))));
+      if (item.type == 'choiceitem') {
+        return createChoiceMenuItem(item).fold(handleError, d => Optional.some(renderChoiceItem(d, columns == 1, itemPresets, onItemValueHandler, select(d.value), itemResponse, providersBackstage, menuHasIcons(items))));
       } else {
         return Optional.none();
       }
@@ -12449,12 +12449,12 @@
 
     const deriveMenuMovement = (columns, presets) => {
       const menuMarkers = markers(presets);
-      if (columns === 1) {
+      if (columns == 1) {
         return {
           mode: 'menu',
           moveOnTab: true
         };
-      } else if (columns === 'auto') {
+      } else if (columns == 'auto') {
         return {
           mode: 'grid',
           selector: '.' + menuMarkers.item,
@@ -12464,24 +12464,24 @@
           }
         };
       } else {
-        const rowClass = presets === 'color' ? 'tox-swatches__row' : 'tox-collection__group';
+        const rowClass = presets == 'color' ? 'tox-swatches__row' : 'tox-collection__group';
         return {
           mode: 'matrix',
           rowSelector: '.' + rowClass,
           previousSelector: menu => {
-            return presets === 'color' ? descendant(menu.element, '[aria-checked=true]') : Optional.none();
+            return presets == 'color' ? descendant(menu.element, '[aria-checked=true]') : Optional.none();
           }
         };
       }
     };
     const deriveCollectionMovement = (columns, presets) => {
-      if (columns === 1) {
+      if (columns == 1) {
         return {
           mode: 'menu',
           moveOnTab: false,
           selector: '.tox-collection__item'
         };
-      } else if (columns === 'auto') {
+      } else if (columns == 'auto') {
         return {
           mode: 'flatgrid',
           selector: '.' + 'tox-collection__item',
@@ -12494,8 +12494,8 @@
         return {
           mode: 'matrix',
           selectors: {
-            row: presets === 'color' ? '.tox-swatches__row' : '.tox-collection__group',
-            cell: presets === 'color' ? `.${ colorClass }` : `.${ selectableClass }`
+            row: presets == 'color' ? '.tox-swatches__row' : '.tox-collection__group',
+            cell: presets == 'color' ? `.${ colorClass }` : `.${ selectableClass }`
           }
         };
       }
@@ -12796,7 +12796,7 @@
       const coupled = {};
       const lookupCoupled = (coupleConfig, coupledName) => {
         const available = keys(coupleConfig.others);
-        if (available.length === 0) {
+        if (available.length == 0) {
           throw new Error('Cannot find any known coupled components');
         } else {
           return get$g(coupled, coupledName);
@@ -12909,7 +12909,7 @@
       const toCached = () => {
         let cache = null;
         return make$5(() => {
-          if (cache === null) {
+          if (cache == null) {
             cache = run();
           }
           return cache;
@@ -13062,13 +13062,13 @@
           matchWidth(anchor.hotspot, menu, detail.useMinWidth);
         }
         detail.onOpen(anchor, component, menu);
-        if (extras !== undefined && extras.onOpen !== undefined) {
+        if (extras != undefined && extras.onOpen != undefined) {
           extras.onOpen(component, menu);
         }
       };
       const onClose = (component, menu) => {
         ariaControls.unlink(hotspot.element);
-        if (extras !== undefined && extras.onClose !== undefined) {
+        if (extras != undefined && extras.onClose != undefined) {
           extras.onClose(component, menu);
         }
       };
@@ -13269,7 +13269,7 @@
           attributes: {
             'aria-haspopup': 'true',
             ...detail.role.fold(() => ({}), role => ({ role })),
-            ...detail.dom.tag === 'button' ? { type: lookupAttr('type').getOr('button') } : {}
+            ...detail.dom.tag == 'button' ? { type: lookupAttr('type').getOr('button') } : {}
           }
         }
       };
@@ -13372,7 +13372,7 @@
       }
     };
     const createAutocompleteItems = (items, matchText, onItemValueHandler, columns, itemResponse, sharedBackstage, highlightOn) => {
-      const renderText = columns === 1;
+      const renderText = columns == 1;
       const renderIcons = !renderText || menuHasIcons(items);
       return cat(map$2(items, item => {
         switch (item.type) {
@@ -13403,7 +13403,7 @@
       const alloyItems = cat(map$2(items, item => {
         const itemHasIcon = i => isHorizontalMenu ? !has$2(i, 'text') : hasIcons;
         const createItem = i => createMenuItemFromBridge(i, itemResponse, backstage, itemHasIcon(i), isHorizontalMenu);
-        if (item.type === 'nestedmenuitem' && item.getSubmenuItems().length <= 0) {
+        if (item.type == 'nestedmenuitem' && item.getSubmenuItems().length <= 0) {
           return createItem({
             ...item,
             enabled: false
@@ -13424,7 +13424,7 @@
         data: createTieredDataFrom({
           ...partialMenu,
           movement,
-          menuBehaviours: SimpleBehaviours.unnamedEvents(columns !== 'auto' ? [] : [runOnAttached((comp, _se) => {
+          menuBehaviours: SimpleBehaviours.unnamedEvents(columns != 'auto' ? [] : [runOnAttached((comp, _se) => {
               detectSize(comp, 4, menuMarkers.item).each(({numColumns, numRows}) => {
                 Keying.setGridSize(comp, numRows, numColumns);
               });
@@ -13432,7 +13432,7 @@
         }),
         menu: {
           markers: markers(presets),
-          fakeFocus: focusMode === FocusMode.ContentFocus
+          fakeFocus: focusMode == FocusMode.ContentFocus
         }
       };
     };
@@ -13471,7 +13471,7 @@
           InlineView.hide(autocompleter);
           editor.dom.remove(autocompleterId, false);
           const editorBody = SugarElement.fromDom(editor.getBody());
-          getOpt(editorBody, 'aria-owns').filter(ariaOwnsAttr => ariaOwnsAttr === autocompleterId).each(() => {
+          getOpt(editorBody, 'aria-owns').filter(ariaOwnsAttr => ariaOwnsAttr == autocompleterId).each(() => {
             remove$7(editorBody, 'aria-owns');
             remove$7(editorBody, 'aria-activedescendant');
           });
@@ -13591,7 +13591,7 @@
     };
     const detect = popupSinkElem => {
       const ancestorsScrollers = ancestors(popupSinkElem, isScroller);
-      const scrollers = ancestorsScrollers.length === 0 ? getShadowRoot(popupSinkElem).map(getShadowHost).map(x => ancestors(x, isScroller)).getOr([]) : ancestorsScrollers;
+      const scrollers = ancestorsScrollers.length == 0 ? getShadowRoot(popupSinkElem).map(getShadowHost).map(x => ancestors(x, isScroller)).getOr([]) : ancestorsScrollers;
       return head(scrollers).map(element => ({
         element,
         others: scrollers.slice(1)
@@ -13617,7 +13617,7 @@
         }, delay);
       };
       const cancel = () => {
-        if (ref !== null) {
+        if (ref != null) {
           clearTimeout(ref);
           ref = null;
         }
@@ -13632,7 +13632,7 @@
     const LONGPRESS_DELAY = 400;
     const getTouch = event => {
       const raw = event.raw;
-      if (raw.touches === undefined || raw.touches.length !== 1) {
+      if (raw.touches == undefined || raw.touches.length != 1) {
         return Optional.none();
       }
       return Optional.some(raw.touches[0]);
@@ -13706,7 +13706,7 @@
 
     const isDangerous = event => {
       const keyEv = event.raw;
-      return keyEv.which === BACKSPACE[0] && !contains$2([
+      return keyEv.which == BACKSPACE[0] && !contains$2([
         'input',
         'textarea'
       ], name$3(event.target)) && !closest(event.target, '[contenteditable="true"]');
@@ -13913,7 +13913,7 @@
       const registry = {};
       const registerId = (extraArgs, id, events) => {
         each(events, (v, k) => {
-          const handlers = registry[k] !== undefined ? registry[k] : {};
+          const handlers = registry[k] != undefined ? registry[k] : {};
           handlers[id] = curryArgs(v, extraArgs);
           registry[k] = handlers;
         });
@@ -13945,7 +13945,7 @@
       };
       const failOnDuplicate = (component, tagId) => {
         const conflict = components[tagId];
-        if (conflict === component) {
+        if (conflict == component) {
           unregister(component);
         } else {
           throw new Error('The tagId "' + tagId + '" is already used by: ' + element(conflict.element) + '\nCannot use it for: ' + element(component.element) + '\n' + 'The conflicting element is' + (inBody(conflict.element) ? ' ' : ' not ') + 'already in the DOM');
@@ -14320,7 +14320,7 @@
       const icons = providersBackstage.icons();
       const getIcon = icon => {
         var _a;
-        return (_a = icons[icon]) !== null && _a !== void 0 ? _a : icon;
+        return (_a = icons[icon]) != null && _a != void 0 ? _a : icon;
       };
       const runOnItem = f => (comp, se) => {
         closest$1(se.event.target, '[data-collection-item-value]').each(target => {
@@ -14330,7 +14330,7 @@
       const setContents = (comp, items) => {
         const htmlLines = map$2(items, item => {
           const itemText = global$8.translate(item.text);
-          const textContent = spec.columns === 1 ? `<div class="tox-collection__item-label">${ itemText }</div>` : '';
+          const textContent = spec.columns == 1 ? `<div class="tox-collection__item-label">${ itemText }</div>` : '';
           const iconContent = `<div class="tox-collection__item-icon">${ getIcon(item.icon) }</div>`;
           const mapItemName = {
             '_': ' ',
@@ -14341,7 +14341,7 @@
           const disabledClass = providersBackstage.isDisabled() ? ' tox-collection__item--state-disabled' : '';
           return `<div class="tox-collection__item${ disabledClass }" tabindex="-1" data-collection-item-value="${ global$3.encodeAllRaw(item.value) }" title="${ ariaLabel }" aria-label="${ ariaLabel }">${ iconContent }${ textContent }</div>`;
         });
-        const chunks = spec.columns !== 'auto' && spec.columns > 1 ? chunk$1(htmlLines, spec.columns) : [htmlLines];
+        const chunks = spec.columns != 'auto' && spec.columns > 1 ? chunk$1(htmlLines, spec.columns) : [htmlLines];
         const html = map$2(chunks, ch => `<div class="tox-collection__group">${ ch.join('') }</div>`);
         set$6(comp.element, html.join(''));
       };
@@ -14382,7 +14382,7 @@
       const pField = FormField.parts.field({
         dom: {
           tag: 'div',
-          classes: ['tox-collection'].concat(spec.columns !== 1 ? ['tox-collection--grid'] : ['tox-collection--list'])
+          classes: ['tox-collection'].concat(spec.columns != 1 ? ['tox-collection--grid'] : ['tox-collection--list'])
         },
         components: [],
         factory: { sketch: identity },
@@ -14411,7 +14411,7 @@
             },
             onSetValue: (comp, items) => {
               setContents(comp, items);
-              if (spec.columns === 'auto') {
+              if (spec.columns == 'auto') {
                 detectSize(comp, 5, 'tox-collection__item').each(({numRows, numColumns}) => {
                   Keying.setGridSize(comp, numRows, numColumns);
                 });
@@ -14614,7 +14614,7 @@
               validateOnLoad: false,
               validate: input => {
                 const inputValue = Representing.getValue(input);
-                if (inputValue.length === 0) {
+                if (inputValue.length == 0) {
                   return Future.pure(Result.value(true));
                 } else {
                   const span = SugarElement.fromTag('span');
@@ -14634,14 +14634,14 @@
       };
       const onItemAction = (comp, value) => {
         memColorButton.getOpt(comp).each(colorBit => {
-          if (value === 'custom') {
+          if (value == 'custom') {
             colorInputBackstage.colorPicker(valueOpt => {
               valueOpt.fold(() => emit(colorBit, colorPickerCancelEvent), value => {
                 emitSwatchChange(colorBit, value);
                 addColor(spec.storageKey, value);
               });
             }, '#ffffff');
-          } else if (value === 'remove') {
+          } else if (value == 'remove') {
             emitSwatchChange(colorBit, '');
           } else {
             emitSwatchChange(colorBit, value);
@@ -14802,15 +14802,15 @@
 
     const _sliderChangeEvent = 'slider.change.value';
     const sliderChangeEvent = constant$1(_sliderChangeEvent);
-    const isTouchEvent$2 = evt => evt.type.indexOf('touch') !== -1;
+    const isTouchEvent$2 = evt => evt.type.indexOf('touch') != -1;
     const getEventSource = simulatedEvent => {
       const evt = simulatedEvent.event.raw;
       if (isTouchEvent$2(evt)) {
         const touchEvent = evt;
-        return touchEvent.touches !== undefined && touchEvent.touches.length === 1 ? Optional.some(touchEvent.touches[0]).map(t => SugarPosition(t.clientX, t.clientY)) : Optional.none();
+        return touchEvent.touches != undefined && touchEvent.touches.length == 1 ? Optional.some(touchEvent.touches[0]).map(t => SugarPosition(t.clientX, t.clientY)) : Optional.none();
       } else {
         const mouseEvent = evt;
-        return mouseEvent.clientX !== undefined ? Optional.some(mouseEvent).map(me => SugarPosition(me.clientX, me.clientY)) : Optional.none();
+        return mouseEvent.clientX != undefined ? Optional.some(mouseEvent).map(me => SugarPosition(me.clientX, me.clientY)) : Optional.none();
       }
     };
 
@@ -14832,7 +14832,7 @@
     const snap = detail => detail.snapToGrid;
     const snapStart = detail => detail.snapStart;
     const rounded = detail => detail.rounded;
-    const hasEdge = (detail, edgeName) => detail[edgeName + '-edge'] !== undefined;
+    const hasEdge = (detail, edgeName) => detail[edgeName + '-edge'] != undefined;
     const hasLEdge = detail => hasEdge(detail, l);
     const hasREdge = detail => hasEdge(detail, r);
     const hasTEdge = detail => hasEdge(detail, t);
@@ -14888,7 +14888,7 @@
         return value;
       } else if (value > max) {
         return max;
-      } else if (value === min) {
+      } else if (value == min) {
         return min - 1;
       } else {
         return Math.max(min, value - step);
@@ -14899,7 +14899,7 @@
         return value;
       } else if (value < min) {
         return min;
-      } else if (value === max) {
+      } else if (value == max) {
         return max + 1;
       } else {
         return Math.min(max, value + step);
@@ -15617,7 +15617,7 @@
           factory: Input,
           inputAttributes: {
             type: 'text',
-            ...name === 'hex' ? { 'aria-live': 'polite' } : {}
+            ...name == 'hex' ? { 'aria-live': 'polite' } : {}
           },
           inputClasses: [getClass('textfield')],
           inputBehaviours: derive$1([
@@ -15635,7 +15635,7 @@
           pLabel,
           pField
         ];
-        const concats = name !== 'hex' ? [FormField.parts['aria-descriptor']({ text: helptext })] : [];
+        const concats = name != 'hex' ? [FormField.parts['aria-descriptor']({ text: helptext })] : [];
         const components = comps.concat(concats);
         return {
           dom: {
@@ -15704,7 +15704,7 @@
         };
         const onInvalidInput = (form, simulatedEvent) => {
           const data = simulatedEvent.event;
-          if (data.type !== 'hex') {
+          if (data.type != 'hex') {
             set(data.type, Optional.none());
           } else {
             onInvalidHexx(form);
@@ -15729,7 +15729,7 @@
             updatePreview(form, hex);
           });
         };
-        const isHexInputEvent = data => data.type === 'hex';
+        const isHexInputEvent = data => data.type == 'hex';
         const onValidInput = (form, simulatedEvent) => {
           const data = simulatedEvent.event;
           if (isHexInputEvent(data)) {
@@ -15810,7 +15810,7 @@
       const setColour = (canvas, rgba) => {
         const {width, height} = canvas;
         const ctx = canvas.getContext('2d');
-        if (ctx === null) {
+        if (ctx == null) {
           return;
         }
         ctx.fillStyle = rgba;
@@ -16197,7 +16197,7 @@
         var _a;
         if (!Disabling.isDisabled(comp)) {
           const transferEvent = se.event.raw;
-          handleFiles(comp, (_a = transferEvent.dataTransfer) === null || _a === void 0 ? void 0 : _a.files);
+          handleFiles(comp, (_a = transferEvent.dataTransfer) == null || _a == void 0 ? void 0 : _a.files);
         }
       };
       const onSelect = (component, simulatedEvent) => {
@@ -16449,10 +16449,10 @@
     const isSafariOrFirefox = isSafari || isFirefox;
     const isChromium = browser.isChromium();
     const isElementScrollAtBottom = ({scrollTop, scrollHeight, clientHeight}) => Math.ceil(scrollTop) + clientHeight >= scrollHeight;
-    const scrollToY = (win, y) => win.scrollTo(0, y === 'bottom' ? 99999999 : y);
+    const scrollToY = (win, y) => win.scrollTo(0, y == 'bottom' ? 99999999 : y);
     const getScrollingElement = (doc, html) => {
       const body = doc.body;
-      return Optional.from(!/^<!DOCTYPE (html|HTML)/.test(html) && (!isChromium && !isSafari || isNonNullable(body) && (body.scrollTop !== 0 || Math.abs(body.scrollHeight - body.clientHeight) > 1)) ? body : doc.documentElement);
+      return Optional.from(!/^<!DOCTYPE (html|HTML)/.test(html) && (!isChromium && !isSafari || isNonNullable(body) && (body.scrollTop != 0 || Math.abs(body.scrollHeight - body.clientHeight) > 1)) ? body : doc.documentElement);
     };
     const writeValue = (iframeElement, html, fallbackFn) => {
       const iframe = iframeElement.dom;
@@ -16467,7 +16467,7 @@
           if (isNonNullable(win)) {
             if (isScrollAtBottom) {
               scrollToY(win, 'bottom');
-            } else if (!isScrollAtBottom && isSafariOrFirefox && lastScrollTop !== 0) {
+            } else if (!isScrollAtBottom && isSafariOrFirefox && lastScrollTop != 0) {
               scrollToY(win, lastScrollTop);
             }
           }
@@ -16490,7 +16490,7 @@
       return {
         getValue: _frameComponent => cachedValue.get(),
         setValue: (frameComponent, html) => {
-          if (cachedValue.get() !== html) {
+          if (cachedValue.get() != html) {
             const iframeElement = frameComponent.element;
             const setSrcdocValue = () => set$9(iframeElement, 'srcdoc', html);
             if (stream) {
@@ -16621,7 +16621,7 @@
         };
         memImage.getOpt(frameComponent).each(imageComponent => {
           const img = imageComponent.element;
-          if (data.url !== get$f(img, 'src')) {
+          if (data.url != get$f(img, 'src')) {
             set$9(img, 'src', data.url);
             remove$2(frameComponent.element, 'tox-imagepreview__loaded');
           }
@@ -16661,8 +16661,8 @@
 
     const renderLabel$2 = (spec, backstageShared) => {
       const baseClass = 'tox-label';
-      const centerClass = spec.align === 'center' ? [`${ baseClass }--center`] : [];
-      const endClass = spec.align === 'end' ? [`${ baseClass }--end`] : [];
+      const centerClass = spec.align == 'center' ? [`${ baseClass }--center`] : [];
+      const endClass = spec.align == 'end' ? [`${ baseClass }--end`] : [];
       const label = {
         dom: {
           tag: 'label',
@@ -16871,15 +16871,15 @@
     };
 
     const isMenuItemReference = item => isString(item);
-    const isSeparator$2 = item => item.type === 'separator';
+    const isSeparator$2 = item => item.type == 'separator';
     const isExpandingMenuItem = item => has$2(item, 'getSubmenuItems');
     const separator$2 = { type: 'separator' };
     const unwrapReferences = (items, menuItems) => {
       const realItems = foldl(items, (acc, item) => {
         if (isMenuItemReference(item)) {
-          if (item === '') {
+          if (item == '') {
             return acc;
-          } else if (item === '|') {
+          } else if (item == '|') {
             return acc.length > 0 && !isSeparator$2(acc[acc.length - 1]) ? acc.concat([separator$2]) : acc;
           } else if (has$2(menuItems, item.toLowerCase())) {
             return acc.concat([menuItems[item.toLowerCase()]]);
@@ -16952,7 +16952,7 @@
     const build = (items, itemResponse, backstage, settings) => {
       const primary = generate$6('primary-menu');
       const data = expand(items, backstage.shared.providers.menuItems());
-      if (data.items.length === 0) {
+      if (data.items.length == 0) {
         return Optional.none();
       }
       const mainMenuSearchMode = getSearchModeForField(settings);
@@ -16977,7 +16977,7 @@
           type: 'togglemenuitem',
           text: item.text,
           value: item.value,
-          active: item.value === selectedValue,
+          active: item.value == selectedValue,
           onAction: () => {
             Representing.setValue(dropdownComp, item.value);
             emitWith(dropdownComp, formChangeEvent, { name });
@@ -16990,7 +16990,7 @@
       if (!isSingleListItem(item)) {
         return findItemByValue(item.items, value);
       } else {
-        return someIf(item.value === value, item);
+        return someIf(item.value == value, item);
       }
     });
     const renderListBox = (spec, backstage, initialData) => {
@@ -17093,10 +17093,10 @@
               },
               setValue: (select, newValue) => {
                 const firstOption = head(detail.options);
-                const found = find$5(detail.options, opt => opt.value === newValue);
+                const found = find$5(detail.options, opt => opt.value == newValue);
                 if (found.isSome()) {
                   set$5(select.element, newValue);
-                } else if (select.element.dom.selectedIndex === -1 && newValue === '') {
+                } else if (select.element.dom.selectedIndex == -1 && newValue == '') {
                   firstOption.each(value => set$5(select.element, value.value));
                 }
               },
@@ -17296,7 +17296,7 @@
       };
       const maxDecimal = unit => unit in unitDec ? unitDec[unit] : 1;
       let numText = size.value.toFixed(maxDecimal(size.unit));
-      if (numText.indexOf('.') !== -1) {
+      if (numText.indexOf('.') != -1) {
         numText = numText.replace(/\.?0*$/, '');
       }
       return numText + size.unit;
@@ -17304,7 +17304,7 @@
     const parseSize = sizeText => {
       const numPattern = /^\s*(\d+(?:\.\d+)?)\s*(|cm|mm|in|px|pt|pc|em|ex|ch|rem|vw|vh|vmin|vmax|%)\s*$/;
       const match = numPattern.exec(sizeText);
-      if (match !== null) {
+      if (match != null) {
         const value = parseFloat(match[1]);
         const unit = match[2];
         return Result.value({
@@ -17326,10 +17326,10 @@
         'in': 1
       };
       const supported = u => has$2(inInch, u);
-      if (size.unit === unit) {
+      if (size.unit == unit) {
         return Optional.some(size.value);
       } else if (supported(size.unit) && supported(unit)) {
-        if (inInch[size.unit] === inInch[unit]) {
+        if (inInch[size.unit] == inInch[unit]) {
           return Optional.some(size.value);
         } else {
           return Optional.some(size.value / inInch[size.unit] * inInch[unit]);
@@ -17580,8 +17580,8 @@
         receivingConfig(),
         Keying.config({
           mode: 'execution',
-          useEnter: spec.multiline !== true,
-          useControlEnter: spec.multiline === true,
+          useEnter: spec.multiline != true,
+          useControlEnter: spec.multiline == true,
           execute: comp => {
             emit(comp, formSubmitEvent);
             return Optional.some(true);
@@ -17606,7 +17606,7 @@
           validate: input => {
             const v = Representing.getValue(input);
             const result = vl.validator(v);
-            return Future.pure(result === true ? Result.value(v) : Result.error(result));
+            return Future.pure(result == true ? Result.value(v) : Result.error(result));
           },
           validateOnLoad: vl.validateOnLoad
         }
@@ -17618,7 +17618,7 @@
         ...inputMode
       };
       const pField = FormField.parts.field({
-        tag: spec.multiline === true ? 'textarea' : 'input',
+        tag: spec.multiline == true ? 'textarea' : 'input',
         ...spec.data.map(data => ({ data })).getOr({}),
         inputAttributes,
         inputClasses: [spec.classname],
@@ -17722,7 +17722,7 @@
     };
     const doStartSmartShrink = (component, slideConfig, slideState) => {
       const size = getDimension(slideConfig, component.element);
-      const shrinker = size === '0px' ? doImmediateShrink : doStartShrink;
+      const shrinker = size == '0px' ? doImmediateShrink : doStartShrink;
       shrinker(component, slideConfig, slideState, Optional.some(size));
     };
     const doStartGrow = (component, slideConfig, slideState) => {
@@ -17773,11 +17773,11 @@
     const hasShrunk = (component, slideConfig, slideState) => slideState.isCollapsed();
     const isGrowing = (component, slideConfig, _slideState) => {
       const root = getAnimationRoot(component, slideConfig);
-      return has(root, slideConfig.growingClass) === true;
+      return has(root, slideConfig.growingClass) == true;
     };
     const isShrinking = (component, slideConfig, _slideState) => {
       const root = getAnimationRoot(component, slideConfig);
-      return has(root, slideConfig.shrinkingClass) === true;
+      return has(root, slideConfig.shrinkingClass) == true;
     };
     const isTransitioning = (component, slideConfig, slideState) => isGrowing(component, slideConfig) || isShrinking(component, slideConfig);
     const toggleGrow = (component, slideConfig, slideState) => {
@@ -17823,7 +17823,7 @@
     };
     const events$6 = (slideConfig, slideState) => derive$2([runOnSource(transitionend(), (component, simulatedEvent) => {
         const raw = simulatedEvent.event.raw;
-        if (raw.propertyName === slideConfig.dimension.property) {
+        if (raw.propertyName == slideConfig.dimension.property) {
           disableTransitions(component, slideConfig);
           if (slideState.isExpanded()) {
             remove$6(component.element, slideConfig.dimension.property);
@@ -17866,8 +17866,8 @@
       const state = Cell(spec.expanded);
       const readState = () => 'expanded: ' + state.get();
       return nu$8({
-        isExpanded: () => state.get() === true,
-        isCollapsed: () => state.get() === false,
+        isExpanded: () => state.get() == true,
+        isCollapsed: () => state.get() == false,
         setCollapsed: curry(state.set, false),
         setExpanded: curry(state.set, true),
         readState
@@ -18009,7 +18009,7 @@
             channels: {
               [`update-active-item-${ treeId }`]: {
                 onReceive: (comp, message) => {
-                  (message.value === leaf.id ? Toggling.on : Toggling.off)(comp);
+                  (message.value == leaf.id ? Toggling.on : Toggling.off)(comp);
                 }
               }
             }
@@ -18017,13 +18017,13 @@
           config(leafLabelEventsId, [
             runOnAttached((comp, _se) => {
               selectedId.each(id => {
-                const toggle = id === leaf.id ? Toggling.on : Toggling.off;
+                const toggle = id == leaf.id ? Toggling.on : Toggling.off;
                 toggle(comp);
               });
             }),
             run$1(keydown(), (comp, se) => {
-              const isLeftArrowKey = se.event.raw.code === 'ArrowLeft';
-              const isRightArrowKey = se.event.raw.code === 'ArrowRight';
+              const isLeftArrowKey = se.event.raw.code == 'ArrowLeft';
+              const isRightArrowKey = se.event.raw.code == 'ArrowRight';
               if (isLeftArrowKey) {
                 ancestor(comp.element, '.tox-tree--directory').each(dirElement => {
                   comp.getSystem().getByDom(dirElement).each(dirComp => {
@@ -18097,8 +18097,8 @@
         buttonBehaviours: derive$1([
           ...visible ? [Tabstopping.config({})] : [],
           config(directoryLabelEventsId, [run$1(keydown(), (comp, se) => {
-              const isRightArrowKey = se.event.raw.code === 'ArrowRight';
-              const isLeftArrowKey = se.event.raw.code === 'ArrowLeft';
+              const isRightArrowKey = se.event.raw.code == 'ArrowRight';
+              const isLeftArrowKey = se.event.raw.code == 'ArrowLeft';
               if (isRightArrowKey && noChildren) {
                 se.stop();
               }
@@ -18130,7 +18130,7 @@
           classes: ['tox-tree--directory__children']
         },
         components: children.map(item => {
-          return item.type === 'leaf' ? renderLeafLabel({
+          return item.type == 'leaf' ? renderLeafLabel({
             leaf: item,
             selectedId,
             onLeafAction,
@@ -18165,7 +18165,7 @@
       const {children} = directory;
       const expandedIdsCell = Cell(expandedIds);
       const computedChildrenComponents = visible => children.map(item => {
-        return item.type === 'leaf' ? renderLeafLabel({
+        return item.type == 'leaf' ? renderLeafLabel({
           leaf: item,
           selectedId,
           onLeafAction,
@@ -18193,7 +18193,7 @@
           renderDirectoryLabel({
             directory,
             visible: labelTabstopping,
-            noChildren: directory.children.length === 0,
+            noChildren: directory.children.length == 0,
             backstage
           }),
           renderDirectoryChildren({
@@ -18216,7 +18216,7 @@
               expandedIdsCell.set(expanded ? [
                 ...expandedIdsCell.get(),
                 node
-              ] : expandedIdsCell.get().filter(id => id !== node));
+              ] : expandedIdsCell.get().filter(id => id != node));
             })
           ]),
           Toggling.config({
@@ -18245,7 +18245,7 @@
       const selectedIdCell = Cell(spec.defaultSelectedId);
       const treeId = generate$6('tree-id');
       const children = (selectedId, expandedIds) => spec.items.map(item => {
-        return item.type === 'leaf' ? renderLeafLabel({
+        return item.type == 'leaf' ? renderLeafLabel({
           leaf: item,
           selectedId,
           onLeafAction,
@@ -18280,7 +18280,7 @@
               expandedIds.set(expanded ? [
                 ...expandedIds.get(),
                 node
-              ] : expandedIds.get().filter(id => id !== node));
+              ] : expandedIds.get().filter(id => id != node));
               onToggleExpand(expandedIds.get(), {
                 expanded,
                 node
@@ -18317,13 +18317,13 @@
 
     const throttle = _config => {
       const state = Cell(null);
-      const readState = () => ({ timer: state.get() !== null ? 'set' : 'unset' });
+      const readState = () => ({ timer: state.get() != null ? 'set' : 'unset' });
       const setTimer = t => {
         state.set(t);
       };
       const cancel = () => {
         const t = state.get();
-        if (t !== null) {
+        if (t != null) {
           t.cancel();
         }
       };
@@ -18384,7 +18384,7 @@
       const el = input.element;
       const value = get$6(el);
       const node = el.dom;
-      if (get$f(el, 'type') !== 'number') {
+      if (get$f(el, 'type') != 'number') {
         f(node, value);
       }
     };
@@ -18402,7 +18402,7 @@
         const inputDisplay = model.getDisplayText(currentValue);
         const itemValue = Representing.getValue(item);
         const itemDisplay = model.getDisplayText(itemValue);
-        return itemDisplay.indexOf(inputDisplay) === 0 ? Optional.some(() => {
+        return itemDisplay.indexOf(inputDisplay) == 0 ? Optional.some(() => {
           setValueFromItem(model, input, item);
           setSelectionToEnd(input, inputDisplay.length);
         }) : Optional.none();
@@ -18433,7 +18433,7 @@
       const focusBehaviours$1 = focusBehaviours(detail);
       const mapFetch = comp => tdata => tdata.map(data => {
         const menus = values(data.menus);
-        const items = bind$3(menus, menu => filter$2(menu.items, item => item.type === 'item'));
+        const items = bind$3(menus, menu => filter$2(menu.items, item => item.type == 'item'));
         const repState = Representing.getState(comp);
         repState.update(map$2(items, item => item.data));
         return data;
@@ -18479,7 +18479,7 @@
                     }, pv => {
                       Highlighting.highlightBy(activeMenu, item => {
                         const itemData = Representing.getValue(item);
-                        return itemData.value === pv.value;
+                        return itemData.value == pv.value;
                       });
                       Highlighting.getHighlighted(activeMenu).orThunk(() => {
                         Highlighting.highlightFirst(activeMenu);
@@ -18610,7 +18610,7 @@
       defaulted('layouts', Optional.none()),
       defaulted('eventOrder', {}),
       defaultedObjOf('model', {}, [
-        defaulted('getDisplayText', itemData => itemData.meta !== undefined && itemData.meta.text !== undefined ? itemData.meta.text : itemData.value),
+        defaulted('getDisplayText', itemData => itemData.meta != undefined && itemData.meta.text != undefined ? itemData.meta.text : itemData.value),
         defaulted('selectsOver', true),
         defaulted('populateFromBrowse', true)
       ]),
@@ -18850,22 +18850,22 @@
       return Button.sketch(buttonSpec);
     };
     const getAction = (name, buttonType) => comp => {
-      if (buttonType === 'custom') {
+      if (buttonType == 'custom') {
         emitWith(comp, formActionEvent, {
           name,
           value: {}
         });
-      } else if (buttonType === 'submit') {
+      } else if (buttonType == 'submit') {
         emit(comp, formSubmitEvent);
-      } else if (buttonType === 'cancel') {
+      } else if (buttonType == 'cancel') {
         emit(comp, formCancelEvent);
       } else {
         console.error('Unknown button type: ', buttonType);
       }
     };
-    const isMenuFooterButtonSpec = (spec, buttonType) => buttonType === 'menu';
-    const isNormalFooterButtonSpec = (spec, buttonType) => buttonType === 'custom' || buttonType === 'cancel' || buttonType === 'submit';
-    const isToggleButtonSpec = (spec, buttonType) => buttonType === 'togglebutton';
+    const isMenuFooterButtonSpec = (spec, buttonType) => buttonType == 'menu';
+    const isNormalFooterButtonSpec = (spec, buttonType) => buttonType == 'custom' || buttonType == 'cancel' || buttonType == 'submit';
+    const isToggleButtonSpec = (spec, buttonType) => buttonType == 'togglebutton';
     const renderToggleButton = (spec, providers) => {
       var _a, _b;
       const optMemIcon = spec.icon.map(memIcon => renderReplaceableIconFromPack(memIcon, providers.icons)).map(record);
@@ -18884,17 +18884,17 @@
       const buttonType = spec.buttonType.getOr(!spec.primary ? 'secondary' : 'primary');
       const buttonSpec = {
         ...spec,
-        name: (_a = spec.name) !== null && _a !== void 0 ? _a : '',
-        primary: buttonType === 'primary',
+        name: (_a = spec.name) != null && _a != void 0 ? _a : '',
+        primary: buttonType == 'primary',
         tooltip: Optional.from(spec.tooltip),
-        enabled: (_b = spec.enabled) !== null && _b !== void 0 ? _b : false,
+        enabled: (_b = spec.enabled) != null && _b != void 0 ? _b : false,
         borderless: false
       };
       const tooltipAttributes = buttonSpec.tooltip.map(tooltip => ({
         'aria-label': providers.translate(tooltip),
         'title': providers.translate(tooltip)
       })).getOr({});
-      const buttonTypeClasses = calculateClassesFromButtonType(buttonType !== null && buttonType !== void 0 ? buttonType : 'secondary');
+      const buttonTypeClasses = calculateClassesFromButtonType(buttonType != null && buttonType != void 0 ? buttonType : 'secondary');
       const showIconAndText = spec.icon.isSome() && spec.text.isSome();
       const dom = {
         tag: 'button',
@@ -18973,7 +18973,7 @@
       onAction: noop
     });
     const toMenuItems = targets => map$2(targets, toMenuItem);
-    const filterLinkTargets = (type, targets) => filter$2(targets, target => target.type === type);
+    const filterLinkTargets = (type, targets) => filter$2(targets, target => target.type == type);
     const filteredTargets = (type, targets) => toMenuItems(filterLinkTargets(type, targets));
     const headerTargets = linkInfo => filteredTargets('header', linkInfo.targets);
     const anchorTargets = linkInfo => filteredTargets('anchor', linkInfo.targets);
@@ -18982,7 +18982,7 @@
     const historyTargets = history => map$2(history, url => staticMenuItem(url, url));
     const joinMenuLists = items => {
       return foldl(items, (a, b) => {
-        const bothEmpty = a.length === 0 || b.length === 0;
+        const bothEmpty = a.length == 0 || b.length == 0;
         return bothEmpty ? a.concat(b) : a.concat(separator$1, b);
       }, []);
     };
@@ -18990,8 +18990,8 @@
       const lowerCaseTerm = term.toLowerCase();
       return filter$2(menuItems, item => {
         var _a;
-        const text = item.meta !== undefined && item.meta.text !== undefined ? item.meta.text : item.text;
-        const value = (_a = item.value) !== null && _a !== void 0 ? _a : '';
+        const text = item.meta != undefined && item.meta.text != undefined ? item.meta.text : item.text;
+        const value = (_a = item.value) != null && _a != void 0 ? _a : '';
         return contains$1(text.toLowerCase(), lowerCaseTerm) || contains$1(value.toLowerCase(), lowerCaseTerm);
       });
     };
@@ -18999,11 +18999,11 @@
     const getItems = (fileType, input, urlBackstage) => {
       var _a, _b;
       const urlInputValue = Representing.getValue(input);
-      const term = (_b = (_a = urlInputValue === null || urlInputValue === void 0 ? void 0 : urlInputValue.meta) === null || _a === void 0 ? void 0 : _a.text) !== null && _b !== void 0 ? _b : urlInputValue.value;
+      const term = (_b = (_a = urlInputValue == null || urlInputValue == void 0 ? void 0 : urlInputValue.meta) == null || _a == void 0 ? void 0 : _a.text) != null && _b != void 0 ? _b : urlInputValue.value;
       const info = urlBackstage.getLinkInformation();
       return info.fold(() => [], linkInfo => {
         const history = filterByQuery(term, historyTargets(urlBackstage.getHistory(fileType)));
-        return fileType === 'file' ? joinMenuLists([
+        return fileType == 'file' ? joinMenuLists([
           history,
           filterByQuery(term, headerTargets(linkInfo)),
           filterByQuery(term, flatten([
@@ -19065,7 +19065,7 @@
                     type: spec.filetype,
                     url: urlEntry.value
                   }, validation => {
-                    if (validation.status === 'invalid') {
+                    if (validation.status == 'invalid') {
                       const err = Result.error(validation.message);
                       completer(err);
                     } else {
@@ -19084,10 +19084,10 @@
             run$1(input(), comp => {
               const currentValue = get$6(comp.element);
               const trimmedValue = currentValue.trim();
-              if (trimmedValue !== currentValue) {
+              if (trimmedValue != currentValue) {
                 set$5(comp.element, trimmedValue);
               }
-              if (spec.filetype === 'file') {
+              if (spec.filetype == 'file') {
                 emitWith(comp, formChangeEvent, { name: spec.name });
               }
             }),
@@ -19316,7 +19316,7 @@
         behaviours: derive$1([Unselecting.config({})])
       });
       const makeIcon = className => {
-        const iconName = className === 'checked' ? 'selected' : 'unselected';
+        const iconName = className == 'checked' ? 'selected' : 'unselected';
         return render$3(iconName, {
           tag: 'span',
           classes: [
@@ -19353,7 +19353,7 @@
     };
 
     const renderHtmlPanel = spec => {
-      if (spec.presets === 'presentation') {
+      if (spec.presets == 'presentation') {
         return Container.sketch({
           dom: {
             tag: 'div',
@@ -19657,7 +19657,7 @@
     const HeaderBackstage = editor => {
       const mode = Cell(isToolbarLocationBottom(editor) ? 'bottom' : 'top');
       return {
-        isPositionedAtTop: () => mode.get() === 'top',
+        isPositionedAtTop: () => mode.get() == 'top',
         getDockingMode: mode.get,
         setDockingMode: mode.set
       };
@@ -19834,7 +19834,7 @@
 
     const isSeparator$1 = format => {
       const keys$1 = keys(format);
-      return keys$1.length === 1 && contains$2(keys$1, 'title');
+      return keys$1.length == 1 && contains$2(keys$1, 'title');
     };
     const processBasic = (item, isSelectedFor, getPreviewFor) => ({
       ...item,
@@ -19886,7 +19886,7 @@
       const isSelectedFor = format => () => editor.formatter.match(format);
       const getPreviewFor = format => () => {
         const fmt = editor.formatter.get(format);
-        return fmt !== undefined ? Optional.some({
+        return fmt != undefined ? Optional.some({
           tag: fmt.length > 0 ? fmt[0].inline || fmt[0].block || 'div' : 'div',
           styles: editor.dom.parseStyle(editor.formatter.getCssText(format))
         }) : Optional.none();
@@ -19912,15 +19912,15 @@
       return { getData };
     };
 
-    const isElement = node => isNonNullable(node) && node.nodeType === 1;
+    const isElement = node => isNonNullable(node) && node.nodeType == 1;
     const trim = global$1.trim;
     const hasContentEditableState = value => {
       return node => {
         if (isElement(node)) {
-          if (node.contentEditable === value) {
+          if (node.contentEditable == value) {
             return true;
           }
-          if (node.getAttribute('data-mce-contenteditable') === value) {
+          if (node.getAttribute('data-mce-contenteditable') == value) {
             return true;
           }
         }
@@ -19940,7 +19940,7 @@
       let tempNode = node;
       while (tempNode = tempNode.parentNode) {
         const value = tempNode.contentEditable;
-        if (value && value !== 'inherit') {
+        if (value && value != 'inherit') {
           return isContentEditableTrue(tempNode);
         }
       }
@@ -19958,7 +19958,7 @@
       return elm.id ? elm.id : generate$6('h');
     };
     const isAnchor = elm => {
-      return elm && elm.nodeName === 'A' && (elm.id || elm.name) !== undefined;
+      return elm && elm.nodeName == 'A' && (elm.id || elm.name) != undefined;
     };
     const isValidAnchor = elm => {
       return isAnchor(elm) && isEditable(elm);
@@ -19981,7 +19981,7 @@
       const attach = () => {
         elm.id = headerId;
       };
-      return create('header', (_a = getElementText(elm)) !== null && _a !== void 0 ? _a : '', '#' + headerId, getLevel(elm), attach);
+      return create('header', (_a = getElementText(elm)) != null && _a != void 0 ? _a : '', '#' + headerId, getLevel(elm), attach);
     };
     const anchorTarget = elm => {
       const anchorId = elm.id || elm.name;
@@ -20014,7 +20014,7 @@
     const isRecordOfUrlArray = r => isObject(r) && find$4(r, value => !isArrayOfUrl(value)).isNone();
     const getAllHistory = () => {
       const unparsedHistory = global$4.getItem(STORAGE_KEY);
-      if (unparsedHistory === null) {
+      if (unparsedHistory == null) {
         return {};
       }
       let history;
@@ -20049,7 +20049,7 @@
       }
       const history = getAllHistory();
       const items = get$g(history, fileType).getOr([]);
-      const itemsWithoutUrl = filter$2(items, item => item !== url);
+      const itemsWithoutUrl = filter$2(items, item => item != url);
       history[fileType] = [url].concat(itemsWithoutUrl).slice(0, HISTORY_LENGTH);
       setAllHistory(history);
     };
@@ -20074,7 +20074,7 @@
         if (!isString(value)) {
           throw new Error('Expected value to be string');
         }
-        if (meta !== undefined && !isObject(meta)) {
+        if (meta != undefined && !isObject(meta)) {
           throw new Error('Expected meta to be a object');
         }
         const r = {
@@ -20185,19 +20185,19 @@
       const onTouchend = bind(doc, 'touchend', evt => broadcastEvent(documentTouchend(), evt));
       const onMousedown = bind(doc, 'mousedown', fireDismissPopups);
       const onMouseup = bind(doc, 'mouseup', evt => {
-        if (evt.raw.button === 0) {
+        if (evt.raw.button == 0) {
           broadcastOn(mouseReleased(), { target: evt.target });
         }
       });
       const onContentClick = raw => broadcastOn(dismissPopups(), { target: SugarElement.fromDom(raw.target) });
       const onContentMouseup = raw => {
-        if (raw.button === 0) {
+        if (raw.button == 0) {
           broadcastOn(mouseReleased(), { target: SugarElement.fromDom(raw.target) });
         }
       };
       const onContentMousedown = () => {
         each$1(editor.editorManager.get(), loopEditor => {
-          if (editor !== loopEditor) {
+          if (editor != loopEditor) {
             loopEditor.dispatch('DismissPopups', { relatedTarget: editor });
           }
         });
@@ -20211,7 +20211,7 @@
       const onElementScroll = capture(dos, 'scroll', evt => {
         requestAnimationFrame(() => {
           const c = editor.getContainer();
-          if (c !== undefined && c !== null) {
+          if (c != undefined && c != null) {
             const optScrollingContext = detectWhenSplitUiMode(editor, mothership.element);
             const scrollers = optScrollingContext.map(sc => [
               sc.element,
@@ -20505,7 +20505,7 @@
       case 'absolute':
         const offsetParent = getOffsetParent(elem).getOr(body());
         const offsetBox = box$1(offsetParent);
-        const scrollDelta = (_a = offsetParent.dom.scrollTop) !== null && _a !== void 0 ? _a : 0;
+        const scrollDelta = (_a = offsetParent.dom.scrollTop) != null && _a != void 0 ? _a : 0;
         return Optional.some({
           morph: 'absolute',
           positionCss: NuPositionCss('absolute', get$g(position.style, 'left').map(_left => box.x - offsetBox.x), get$g(position.style, 'top').map(_top => box.y - offsetBox.y + scrollDelta), get$g(position.style, 'right').map(_right => offsetBox.right - box.right), get$g(position.style, 'bottom').map(_bottom => offsetBox.bottom - box.bottom))
@@ -20540,7 +20540,7 @@
         win: winBox,
         box
       }, viewport);
-      if (decision.location === 'top' || decision.location === 'bottom') {
+      if (decision.location == 'top' || decision.location == 'bottom') {
         storePrior(elem, box, viewport, state, decision);
         return tryDecisionToFixedMorph(decision);
       } else {
@@ -20555,7 +20555,7 @@
             win: winBox,
             box
           });
-          const decision = location === 'top' ? forceTopPosition(winBox, leftX, viewport) : forceBottomPosition(winBox, leftX, viewport);
+          const decision = location == 'top' ? forceTopPosition(winBox, leftX, viewport) : forceBottomPosition(winBox, leftX, viewport);
           return tryDecisionToFixedMorph(decision);
         });
       });
@@ -20577,7 +20577,7 @@
         box
       });
       const decision = getDecision(winBox, leftX, viewport);
-      if (decision.location === 'bottom' || decision.location === 'top') {
+      if (decision.location == 'bottom' || decision.location == 'top') {
         storePriorIfNone(elem, box, viewport, state, decision);
         return tryDecisionToFixedMorph(decision);
       } else {
@@ -20597,7 +20597,7 @@
       config.onUndocked(component);
     };
     const morphToCoord = (component, config, state, position) => {
-      const isDocked = position.position === 'fixed';
+      const isDocked = position.position == 'fixed';
       state.setDocked(isDocked);
       applyPositionCss(component.element, position);
       const method = isDocked ? config.onDocked : config.onUndocked;
@@ -20607,7 +20607,7 @@
       config.contextual.each(contextInfo => {
         contextInfo.lazyContext(component).each(box => {
           const isVisible = isPartiallyVisible(box, viewport.bounds);
-          if (isVisible !== state.isVisible()) {
+          if (isVisible != state.isVisible()) {
             state.setVisible(isVisible);
             if (morphToDocked && !isVisible) {
               add$1(component.element, [contextInfo.fadeOutClass]);
@@ -21205,7 +21205,7 @@
       const onSlots = f => (container, keys) => {
         each$1(keys, key => f(container, key));
       };
-      const doShowing = (comp, _key) => get$f(comp.element, 'aria-hidden') !== 'true';
+      const doShowing = (comp, _key) => get$f(comp.element, 'aria-hidden') != 'true';
       const doShow = (comp, key) => {
         if (!doShowing(comp)) {
           const element = comp.element;
@@ -21319,7 +21319,7 @@
             onControlDetached(spec, editorOffCell),
             run$1(slotVisibility(), (sidepanel, se) => {
               const data = se.event;
-              const optSidePanelSpec = find$5(specs, config => config.name === data.name);
+              const optSidePanelSpec = find$5(specs, config => config.name == data.name);
               optSidePanelSpec.each(sidePanelSpec => {
                 const handler = data.visible ? sidePanelSpec.onShow : sidePanelSpec.onHide;
                 handler(sidePanelSpec.getApi(sidepanel));
@@ -21341,7 +21341,7 @@
       const optSlider = Composing.getCurrent(sidebar);
       optSlider.each(slider => {
         Replacing.set(slider, [makeSidebar(panelConfigs)]);
-        const configKey = showSidebar === null || showSidebar === void 0 ? void 0 : showSidebar.toLowerCase();
+        const configKey = showSidebar == null || showSidebar == void 0 ? void 0 : showSidebar.toLowerCase();
         if (isString(configKey) && has$2(panelConfigs, configKey)) {
           Composing.getCurrent(slider).each(slotContainer => {
             SlotContainer.showSlot(slotContainer, configKey);
@@ -21584,7 +21584,7 @@
       ]),
       components: []
     });
-    const isFocusEvent = event => event.type === 'focusin';
+    const isFocusEvent = event => event.type == 'focusin';
     const isPasteBinTarget = event => {
       if (isFocusEvent(event)) {
         const node = event.composed ? head(event.composedPath()) : Optional.from(event.target);
@@ -21607,14 +21607,14 @@
         editor.on('PreInit', () => {
           editor.dom.bind(editor.getWin(), 'focusin', stealFocus);
           editor.on('BeforeExecCommand', e => {
-            if (e.command.toLowerCase() === 'mcefocus' && e.value !== true) {
+            if (e.command.toLowerCase() == 'mcefocus' && e.value != true) {
               stealFocus(e);
             }
           });
         });
       }
       const toggle = state => {
-        if (state !== throbberState.get()) {
+        if (state != throbberState.get()) {
           throbberState.set(state);
           toggleThrobber(editor, lazyThrobber(), state, sharedBackstage.providers);
           fireAfterProgressState(editor, state);
@@ -21683,14 +21683,14 @@
     const fitAll = (within, extra, withinWidth) => output(toUnit(within), [], withinWidth);
     const tryFit = (total, units, len) => {
       const divide = apportion(units, total, len);
-      return divide.extra.length === 0 ? Optional.some(divide) : Optional.none();
+      return divide.extra.length == 0 ? Optional.some(divide) : Optional.none();
     };
     const partition = (total, units, len, overflower) => {
       const divide = tryFit(total, units, len).getOrThunk(() => apportion(units, total - len(overflower), len));
       const within = divide.within;
       const extra = divide.extra;
       const withinWidth = divide.withinWidth;
-      if (extra.length === 1 && extra[0].width <= len(overflower)) {
+      if (extra.length == 1 && extra[0].width <= len(overflower)) {
         return fitLast(within, extra, withinWidth);
       } else if (extra.length >= 1) {
         return overflow(within, extra, overflower, withinWidth);
@@ -21706,7 +21706,7 @@
     const findFocusedComp = comps => findMap(comps, comp => search(comp.element).bind(focusedElm => comp.getSystem().getByDom(focusedElm).toOptional()));
     const refresh$2 = (toolbar, detail, setOverflow) => {
       const builtGroups = detail.builtGroups.get();
-      if (builtGroups.length === 0) {
+      if (builtGroups.length == 0) {
         return;
       }
       const primary = getPartOrDie(toolbar, detail, 'primary');
@@ -21718,7 +21718,7 @@
       setGroups$1(primary, groups);
       const availableWidth = get$c(primary.element);
       const overflows = partition(availableWidth, detail.builtGroups.get(), comp => get$c(comp.element), overflowGroup);
-      if (overflows.extra.length === 0) {
+      if (overflows.extra.length == 0) {
         Replacing.remove(primary, overflowGroup);
         setOverflow([]);
       } else {
@@ -22378,7 +22378,7 @@
         uid: toolbarSpec.uid,
         dom: {
           tag: 'div',
-          classes: ['tox-toolbar'].concat(toolbarSpec.type === ToolbarMode$1.scrolling ? ['tox-toolbar--scrolling'] : [])
+          classes: ['tox-toolbar'].concat(toolbarSpec.type == ToolbarMode$1.scrolling ? ['tox-toolbar--scrolling'] : [])
         },
         components: [Toolbar.parts.groups({})],
         toolbarBehaviours: getToolbarBehaviours(toolbarSpec, modeName)
@@ -22428,7 +22428,7 @@
 
     const renderButton = (spec, providers) => {
       var _a, _b;
-      const isToggleButton = spec.type === 'togglebutton';
+      const isToggleButton = spec.type == 'togglebutton';
       const optMemIcon = spec.icon.map(memIcon => renderReplaceableIconFromPack(memIcon, providers.icons)).map(record);
       const getAction = () => comp => {
         const setIcon = newIcon => {
@@ -22454,22 +22454,22 @@
             isActive
           });
         }
-        if (spec.type === 'button') {
+        if (spec.type == 'button') {
           return spec.onAction({ setIcon });
         }
       };
       const action = getAction();
       const buttonSpec = {
         ...spec,
-        name: isToggleButton ? spec.text.getOr(spec.icon.getOr('')) : (_a = spec.text) !== null && _a !== void 0 ? _a : spec.icon.getOr(''),
-        primary: spec.buttonType === 'primary',
+        name: isToggleButton ? spec.text.getOr(spec.icon.getOr('')) : (_a = spec.text) != null && _a != void 0 ? _a : spec.icon.getOr(''),
+        primary: spec.buttonType == 'primary',
         buttonType: Optional.from(spec.buttonType),
         tooltip: spec.tooltip,
         icon: spec.icon,
         enabled: true,
         borderless: spec.borderless
       };
-      const buttonTypeClasses = calculateClassesFromButtonType((_b = spec.buttonType) !== null && _b !== void 0 ? _b : 'secondary');
+      const buttonTypeClasses = calculateClassesFromButtonType((_b = spec.buttonType) != null && _b != void 0 ? _b : 'secondary');
       const optTranslatedText = isToggleButton ? spec.text.map(providers.translate) : Optional.some(providers.translate(spec.text));
       const optTranslatedTextComponed = optTranslatedText.map(text$2);
       const tooltipAttributes = buttonSpec.tooltip.or(optTranslatedText).map(tooltip => ({
@@ -22484,7 +22484,7 @@
       const hasIconAndText = spec.icon.isSome() && optTranslatedTextComponed.isSome();
       const dom = {
         tag: 'button',
-        classes: buttonTypeClasses.concat(...spec.icon.isSome() && !hasIconAndText ? ['tox-button--icon'] : []).concat(...hasIconAndText ? ['tox-button--icon-and-text'] : []).concat(...spec.borderless ? ['tox-button--naked'] : []).concat(...spec.type === 'togglebutton' && spec.active ? ['tox-button--enabled'] : []),
+        classes: buttonTypeClasses.concat(...spec.icon.isSome() && !hasIconAndText ? ['tox-button--icon'] : []).concat(...hasIconAndText ? ['tox-button--icon-and-text'] : []).concat(...spec.borderless ? ['tox-button--naked'] : []).concat(...spec.type == 'togglebutton' && spec.active ? ['tox-button--enabled'] : []),
         attributes: tooltipAttributes
       };
       const extraBehaviours = [];
@@ -22508,7 +22508,7 @@
     const renderViewHeader = spec => {
       let hasGroups = false;
       const endButtons = map$2(spec.buttons, btnspec => {
-        if (btnspec.type === 'group') {
+        if (btnspec.type == 'group') {
           hasGroups = true;
           return renderButtonsGroup(btnspec, spec.providers);
         } else {
@@ -22662,7 +22662,7 @@
       const toggleView = (comp, showMainView, hideMainView, name) => {
         return Composing.getCurrent(comp).exists(slotContainer => {
           const optCurrentSlotName = getCurrentName(slotContainer);
-          const isTogglingCurrentView = optCurrentSlotName.exists(current => name === current);
+          const isTogglingCurrentView = optCurrentSlotName.exists(current => name == current);
           const exists = SlotContainer.getSlot(slotContainer, name).isSome();
           if (exists) {
             SlotContainer.hideAllSlots(slotContainer);
@@ -22833,9 +22833,9 @@
       schema: [required$1('backstage')]
     });
     const toolbarFactory = spec => {
-      if (spec.type === ToolbarMode$1.sliding) {
+      if (spec.type == ToolbarMode$1.sliding) {
         return renderSlidingMoreToolbar;
-      } else if (spec.type === ToolbarMode$1.floating) {
+      } else if (spec.type == ToolbarMode$1.floating) {
         return renderFloatingMoreToolbar;
       } else {
         return renderToolbar;
@@ -23069,11 +23069,11 @@
         text: menu.title,
         getItems: () => bind$3(menu.items, i => {
           const itemName = i.toLowerCase();
-          if (itemName.trim().length === 0) {
+          if (itemName.trim().length == 0) {
             return [];
-          } else if (exists(removedMenuItems, removedMenuItem => removedMenuItem === itemName)) {
+          } else if (exists(removedMenuItems, removedMenuItem => removedMenuItem == itemName)) {
             return [];
-          } else if (itemName === 'separator' || itemName === '|') {
+          } else if (itemName == 'separator' || itemName == '|') {
             return [{ type: 'separator' }];
           } else if (registry.menuItems[itemName]) {
             return [registry.menuItems[itemName]];
@@ -23092,7 +23092,7 @@
         ...registry.menus
       };
       const userDefinedMenus = keys(registry.menus).length > 0;
-      const menubar = registry.menubar === undefined || registry.menubar === true ? parseItemsString(defaultMenubar) : parseItemsString(registry.menubar === false ? '' : registry.menubar);
+      const menubar = registry.menubar == undefined || registry.menubar == true ? parseItemsString(defaultMenubar) : parseItemsString(registry.menubar == false ? '' : registry.menubar);
       const validMenus = filter$2(menubar, menuName => {
         const isDefaultMenu = has$2(defaultMenus, menuName);
         if (userDefinedMenus) {
@@ -23109,7 +23109,7 @@
         }, registry, editor);
       });
       return filter$2(menus, menu => {
-        const isNotSeparator = item => isString(item) || item.type !== 'separator';
+        const isNotSeparator = item => isString(item) || item.type != 'separator';
         return menu.getItems().length > 0 && exists(menu.getItems(), isNotSeparator);
       });
     };
@@ -23203,14 +23203,14 @@
     const generateSelectItems = (backstage, spec) => {
       const generateItem = (rawItem, response, invalid, value) => {
         const translatedText = backstage.shared.providers.translate(rawItem.title);
-        if (rawItem.type === 'separator') {
+        if (rawItem.type == 'separator') {
           return Optional.some({
             type: 'separator',
             text: translatedText
           });
-        } else if (rawItem.type === 'submenu') {
+        } else if (rawItem.type == 'submenu') {
           const items = bind$3(rawItem.getStyleItems(), si => validate(si, response, value));
-          if (response === 0 && items.length <= 0) {
+          if (response == 0 && items.length <= 0) {
             return Optional.none();
           } else {
             return Optional.some({
@@ -23233,8 +23233,8 @@
         }
       };
       const validate = (item, response, value) => {
-        const invalid = item.type === 'formatter' && spec.isInvalid(item);
-        if (response === 0) {
+        const invalid = item.type == 'formatter' && spec.isInvalid(item);
+        if (response == 0) {
           return invalid ? [] : generateItem(item, response, false, value).toArray();
         } else {
           return generateItem(item, response, invalid, value).toArray();
@@ -23261,7 +23261,7 @@
     };
     const createMenuItems = (editor, backstage, spec) => {
       const dataset = spec.dataset;
-      const getStyleItems = dataset.type === 'basic' ? () => map$2(dataset.data, d => processBasic(d, spec.isSelectedFor, spec.getPreviewFor)) : dataset.getData;
+      const getStyleItems = dataset.type == 'basic' ? () => map$2(dataset.data, d => processBasic(d, spec.isSelectedFor, spec.getPreviewFor)) : dataset.getData;
       return {
         items: generateSelectItems(backstage, spec),
         getStyleItems
@@ -23325,7 +23325,7 @@
       Delimiter[Delimiter['Space'] = 1] = 'Space';
     }(Delimiter || (Delimiter = {})));
     const split = (rawFormats, delimiter) => {
-      if (delimiter === Delimiter.SemiColon) {
+      if (delimiter == Delimiter.SemiColon) {
         return rawFormats.replace(/;$/, '').split(';');
       } else {
         return rawFormats.split(' ');
@@ -23380,7 +23380,7 @@
         fireAlignTextUpdate(editor, { value: alignment });
       };
       const dataset = buildBasicStaticDataset(alignMenuItems);
-      const onAction = rawItem => () => find$5(alignMenuItems, item => item.format === rawItem.format).each(item => editor.execCommand(item.command));
+      const onAction = rawItem => () => find$5(alignMenuItems, item => item.format == rawItem.format).each(item => editor.execCommand(item.command));
       return {
         tooltip: makeTooltipText(editor, btnTooltip$4, fallbackAlignment),
         text: Optional.none(),
@@ -23408,7 +23408,7 @@
     const findNearest = (editor, getStyles) => {
       const styles = getStyles();
       const formats = map$2(styles, style => style.format);
-      return Optional.from(editor.formatter.closest(formats)).bind(fmt => find$5(styles, data => data.format === fmt)).orThunk(() => someIf(editor.formatter.match('p'), {
+      return Optional.from(editor.formatter.closest(formats)).bind(fmt => find$5(styles, data => data.format == fmt)).orThunk(() => someIf(editor.formatter.match('p'), {
         title: 'Paragraph',
         format: 'p'
       }));
@@ -23477,7 +23477,7 @@
     };
     const matchesStack = (fonts, stack) => stack.length > 0 && forall(stack, font => fonts.indexOf(font.toLowerCase()) > -1);
     const isSystemFontStack = (fontFamily, userStack) => {
-      if (fontFamily.indexOf('-apple-system') === 0 || userStack.length > 0) {
+      if (fontFamily.indexOf('-apple-system') == 0 || userStack.length > 0) {
         const fonts = splitFonts(fontFamily.toLowerCase());
         return matchesStack(fonts, systemStackFonts) || matchesStack(fonts, userStack);
       } else {
@@ -23493,7 +23493,7 @@
         const userStack = getDefaultFontStack(editor);
         const matchOpt = find$5(items, item => {
           const format = item.format;
-          return format.toLowerCase() === font || getFirstFont(format).toLowerCase() === getFirstFont(font).toLowerCase();
+          return format.toLowerCase() == font || getFirstFont(format).toLowerCase() == getFirstFont(font).toLowerCase();
         }).orThunk(() => {
           return someIf(isSystemFontStack(font, userStack), {
             title: systemFont,
@@ -23505,14 +23505,14 @@
           font: fontFamily
         };
       };
-      const isSelectedFor = item => valueOpt => valueOpt.exists(value => value.format === item);
+      const isSelectedFor = item => valueOpt => valueOpt.exists(value => value.format == item);
       const getCurrentValue = () => {
         const {matchOpt} = getMatchingValue();
         return matchOpt;
       };
       const getPreviewFor = item => () => Optional.some({
         tag: 'div',
-        styles: item.indexOf('dings') === -1 ? { 'font-family': item } : {}
+        styles: item.indexOf('dings') == -1 ? { 'font-family': item } : {}
       });
       const onAction = rawItem => () => {
         editor.undoManager.transact(() => {
@@ -23597,7 +23597,7 @@
       const float = `[+-]?(?:${ unsignedDecimalLiteral })`;
       return new RegExp(`^(${ float })(.*)$`);
     })();
-    const isUnit = (unit, accepted) => exists(accepted, acc => exists(units[acc], check => unit === check));
+    const isUnit = (unit, accepted) => exists(accepted, acc => exists(units[acc], check => unit == check));
     const parse = (input, accepted) => {
       const match = Optional.from(pattern.exec(input));
       return match.bind(array => {
@@ -23704,7 +23704,7 @@
               }, editorOffCellStepButton),
               onControlDetached({ getApi }, editorOffCellStepButton),
               run$1(keydown(), (comp, se) => {
-                if (se.event.raw.keyCode === Keys.space() || se.event.raw.keyCode === Keys.enter()) {
+                if (se.event.raw.keyCode == Keys.space() || se.event.raw.keyCode == Keys.enter()) {
                   if (!Disabling.isDisabled(comp)) {
                     action(false);
                   }
@@ -23877,7 +23877,7 @@
           for (let precision = 3; matchOpt.isNone() && precision >= 0; precision--) {
             const pt = toPt(fontSize, precision);
             const legacy = toLegacy(pt);
-            matchOpt = find$5(items, item => item.format === fontSize || item.format === pt || item.format === legacy);
+            matchOpt = find$5(items, item => item.format == fontSize || item.format == pt || item.format == legacy);
           }
         }
         return {
@@ -23885,7 +23885,7 @@
           size: fontSize
         };
       };
-      const isSelectedFor = item => valueOpt => valueOpt.exists(value => value.format === item);
+      const isSelectedFor = item => valueOpt => valueOpt.exists(value => value.format == item);
       const getCurrentValue = () => {
         const {matchOpt} = getMatchingValue();
         return matchOpt;
@@ -23930,7 +23930,7 @@
         ch: { step: 0.1 },
         rem: { step: 0.1 }
       };
-      return (_a = configs[unit]) !== null && _a !== void 0 ? _a : baseConfig;
+      return (_a = configs[unit]) != null && _a != void 0 ? _a : baseConfig;
     };
     const defaultValue = 16;
     const isValidValue = value => value >= 0;
@@ -23955,10 +23955,10 @@
           ]));
           const value = parsedText.map(res => res.value).getOr(defaultValue);
           const defaultUnit = getFontSizeInputDefaultUnit(editor);
-          const unit = parsedText.map(res => res.unit).filter(u => u !== '').getOr(defaultUnit);
+          const unit = parsedText.map(res => res.unit).filter(u => u != '').getOr(defaultUnit);
           const newValue = updateFunction(value, getConfigFromUnit(unit).step);
           const res = `${ isValidValue(newValue) ? newValue : value }${ unit }`;
-          if (res !== currentValue) {
+          if (res != currentValue) {
             fireFontSizeInputTextUpdate(editor, { value: res });
           }
           return res;
@@ -23982,7 +23982,7 @@
       const isSelectedFor = format => () => editor.formatter.match(format);
       const getPreviewFor = format => () => {
         const fmt = editor.formatter.get(format);
-        return fmt !== undefined ? Optional.some({
+        return fmt != undefined ? Optional.some({
           tag: fmt.length > 0 ? fmt[0].inline || fmt[0].block || 'div' : 'div',
           styles: editor.dom.parseStyle(editor.formatter.getCssText(format))
         }) : Optional.none();
@@ -24359,7 +24359,7 @@
             DisablingConfigs.toolbarButton(() => !spec.enabled || providersBackstage.isDisabled()),
             receivingConfig()
           ].concat(specialisation.toolbarButtonBehaviours)),
-          [commonButtonDisplayEvent]: (_d = structure.buttonBehaviours) === null || _d === void 0 ? void 0 : _d[commonButtonDisplayEvent]
+          [commonButtonDisplayEvent]: (_d = structure.buttonBehaviours) == null || _d == void 0 ? void 0 : _d[commonButtonDisplayEvent]
         }
       });
     };
@@ -24386,7 +24386,7 @@
       spec.onItemAction(getApi(comp), value);
     }, spec.columns, spec.presets, ItemResponse$1.CLOSE_ON_EXECUTE, spec.select.getOr(never), providersBackstage), {
       movement: deriveMenuMovement(spec.columns, spec.presets),
-      menuBehaviours: SimpleBehaviours.unnamedEvents(spec.columns !== 'auto' ? [] : [runOnAttached((comp, _se) => {
+      menuBehaviours: SimpleBehaviours.unnamedEvents(spec.columns != 'auto' ? [] : [runOnAttached((comp, _se) => {
           detectSize(comp, 4, classForPreset(spec.presets)).each(({numRows, numColumns}) => {
             Keying.setGridSize(comp, numRows, numColumns);
           });
@@ -24592,9 +24592,9 @@
     const createToolbar = toolbarConfig => {
       const toolbar = toolbarConfig.toolbar;
       const buttons = toolbarConfig.buttons;
-      if (toolbar === false) {
+      if (toolbar == false) {
         return [];
-      } else if (toolbar === undefined || toolbar === true) {
+      } else if (toolbar == undefined || toolbar == true) {
         return removeUnusedDefaults(buttons);
       } else if (isString(toolbar)) {
         return convertStringToolbar(toolbar);
@@ -24606,7 +24606,7 @@
       }
     };
     const lookupButton = (editor, buttons, toolbarItem, allowToolbarGroups, backstage, prefixes) => get$g(buttons, toolbarItem.toLowerCase()).orThunk(() => prefixes.bind(ps => findMap(ps, prefix => get$g(buttons, prefix + toolbarItem.toLowerCase())))).fold(() => get$g(bespokeButtons, toolbarItem.toLowerCase()).map(r => r(editor, backstage)), spec => {
-      if (spec.type === 'grouptoolbarbutton' && !allowToolbarGroups) {
+      if (spec.type == 'grouptoolbarbutton' && !allowToolbarGroups) {
         console.warn(`Ignoring the '${ toolbarItem }' toolbar button. Group toolbar buttons are only supported when using floating toolbar mode and cannot be nested.`);
         return Optional.none();
       } else {
@@ -24617,7 +24617,7 @@
       const toolbarGroups = createToolbar(toolbarConfig);
       const groups = map$2(toolbarGroups, group => {
         const items = bind$3(group.items, toolbarItem => {
-          return toolbarItem.trim().length === 0 ? [] : lookupButton(editor, toolbarConfig.buttons, toolbarItem, toolbarConfig.allowToolbarGroups, backstage, prefixes).toArray();
+          return toolbarItem.trim().length == 0 ? [] : lookupButton(editor, toolbarConfig.buttons, toolbarItem, toolbarConfig.allowToolbarGroups, backstage, prefixes).toArray();
         });
         return {
           title: Optional.from(editor.translate(group.name)),
@@ -24657,7 +24657,7 @@
       const lastDocumentDimensions = Cell(SugarPosition(initialDocEle.offsetWidth, initialDocEle.offsetHeight));
       const resizeWindow = () => {
         const outer = lastWindowDimensions.get();
-        if (outer.left !== contentWindow.innerWidth || outer.top !== contentWindow.innerHeight) {
+        if (outer.left != contentWindow.innerWidth || outer.top != contentWindow.innerHeight) {
           lastWindowDimensions.set(SugarPosition(contentWindow.innerWidth, contentWindow.innerHeight));
           fireResizeContent(editor);
         }
@@ -24665,7 +24665,7 @@
       const resizeDocument = () => {
         const docEle = editor.getDoc().documentElement;
         const inner = lastDocumentDimensions.get();
-        if (inner.left !== docEle.offsetWidth || inner.top !== docEle.offsetHeight) {
+        if (inner.left != docEle.offsetWidth || inner.top != docEle.offsetHeight) {
           lastDocumentDimensions.set(SugarPosition(docEle.offsetWidth, docEle.offsetHeight));
           fireResizeContent(editor);
         }
@@ -24736,7 +24736,7 @@
       });
       editor.addQueryValueHandler('ToggleSidebar', () => {
         var _a;
-        return (_a = OuterContainer.whichSidebar(outerContainer)) !== null && _a !== void 0 ? _a : '';
+        return (_a = OuterContainer.whichSidebar(outerContainer)) != null && _a != void 0 ? _a : '';
       });
       editor.addCommand('ToggleView', (_ui, value) => {
         if (OuterContainer.toggleView(outerContainer, value)) {
@@ -24754,16 +24754,16 @@
       });
       editor.addQueryValueHandler('ToggleView', () => {
         var _a;
-        return (_a = OuterContainer.whichView(outerContainer)) !== null && _a !== void 0 ? _a : '';
+        return (_a = OuterContainer.whichView(outerContainer)) != null && _a != void 0 ? _a : '';
       });
       const toolbarMode = getToolbarMode(editor);
       const refreshDrawer = () => {
         OuterContainer.refreshToolbar(uiRefs.mainUi.outerContainer);
       };
-      if (toolbarMode === ToolbarMode$1.sliding || toolbarMode === ToolbarMode$1.floating) {
+      if (toolbarMode == ToolbarMode$1.sliding || toolbarMode == ToolbarMode$1.floating) {
         editor.on('ResizeWindow ResizeEditor ResizeContent', () => {
           const width = editor.getWin().innerWidth;
-          if (width !== lastToolbarWidth.get()) {
+          if (width != lastToolbarWidth.get()) {
             refreshDrawer();
             lastToolbarWidth.set(width);
           }
@@ -24833,7 +24833,7 @@
       const headerBackstage = backstage.shared.header;
       const isPositionedAtTop = headerBackstage.isPositionedAtTop;
       const toolbarMode = getToolbarMode(editor);
-      const isSplitToolbar = toolbarMode === ToolbarMode.sliding || toolbarMode === ToolbarMode.floating;
+      const isSplitToolbar = toolbarMode == ToolbarMode.sliding || toolbarMode == ToolbarMode.floating;
       const visible = Cell(false);
       const isVisible = () => visible.get() && !editor.removed;
       const calcToolbarOffset = toolbar => isSplitToolbar ? toolbar.fold(constant$1(0), tbar => tbar.components().length > 1 ? get$d(tbar.components()[1].element) : 0) : 0;
@@ -24896,7 +24896,7 @@
           }, offsetParent => {
             var _a;
             const offsetBox = box$1(offsetParent);
-            const scrollDelta = (_a = offsetParent.dom.scrollTop) !== null && _a !== void 0 ? _a : 0;
+            const scrollDelta = (_a = offsetParent.dom.scrollTop) != null && _a != void 0 ? _a : 0;
             const isOffsetParentBody = eq(offsetParent, body());
             const topValue = isOffsetParentBody ? Math.max(targetBounds.y - get$d(container.element) + offset, 0) : targetBounds.y - offsetBox.y + scrollDelta - get$d(container.element) + offset;
             return {
@@ -24970,7 +24970,7 @@
         return floatContainer.get().exists(fc => {
           const currentMode = headerBackstage.getDockingMode();
           const newMode = calcMode(fc);
-          if (newMode !== currentMode) {
+          if (newMode != currentMode) {
             setupMode(newMode);
             return true;
           } else {
@@ -25032,7 +25032,7 @@
           pos: prevPos,
           bounds: prevBounds
         } = prevPosAndBounds.get();
-        const hasResized = bounds.height !== prevBounds.height || bounds.width !== prevBounds.width;
+        const hasResized = bounds.height != prevBounds.height || bounds.width != prevBounds.width;
         prevPosAndBounds.set({
           pos,
           bounds
@@ -25041,7 +25041,7 @@
           fireResizeContent(editor, e);
         }
         if (ui.isVisible()) {
-          if (prevPos !== pos) {
+          if (prevPos != pos) {
             ui.update(Docking.reset);
           } else if (hasResized) {
             ui.updateMode();
@@ -25061,7 +25061,7 @@
       const updateUi = last(() => ui.update(Docking.refresh), 33);
       editor.on('ScrollWindow', () => {
         const newScrollX = get$b().left;
-        if (newScrollX !== lastScrollX) {
+        if (newScrollX != lastScrollX) {
           lastScrollX = newScrollX;
           updateUi.throttle();
         }
@@ -25188,7 +25188,7 @@
       }));
       return renderToolbarToggleButtonWith(bridged, providers, [runOnExecute(memInput, button)]);
     };
-    const isToggleButton = button => button.type === 'contextformtogglebutton';
+    const isToggleButton = button => button.type == 'contextformtogglebutton';
     const generateOne = (memInput, button, providersBackstage) => {
       if (isToggleButton(button)) {
         return renderContextToggleButton(memInput, button, providersBackstage);
@@ -25312,7 +25312,7 @@
           bottom: Math.min(headerBox.y - margin, viewportBounds.bottom)
         };
       }
-      const containerBounds = toolbarType === 'line' ? box$1(container) : contentAreaBox;
+      const containerBounds = toolbarType == 'line' ? box$1(container) : contentAreaBox;
       if (isToolbarAbove) {
         return {
           y: Math.max(headerBox.bottom + margin, viewportBounds.y),
@@ -25357,7 +25357,7 @@
     const isEntireElementSelected = (editor, elem) => {
       const rng = editor.selection.getRng();
       const leaf$1 = leaf(SugarElement.fromDom(rng.startContainer), rng.startOffset);
-      return rng.startContainer === rng.endContainer && rng.startOffset === rng.endOffset - 1 && eq(leaf$1.element, elem);
+      return rng.startContainer == rng.endContainer && rng.startOffset == rng.endOffset - 1 && eq(leaf$1.element, elem);
     };
     const preservePosition = (elem, position, f) => {
       const currentPosition = getRaw(elem, 'position');
@@ -25366,7 +25366,7 @@
       currentPosition.each(pos => set$8(elem, 'position', pos));
       return result;
     };
-    const shouldUseInsetLayouts = position => position === 'node';
+    const shouldUseInsetLayouts = position => position == 'node';
     const determineInsetLayout = (editor, contextbar, elem, data, bounds) => {
       const selectionBounds = getSelectionBounds(editor);
       const isSameAnchorElement = data.lastElement().exists(prev => eq(elem, prev));
@@ -25378,7 +25378,7 @@
           return isOverlapping && !data.isReposition() ? flip : preserve;
         });
       } else {
-        const yBounds = data.getMode() === 'fixed' ? bounds.y + get$b().top : bounds.y;
+        const yBounds = data.getMode() == 'fixed' ? bounds.y + get$b().top : bounds.y;
         const contextbarHeight = get$d(contextbar) + bubbleSize$1;
         return yBounds + contextbarHeight <= selectionBounds.y ? north : south;
       }
@@ -25436,7 +25436,7 @@
       return mobile ? mobileAnchorSpecLayouts : desktopAnchorSpecLayouts;
     };
     const getAnchorLayout = (editor, position, isTouch, data) => {
-      if (position === 'line') {
+      if (position == 'line') {
         return {
           bubble: nu$5(bubbleSize$1, 0, bubbleAlignments$1),
           layouts: {
@@ -25456,7 +25456,7 @@
 
     const matchTargetWith = (elem, candidates) => {
       const ctxs = filter$2(candidates, toolbarApi => toolbarApi.predicate(elem.dom));
-      const {pass, fail} = partition$3(ctxs, t => t.type === 'contexttoolbar');
+      const {pass, fail} = partition$3(ctxs, t => t.type == 'contexttoolbar');
       return {
         contextToolbars: pass,
         contextForms: fail
@@ -25466,8 +25466,8 @@
       if (toolbars.length <= 1) {
         return toolbars;
       } else {
-        const doesPositionExist = value => exists(toolbars, t => t.position === value);
-        const filterToolbarsByPosition = value => filter$2(toolbars, t => t.position === value);
+        const doesPositionExist = value => exists(toolbars, t => t.position == value);
+        const filterToolbarsByPosition = value => filter$2(toolbars, t => t.position == value);
         const hasSelectionToolbars = doesPositionExist('selection');
         const hasNodeToolbars = doesPositionExist('node');
         if (hasSelectionToolbars || hasNodeToolbars) {
@@ -25490,9 +25490,9 @@
       if (toolbars.length <= 1) {
         return toolbars;
       } else {
-        const findPosition = value => find$5(toolbars, t => t.position === value);
+        const findPosition = value => find$5(toolbars, t => t.position == value);
         const basePosition = findPosition('selection').orThunk(() => findPosition('node')).orThunk(() => findPosition('line')).map(t => t.position);
-        return basePosition.fold(() => [], pos => filter$2(toolbars, t => t.position === pos));
+        return basePosition.fold(() => [], pos => filter$2(toolbars, t => t.position == pos));
       }
     };
     const matchStartNode = (elem, nodeCandidates, editorCandidates) => {
@@ -25561,13 +25561,13 @@
         contextForm.launch.map(launch => {
           formNavigators['form:' + key + ''] = {
             ...toolbarSpec.launch,
-            type: launch.type === 'contextformtogglebutton' ? 'togglebutton' : 'button',
+            type: launch.type == 'contextformtogglebutton' ? 'togglebutton' : 'button',
             onAction: () => {
               navigate(contextForm);
             }
           };
         });
-        if (contextForm.scope === 'editor') {
+        if (contextForm.scope == 'editor') {
           inEditorScope.push(contextForm);
         } else {
           inNodeScope.push(contextForm);
@@ -25576,7 +25576,7 @@
       };
       const registerToolbar = (key, toolbarSpec) => {
         createContextToolbar(toolbarSpec).each(contextToolbar => {
-          if (toolbarSpec.scope === 'editor') {
+          if (toolbarSpec.scope == 'editor') {
             inEditorScope.push(contextToolbar);
           } else {
             inNodeScope.push(contextToolbar);
@@ -25587,9 +25587,9 @@
       const keys$1 = keys(contextToolbars);
       each$1(keys$1, key => {
         const toolbarApi = contextToolbars[key];
-        if (toolbarApi.type === 'contextform') {
+        if (toolbarApi.type == 'contextform') {
           registerForm(key, toolbarApi);
-        } else if (toolbarApi.type === 'contexttoolbar') {
+        } else if (toolbarApi.type == 'contexttoolbar') {
           registerToolbar(key, toolbarApi);
         }
       });
@@ -25625,7 +25625,7 @@
         inlineBehaviours: derive$1([
           config('context-toolbar-events', [
             runOnSource(transitionend(), (comp, se) => {
-              if (se.event.raw.propertyName === 'width') {
+              if (se.event.raw.propertyName == 'width') {
                 remove$2(comp.element, resizingClass);
                 remove$6(comp.element, 'width');
               }
@@ -25771,8 +25771,8 @@
           ...buttons,
           ...scopes.formNavigators
         };
-        const toolbarType = getToolbarMode(editor) === ToolbarMode$1.scrolling ? ToolbarMode$1.scrolling : ToolbarMode$1.default;
-        const initGroups = flatten(map$2(toolbars, ctx => ctx.type === 'contexttoolbar' ? buildContextToolbarGroups(allButtons, ctx) : buildContextFormGroups(ctx, sharedBackstage.providers)));
+        const toolbarType = getToolbarMode(editor) == ToolbarMode$1.scrolling ? ToolbarMode$1.scrolling : ToolbarMode$1.default;
+        const initGroups = flatten(map$2(toolbars, ctx => ctx.type == 'contexttoolbar' ? buildContextToolbarGroups(allButtons, ctx) : buildContextFormGroups(ctx, sharedBackstage.providers)));
         return renderToolbar({
           type: toolbarType,
           uid: generate$6('context-toolbar'),
@@ -25783,7 +25783,7 @@
         });
       };
       const getAnchor = (position, element) => {
-        const anchorage = position === 'node' ? sharedBackstage.anchors.node(element) : sharedBackstage.anchors.cursor();
+        const anchorage = position == 'node' ? sharedBackstage.anchors.node(element) : sharedBackstage.anchors.cursor();
         const anchorLayout = getAnchorLayout(editor, position, isTouch(), {
           lastElement: lastElement.get,
           isReposition: () => is$1(lastTrigger.get(), 0),
@@ -25841,7 +25841,7 @@
         editor.on(showContextToolbarEvent, e => {
           const scopes = getScopes();
           get$g(scopes.lookupTable, e.toolbarKey).each(ctx => {
-            launchContext([ctx], someIf(e.target !== editor, e.target));
+            launchContext([ctx], someIf(e.target != editor, e.target));
             InlineView.getContent(contextbar).each(Keying.focusIn);
           });
         });
@@ -25988,7 +25988,7 @@
           var _a;
           return editor.formatter.formatChanged('lang', callback, false, {
             value: value.code,
-            customValue: (_a = value.customCode) !== null && _a !== void 0 ? _a : null
+            customValue: (_a = value.customCode) != null && _a != void 0 ? _a : null
           }).unbind;
         },
         getCurrent: editor => {
@@ -26440,7 +26440,7 @@
       });
       registerOption('contextmenu', {
         processor: value => {
-          if (value === false) {
+          if (value == false) {
             return {
               value: [],
               valid: true
@@ -26462,7 +26462,7 @@
     };
     const shouldNeverUseNative = option('contextmenu_never_use_native');
     const getAvoidOverlapSelector = option('contextmenu_avoid_overlap');
-    const isContextMenuDisabled = editor => getContextMenu(editor).length === 0;
+    const isContextMenuDisabled = editor => getContextMenu(editor).length == 0;
     const getContextMenu = editor => {
       const contextMenus = editor.ui.registry.getAll().contextMenus;
       const contextMenu = editor.options.get('contextmenu');
@@ -26481,7 +26481,7 @@
     const transpose = (pos, dx, dy) => {
       return nu(pos.x + dx, pos.y + dy);
     };
-    const isTouchEvent$1 = e => e.type === 'longpress' || e.type.indexOf('touch') === 0;
+    const isTouchEvent$1 = e => e.type == 'longpress' || e.type.indexOf('touch') == 0;
     const fromPageXY = e => {
       if (isTouchEvent$1(e)) {
         const touch = e.touches[0];
@@ -26503,7 +26503,7 @@
       return transpose(pos, containerPos.x, containerPos.y);
     };
     const getPointAnchor = (editor, e) => {
-      if (e.type === 'contextmenu' || e.type === 'longpress') {
+      if (e.type == 'contextmenu' || e.type == 'longpress') {
         if (editor.inline) {
           return fromPageXY(e);
         } else {
@@ -26626,7 +26626,7 @@
     };
     const getAnchorSpec = (editor, e, anchorType) => {
       const anchorSpec = getAnchorSpec$1(editor, e, anchorType);
-      const bubbleYOffset = anchorType === 'point' ? bubbleSize : 0;
+      const bubbleYOffset = anchorType == 'point' ? bubbleSize : 0;
       return {
         bubble: nu$5(0, bubbleYOffset, bubbleAlignments),
         layouts,
@@ -26652,7 +26652,7 @@
           },
           data: menuData,
           type: 'horizontal'
-        }, () => Optional.some(getContextToolbarBounds(editor, backstage.shared, anchorType === 'node' ? 'node' : 'selection')));
+        }, () => Optional.some(getContextToolbarBounds(editor, backstage.shared, anchorType == 'node' ? 'node' : 'selection')));
         editor.dispatch(hideContextToolbarEvent);
       });
     };
@@ -26667,7 +26667,7 @@
         const items = buildMenu();
         show(editor, e, items, backstage, contextmenu, anchorType, shouldHighlightImmediately());
       };
-      if ((isMacOS || isiOS) && anchorType !== 'node') {
+      if ((isMacOS || isiOS) && anchorType != 'node') {
         const openiOS = () => {
           setupiOSOverrides(editor);
           open();
@@ -26683,7 +26683,7 @@
       }
     };
 
-    const isSeparator = item => isString(item) ? item === '|' : item.type === 'separator';
+    const isSeparator = item => isString(item) ? item == '|' : item.type == 'separator';
     const separator = { type: 'separator' };
     const makeContextItem = item => {
       const commonMenuItem = item => ({
@@ -26722,7 +26722,7 @@
       }
     };
     const addContextMenuGroup = (xs, groupItems) => {
-      if (groupItems.length === 0) {
+      if (groupItems.length == 0) {
         return xs;
       }
       const lastMenuItem = last$1(xs).filter(item => !isSeparator(item));
@@ -26749,8 +26749,8 @@
       return sections;
     };
     const isNativeOverrideKeyEvent = (editor, e) => e.ctrlKey && !shouldNeverUseNative(editor);
-    const isTouchEvent = e => e.type === 'longpress' || has$2(e, 'touches');
-    const isTriggeredByKeyboard = (editor, e) => !isTouchEvent(e) && (e.button !== 2 || e.target === editor.getBody() && e.pointerType === '');
+    const isTouchEvent = e => e.type == 'longpress' || has$2(e, 'touches');
+    const isTriggeredByKeyboard = (editor, e) => !isTouchEvent(e) && (e.button != 2 || e.target == editor.getBody() && e.pointerType == '');
     const getSelectedElement = (editor, e) => isTriggeredByKeyboard(editor, e) ? editor.selection.getStart(true) : e.target;
     const getAnchorType = (editor, e) => {
       const selector = getAvoidOverlapSelector(editor);
@@ -27042,7 +27042,7 @@
     ];
 
     const getCurrentCoord = target => lift3(getRaw(target, 'left'), getRaw(target, 'top'), getRaw(target, 'position'), (left, top, position) => {
-      const nu = position === 'fixed' ? fixed : offset;
+      const nu = position == 'fixed' ? fixed : offset;
       return nu(parseInt(left, 10), parseInt(top, 10));
     }).getOrThunk(() => {
       const location = absolute$3(target);
@@ -27143,7 +27143,7 @@
 
     const events$3 = (dragConfig, dragState, updateStartState) => [run$1(mousedown(), (component, simulatedEvent) => {
         const raw = simulatedEvent.event.raw;
-        if (raw.button !== 0) {
+        if (raw.button != 0) {
           return;
         }
         simulatedEvent.stop();
@@ -27186,7 +27186,7 @@
     const getData = event => {
       const raw = event.raw;
       const touches = raw.touches;
-      return touches.length === 1 ? getDataFrom(touches) : Optional.none();
+      return touches.length == 1 ? getDataFrom(touches) : Optional.none();
     };
     const getDelta = (old, nu) => SugarPosition(nu.left - old.left, nu.top - old.top);
 
@@ -27463,10 +27463,10 @@
 
     var Logo = "<svg width=\"50px\" height=\"16px\" viewBox=\"0 0 50 16\" xmlns=\"http://www.w3.org/2000/svg\">\n  <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M10.143 0c2.608.015 5.186 2.178 5.186 5.331 0 0 .077 3.812-.084 4.87-.361 2.41-2.164 4.074-4.65 4.496-1.453.284-2.523.49-3.212.623-.373.071-.634.122-.785.152-.184.038-.997.145-1.35.145-2.732 0-5.21-2.04-5.248-5.33 0 0 0-3.514.03-4.442.093-2.4 1.758-4.342 4.926-4.963 0 0 3.875-.752 4.036-.782.368-.07.775-.1 1.15-.1Zm1.826 2.8L5.83 3.989v2.393l-2.455.475v5.968l6.137-1.189V9.243l2.456-.476V2.8ZM5.83 6.382l3.682-.713v3.574l-3.682.713V6.382Zm27.173-1.64-.084-1.066h-2.226v9.132h2.456V7.743c-.008-1.151.998-2.064 2.149-2.072 1.15-.008 1.987.92 1.995 2.072v5.065h2.455V7.359c-.015-2.18-1.657-3.929-3.837-3.913a3.993 3.993 0 0 0-2.908 1.296Zm-6.3-4.266L29.16 0v2.387l-2.456.475V.476Zm0 3.2v9.132h2.456V3.676h-2.456Zm18.179 11.787L49.11 3.676H46.58l-1.612 4.527-.46 1.382-.384-1.382-1.611-4.527H39.98l3.3 9.132L42.15 16l2.732-.537ZM22.867 9.738c0 .752.568 1.075.921 1.075.353 0 .668-.047.998-.154l.537 1.765c-.23.154-.92.537-2.225.537-1.305 0-2.655-.997-2.686-2.686a136.877 136.877 0 0 1 0-4.374H18.8V3.676h1.612v-1.98l2.455-.476v2.456h2.302V5.9h-2.302v3.837Z\"/>\n</svg>\n";
 
-    const isHidden = elm => elm.nodeName === 'BR' || !!elm.getAttribute('data-mce-bogus') || elm.getAttribute('data-mce-type') === 'bookmark';
+    const isHidden = elm => elm.nodeName == 'BR' || !!elm.getAttribute('data-mce-bogus') || elm.getAttribute('data-mce-type') == 'bookmark';
     const renderElementPath = (editor, settings, providersBackstage) => {
       var _a;
-      const delimiter = (_a = settings.delimiter) !== null && _a !== void 0 ? _a : '\u203A';
+      const delimiter = (_a = settings.delimiter) != null && _a != void 0 ? _a : '\u203A';
       const renderElement = (name, element, index) => Button.sketch({
         dom: {
           tag: 'div',
@@ -27497,7 +27497,7 @@
       });
       const renderPathData = data => foldl(data, (acc, path, index) => {
         const element = renderElement(path.name, path.element, index);
-        if (index === 0) {
+        if (index == 0) {
           return acc.concat([element]);
         } else {
           return acc.concat([
@@ -27511,7 +27511,7 @@
         let i = parents.length;
         while (i-- > 0) {
           const parent = parents[i];
-          if (parent.nodeType === 1 && !isHidden(parent)) {
+          if (parent.nodeType == 1 && !isHidden(parent)) {
             const args = fireResolveName(editor, parent);
             if (!args.isDefaultPrevented()) {
               newPath.push({
@@ -27562,7 +27562,7 @@
     }(ResizeTypes || (ResizeTypes = {})));
     const getDimensions = (editor, deltas, resizeType, originalHeight, originalWidth) => {
       const dimensions = { height: calcCappedSize(originalHeight + deltas.top, getMinHeightOption(editor), getMaxHeightOption(editor)) };
-      if (resizeType === ResizeTypes.Both) {
+      if (resizeType == ResizeTypes.Both) {
         dimensions.width = calcCappedSize(originalWidth + deltas.left, getMinWidthOption(editor), getMaxWidthOption(editor));
       }
       return dimensions;
@@ -27580,9 +27580,9 @@
 
     const getResizeType = editor => {
       const resize = getResize(editor);
-      if (resize === false) {
+      if (resize == false) {
         return ResizeTypes.None;
-      } else if (resize === 'both') {
+      } else if (resize == 'both') {
         return ResizeTypes.Both;
       } else {
         return ResizeTypes.Vertical;
@@ -27596,10 +27596,10 @@
     };
     const renderResizeHandler = (editor, providersBackstage) => {
       const resizeType = getResizeType(editor);
-      if (resizeType === ResizeTypes.None) {
+      if (resizeType == ResizeTypes.None) {
         return Optional.none();
       }
-      const resizeLabel = resizeType === ResizeTypes.Both ? 'Press the arrow keys to resize the editor.' : 'Press the Up and Down arrow keys to resize the editor.';
+      const resizeLabel = resizeType == ResizeTypes.Both ? 'Press the arrow keys to resize the editor.' : 'Press the Up and Down arrow keys to resize the editor.';
       return Optional.some(render$3('resize-handle', {
         tag: 'div',
         classes: ['tox-statusbar__resize-handle'],
@@ -27658,7 +27658,7 @@
           config('wordcount-events', [
             runOnExecute$1(comp => {
               const currentVal = Representing.getValue(comp);
-              const newMode = currentVal.mode === 'words' ? 'characters' : 'words';
+              const newMode = currentVal.mode == 'words' ? 'characters' : 'words';
               Representing.setValue(comp, {
                 mode: newMode,
                 count: currentVal.count
@@ -27957,7 +27957,7 @@
       };
       const renderDialogUi = () => {
         const uiContainer = getUiContainer(editor);
-        const isGridUiContainer = eq(body(), uiContainer) && get$e(uiContainer, 'display') === 'grid';
+        const isGridUiContainer = eq(body(), uiContainer) && get$e(uiContainer, 'display') == 'grid';
         const sinkSpec = {
           dom: {
             tag: 'div',
@@ -28101,7 +28101,7 @@
           OuterContainer.focusToolbar(outerContainer);
         });
         editor.addCommand('ToggleToolbarDrawer', (_ui, options) => {
-          if (options === null || options === void 0 ? void 0 : options.skipFocus) {
+          if (options == null || options == void 0 ? void 0 : options.skipFocus) {
             OuterContainer.toggleToolbarDrawerWithoutFocusing(outerContainer);
           } else {
             OuterContainer.toggleToolbarDrawer(outerContainer);
@@ -28121,7 +28121,7 @@
           menus: getMenus(editor),
           menubar: getMenubar(editor),
           toolbar: toolbarOpt.getOrThunk(() => getToolbar(editor)),
-          allowToolbarGroups: toolbarMode === ToolbarMode$1.floating,
+          allowToolbarGroups: toolbarMode == ToolbarMode$1.floating,
           buttons,
           sidebar: sidebars,
           views
@@ -28782,7 +28782,7 @@
       var _a;
       const internalDialog = getOrDie(createDialog(structure));
       const dataValidator = createDataValidator(structure);
-      const initialData = (_a = structure.initialData) !== null && _a !== void 0 ? _a : {};
+      const initialData = (_a = structure.initialData) != null && _a != void 0 ? _a : {};
       return {
         internalDialog,
         dataValidator,
@@ -29106,7 +29106,7 @@
       const changeTab$1 = button => {
         const tabValue = Representing.getValue(button);
         getPart(button, detail, 'tabview').each(tabview => {
-          const tabWithValue = find$5(detail.tabs, t => t.value === tabValue);
+          const tabWithValue = find$5(detail.tabs, t => t.value == tabValue);
           tabWithValue.each(tabData => {
             const panel = tabData.view();
             getOpt(button.element, 'id').each(id => {
@@ -29149,7 +29149,7 @@
           showTab: (section, tabKey) => {
             const getTabIfNotActive = tabbar => {
               const candidates = Highlighting.getCandidates(tabbar);
-              const optTab = find$5(candidates, c => Representing.getValue(c) === tabKey);
+              const optTab = find$5(candidates, c => Representing.getValue(c) == tabKey);
               return optTab.filter(tab => !Highlighting.isHighlighted(tabbar, tab));
             };
             changeTabBy(section, getTabIfNotActive);
@@ -29188,7 +29188,7 @@
     const getMaxTabviewHeight = (dialog, tabview, tablist) => {
       const documentElement$1 = documentElement(dialog).dom;
       const rootElm = ancestor(dialog, '.tox-dialog-wrap').getOr(dialog);
-      const isFixed = get$e(rootElm, 'position') === 'fixed';
+      const isFixed = get$e(rootElm, 'position') == 'fixed';
       let maxHeight;
       if (isFixed) {
         maxHeight = Math.max(documentElement$1.clientHeight, window.innerHeight);
@@ -29401,7 +29401,7 @@
           }
         }
       };
-      const updateState = (_comp, incoming) => Optional.some({ isTabPanel: () => incoming.body.type === 'tabpanel' });
+      const updateState = (_comp, incoming) => Optional.some({ isTabPanel: () => incoming.body.type == 'tabpanel' });
       const ariaAttributes = { 'aria-live': 'polite' };
       return {
         dom: {
@@ -29736,7 +29736,7 @@
     const toggleFullscreen = (comp, currentSize) => {
       const dialogBody = SugarElement.fromDom(comp.element.dom);
       const classes = get$7(dialogBody);
-      const currentSizeClass = find$5(classes, c => c === largeDialogClass || c === mediumDialogClass).or(getDialogSizeClass(currentSize));
+      const currentSizeClass = find$5(classes, c => c == largeDialogClass || c == mediumDialogClass).or(getDialogSizeClass(currentSize));
       toggle$3(dialogBody, [
         fullscreenClass,
         ...currentSizeClass.toArray()
@@ -29790,11 +29790,11 @@
         };
       };
       return map$2(buttons, button => {
-        return button.type === 'menu' ? mapItems(button) : button;
+        return button.type == 'menu' ? mapItems(button) : button;
       });
     };
     const extractCellsToObject = buttons => foldl(buttons, (acc, button) => {
-      if (button.type === 'menu') {
+      if (button.type == 'menu') {
         const menuButton = button;
         return foldl(menuButton.items, (innerAcc, item) => {
           innerAcc[item.name] = item.storage;
@@ -29855,7 +29855,7 @@
         }),
         fireApiEvent(formActionEvent, (api, spec, event, component) => {
           const focusIn = () => component.getSystem().isConnected() ? Keying.focusIn(component) : undefined;
-          const isDisabled = focused => has$1(focused, 'disabled') || getOpt(focused, 'aria-disabled').exists(val => val === 'true');
+          const isDisabled = focused => has$1(focused, 'disabled') || getOpt(focused, 'aria-disabled').exists(val => val == 'true');
           const rootNode = getRootNode(component.element);
           const current = active$1(rootNode);
           spec.onAction(api, {
@@ -29886,10 +29886,10 @@
     };
 
     const makeButton = (button, backstage) => renderFooterButton(button, button.type, backstage);
-    const lookup = (compInSystem, footerButtons, buttonName) => find$5(footerButtons, button => button.name === buttonName).bind(memButton => memButton.memento.getOpt(compInSystem));
+    const lookup = (compInSystem, footerButtons, buttonName) => find$5(footerButtons, button => button.name == buttonName).bind(memButton => memButton.memento.getOpt(compInSystem));
     const renderComponents = (_data, state) => {
       const footerButtons = state.map(s => s.footerButtons).getOr([]);
-      const buttonGroups = partition$3(footerButtons, button => button.align === 'start');
+      const buttonGroups = partition$3(footerButtons, button => button.align == 'start');
       const makeGroup = (edge, buttons) => Container.sketch({
         dom: {
           tag: 'div',
@@ -30064,7 +30064,7 @@
       }, dialogId, backstage);
       const storedMenuButtons = mapMenuButtons(internalDialog.buttons);
       const objOfCells = extractCellsToObject(storedMenuButtons);
-      const footer = someIf(storedMenuButtons.length !== 0, renderModalFooter({ buttons: storedMenuButtons }, dialogId, backstage));
+      const footer = someIf(storedMenuButtons.length != 0, renderModalFooter({ buttons: storedMenuButtons }, dialogId, backstage));
       const dialogEvents = initDialog(() => instanceApi, getEventExtras(() => dialog, backstage.shared.providers, extra), backstage.shared.getSink);
       const spec = {
         id: dialogId,
@@ -30127,7 +30127,7 @@
       }, dialogId, dialogContentId, backstage, ariaAttrs));
       const storagedMenuButtons = mapMenuButtons(internalDialog.buttons);
       const objOfCells = extractCellsToObject(storagedMenuButtons);
-      const optMemFooter = someIf(storagedMenuButtons.length !== 0, record(renderInlineFooter({ buttons: storagedMenuButtons }, dialogId, backstage)));
+      const optMemFooter = someIf(storagedMenuButtons.length != 0, record(renderInlineFooter({ buttons: storagedMenuButtons }, dialogId, backstage)));
       const dialogEvents = initDialog(() => instanceApi, {
         onBlock: event => {
           Blocking.block(dialog, (_comp, bs) => {
@@ -30172,7 +30172,7 @@
               emit(c, formCloseEvent);
               return Optional.some(true);
             },
-            useTabstopAt: elem => !isPseudoStop(elem) && (name$3(elem) !== 'button' || get$f(elem, 'disabled') !== 'disabled'),
+            useTabstopAt: elem => !isPseudoStop(elem) && (name$3(elem) != 'button' || get$f(elem, 'disabled') != 'disabled'),
             firstTabstop: 1
           }),
           Reflecting.config({
@@ -30266,7 +30266,7 @@
       'block',
       'unblock'
     ];
-    const isSupportedMessage = data => isObject(data) && SUPPORTED_MESSAGE_ACTIONS.indexOf(data.mceAction) !== -1;
+    const isSupportedMessage = data => isObject(data) && SUPPORTED_MESSAGE_ACTIONS.indexOf(data.mceAction) != -1;
     const isCustomMessage = data => !isSupportedMessage(data) && isObject(data) && has$2(data, 'mceAction');
     const handleMessage = (editor, api, data) => {
       switch (data.mceAction) {
@@ -30296,7 +30296,7 @@
       const header = getHeader(internalDialog.title, dialogId, backstage);
       const body = renderIframeBody(internalDialog);
       const footer = internalDialog.buttons.bind(buttons => {
-        if (buttons.length === 0) {
+        if (buttons.length == 0) {
           return Optional.none();
         } else {
           return Optional.some(renderModalFooter({ buttons }, dialogId, backstage));
@@ -30501,11 +30501,11 @@
       const confirmDialog = setup$1(extras.backstages.dialog);
       const open = (config, params, closeWindow) => {
         if (!isUndefined(params)) {
-          if (params.inline === 'toolbar') {
+          if (params.inline == 'toolbar') {
             return openInlineDialog(config, extras.backstages.popup.shared.anchors.inlineDialog(), closeWindow, params);
-          } else if (params.inline === 'bottom') {
+          } else if (params.inline == 'bottom') {
             return openBottomInlineDialog(config, extras.backstages.popup.shared.anchors.inlineBottomDialog(), closeWindow, params);
-          } else if (params.inline === 'cursor') {
+          } else if (params.inline == 'cursor') {
             return openInlineDialog(config, extras.backstages.popup.shared.anchors.cursor(), closeWindow, params);
           }
         }

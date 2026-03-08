@@ -36,11 +36,11 @@
 
                             <!-- Message -->
                             <p style="margin: 0 0 25px 0; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 14px; color: #555; line-height: 1.7;">
-                                @if($type === 'registration')
+                                @if($type == 'registration')
                                     لإتمام عملية التسجيل في بوابة الشركات، يرجى إدخال رمز التحقق التالي:
-                                @elseif($type === 'login')
+                                @elseif($type == 'login')
                                     لتسجيل الدخول إلى حسابك، يرجى إدخال رمز التحقق التالي:
-                                @elseif($type === 'password_reset')
+                                @elseif($type == 'password_reset')
                                     لإعادة تعيين كلمة المرور، يرجى إدخال رمز التحقق التالي:
                                 @else
                                     يرجى إدخال رمز التحقق التالي:

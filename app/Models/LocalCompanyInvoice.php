@@ -138,7 +138,7 @@ class LocalCompanyInvoice extends Model
 
     public function isPaid()
     {
-        return $this->status === 'paid';
+        return $this->status == 'paid';
     }
 
     public function markAsPaid($receiptPath = null)
@@ -218,11 +218,11 @@ class LocalCompanyInvoice extends Model
 
     public function canUploadReceipt()
     {
-        return in_array($this->status, ['unpaid', 'rejected']) && (empty($this->receipt_path) || $this->receipt_status === 'rejected');
+        return in_array($this->status, ['unpaid', 'rejected']) && (empty($this->receipt_path) || $this->receipt_status == 'rejected');
     }
 
     public function canDeleteReceipt()
     {
-        return in_array($this->status, ['unpaid', 'pending_review', 'rejected']) && !empty($this->receipt_path) && $this->receipt_status !== 'approved';
+        return in_array($this->status, ['unpaid', 'pending_review', 'rejected']) && !empty($this->receipt_path) && $this->receipt_status != 'approved';
     }
 }

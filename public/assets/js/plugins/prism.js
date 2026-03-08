@@ -5,10 +5,10 @@
 
 /// <reference lib="WebWorker"/>
 
-var _self = (typeof window !== 'undefined')
+var _self = (typeof window != 'undefined')
 	? window   // if in browser
 	: (
-		(typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope)
+		(typeof WorkerGlobalScope != 'undefined' && self instanceof WorkerGlobalScope)
 			? self // if in worker
 			: {}   // if in node js
 	);
@@ -103,15 +103,15 @@ var Prism = (function (_self) {
 			 * @param {any} o
 			 * @returns {string}
 			 * @example
-			 * type(null)      === 'Null'
-			 * type(undefined) === 'Undefined'
-			 * type(123)       === 'Number'
-			 * type('foo')     === 'String'
-			 * type(true)      === 'Boolean'
-			 * type([1, 2])    === 'Array'
-			 * type({})        === 'Object'
-			 * type(String)    === 'Function'
-			 * type(/abc+/)    === 'RegExp'
+			 * type(null)      == 'Null'
+			 * type(undefined) == 'Undefined'
+			 * type(123)       == 'Number'
+			 * type('foo')     == 'String'
+			 * type(true)      == 'Boolean'
+			 * type([1, 2])    == 'Array'
+			 * type({})        == 'Object'
+			 * type(String)    == 'Function'
+			 * type(/abc+/)    == 'RegExp'
 			 */
 			type: function (o) {
 				return Object.prototype.toString.call(o).slice(8, -1);
@@ -224,7 +224,7 @@ var Prism = (function (_self) {
 			 * @returns {HTMLScriptElement | null}
 			 */
 			currentScript: function () {
-				if (typeof document === 'undefined') {
+				if (typeof document == 'undefined') {
 					return null;
 				}
 				if ('currentScript' in document && 1 < 2 /* hack to trip TS' flow analysis */) {
@@ -408,8 +408,8 @@ var Prism = (function (_self) {
 			 * var oldMarkup = Prism.languages.markup;
 			 * var newMarkup = Prism.languages.insertBefore('markup', 'comment', { ... });
 			 *
-			 * assert(oldMarkup !== Prism.languages.markup);
-			 * assert(newMarkup === Prism.languages.markup);
+			 * assert(oldMarkup != Prism.languages.markup);
+			 * assert(newMarkup == Prism.languages.markup);
 			 * ```
 			 *
 			 * @param {string} inside The property of `root` (e.g. a language id in `Prism.languages`) that contains the
@@ -452,7 +452,7 @@ var Prism = (function (_self) {
 
 				// Update references in other language definitions
 				_.languages.DFS(_.languages, function (key, value) {
-					if (value === old && key != inside) {
+					if (value == old && key != inside) {
 						this[key] = ret;
 					}
 				});
@@ -473,10 +473,10 @@ var Prism = (function (_self) {
 						var property = o[i];
 						var propertyType = _.util.type(property);
 
-						if (propertyType === 'Object' && !visited[objId(property)]) {
+						if (propertyType == 'Object' && !visited[objId(property)]) {
 							visited[objId(property)] = true;
 							DFS(property, callback, null, visited);
-						} else if (propertyType === 'Array' && !visited[objId(property)]) {
+						} else if (propertyType == 'Array' && !visited[objId(property)]) {
 							visited[objId(property)] = true;
 							DFS(property, callback, i, visited);
 						}
@@ -532,7 +532,7 @@ var Prism = (function (_self) {
 			_.hooks.run('before-all-elements-highlight', env);
 
 			for (var i = 0, element; (element = env.elements[i++]);) {
-				_.highlightElement(element, async === true, env.callback);
+				_.highlightElement(element, async == true, env.callback);
 			}
 		},
 
@@ -574,7 +574,7 @@ var Prism = (function (_self) {
 
 			// Set language on the parent, for styling
 			var parent = element.parentElement;
-			if (parent && parent.nodeName.toLowerCase() === 'pre') {
+			if (parent && parent.nodeName.toLowerCase() == 'pre') {
 				_.util.setLanguage(parent, language);
 			}
 
@@ -603,7 +603,7 @@ var Prism = (function (_self) {
 
 			// plugins may change/add the parent/element
 			parent = env.element.parentElement;
-			if (parent && parent.nodeName.toLowerCase() === 'pre' && !parent.hasAttribute('tabindex')) {
+			if (parent && parent.nodeName.toLowerCase() == 'pre' && !parent.hasAttribute('tabindex')) {
 				parent.setAttribute('tabindex', '0');
 			}
 
@@ -691,7 +691,7 @@ var Prism = (function (_self) {
 		 * let code = `var foo = 0;`;
 		 * let tokens = Prism.tokenize(code, Prism.languages.javascript);
 		 * tokens.forEach(token => {
-		 *     if (token instanceof Prism.Token && token.type === 'number') {
+		 *     if (token instanceof Prism.Token && token.type == 'number') {
 		 *         console.log(`Found numeric literal: ${token.content}`);
 		 *     }
 		 * });
@@ -949,7 +949,7 @@ var Prism = (function (_self) {
 
 				for ( // iterate the token list and keep track of the current token/string position
 					var currentNode = startNode.next, pos = startPos;
-					currentNode !== tokenList.tail;
+					currentNode != tokenList.tail;
 					pos += currentNode.value.length, currentNode = currentNode.next
 				) {
 
@@ -999,7 +999,7 @@ var Prism = (function (_self) {
 						// find the last node which is affected by this match
 						for (
 							var k = currentNode;
-							k !== tokenList.tail && (p < to || typeof k.value === 'string');
+							k != tokenList.tail && (p < to || typeof k.value == 'string');
 							k = k.next
 						) {
 							removeCount++;
@@ -1122,7 +1122,7 @@ var Prism = (function (_self) {
 	 */
 	function removeRange(list, node, count) {
 		var next = node.next;
-		for (var i = 0; i < count && next !== list.tail; i++) {
+		for (var i = 0; i < count && next != list.tail; i++) {
 			next = next.next;
 		}
 		node.next = next;
@@ -1137,7 +1137,7 @@ var Prism = (function (_self) {
 	function toArray(list) {
 		var array = [];
 		var node = list.head.next;
-		while (node !== list.tail) {
+		while (node != list.tail) {
 			array.push(node.value);
 			node = node.next;
 		}
@@ -1194,7 +1194,7 @@ var Prism = (function (_self) {
 		// been loaded when Prism.highlightAll() is executed, depending on how fast resources are loaded.
 		// See https://github.com/PrismJS/prism/issues/2102
 		var readyState = document.readyState;
-		if (readyState === 'loading' || readyState === 'interactive' && script && script.defer) {
+		if (readyState == 'loading' || readyState == 'interactive' && script && script.defer) {
 			document.addEventListener('DOMContentLoaded', highlightAutomaticallyCallback);
 		} else {
 			if (window.requestAnimationFrame) {
@@ -1209,12 +1209,12 @@ var Prism = (function (_self) {
 
 }(_self));
 
-if (typeof module !== 'undefined' && module.exports) {
+if (typeof module != 'undefined' && module.exports) {
 	module.exports = Prism;
 }
 
 // hack for components to work correctly in node.js
-if (typeof global !== 'undefined') {
+if (typeof global != 'undefined') {
 	global.Prism = Prism;
 }
 
@@ -1358,7 +1358,7 @@ Prism.languages.markup['doctype'].inside['internal-subset'].inside = Prism.langu
 // Plugin to make entity title show the real entity, idea by Roman Komarov
 Prism.hooks.add('wrap', function (env) {
 
-	if (env.type === 'entity') {
+	if (env.type == 'entity') {
 		env.attributes['title'] = env.content.replace(/&amp;/, '&');
 	}
 });
@@ -1751,7 +1751,7 @@ Prism.languages.js = Prism.languages.javascript;
 
 (function () {
 
-	if (typeof Prism === 'undefined' || typeof document === 'undefined') {
+	if (typeof Prism == 'undefined' || typeof document == 'undefined') {
 		return;
 	}
 
@@ -1856,7 +1856,7 @@ Prism.languages.js = Prism.languages.javascript;
 			var src = pre.getAttribute('data-src');
 
 			var language = env.language;
-			if (language === 'none') {
+			if (language == 'none') {
 				// the language might be 'none' because there is no language set;
 				// in this case, we want to use the extension as the language
 				var extension = (/\.(\w+)$/.exec(src) || [, 'none'])[1];

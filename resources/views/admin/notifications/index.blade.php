@@ -38,7 +38,7 @@
                         <div class="card-body">
                             <div class="d-flex align-items-start">
                                 <div class="flex-shrink-0">
-                                    <div class="avtar avtar-m bg-light-{{ isset($notification->data['company_type']) && $notification->data['company_type'] === 'local' ? 'primary' : 'success' }}">
+                                    <div class="avtar avtar-m bg-light-{{ isset($notification->data['company_type']) && $notification->data['company_type'] == 'local' ? 'primary' : 'success' }}">
                                         <i class="ti {{ $notification->data['icon'] ?? 'ti-bell' }} fs-4"></i>
                                     </div>
                                 </div>

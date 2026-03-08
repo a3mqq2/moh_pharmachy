@@ -12,31 +12,31 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType$1 = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
-    const eq$2 = t => a => t === a;
+    const isType$1 = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
+    const eq$2 = t => a => t == a;
     const isString = isType$1('string');
     const isObject = isType$1('object');
     const isArray = isType$1('array');
     const isNull = eq$2(null);
     const isBoolean = isSimpleType('boolean');
     const isUndefined = eq$2(undefined);
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
     const isNumber = isSimpleType('number');
@@ -58,7 +58,7 @@
       return x;
     };
     const tripleEquals = (a, b) => {
-      return a === b;
+      return a == b;
     };
     function curry(fn, ...initialArgs) {
       return (...restArgs) => {
@@ -143,7 +143,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -285,7 +285,7 @@
     const forall = (xs, pred) => {
       for (let i = 0, len = xs.length; i < len; ++i) {
         const x = xs[i];
-        if (pred(x, i) !== true) {
+        if (pred(x, i) != true) {
           return false;
         }
       }
@@ -373,7 +373,7 @@
       return has$1(obj, key) ? Optional.from(obj[key]) : Optional.none();
     };
     const has$1 = (obj, key) => hasOwnProperty.call(obj, key);
-    const hasNonNullableKey = (obj, key) => has$1(obj, key) && obj[key] !== undefined && obj[key] !== null;
+    const hasNonNullableKey = (obj, key) => has$1(obj, key) && obj[key] != undefined && obj[key] != null;
     const isEmpty = r => {
       for (const x in r) {
         if (hasOwnProperty.call(r, x)) {
@@ -383,11 +383,11 @@
       return true;
     };
 
-    const Global = typeof window !== 'undefined' ? window : Function('return this;')();
+    const Global = typeof window != 'undefined' ? window : Function('return this;')();
 
     const path = (parts, scope) => {
-      let o = scope !== undefined && scope !== null ? scope : Global;
-      for (let i = 0; i < parts.length && o !== undefined && o !== null; ++i) {
+      let o = scope != undefined && scope != null ? scope : Global;
+      for (let i = 0; i < parts.length && o != undefined && o != null; ++i) {
         o = o[parts[i]];
       }
       return o;
@@ -402,7 +402,7 @@
     };
     const getOrDie = (name, scope) => {
       const actual = unsafe(name, scope);
-      if (actual === undefined || actual === null) {
+      if (actual == undefined || actual == null) {
         throw new Error(name + ' not available on this browser');
       }
       return actual;
@@ -428,14 +428,14 @@
       return r.toLowerCase();
     };
     const type = element => element.dom.nodeType;
-    const isType = t => element => type(element) === t;
-    const isComment = element => type(element) === COMMENT || name(element) === '#comment';
+    const isType = t => element => type(element) == t;
+    const isComment = element => type(element) == COMMENT || name(element) == '#comment';
     const isHTMLElement = element => isElement(element) && isPrototypeOf(element.dom);
     const isElement = isType(ELEMENT);
     const isText = isType(TEXT);
     const isDocument = isType(DOCUMENT);
     const isDocumentFragment = isType(DOCUMENT_FRAGMENT);
-    const isTag = tag => e => isElement(e) && name(e) === tag;
+    const isTag = tag => e => isElement(e) && name(e) == tag;
 
     const rawSet = (dom, key, value) => {
       if (isString(value) || isBoolean(value) || isNumber(value)) {
@@ -465,7 +465,7 @@
     };
     const get$b = (element, key) => {
       const v = element.dom.getAttribute(key);
-      return v === null ? undefined : v;
+      return v == null ? undefined : v;
     };
     const getOpt = (element, key) => Optional.from(get$b(element, key));
     const remove$7 = (element, key) => {
@@ -498,7 +498,7 @@
       return fromDom$1(node);
     };
     const fromDom$1 = node => {
-      if (node === null || node === undefined) {
+      if (node == null || node == undefined) {
         throw new Error('Node cannot be null or undefined');
       }
       return { dom: node };
@@ -514,38 +514,38 @@
 
     const is$2 = (element, selector) => {
       const dom = element.dom;
-      if (dom.nodeType !== ELEMENT) {
+      if (dom.nodeType != ELEMENT) {
         return false;
       } else {
         const elem = dom;
-        if (elem.matches !== undefined) {
+        if (elem.matches != undefined) {
           return elem.matches(selector);
-        } else if (elem.msMatchesSelector !== undefined) {
+        } else if (elem.msMatchesSelector != undefined) {
           return elem.msMatchesSelector(selector);
-        } else if (elem.webkitMatchesSelector !== undefined) {
+        } else if (elem.webkitMatchesSelector != undefined) {
           return elem.webkitMatchesSelector(selector);
-        } else if (elem.mozMatchesSelector !== undefined) {
+        } else if (elem.mozMatchesSelector != undefined) {
           return elem.mozMatchesSelector(selector);
         } else {
           throw new Error('Browser lacks native selectors');
         }
       }
     };
-    const bypassSelector = dom => dom.nodeType !== ELEMENT && dom.nodeType !== DOCUMENT && dom.nodeType !== DOCUMENT_FRAGMENT || dom.childElementCount === 0;
+    const bypassSelector = dom => dom.nodeType != ELEMENT && dom.nodeType != DOCUMENT && dom.nodeType != DOCUMENT_FRAGMENT || dom.childElementCount == 0;
     const all$1 = (selector, scope) => {
-      const base = scope === undefined ? document : scope.dom;
+      const base = scope == undefined ? document : scope.dom;
       return bypassSelector(base) ? [] : map$1(base.querySelectorAll(selector), SugarElement.fromDom);
     };
     const one = (selector, scope) => {
-      const base = scope === undefined ? document : scope.dom;
+      const base = scope == undefined ? document : scope.dom;
       return bypassSelector(base) ? Optional.none() : Optional.from(base.querySelector(selector)).map(SugarElement.fromDom);
     };
 
-    const eq$1 = (e1, e2) => e1.dom === e2.dom;
+    const eq$1 = (e1, e2) => e1.dom == e2.dom;
     const contains$1 = (e1, e2) => {
       const d1 = e1.dom;
       const d2 = e2.dom;
-      return d1 === d2 ? false : d1.contains(d2);
+      return d1 == d2 ? false : d1.contains(d2);
     };
     const is$1 = is$2;
 
@@ -559,11 +559,11 @@
       const stop = isFunction(isRoot) ? isRoot : never;
       let dom = element.dom;
       const ret = [];
-      while (dom.parentNode !== null && dom.parentNode !== undefined) {
+      while (dom.parentNode != null && dom.parentNode != undefined) {
         const rawParent = dom.parentNode;
         const p = SugarElement.fromDom(rawParent);
         ret.push(p);
-        if (stop(p) === true) {
+        if (stop(p) == true) {
           break;
         } else {
           dom = rawParent;
@@ -622,7 +622,7 @@
 
     const after$4 = (marker, elements) => {
       each$2(elements, (x, i) => {
-        const e = i === 0 ? marker : elements[i - 1];
+        const e = i == 0 ? marker : elements[i - 1];
         after$5(e, x);
       });
     };
@@ -640,7 +640,7 @@
     };
     const remove$6 = element => {
       const dom = element.dom;
-      if (dom.parentNode !== null) {
+      if (dom.parentNode != null) {
         dom.parentNode.removeChild(dom);
       }
     };
@@ -775,7 +775,7 @@
 
     const inBody = element => {
       const dom = isText(element) ? element.dom.parentNode : element.dom;
-      if (dom === undefined || dom === null || dom.ownerDocument === null) {
+      if (dom == undefined || dom == null || dom.ownerDocument == null) {
         return false;
       }
       const doc = dom.ownerDocument;
@@ -784,7 +784,7 @@
     const body$1 = () => getBody$1(SugarElement.fromDom(document));
     const getBody$1 = doc => {
       const b = doc.dom.body;
-      if (b === null || b === undefined) {
+      if (b == null || b == undefined) {
         throw new Error('Body is not available yet');
       }
       return SugarElement.fromDom(b);
@@ -876,13 +876,13 @@
       }
       return r;
     };
-    const bindFrom = (a, f) => a !== undefined && a !== null ? f(a) : Optional.none();
+    const bindFrom = (a, f) => a != undefined && a != null ? f(a) : Optional.none();
     const someIf = (b, a) => b ? Optional.some(a) : Optional.none();
 
-    const checkRange = (str, substr, start) => substr === '' || str.length >= substr.length && str.substr(start, start + substr.length) === substr;
+    const checkRange = (str, substr, start) => substr == '' || str.length >= substr.length && str.substr(start, start + substr.length) == substr;
     const contains = (str, substr, start = 0, end) => {
       const idx = str.indexOf(substr, start);
-      if (idx !== -1) {
+      if (idx != -1) {
         return isUndefined(end) ? true : idx + substr.length <= end;
       } else {
         return false;
@@ -902,7 +902,7 @@
       return isNaN(num) ? Optional.none() : Optional.some(num);
     };
 
-    const isSupported = dom => dom.style !== undefined && isFunction(dom.style.getPropertyValue);
+    const isSupported = dom => dom.style != undefined && isFunction(dom.style.getPropertyValue);
 
     const internalSet = (dom, property, value) => {
       if (!isString(value)) {
@@ -932,7 +932,7 @@
       const dom = element.dom;
       const styles = window.getComputedStyle(dom);
       const r = styles.getPropertyValue(property);
-      return r === '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
+      return r == '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
     };
     const getUnsafeProperty = (dom, property) => isSupported(dom) ? dom.style.getPropertyValue(property) : '';
     const getRaw$2 = (element, property) => {
@@ -1009,7 +1009,7 @@
     const columnGroups = ancestor => table(ancestor).fold(constant([]), table => children(table, 'colgroup'));
 
     const fromRowsOrColGroups = (elems, getSection) => map$1(elems, row => {
-      if (name(row) === 'colgroup') {
+      if (name(row) == 'colgroup') {
         const cells = map$1(columns$1(row), column => {
           const colspan = getAttrValue(column, 'span', 1);
           return detail(column, 1, colspan);
@@ -1052,13 +1052,13 @@
     };
 
     const DeviceType = (os, browser, userAgent, mediaMatch) => {
-      const isiPad = os.isiOS() && /ipad/i.test(userAgent) === true;
+      const isiPad = os.isiOS() && /ipad/i.test(userAgent) == true;
       const isiPhone = os.isiOS() && !isiPad;
       const isMobile = os.isiOS() || os.isAndroid();
       const isTouch = isMobile || mediaMatch('(pointer:coarse)');
       const isTablet = isiPad || !isiPhone && isMobile && mediaMatch('(min-device-width:768px)');
       const isPhone = isiPhone || isMobile && !isTablet;
-      const iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) === false;
+      const iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) == false;
       const isDesktop = !isPhone && !isTablet && !iOSwebview;
       return {
         isiPad: constant(isiPad),
@@ -1097,7 +1097,7 @@
     };
     const detect$5 = (versionRegexes, agent) => {
       const cleanedAgent = String(agent).toLowerCase();
-      if (versionRegexes.length === 0) {
+      if (versionRegexes.length == 0) {
         return unknown$2();
       }
       return find(versionRegexes, cleanedAgent);
@@ -1122,7 +1122,7 @@
         const lcBrand = uaBrand.brand.toLowerCase();
         return find$1(browsers, browser => {
           var _a;
-          return lcBrand === ((_a = browser.brand) === null || _a === void 0 ? void 0 : _a.toLowerCase());
+          return lcBrand == ((_a = browser.brand) == null || _a == void 0 ? void 0 : _a.toLowerCase());
         }).map(info => ({
           current: info.name,
           version: Version.nu(parseInt(uaBrand.version, 10), 0)
@@ -1282,7 +1282,7 @@
     const nu$1 = info => {
       const current = info.current;
       const version = info.version;
-      const isBrowser = name => () => current === name;
+      const isBrowser = name => () => current == name;
       return {
         current,
         version,
@@ -1322,7 +1322,7 @@
     const nu = info => {
       const current = info.current;
       const version = info.version;
-      const isOS = name => () => current === name;
+      const isOS = name => () => current == name;
       return {
         current,
         version,
@@ -1379,7 +1379,7 @@
       };
       const get = element => {
         const r = getOffset(element);
-        if (r <= 0 || r === null) {
+        if (r <= 0 || r == null) {
           const css = get$a(element, name);
           return parseFloat(css) || 0;
         }
@@ -1388,7 +1388,7 @@
       const getOuter = get;
       const aggregate = (element, properties) => foldl(properties, (acc, property) => {
         const val = get$a(element, property);
-        const value = val === undefined ? 0 : parseInt(val, 10);
+        const value = val == undefined ? 0 : parseInt(val, 10);
         return isNaN(value) ? acc : acc + value;
       }, 0);
       const max = (element, value, properties) => {
@@ -1417,7 +1417,7 @@
     const getCalculatedWidth = (element, boxSizing) => {
       const dom = element.dom;
       const width = dom.getBoundingClientRect().width || dom.offsetWidth;
-      return boxSizing === 'border-box' ? width : calcContentBoxSize(element, width, 'left', 'right');
+      return boxSizing == 'border-box' ? width : calcContentBoxSize(element, width, 'left', 'right');
     };
     const getHeight$1 = element => getProp(element, 'height', element.dom.offsetHeight);
     const getWidth = element => getProp(element, 'width', element.dom.offsetWidth);
@@ -1451,7 +1451,7 @@
     const getCellElement = (gridRow, index) => getCell(gridRow, index).element;
     const cellLength = gridRow => gridRow.cells.length;
     const extractGridDetails = grid => {
-      const result = partition(grid, row => row.section === 'colgroup');
+      const result = partition(grid, row => row.section == 'colgroup');
       return {
         rows: result.fail,
         cols: result.pass
@@ -1517,12 +1517,12 @@
       const {
         pass: colgroupRows,
         fail: rows
-      } = partition(list, rowData => rowData.section === 'colgroup');
+      } = partition(list, rowData => rowData.section == 'colgroup');
       each$2(rows, rowData => {
         const currentRow = [];
         each$2(rowData.cells, rowCell => {
           let start = 0;
-          while (access[key(rowCount, start)] !== undefined) {
+          while (access[key(rowCount, start)] != undefined) {
             start++;
           }
           const isLocked = hasNonNullableKey(lockedColumns, start.toString());
@@ -1587,8 +1587,8 @@
       const cols = range$1(grid.columns, identity);
       const rowsArr = range$1(grid.rows, identity);
       return map$1(cols, col => {
-        const getBlock = () => bind$2(rowsArr, r => Warehouse.getAt(warehouse, r, col).filter(detail => detail.column === col).toArray());
-        const isValid = detail => detail.colspan === 1 && isValidCell(detail.element);
+        const getBlock = () => bind$2(rowsArr, r => Warehouse.getAt(warehouse, r, col).filter(detail => detail.column == col).toArray());
+        const isValid = detail => detail.colspan == 1 && isValidCell(detail.element);
         const getFallback = () => Warehouse.getAt(warehouse, 0, col);
         return decide(getBlock, isValid, getFallback);
       });
@@ -1604,8 +1604,8 @@
       const rowsArr = range$1(grid.rows, identity);
       const cols = range$1(grid.columns, identity);
       return map$1(rowsArr, row => {
-        const getBlock = () => bind$2(cols, c => Warehouse.getAt(warehouse, row, c).filter(detail => detail.row === row).fold(constant([]), detail => [detail]));
-        const isSingle = detail => detail.rowspan === 1;
+        const getBlock = () => bind$2(cols, c => Warehouse.getAt(warehouse, row, c).filter(detail => detail.row == row).fold(constant([]), detail => [detail]));
+        const isSingle = detail => detail.rowspan == 1;
         const getFallback = () => Warehouse.getAt(warehouse, row, 0);
         return decide(getBlock, isSingle, getFallback);
       });
@@ -1641,8 +1641,8 @@
       }));
     };
 
-    const onDirection = (isLtr, isRtl) => element => getDirection(element) === 'rtl' ? isRtl : isLtr;
-    const getDirection = element => get$a(element, 'direction') === 'rtl' ? 'rtl' : 'ltr';
+    const onDirection = (isLtr, isRtl) => element => getDirection(element) == 'rtl' ? isRtl : isLtr;
+    const getDirection = element => get$a(element, 'direction') == 'rtl' ? 'rtl' : 'ltr';
 
     const api$1 = Dimension('height', element => {
       const dom = element.dom;
@@ -1667,10 +1667,10 @@
       return SugarPosition(box.left, box.top);
     };
     const firstDefinedOrZero = (a, b) => {
-      if (a !== undefined) {
+      if (a != undefined) {
         return a;
       } else {
-        return b !== undefined ? b : 0;
+        return b != undefined ? b : 0;
       }
     };
     const absolute = element => {
@@ -1678,11 +1678,11 @@
       const body = doc.body;
       const win = doc.defaultView;
       const html = doc.documentElement;
-      if (body === element.dom) {
+      if (body == element.dom) {
         return SugarPosition(body.offsetLeft, body.offsetTop);
       }
-      const scrollTop = firstDefinedOrZero(win === null || win === void 0 ? void 0 : win.pageYOffset, html.scrollTop);
-      const scrollLeft = firstDefinedOrZero(win === null || win === void 0 ? void 0 : win.pageXOffset, html.scrollLeft);
+      const scrollTop = firstDefinedOrZero(win == null || win == void 0 ? void 0 : win.pageYOffset, html.scrollTop);
+      const scrollLeft = firstDefinedOrZero(win == null || win == void 0 ? void 0 : win.pageXOffset, html.scrollLeft);
       const clientTop = firstDefinedOrZero(html.clientTop, body.clientTop);
       const clientLeft = firstDefinedOrZero(html.clientLeft, body.clientLeft);
       return viewport(element).translate(scrollLeft - clientLeft, scrollTop - clientTop);
@@ -1691,7 +1691,7 @@
       const dom = element.dom;
       const doc = dom.ownerDocument;
       const body = doc.body;
-      if (body === dom) {
+      if (body == dom) {
         return SugarPosition(body.offsetLeft, body.offsetTop);
       }
       if (!inBody(element)) {
@@ -1731,7 +1731,7 @@
       return rowInfo(index, getTop$1(cell) + getOuter$1(cell));
     };
     const findPositions = (getInnerEdge, getOuterEdge, array) => {
-      if (array.length === 0) {
+      if (array.length == 0) {
         return [];
       }
       const lines = map$1(array.slice(1), (cellOption, index) => {
@@ -1815,7 +1815,7 @@
       const float = `[+-]?(?:${ unsignedDecimalLiteral })`;
       return new RegExp(`^(${ float })(.*)$`);
     })();
-    const isUnit = (unit, accepted) => exists(accepted, acc => exists(units[acc], check => unit === check));
+    const isUnit = (unit, accepted) => exists(accepted, acc => exists(units[acc], check => unit == check));
     const parse = (input, accepted) => {
       const match = Optional.from(pattern.exec(input));
       return match.bind(array => {
@@ -1859,7 +1859,7 @@
     };
     const normalizePixelSize = (value, cell, getter, setter) => {
       const number = parseFloat(value);
-      return endsWith(value, '%') && name(cell) !== 'table' ? convert(cell, number, getter, setter) : number;
+      return endsWith(value, '%') && name(cell) != 'table' ? convert(cell, number, getter, setter) : number;
     };
     const getTotalHeight = cell => {
       const value = getHeightValue(cell);
@@ -2048,7 +2048,7 @@
     };
     const chooseSize = (element, width) => {
       const percentMatch = percentageBasedSizeRegex().exec(width);
-      if (percentMatch !== null) {
+      if (percentMatch != null) {
         return percentageSize(element);
       } else {
         return pixelSize(element);
@@ -2112,7 +2112,7 @@
       f(row, td);
     };
     const fillInGaps = (list, house, stats, isSelected) => {
-      const rows = filter$2(list, row => row.section !== 'colgroup');
+      const rows = filter$2(list, row => row.section != 'colgroup');
       const totalColumns = house.grid.columns;
       const totalRows = house.grid.rows;
       for (let i = 0; i < totalRows; i++) {
@@ -2135,9 +2135,9 @@
           remove$6(col.element);
         }
       });
-      const emptyRows = filter$2(firstLayer(replica, 'tr'), row => row.dom.childElementCount === 0);
+      const emptyRows = filter$2(firstLayer(replica, 'tr'), row => row.dom.childElementCount == 0);
       each$2(emptyRows, remove$6);
-      if (stats.minCol === stats.maxCol || stats.minRow === stats.maxRow) {
+      if (stats.minCol == stats.maxCol || stats.minRow == stats.maxRow) {
         each$2(firstLayer(replica, 'th,td'), cell => {
           remove$7(cell, 'rowspan');
           remove$7(cell, 'colspan');
@@ -2149,7 +2149,7 @@
       tableSize.adjustTableWidth(widthDelta);
     };
     const getTableWidthDelta = (table, warehouse, tableSize, stats) => {
-      if (stats.minCol === 0 && warehouse.grid.columns === stats.maxCol + 1) {
+      if (stats.minCol == 0 && warehouse.grid.columns == stats.maxCol + 1) {
         return 0;
       }
       const colWidths = getPixelWidths(warehouse, table, tableSize);
@@ -2204,9 +2204,9 @@
     const getOption = element => api.getOption(element);
     const set = (element, value) => api.set(element, value);
 
-    const getEnd = element => name(element) === 'img' ? 1 : getOption(element).fold(() => children$2(element).length, v => v.length);
-    const isTextNodeWithCursorPosition = el => getOption(el).filter(text => text.trim().length !== 0 || text.indexOf(nbsp) > -1).isSome();
-    const isContentEditableFalse = elem => isHTMLElement(elem) && get$b(elem, 'contenteditable') === 'false';
+    const getEnd = element => name(element) == 'img' ? 1 : getOption(element).fold(() => children$2(element).length, v => v.length);
+    const isTextNodeWithCursorPosition = el => getOption(el).filter(text => text.trim().length != 0 || text.indexOf(nbsp) > -1).isSome();
+    const isContentEditableFalse = elem => isHTMLElement(elem) && get$b(elem, 'contenteditable') == 'false';
     const elementsWithCursorPosition = [
       'img',
       'br'
@@ -2259,7 +2259,7 @@
     const replace$1 = (cell, tag, attrs) => {
       const replica = copy$2(cell, tag);
       each$1(attrs, (v, k) => {
-        if (v === null) {
+        if (v == null) {
           remove$7(replica, k);
         } else {
           set$2(replica, k, v);
@@ -2291,7 +2291,7 @@
       const cloneCss = (prev, clone) => {
         copy$1(prev.element, clone);
         remove$5(clone, 'height');
-        if (prev.colspan !== 1) {
+        if (prev.colspan != 1) {
           remove$5(clone, 'width');
         }
       };
@@ -2361,7 +2361,7 @@
     const getPixelForcedWidth = editor => {
       var _a;
       const dom = editor.dom;
-      const parentBlock = (_a = dom.getParent(editor.selection.getStart(), dom.isBlock)) !== null && _a !== void 0 ? _a : editor.getBody();
+      const parentBlock = (_a = dom.getParent(editor.selection.getStart(), dom.isBlock)) != null && _a != void 0 ? _a : editor.getBody();
       return getInner(SugarElement.fromDom(parentBlock)) + 'px';
     };
     const determineDefaultTableStyles = (editor, defaultStyles) => {
@@ -2469,12 +2469,12 @@
     };
     const getTableHeaderType = option('table_header_type');
     const getTableColumnResizingBehaviour = option('table_column_resizing');
-    const isPreserveTableColumnResizing = editor => getTableColumnResizingBehaviour(editor) === 'preservetable';
-    const isResizeTableColumnResizing = editor => getTableColumnResizingBehaviour(editor) === 'resizetable';
+    const isPreserveTableColumnResizing = editor => getTableColumnResizingBehaviour(editor) == 'preservetable';
+    const isResizeTableColumnResizing = editor => getTableColumnResizingBehaviour(editor) == 'resizetable';
     const getTableSizingMode = option('table_sizing_mode');
-    const isTablePercentagesForced = editor => getTableSizingMode(editor) === 'relative';
-    const isTablePixelsForced = editor => getTableSizingMode(editor) === 'fixed';
-    const isTableResponsiveForced = editor => getTableSizingMode(editor) === 'responsive';
+    const isTablePercentagesForced = editor => getTableSizingMode(editor) == 'relative';
+    const isTablePixelsForced = editor => getTableSizingMode(editor) == 'fixed';
+    const isTableResponsiveForced = editor => getTableSizingMode(editor) == 'responsive';
     const hasTableResizeBars = option('table_resize_bars');
     const shouldStyleWithCss = option('table_style_by_css');
     const shouldMergeContentOnPaste = option('table_merge_content_on_paste');
@@ -2495,7 +2495,7 @@
       if (inBody(element)) {
         return element.dom.isContentEditable;
       } else {
-        return closest(element).fold(constant(assumeEditable), editable => getRaw(editable) === 'true');
+        return closest(element).fold(constant(assumeEditable), editable => getRaw(editable) == 'true');
       }
     };
     const getRaw = element => element.dom.contentEditable;
@@ -2651,7 +2651,7 @@
         if (!isElement(element)) {
           return false;
         }
-        if (name(element) === 'body') {
+        if (name(element) == 'body') {
           return true;
         }
         return contains$2(TagBoundaries, name(element));
@@ -2667,7 +2667,7 @@
           'input'
         ], name(element));
       };
-      const isNonEditable = element => isElement(element) && get$b(element, 'contenteditable') === 'false';
+      const isNonEditable = element => isElement(element) && get$b(element, 'contenteditable') == 'false';
       const comparePosition = (element, other) => {
         return element.dom.compareDocumentPosition(other.dom);
       };
@@ -2823,7 +2823,7 @@
     const identify = (start, finish, isRoot) => {
       const getIsRoot = rootTable => {
         return element => {
-          return isRoot !== undefined && isRoot(element) || eq$1(element, rootTable);
+          return isRoot != undefined && isRoot(element) || eq$1(element, rootTable);
         };
       };
       if (eq$1(start, finish)) {
@@ -2997,7 +2997,7 @@
     const getSelectionCellFallback = element => table(element).bind(table => retrieve(table, ephemera.firstSelectedSelector)).fold(constant(element), cells => cells[0]);
     const getSelectionFromSelector = selector => (initCell, isRoot) => {
       const cellName = name(initCell);
-      const cell = cellName === 'col' || cellName === 'colgroup' ? getSelectionCellFallback(initCell) : initCell;
+      const cell = cellName == 'col' || cellName == 'colgroup' ? getSelectionCellFallback(initCell) : initCell;
       return closest$1(cell, selector, isRoot);
     };
     const getSelectionCellOrCaption = getSelectionFromSelector('th,td,caption');
@@ -3019,10 +3019,10 @@
         const multiCellContext = cells => {
           e.preventDefault();
           extractSelected(cells).each(elements => {
-            e.content = e.format === 'text' ? getTextContent(elements) : serializeElements(editor, elements);
+            e.content = e.format == 'text' ? getTextContent(elements) : serializeElements(editor, elements);
           });
         };
-        if (e.selection === true) {
+        if (e.selection == true) {
           const cells = getCellsFromFakeSelection(editor);
           if (cells.length >= 1) {
             multiCellContext(cells);
@@ -3030,15 +3030,15 @@
         }
       });
       editor.on('BeforeSetContent', e => {
-        if (e.selection === true && e.paste === true) {
+        if (e.selection == true && e.paste == true) {
           const selectedCells = getCellsFromSelection(editor);
           head(selectedCells).each(cell => {
             table(cell).each(table => {
               const elements = filter$2(fromHtml(e.content), content => {
-                return name(content) !== 'meta';
+                return name(content) != 'meta';
               });
               const isTable = isTag('table');
-              if (shouldMergeContentOnPaste(editor) && elements.length === 1 && isTable(elements[0])) {
+              if (shouldMergeContentOnPaste(editor) && elements.length == 1 && isTable(elements[0])) {
                 e.preventDefault();
                 const doc = SugarElement.fromDom(editor.getDoc());
                 const generators = paste$1(doc);
@@ -3059,7 +3059,7 @@
     });
 
     const scan$1 = (universe, element, direction) => {
-      if (universe.property().isText(element) && universe.property().getText(element).trim().length === 0 || universe.property().isComment(element)) {
+      if (universe.property().isText(element) && universe.property().getText(element).trim().length == 0 || universe.property().isComment(element)) {
         return direction(element).bind(elem => {
           return scan$1(universe, elem, direction).orThunk(() => {
             return Optional.some(elem);
@@ -3128,7 +3128,7 @@
         const ratio = (100 + delta) / 100;
         const newThis = Math.max(minCellSize, (sizes[index] + delta) / ratio);
         return map$1(sizes, (size, idx) => {
-          const newSize = idx === index ? newThis : size / ratio;
+          const newSize = idx == index ? newThis : size / ratio;
           return newSize - size;
         });
       };
@@ -3240,9 +3240,9 @@
       }
     };
     const getRowType = row => {
-      const isHeaderRow = row.section === 'thead';
+      const isHeaderRow = row.section == 'thead';
       const isHeaderCells = is(findCommonCellType(row.cells), 'th');
-      if (row.section === 'tfoot') {
+      if (row.section == 'tfoot') {
         return { type: 'footer' };
       } else if (isHeaderRow || isHeaderCells) {
         return {
@@ -3255,9 +3255,9 @@
     };
     const findCommonCellType = cells => {
       const headerCells = filter$2(cells, cell => isHeaderCell(cell.element));
-      if (headerCells.length === 0) {
+      if (headerCells.length == 0) {
         return Optional.some('td');
-      } else if (headerCells.length === cells.length) {
+      } else if (headerCells.length == cells.length) {
         return Optional.some('th');
       } else {
         return Optional.none();
@@ -3282,16 +3282,16 @@
     };
     const findTableRowHeaderType = warehouse => findMap(warehouse.all, row => {
       const rowType = getRowType(row);
-      return rowType.type === 'header' ? Optional.from(rowType.subType) : Optional.none();
+      return rowType.type == 'header' ? Optional.from(rowType.subType) : Optional.none();
     });
 
     const transformCell = (cell, comparator, substitution) => elementnew(substitution(cell.element, comparator), true, cell.isLocked);
-    const transformRow = (row, section) => row.section !== section ? rowcells(row.element, row.cells, section, row.isNew) : row;
+    const transformRow = (row, section) => row.section != section ? rowcells(row.element, row.cells, section, row.isNew) : row;
     const section = () => ({
       transformRow,
       transformCell: (cell, comparator, substitution) => {
         const newCell = substitution(cell.element, comparator);
-        const fixedCell = name(newCell) !== 'td' ? mutate$1(newCell, 'td') : newCell;
+        const fixedCell = name(newCell) != 'td' ? mutate$1(newCell, 'td') : newCell;
         return elementnew(fixedCell, cell.isNew, cell.isLocked);
       }
     });
@@ -3301,7 +3301,7 @@
     });
     const cells = () => ({
       transformRow: (row, section) => {
-        const newSection = section === 'thead' ? 'tbody' : section;
+        const newSection = section == 'thead' ? 'tbody' : section;
         return transformRow(row, newSection);
       },
       transformCell
@@ -3331,7 +3331,7 @@
     };
 
     const setIfNot = (element, property, value, ignore) => {
-      if (value === ignore) {
+      if (value == ignore) {
         remove$7(element, property);
       } else {
         set$2(element, property, value);
@@ -3343,9 +3343,9 @@
     const generateSection = (table, sectionName) => {
       const section = child(table, sectionName).getOrThunk(() => {
         const newSection = SugarElement.fromTag(sectionName, owner(table).dom);
-        if (sectionName === 'thead') {
+        if (sectionName == 'thead') {
           insert$1(table, 'caption,colgroup', newSection);
-        } else if (sectionName === 'colgroup') {
+        } else if (sectionName == 'colgroup') {
           insert$1(table, 'caption', newSection);
         } else {
           append$1(table, newSection);
@@ -3380,7 +3380,7 @@
       }));
       const renderSection = (gridSection, sectionName) => {
         const section = generateSection(table, sectionName);
-        const sync = sectionName === 'colgroup' ? syncColGroup : syncRows;
+        const sync = sectionName == 'colgroup' ? syncColGroup : syncRows;
         const sectionElems = sync(gridSection);
         append(section, sectionElems);
       };
@@ -3443,7 +3443,7 @@
       return grid[index];
     };
     const findDiff = (xs, comp) => {
-      if (xs.length === 0) {
+      if (xs.length == 0) {
         return 0;
       }
       const first = xs[0];
@@ -3454,7 +3454,7 @@
     };
     const subgrid = (grid, row, column, comparator) => {
       const gridRow = getRow(grid, row);
-      const isColRow = gridRow.section === 'colgroup';
+      const isColRow = gridRow.section == 'colgroup';
       const colspan = findDiff(gridRow.cells.slice(column), comparator);
       const rowspan = isColRow ? 1 : findDiff(getColumn(grid.slice(row), column), comparator);
       return {
@@ -3474,7 +3474,7 @@
       };
       return map$1(grid, (row, rowIndex) => {
         const details = bind$2(row.cells, (cell, columnIndex) => {
-          if (seen[rowIndex][columnIndex] === false) {
+          if (seen[rowIndex][columnIndex] == false) {
             const result = subgrid(grid, rowIndex, columnIndex, comparator);
             updateSeen(rowIndex, columnIndex, result.rowspan, result.colspan);
             return [detailnew(cell.element, result.rowspan, result.colspan, cell.isNew)];
@@ -3520,7 +3520,7 @@
     };
     const run = (operation, extract, adjustment, postAction, genWrappers) => (table, target, generators, behaviours) => {
       const warehouse = Warehouse.fromTable(table);
-      const tableSection = Optional.from(behaviours === null || behaviours === void 0 ? void 0 : behaviours.section).getOrThunk(TableSection.fallback);
+      const tableSection = Optional.from(behaviours == null || behaviours == void 0 ? void 0 : behaviours.section).getOrThunk(TableSection.fallback);
       const output = extract(warehouse, target).map(info => {
         const model = fromWarehouse(warehouse, generators);
         const result = operation(model, info, eq$1, genWrappers(generators), tableSection);
@@ -3535,8 +3535,8 @@
       });
       return output.bind(out => {
         const newElements = render$1(table, out.grid);
-        const tableSizing = Optional.from(behaviours === null || behaviours === void 0 ? void 0 : behaviours.sizing).getOrThunk(() => TableSize.getTableSize(table));
-        const resizing = Optional.from(behaviours === null || behaviours === void 0 ? void 0 : behaviours.resize).getOrThunk(preserveTable);
+        const tableSizing = Optional.from(behaviours == null || behaviours == void 0 ? void 0 : behaviours.sizing).getOrThunk(() => TableSize.getTableSize(table));
+        const resizing = Optional.from(behaviours == null || behaviours == void 0 ? void 0 : behaviours.resize).getOrThunk(preserveTable);
         adjustment(table, out.grid, out.info, {
           sizing: tableSizing,
           resize: resizing,
@@ -3578,7 +3578,7 @@
 
     const merge$2 = (grid, bounds, comparator, substitution) => {
       const rows = extractGridDetails(grid).rows;
-      if (rows.length === 0) {
+      if (rows.length == 0) {
         return grid;
       }
       for (let i = bounds.startRow; i <= bounds.finishRow; i++) {
@@ -3743,13 +3743,13 @@
       };
     };
     const generateElements = (amount, row, generators, isLocked) => {
-      const generator = row.section === 'colgroup' ? generators.col : generators.cell;
+      const generator = row.section == 'colgroup' ? generators.col : generators.cell;
       return range$1(amount, idx => elementnew(generator(), true, isLocked(idx)));
     };
     const rowFill = (grid, amount, generators, lockedColumns) => {
       const exampleRow = grid[grid.length - 1];
       return grid.concat(range$1(amount, () => {
-        const generator = exampleRow.section === 'colgroup' ? generators.colgroup : generators.row;
+        const generator = exampleRow.section == 'colgroup' ? generators.colgroup : generators.row;
         const row = clone(exampleRow, generator, identity);
         const elements = generateElements(row.cells.length, row, generators, idx => has$1(lockedColumns, idx.toString()));
         return setCells(row, elements);
@@ -3770,7 +3770,7 @@
       const fillRows = delta.rowDelta < 0 ? rowFill : identity;
       const lockedColumns = getLockedColumnsFromGrid(gridA);
       const gridWidth = cellLength(gridA[0]);
-      const isLastColLocked = exists(lockedColumns, locked => locked === gridWidth - 1);
+      const isLastColLocked = exists(lockedColumns, locked => locked == gridWidth - 1);
       const modifiedCols = fillCols(gridA, Math.abs(delta.colDelta), generators, isLastColLocked ? gridWidth - 1 : gridWidth);
       const newLockedColumns = getLockedColumnsFromGrid(modifiedCols);
       return fillRows(modifiedCols, Math.abs(delta.rowDelta), generators, mapToObject(newLockedColumns, always));
@@ -3813,7 +3813,7 @@
       const gridColLength = cellLength(grid[0]);
       const adjustedRowAddress = extractGridDetails(grid).cols.length + currentStartAddress.row;
       const possibleColAddresses = range$1(gridColLength - currentStartAddress.column, num => num + currentStartAddress.column);
-      const validColAddress = find$1(possibleColAddresses, num => forall(lockedColumns, col => col !== num)).getOr(gridColLength - 1);
+      const validColAddress = find$1(possibleColAddresses, num => forall(lockedColumns, col => col != num)).getOr(gridColLength - 1);
       return {
         row: adjustedRowAddress,
         column: validColAddress
@@ -3894,7 +3894,7 @@
       ];
     };
     const getElementFor = (row, column, section, withinSpan, example, comparator, substitution) => {
-      if (section === 'colgroup' || !withinSpan) {
+      if (section == 'colgroup' || !withinSpan) {
         const cell = getCell(row, example);
         return elementnew(substitution(cell.element, comparator), true, false);
       } else {
@@ -3920,30 +3920,30 @@
       ];
     };
 
-    const notInStartRow = (grid, rowIndex, colIndex, comparator) => getCellElement(grid[rowIndex], colIndex) !== undefined && (rowIndex > 0 && comparator(getCellElement(grid[rowIndex - 1], colIndex), getCellElement(grid[rowIndex], colIndex)));
+    const notInStartRow = (grid, rowIndex, colIndex, comparator) => getCellElement(grid[rowIndex], colIndex) != undefined && (rowIndex > 0 && comparator(getCellElement(grid[rowIndex - 1], colIndex), getCellElement(grid[rowIndex], colIndex)));
     const notInStartColumn = (row, index, comparator) => index > 0 && comparator(getCellElement(row, index - 1), getCellElement(row, index));
     const isDuplicatedCell = (grid, rowIndex, colIndex, comparator) => notInStartRow(grid, rowIndex, colIndex, comparator) || notInStartColumn(grid[rowIndex], colIndex, comparator);
     const rowReplacerPredicate = (targetRow, columnHeaders) => {
       const entireTableIsHeader = forall(columnHeaders, identity) && isHeaderCells(targetRow.cells);
       return entireTableIsHeader ? always : (cell, _rowIndex, colIndex) => {
         const type = name(cell.element);
-        return !(type === 'th' && columnHeaders[colIndex]);
+        return !(type == 'th' && columnHeaders[colIndex]);
       };
     };
     const columnReplacePredicate = (targetColumn, rowHeaders) => {
       const entireTableIsHeader = forall(rowHeaders, identity) && isHeaderCells(targetColumn);
       return entireTableIsHeader ? always : (cell, rowIndex, _colIndex) => {
         const type = name(cell.element);
-        return !(type === 'th' && rowHeaders[rowIndex]);
+        return !(type == 'th' && rowHeaders[rowIndex]);
       };
     };
     const determineScope = (applyScope, cell, newScope, isInHeader) => {
-      const hasSpan = scope => scope === 'row' ? hasRowspan(cell) : hasColspan(cell);
+      const hasSpan = scope => scope == 'row' ? hasRowspan(cell) : hasColspan(cell);
       const getScope = scope => hasSpan(scope) ? `${ scope }group` : scope;
       if (applyScope) {
         return isHeaderCell(cell) ? getScope(newScope) : null;
       } else if (isInHeader && isHeaderCell(cell)) {
-        const oppositeScope = newScope === 'row' ? 'col' : 'row';
+        const oppositeScope = newScope == 'row' ? 'col' : 'row';
         return getScope(oppositeScope);
       } else {
         return null;
@@ -4016,21 +4016,21 @@
       if (!isArray(cases)) {
         throw new Error('cases must be an array');
       }
-      if (cases.length === 0) {
+      if (cases.length == 0) {
         throw new Error('there must be at least one case');
       }
       const constructors = [];
       const adt = {};
       each$2(cases, (acase, count) => {
         const keys$1 = keys(acase);
-        if (keys$1.length !== 1) {
+        if (keys$1.length != 1) {
           throw new Error('one and only one name per case');
         }
         const key = keys$1[0];
         const value = acase[key];
-        if (adt[key] !== undefined) {
+        if (adt[key] != undefined) {
           throw new Error('duplicate key detected:' + key);
-        } else if (key === 'cata') {
+        } else if (key == 'cata') {
           throw new Error('cannot have a case named cata (sorry)');
         } else if (!isArray(value)) {
           throw new Error('case arguments must be an array');
@@ -4038,12 +4038,12 @@
         constructors.push(key);
         adt[key] = (...args) => {
           const argLength = args.length;
-          if (argLength !== value.length) {
+          if (argLength != value.length) {
             throw new Error('Wrong number of arguments to case ' + key + '. Expected ' + value.length + ' (' + value + '), got ' + argLength);
           }
           const match = branches => {
             const branchKeys = keys(branches);
-            if (constructors.length !== branchKeys.length) {
+            if (constructors.length != branchKeys.length) {
               throw new Error('Wrong number of arguments to match. Expected: ' + constructors.join(',') + '\nActual: ' + branchKeys.join(','));
             }
             const allReqd = forall(constructors, reqKey => {
@@ -4056,7 +4056,7 @@
           };
           return {
             fold: (...foldArgs) => {
-              if (foldArgs.length !== cases.length) {
+              if (foldArgs.length != cases.length) {
                 throw new Error('Wrong number of arguments to fold. Expected ' + cases.length + ', got ' + foldArgs.length);
               }
               const target = foldArgs[count];
@@ -4103,16 +4103,16 @@
     const ColumnContext = { ...adt$6 };
 
     const neighbours = (input, index) => {
-      if (input.length === 0) {
+      if (input.length == 0) {
         return ColumnContext.none();
       }
-      if (input.length === 1) {
+      if (input.length == 1) {
         return ColumnContext.only(0);
       }
-      if (index === 0) {
+      if (index == 0) {
         return ColumnContext.left(0, 1);
       }
-      if (index === input.length - 1) {
+      if (index == input.length - 1) {
         return ColumnContext.right(index - 1, index);
       }
       if (index > 0 && index < input.length - 1) {
@@ -4134,7 +4134,7 @@
     const total = (start, end, measures) => {
       let r = 0;
       for (let i = start; i < end; i++) {
-        r += measures[i] !== undefined ? measures[i] : 0;
+        r += measures[i] != undefined ? measures[i] : 0;
       }
       return r;
     };
@@ -4195,7 +4195,7 @@
       const warehouse = Warehouse.fromTable(table);
       const step = tableSize.getCellDelta(delta);
       const widths = tableSize.getWidths(warehouse, tableSize);
-      const isLastColumn = index === warehouse.grid.columns - 1;
+      const isLastColumn = index == warehouse.grid.columns - 1;
       const clampedStep = resizing.clampTableDelta(widths, index, step, tableSize.minCellWidth(), isLastColumn);
       const deltas = determine(widths, index, clampedStep, tableSize, resizing);
       const newWidths = map$1(deltas, (dx, i) => dx + widths[i]);
@@ -4205,7 +4205,7 @@
     const adjustHeight = (table, delta, index, direction) => {
       const warehouse = Warehouse.fromTable(table);
       const heights = getPixelHeights(warehouse, table, direction);
-      const newHeights = map$1(heights, (dy, i) => index === i ? Math.max(delta + dy, minHeight()) : dy);
+      const newHeights = map$1(heights, (dy, i) => index == i ? Math.max(delta + dy, minHeight()) : dy);
       const newCellSizes = recalculateHeightForCells(warehouse, newHeights);
       const newRowSizes = matchRowHeight(warehouse, newHeights);
       each$2(newRowSizes, row => {
@@ -4233,7 +4233,7 @@
 
     const uniqueColumns = details => {
       const uniqueCheck = (rest, detail) => {
-        const columnExists = exists(rest, currentDetail => currentDetail.column === detail.column);
+        const columnExists = exists(rest, currentDetail => currentDetail.column == detail.column);
         return columnExists ? rest : rest.concat([detail]);
       };
       return foldl(details, uniqueCheck, []).sort((detailA, detailB) => detailA.column - detailB.column);
@@ -4241,7 +4241,7 @@
 
     const isCol = isTag('col');
     const isColgroup = isTag('colgroup');
-    const isRow$1 = element => name(element) === 'tr' || isColgroup(element);
+    const isRow$1 = element => name(element) == 'tr' || isColgroup(element);
     const elementToData = element => {
       const colspan = getAttrValue(element, 'colspan', 1);
       const rowspan = getAttrValue(element, 'rowspan', 1);
@@ -4286,7 +4286,7 @@
           });
         };
         const makeNew = element => {
-          const attrs = tag === 'td' ? { scope: null } : {};
+          const attrs = tag == 'td' ? { scope: null } : {};
           const cell = generators.replace(element, tag, attrs);
           list.push({
             item: element,
@@ -4329,7 +4329,7 @@
       const merge = cells => {
         const getScopeProperty = () => {
           const stringAttributes = cat(map$1(cells, getScopeAttribute));
-          if (stringAttributes.length === 0) {
+          if (stringAttributes.length == 0) {
             return Optional.none();
           } else {
             const baseScope = stringAttributes[0];
@@ -4338,7 +4338,7 @@
               'col'
             ];
             const isMixed = exists(stringAttributes, attribute => {
-              return attribute !== baseScope && contains$2(scopes, attribute);
+              return attribute != baseScope && contains$2(scopes, attribute);
             });
             return isMixed ? Optional.none() : Optional.from(baseScope);
           }
@@ -4425,11 +4425,11 @@
       const isBr = isTag('br');
       const advancedBr = children => {
         return forall(children, c => {
-          return isBr(c) || isText(c) && get$6(c).trim().length === 0;
+          return isBr(c) || isText(c) && get$6(c).trim().length == 0;
         });
       };
       const isListItem = el => {
-        return name(el) === 'li' || ancestor$2(el, isList).isSome();
+        return name(el) == 'li' || ancestor$2(el, isList).isSome();
       };
       const siblingIsBlock = el => {
         return nextSibling(el).map(rightSibling => {
@@ -4437,7 +4437,7 @@
             return true;
           }
           if (isEmptyTag(rightSibling)) {
-            return name(rightSibling) === 'img' ? false : true;
+            return name(rightSibling) == 'img' ? false : true;
           }
           return false;
         }).getOr(false);
@@ -4446,7 +4446,7 @@
         return last$1(cell).bind(rightEdge => {
           const rightSiblingIsBlock = siblingIsBlock(rightEdge);
           return parent(rightEdge).map(parent => {
-            return rightSiblingIsBlock === true || isListItem(parent) || isBr(rightEdge) || isBlock(parent) && !eq$1(cell, parent) ? [] : [SugarElement.fromTag('br')];
+            return rightSiblingIsBlock == true || isListItem(parent) || isBr(rightEdge) || isBlock(parent) && !eq$1(cell, parent) ? [] : [SugarElement.fromTag('br')];
           });
         }).getOr([]);
       };
@@ -4455,7 +4455,7 @@
           const children = children$2(cell);
           return advancedBr(children) ? [] : children.concat(markCell(cell));
         });
-        return content.length === 0 ? [SugarElement.fromTag('br')] : content;
+        return content.length == 0 ? [SugarElement.fromTag('br')] : content;
       };
       const contents = markContent();
       empty(cells[0]);
@@ -4465,7 +4465,7 @@
     const isEditable = elem => isEditable$1(elem, true);
     const prune = table => {
       const cells = cells$1(table);
-      if (cells.length === 0) {
+      if (cells.length == 0) {
         remove$6(table);
       }
     };
@@ -4480,7 +4480,7 @@
     const elementFromGrid = (grid, row, column) => {
       var _a, _b;
       const rows = extractGridDetails(grid).rows;
-      return Optional.from((_b = (_a = rows[row]) === null || _a === void 0 ? void 0 : _a.cells[column]) === null || _b === void 0 ? void 0 : _b.element).filter(isEditable).orThunk(() => findEditableCursorPosition(rows));
+      return Optional.from((_b = (_a = rows[row]) == null || _a == void 0 ? void 0 : _a.cells[column]) == null || _b == void 0 ? void 0 : _b.element).filter(isEditable).orThunk(() => findEditableCursorPosition(rows));
     };
     const bundle = (grid, row, column) => {
       const cursorElement = elementFromGrid(grid, row, column);
@@ -4488,7 +4488,7 @@
     };
     const uniqueRows = details => {
       const rowCompilation = (rest, detail) => {
-        const rowExists = exists(rest, currentDetail => currentDetail.row === detail.row);
+        const rowExists = exists(rest, currentDetail => currentDetail.row == detail.row);
         return rowExists ? rest : rest.concat([detail]);
       };
       return foldl(details, rowCompilation, []).sort((detailA, detailB) => detailA.row - detailB.row);
@@ -4673,7 +4673,7 @@
     };
     const resize = (table, list, details, behaviours) => adjustWidthTo(table, list, details, behaviours.sizing);
     const adjustAndRedistributeWidths = (table, list, details, behaviours) => adjustAndRedistributeWidths$1(table, list, details, behaviours.sizing, behaviours.resize);
-    const firstColumnIsLocked = (_warehouse, details) => exists(details, detail => detail.column === 0 && detail.isLocked);
+    const firstColumnIsLocked = (_warehouse, details) => exists(details, detail => detail.column == 0 && detail.isLocked);
     const lastColumnIsLocked = (warehouse, details) => exists(details, detail => detail.column + detail.colspan >= warehouse.grid.columns && detail.isLocked);
     const getColumnsWidth = (warehouse, details) => {
       const columns$1 = columns(warehouse);
@@ -4784,7 +4784,7 @@
     };
 
     const TableActions = (editor, resizeHandler, cellSelectionHandler) => {
-      const isTableBody = editor => name(getBody(editor)) === 'table';
+      const isTableBody = editor => name(getBody(editor)) == 'table';
       const lastRowGuard = table => !isTableBody(editor) || getGridSize(table).rows > 1;
       const lastColumnGuard = table => !isTableBody(editor) || getGridSize(table).columns > 1;
       const cloneFormats = getTableCloneElements(editor);
@@ -4902,7 +4902,7 @@
 
     const constrainSpan = (element, property, value) => {
       const currentColspan = getAttrValue(element, property, 1);
-      if (value === 1 || currentColspan <= 1) {
+      if (value == 1 || currentColspan <= 1) {
         remove$7(element, property);
       } else {
         set$2(element, property, Math.min(value, currentColspan));
@@ -4982,7 +4982,7 @@
     const validateFor = (suffix, type, value) => {
       const rawAmount = value.substring(0, value.length - suffix.length);
       const amount = parseFloat(rawAmount);
-      return rawAmount === amount.toString() ? type(amount) : adt$5.invalid(value);
+      return rawAmount == amount.toString() ? type(amount) : adt$5.invalid(value);
     };
     const from = value => {
       if (endsWith(value, '%')) {
@@ -5046,12 +5046,12 @@
     const redistribute$1 = (widths, totalWidth, newWidth) => {
       const newType = Size.from(newWidth);
       const floats = forall(widths, s => {
-        return s === '0px';
+        return s == '0px';
       }) ? redistributeEmpty(newType, widths.length) : redistributeValues(newType, widths, totalWidth);
       return normalize(floats);
     };
     const sum = (values, fallback) => {
-      if (values.length === 0) {
+      if (values.length == 0) {
         return fallback;
       }
       return foldr(values, (rest, v) => {
@@ -5073,7 +5073,7 @@
       });
     };
     const normalize = values => {
-      if (values.length === 0) {
+      if (values.length == 0) {
         return values;
       }
       const scan = foldr(values, (rest, value) => {
@@ -5211,7 +5211,7 @@
     const createRows = (rows, columns, rowHeaders, columnHeaders) => range$1(rows, r => createRow(columns, rowHeaders, columnHeaders, r));
     const render = (rows, columns, rowHeaders, columnHeaders, headerType, renderOpts = DefaultRenderOptions) => {
       const table = SugarElement.fromTag('table');
-      const rowHeadersGoInThead = headerType !== 'cells';
+      const rowHeadersGoInThead = headerType != 'cells';
       setAll(table, renderOpts.styles);
       setAll$1(table, renderOpts.attributes);
       if (renderOpts.colGroups) {
@@ -5221,7 +5221,7 @@
       if (rowHeadersGoInThead && rowHeaders > 0) {
         const thead = SugarElement.fromTag('thead');
         append$1(table, thead);
-        const theadRowHeaders = headerType === 'sectionCells' ? actualRowHeaders : 0;
+        const theadRowHeaders = headerType == 'sectionCells' ? actualRowHeaders : 0;
         const theadRows = createRows(rowHeaders, columns, theadRowHeaders, columnHeaders);
         append(thead, theadRows);
       }
@@ -5257,7 +5257,7 @@
         });
       });
     };
-    const isPercentage = width => isString(width) && width.indexOf('%') !== -1;
+    const isPercentage = width => isString(width) && width.indexOf('%') != -1;
     const insert = (editor, columns, rows, colHeaders, rowHeaders) => {
       const defaultStyles = getTableDefaultStyles(editor);
       const options = {
@@ -5310,7 +5310,7 @@
     };
     const getData = type => {
       var _a;
-      const items = (_a = global.read()) !== null && _a !== void 0 ? _a : [];
+      const items = (_a = global.read()) != null && _a != void 0 ? _a : [];
       return findMap(items, item => Optional.from(item.getType(type)));
     };
     const clearData = type => {
@@ -5354,11 +5354,11 @@
         const isForcedSizing = isTableResponsiveForced(editor) || isTablePixelsForced(editor) || isTablePercentagesForced(editor);
         if (!isForcedSizing) {
           table(cellOrCaption, isRoot).each(table => {
-            if (sizing === 'relative' && !isPercentSizing(table)) {
+            if (sizing == 'relative' && !isPercentSizing(table)) {
               convertToPercentSize(table);
-            } else if (sizing === 'fixed' && !isPixelSizing(table)) {
+            } else if (sizing == 'fixed' && !isPixelSizing(table)) {
               convertToPixelSize(table);
-            } else if (sizing === 'responsive' && !isNoneSizing(table)) {
+            } else if (sizing == 'responsive' && !isNoneSizing(table)) {
               convertToNoneSize(table);
             }
             removeDataStyle(table);
@@ -5456,8 +5456,8 @@
         mceTableToggleClass: toggleTableClass,
         mceTableToggleCaption: toggleCaption,
         mceTableSizingMode: (_ui, sizing) => setSizingMode(sizing),
-        mceTableCellType: actOnType(type => type === 'th' ? actions.makeCellsHeader : actions.unmakeCellsHeader),
-        mceTableColType: actOnType(type => type === 'th' ? actions.makeColumnsHeader : actions.unmakeColumnsHeader),
+        mceTableCellType: actOnType(type => type == 'th' ? actions.makeCellsHeader : actions.unmakeCellsHeader),
+        mceTableColType: actOnType(type => type == 'th' ? actions.makeColumnsHeader : actions.unmakeColumnsHeader),
         mceTableRowType: actOnType(type => {
           switch (type) {
           case 'header':
@@ -5478,7 +5478,7 @@
           return;
         }
         const cells = filter$2(getCellsFromSelection(editor), isInEditableContext$1);
-        if (cells.length === 0) {
+        if (cells.length == 0) {
           return;
         }
         const validArgs = filter$1(args, (value, style) => editor.formatter.has(getFormatName(style)) && isString(value));
@@ -5488,7 +5488,7 @@
         each$1(validArgs, (value, style) => {
           const formatName = getFormatName(style);
           each$2(cells, cell => {
-            if (value === '') {
+            if (value == '') {
               editor.formatter.remove(formatName, { value: null }, cell.dom, true);
             } else {
               editor.formatter.apply(formatName, { value }, cell.dom);
@@ -5638,7 +5638,7 @@
     const doDiagnose = (win, ranges) => {
       const rng = ranges.ltr();
       if (rng.collapsed) {
-        const reversed = ranges.rtl().filter(rev => rev.collapsed === false);
+        const reversed = ranges.rtl().filter(rev => rev.collapsed == false);
         return reversed.map(rev => adt$3.rtl(SugarElement.fromDom(rev.endContainer), rev.endOffset, SugarElement.fromDom(rev.startContainer), rev.startOffset)).getOrThunk(() => fromRange(win, adt$3.ltr, rng));
       } else {
         return fromRange(win, adt$3.ltr, rng);
@@ -5691,7 +5691,7 @@
     const makeSitus = Situs.create;
 
     const sync = (container, isRoot, start, soffset, finish, foffset, selectRange) => {
-      if (!(eq$1(start, finish) && soffset === foffset)) {
+      if (!(eq$1(start, finish) && soffset == foffset)) {
         return closest$1(start, 'td,th', isRoot).bind(s => {
           return closest$1(finish, 'td,th', isRoot).bind(f => {
             return detect(container, isRoot, s, f, selectRange);
@@ -5765,7 +5765,7 @@
     ];
     const go = (universe, item, mode, direction, rules = successors) => {
       const ruleOpt = find$1(rules, succ => {
-        return succ.current === mode;
+        return succ.current == mode;
       });
       return ruleOpt.bind(rule => {
         return rule.current(universe, item, direction, rule.next).orThunk(() => {
@@ -5822,7 +5822,7 @@
       return hone(universe, item, predicate, sidestep, Walkers.right(), isRoot);
     };
 
-    const isLeaf = universe => element => universe.property().children(element).length === 0;
+    const isLeaf = universe => element => universe.property().children(element).length == 0;
     const before$1 = (universe, item, isRoot) => {
       return seekLeft$1(universe, item, isLeaf(universe), isRoot);
     };
@@ -5875,7 +5875,7 @@
               return failure(beforeCell);
             });
           } else {
-            return eq$1(after, afterCell) && getEnd(afterCell) === afterOffset ? failure(beforeCell) : adt$2.none('in same cell');
+            return eq$1(after, afterCell) && getEnd(afterCell) == afterOffset ? failure(beforeCell) : adt$2.none('in same cell');
           }
         });
       }).getOr(adt$2.none('default'));
@@ -5904,7 +5904,7 @@
     const isBr = isTag('br');
     const gatherer = (cand, gather, isRoot) => {
       return gather(cand, isRoot).bind(target => {
-        return isText(target) && get$6(target).trim().length === 0 ? gatherer(target, gather, isRoot) : Optional.some(target);
+        return isText(target) && get$6(target).trim().length == 0 ? gatherer(target, gather, isRoot) : Optional.some(target);
       });
     };
     const handleBr = (isRoot, element, direction) => {
@@ -6038,7 +6038,7 @@
         return adt$1.retry(lowerCaret);
       } else if (guessBox.top > caret.bottom) {
         return adt$1.retry(lowerCaret);
-      } else if (guessBox.top === caret.bottom) {
+      } else if (guessBox.top == caret.bottom) {
         return adt$1.retry(moveDown(caret, 1));
       } else {
         return inOutsideBlock(bridge, element, caret) ? adt$1.retry(translate(lowerCaret, JUMP_SIZE, 0)) : adt$1.none();
@@ -6050,7 +6050,7 @@
         return adt$1.retry(higherCaret);
       } else if (guessBox.bottom < caret.top) {
         return adt$1.retry(higherCaret);
-      } else if (guessBox.bottom === caret.top) {
+      } else if (guessBox.bottom == caret.top) {
         return adt$1.retry(moveUp(caret, 1));
       } else {
         return inOutsideBlock(bridge, element, caret) ? adt$1.retry(translate(higherCaret, JUMP_SIZE, 0)) : adt$1.none();
@@ -6070,14 +6070,14 @@
     };
     const isAtTable = (bridge, x, y) => {
       return bridge.elementFromPoint(x, y).filter(elm => {
-        return name(elm) === 'table';
+        return name(elm) == 'table';
       }).isSome();
     };
     const adjustForTable = (bridge, movement, original, caret, numRetries) => {
       return adjustTil(bridge, movement, original, movement.move(caret, JUMP_SIZE), numRetries);
     };
     const adjustTil = (bridge, movement, original, caret, numRetries) => {
-      if (numRetries === 0) {
+      if (numRetries == 0) {
         return Optional.some(caret);
       }
       if (isAtTable(bridge, caret.left, movement.point(caret))) {
@@ -6133,7 +6133,7 @@
       });
     };
     const scan = (bridge, isRoot, element, offset, direction, numRetries) => {
-      if (numRetries === 0) {
+      if (numRetries == 0) {
         return Optional.none();
       }
       return tryCursor(bridge, isRoot, element, offset, direction).bind(situs => {
@@ -6144,13 +6144,13 @@
         }, () => {
           return Optional.some(situs);
         }, cell => {
-          if (eq$1(element, cell) && offset === 0) {
+          if (eq$1(element, cell) && offset == 0) {
             return tryAgain(bridge, element, offset, moveUp, direction);
           } else {
             return scan(bridge, isRoot, cell, 0, direction, numRetries - 1);
           }
         }, cell => {
-          if (eq$1(element, cell) && offset === getEnd(cell)) {
+          if (eq$1(element, cell) && offset == getEnd(cell)) {
             return tryAgain(bridge, element, offset, moveDown, direction);
           } else {
             return scan(bridge, isRoot, cell, getEnd(cell), direction, numRetries - 1);
@@ -6308,9 +6308,9 @@
           findCell(event.target, isRoot).each(finish => {
             identify(start, finish, isRoot).each(cellSel => {
               const boxes = cellSel.boxes.getOr([]);
-              if (boxes.length === 1) {
+              if (boxes.length == 1) {
                 const singleCell = boxes[0];
-                const isNonEditableCell = getRaw(singleCell) === 'false';
+                const isNonEditableCell = getRaw(singleCell) == 'false';
                 const isCellClosestContentEditable = is(closest(event.target), singleCell, eq$1);
                 if (isNonEditableCell && isCellClosestContentEditable) {
                   annotations.selectRange(container, boxes, singleCell, singleCell);
@@ -6360,7 +6360,7 @@
 
     const isKey = key => {
       return keycode => {
-        return keycode === key;
+        return keycode == key;
       };
     };
     const isUp = isKey(38);
@@ -6378,13 +6378,13 @@
     };
 
     const get$3 = _DOC => {
-      const doc = _DOC !== undefined ? _DOC.dom : document;
+      const doc = _DOC != undefined ? _DOC.dom : document;
       const x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
       const y = doc.body.scrollTop || doc.documentElement.scrollTop;
       return SugarPosition(x, y);
     };
     const by = (x, y, _DOC) => {
-      const doc = _DOC !== undefined ? _DOC.dom : document;
+      const doc = _DOC != undefined ? _DOC.dom : document;
       const win = doc.defaultView;
       if (win) {
         win.scrollBy(x, y);
@@ -6433,8 +6433,8 @@
 
     const caretPositionFromPoint = (doc, x, y) => {
       var _a, _b;
-      return Optional.from((_b = (_a = doc.dom).caretPositionFromPoint) === null || _b === void 0 ? void 0 : _b.call(_a, x, y)).bind(pos => {
-        if (pos.offsetNode === null) {
+      return Optional.from((_b = (_a = doc.dom).caretPositionFromPoint) == null || _b == void 0 ? void 0 : _b.call(_a, x, y)).bind(pos => {
+        if (pos.offsetNode == null) {
           return Optional.none();
         }
         const r = doc.dom.createRange();
@@ -6445,7 +6445,7 @@
     };
     const caretRangeFromPoint = (doc, x, y) => {
       var _a, _b;
-      return Optional.from((_b = (_a = doc.dom).caretRangeFromPoint) === null || _b === void 0 ? void 0 : _b.call(_a, x, y));
+      return Optional.from((_b = (_a = doc.dom).caretRangeFromPoint) == null || _b == void 0 ? void 0 : _b.call(_a, x, y));
     };
     const availableSearch = (() => {
       if (document.caretPositionFromPoint) {
@@ -6463,7 +6463,7 @@
 
     const beforeSpecial = (element, offset) => {
       const name$1 = name(element);
-      if ('input' === name$1) {
+      if ('input' == name$1) {
         return Situ.after(element);
       } else if (!contains$2([
           'br',
@@ -6471,7 +6471,7 @@
         ], name$1)) {
         return Situ.on(element, offset);
       } else {
-        return offset === 0 ? Situ.before(element) : Situ.after(element);
+        return offset == 0 ? Situ.before(element) : Situ.after(element);
       }
     };
     const preprocessRelative = (startSitu, finishSitu) => {
@@ -6494,7 +6494,7 @@
     };
     const after = (start, soffset, finish, foffset) => {
       const r = makeRange(start, soffset, finish, foffset);
-      const same = eq$1(start, finish) && soffset === foffset;
+      const same = eq$1(start, finish) && soffset == foffset;
       return r.collapsed && !same;
     };
 
@@ -6551,7 +6551,7 @@
       }
     };
     const doGetExact = selection => {
-      if (selection.anchorNode === null || selection.focusNode === null) {
+      if (selection.anchorNode == null || selection.focusNode == null) {
         return readRange(selection);
       } else {
         const anchor = SugarElement.fromDom(selection.anchorNode);
@@ -6679,7 +6679,7 @@
       const keydown = (event, start, soffset, finish, foffset, direction) => {
         const realEvent = event.raw;
         const keycode = realEvent.which;
-        const shiftKey = realEvent.shiftKey === true;
+        const shiftKey = realEvent.shiftKey == true;
         const handler = retrieve$1(container, annotations.selectedSelector).fold(() => {
           if (isNavigation(keycode) && !shiftKey) {
             annotations.clearBeforeUpdate(container);
@@ -6743,7 +6743,7 @@
         return retrieve$1(container, annotations.selectedSelector).fold(() => {
           const realEvent = event.raw;
           const keycode = realEvent.which;
-          const shiftKey = realEvent.shiftKey === true;
+          const shiftKey = realEvent.shiftKey == true;
           if (!shiftKey) {
             return Optional.none();
           }
@@ -6774,7 +6774,7 @@
 
     const read = (element, attr) => {
       const value = get$b(element, attr);
-      return value === undefined || value === '' ? [] : value.split(' ');
+      return value == undefined || value == '' ? [] : value.split(' ');
     };
     const add$2 = (element, attr, id) => {
       const old = read(element, attr);
@@ -6783,7 +6783,7 @@
       return true;
     };
     const remove$4 = (element, attr, id) => {
-      const nu = filter$2(read(element, attr), v => v !== id);
+      const nu = filter$2(read(element, attr), v => v != id);
       if (nu.length > 0) {
         set$2(element, attr, nu.join(' '));
       } else {
@@ -6792,7 +6792,7 @@
       return false;
     };
 
-    const supports = element => element.dom.classList !== undefined;
+    const supports = element => element.dom.classList != undefined;
     const get$1 = element => read(element, 'class');
     const add$1 = (element, clazz) => add$2(element, 'class', clazz);
     const remove$3 = (element, clazz) => remove$4(element, 'class', clazz);
@@ -6806,7 +6806,7 @@
     };
     const cleanClass = element => {
       const classList = supports(element) ? element.dom.classList : get$1(element);
-      if (classList.length === 0) {
+      if (classList.length == 0) {
         remove$7(element, 'class');
       }
     };
@@ -7021,7 +7021,7 @@
         const mouseHandlers = mouse(win, body, isRoot, annotations);
         const keyHandlers = keyboard(win, body, isRoot, annotations);
         const external$1 = external(win, body, isRoot, annotations);
-        const hasShiftKey = event => event.raw.shiftKey === true;
+        const hasShiftKey = event => event.raw.shiftKey == true;
         editor.on('TableSelectorChange', e => external$1(e.start, e.finish));
         const handleResponse = (event, response) => {
           if (!hasShiftKey(event)) {
@@ -7059,12 +7059,12 @@
           });
           resizeHandler.show();
         };
-        const isLeftMouse = raw => raw.button === 0;
+        const isLeftMouse = raw => raw.button == 0;
         const isLeftButtonPressed = raw => {
-          if (raw.buttons === undefined) {
+          if (raw.buttons == undefined) {
             return true;
           }
-          return (raw.buttons & 1) !== 0;
+          return (raw.buttons & 1) != 0;
         };
         const dragStart = _e => {
           mouseHandlers.clearstate();
@@ -7129,14 +7129,14 @@
     const Event = fields => {
       let handlers = [];
       const bind = handler => {
-        if (handler === undefined) {
+        if (handler == undefined) {
           throw new Error('Event bind error: undefined handler');
         }
         handlers.push(handler);
       };
       const unbind = handler => {
         handlers = filter$2(handlers, h => {
-          return h !== handler;
+          return h != handler;
         });
       };
       const trigger = (...args) => {
@@ -7217,7 +7217,7 @@
     const checkDupes = everything => {
       const sorted = sort(everything);
       const dupe = find$1(sorted, (s, i) => {
-        return i < sorted.length - 1 && s === sorted[i + 1];
+        return i < sorted.length - 1 && s == sorted[i + 1];
       });
       dupe.each(d => {
         throw new Error('The field: ' + d + ' occurs more than once in the combined fields: [' + sorted.join(', ') + '].');
@@ -7231,7 +7231,7 @@
       });
     };
     const baseWith = (handleUnsupported, required, pred) => {
-      if (required.length === 0) {
+      if (required.length == 0) {
         throw new Error('You must specify at least one required field.');
       }
       validateStrArr('required', required);
@@ -7337,7 +7337,7 @@
         dragState.onEvent(event, mode);
       };
       const isOn = () => {
-        return dragState === inDragState;
+        return dragState == inDragState;
       };
       return {
         on,
@@ -7490,7 +7490,7 @@
 
     const transform = (mutation, settings = {}) => {
       var _a;
-      const mode = (_a = settings.mode) !== null && _a !== void 0 ? _a : MouseDrag;
+      const mode = (_a = settings.mode) != null && _a != void 0 ? _a : MouseDrag;
       return setup(mutation, mode, settings);
     };
 
@@ -7587,7 +7587,7 @@
         }
       });
       return filter$2(resizableCols, colIndex => {
-        const columnCells = Warehouse.filterItems(warehouse, cell => cell.column === colIndex);
+        const columnCells = Warehouse.filterItems(warehouse, cell => cell.column == colIndex);
         return forall(columnCells, cell => isResizable(cell.element));
       });
     };
@@ -7624,11 +7624,11 @@
       const isResizable = wire.isResizable;
       const rowPositions = rows.length > 0 ? height.positions(rows, table) : [];
       const resizableRowBars = rowPositions.length > 0 ? resizableRows(warhouse, isResizable) : [];
-      const resizableRowPositions = filter$2(rowPositions, (_pos, i) => exists(resizableRowBars, barIndex => i === barIndex));
+      const resizableRowPositions = filter$2(rowPositions, (_pos, i) => exists(resizableRowBars, barIndex => i == barIndex));
       refreshRow(wire, resizableRowPositions, position, getOuter$2(table));
       const colPositions = cols.length > 0 ? width.positions(cols, table) : [];
       const resizableColBars = colPositions.length > 0 ? resizableColumns(warhouse, isResizable) : [];
-      const resizableColPositions = filter$2(colPositions, (_pos, i) => exists(resizableColBars, barIndex => i === barIndex));
+      const resizableColPositions = filter$2(colPositions, (_pos, i) => exists(resizableColBars, barIndex => i == barIndex));
       refreshCol(wire, resizableColPositions, position, getOuter$1(table));
     };
     const refresh = (wire, table) => {
@@ -7865,9 +7865,9 @@
       }
     };
 
-    const isTable = node => isNonNullable(node) && node.nodeName === 'TABLE';
+    const isTable = node => isNonNullable(node) && node.nodeName == 'TABLE';
     const barResizerPrefix = 'bar-';
-    const isResizable = elm => get$b(elm, 'data-mce-resize') !== 'false';
+    const isResizable = elm => get$b(elm, 'data-mce-resize') != 'false';
     const syncPixels = table => {
       const warehouse = Warehouse.fromTable(table);
       if (!Warehouse.hasColumns(warehouse)) {
@@ -7889,10 +7889,10 @@
       const getNumColumns = table => getGridSize(table).columns;
       const afterCornerResize = (table, origin, width) => {
         const isRightEdgeResize = endsWith(origin, 'e');
-        if (startRawW === '') {
+        if (startRawW == '') {
           convertToPercentSize(table);
         }
-        if (width !== startW && startRawW !== '') {
+        if (width != startW && startRawW != '') {
           set$1(table, 'width', startRawW);
           const resizing = lazyResizingBehaviour();
           const tableSize = lazySizing(table);
@@ -7985,7 +7985,7 @@
       });
       editor.on('dragstart dragend', e => {
         tableResize.on(resize => {
-          if (e.type === 'dragstart') {
+          if (e.type == 'dragstart') {
             resize.hideBars();
             resize.off();
           } else {

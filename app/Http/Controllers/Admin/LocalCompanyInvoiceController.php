@@ -93,13 +93,13 @@ class LocalCompanyInvoiceController extends Controller
 
         $invoice->approveReceipt(auth()->id());
 
-        if ($localCompany->status === 'payment_review') {
+        if ($localCompany->status == 'payment_review') {
             $validityYears = (int) (Setting::where('key', 'local_company_validity_years')->first()?->value ?? 1);
             $localCompany->update([
                 'status' => 'active',
                 'expires_at' => now()->addYears($validityYears),
             ]);
-        } elseif ($localCompany->status === 'expired') {
+        } elseif ($localCompany->status == 'expired') {
             $localCompany->renewCompany();
         }
 
@@ -182,7 +182,7 @@ class LocalCompanyInvoiceController extends Controller
 
         $invoice->rejectReceipt($request->rejection_reason, auth()->id());
 
-        if ($localCompany->status === 'payment_review') {
+        if ($localCompany->status == 'payment_review') {
             $localCompany->update([
                 'status' => 'approved',
             ]);

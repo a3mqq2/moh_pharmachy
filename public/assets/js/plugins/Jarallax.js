@@ -56,11 +56,11 @@
   function (e, t, o) {
     'use strict';
     e.exports = function (e) {
-      'complete' === document.readyState || 'interactive' === document.readyState
+      'complete' == document.readyState || 'interactive' == document.readyState
         ? e.call()
         : document.attachEvent
           ? document.attachEvent('onreadystatechange', function () {
-              'interactive' === document.readyState && e.call();
+              'interactive' == document.readyState && e.call();
             })
           : document.addEventListener && document.addEventListener('DOMContentLoaded', e);
     };
@@ -70,7 +70,7 @@
     'use strict';
     (function (e) {
       var t;
-      (t = 'undefined' != typeof window ? window : void 0 !== e ? e : 'undefined' != typeof self ? self : {}), (o.exports = t);
+      (t = 'undefined' != typeof window ? window : void 0 != e ? e : 'undefined' != typeof self ? self : {}), (o.exports = t);
     }).call(this, t(5));
   },
   function (e, t, o) {
@@ -82,7 +82,7 @@
               return typeof e;
             }
           : function (e) {
-              return e && 'function' == typeof Symbol && e.constructor === Symbol && e !== Symbol.prototype ? 'symbol' : typeof e;
+              return e && 'function' == typeof Symbol && e.constructor == Symbol && e != Symbol.prototype ? 'symbol' : typeof e;
             };
     n = (function () {
       return this;
@@ -90,7 +90,7 @@
     try {
       n = n || Function('return this')() || (0, eval)('this');
     } catch (e) {
-      'object' === ('undefined' == typeof window ? 'undefined' : i(window)) && (n = window);
+      'object' == ('undefined' == typeof window ? 'undefined' : i(window)) && (n = window);
     }
     e.exports = n;
   },
@@ -110,7 +110,7 @@
               return typeof e;
             }
           : function (e) {
-              return e && 'function' == typeof Symbol && e.constructor === Symbol && e !== Symbol.prototype ? 'symbol' : typeof e;
+              return e && 'function' == typeof Symbol && e.constructor == Symbol && e != Symbol.prototype ? 'symbol' : typeof e;
             },
       i = l(o(2)),
       a = o(4),
@@ -124,13 +124,13 @@
       (a.window.jarallax.noConflict = function () {
         return (a.window.jarallax = s), this;
       }),
-      void 0 !== a.jQuery)
+      void 0 != a.jQuery)
     ) {
       var c = function () {
         var e = arguments || [];
         Array.prototype.unshift.call(e, this);
         var t = r.default.apply(a.window, e);
-        return 'object' !== (void 0 === t ? 'undefined' : n(t)) ? t : this;
+        return 'object' != (void 0 == t ? 'undefined' : n(t)) ? t : this;
       };
       c.constructor = r.default.constructor;
       var u = a.jQuery.fn.jarallax;
@@ -156,7 +156,7 @@
                 i = !1,
                 a = void 0;
               try {
-                for (var r, l = e[Symbol.iterator](); !(n = (r = l.next()).done) && (o.push(r.value), !t || o.length !== t); n = !0);
+                for (var r, l = e[Symbol.iterator](); !(n = (r = l.next()).done) && (o.push(r.value), !t || o.length != t); n = !0);
               } catch (e) {
                 (i = !0), (a = e);
               } finally {
@@ -190,7 +190,7 @@
                 return typeof e;
               }
             : function (e) {
-                return e && 'function' == typeof Symbol && e.constructor === Symbol && e !== Symbol.prototype ? 'symbol' : typeof e;
+                return e && 'function' == typeof Symbol && e.constructor == Symbol && e != Symbol.prototype ? 'symbol' : typeof e;
               },
         o = a(S(2)),
         n = a(S(14)),
@@ -204,7 +204,7 @@
           -1 < navigator.userAgent.indexOf('Edge/'),
         r = (function () {
           for (var e = 'transform WebkitTransform MozTransform'.split(' '), t = document.createElement('div'), o = 0; o < e.length; o++)
-            if (t && void 0 !== t.style[e[o]]) return e[o];
+            if (t && void 0 != t.style[e[o]]) return e[o];
           return !1;
         })(),
         b = void 0,
@@ -215,7 +215,7 @@
       function m(e) {
         (b = i.window.innerWidth || document.documentElement.clientWidth),
           (v = i.window.innerHeight || document.documentElement.clientHeight),
-          'object' !== (void 0 === e ? 'undefined' : p(e)) || ('load' !== e.type && 'dom-loaded' !== e.type) || (c = !0);
+          'object' != (void 0 == e ? 'undefined' : p(e)) || ('load' != e.type && 'dom-loaded' != e.type) || (c = !0);
       }
       m(),
         i.window.addEventListener('resize', m),
@@ -229,11 +229,11 @@
       function g() {
         if (f.length) {
           l =
-            void 0 !== i.window.pageYOffset
+            void 0 != i.window.pageYOffset
               ? i.window.pageYOffset
               : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-          var t = c || !y || y.width !== b || y.height !== v,
-            o = u || t || !y || y.y !== l;
+          var t = c || !y || y.width != b || y.height != v,
+            o = u || t || !y || y.y != l;
           (u = c = !1),
             (t || o) &&
               (f.forEach(function (e) {
@@ -299,12 +299,12 @@
             if (
               (Object.keys(a).forEach(function (e) {
                 var t = e.substr(0, 1).toLowerCase() + e.substr(1);
-                t && void 0 !== o.defaults[t] && (r[t] = a[e]);
+                t && void 0 != o.defaults[t] && (r[t] = a[e]);
               }),
               (o.options = o.extend({}, o.defaults, i, r, t)),
               (o.pureOptions = o.extend({}, o.options)),
               Object.keys(o.options).forEach(function (e) {
-                'true' === o.options[e] ? (o.options[e] = !0) : 'false' === o.options[e] && (o.options[e] = !1);
+                'true' == o.options[e] ? (o.options[e] = !0) : 'false' == o.options[e] && (o.options[e] = !1);
               }),
               (o.options.speed = Math.min(2, Math.max(-1, parseFloat(o.options.speed)))),
               (o.options.noAndroid || o.options.noIos) &&
@@ -343,7 +343,7 @@
                 return !1;
               });
             var c = o.options.elementInViewport;
-            c && 'object' === (void 0 === c ? 'undefined' : p(c)) && void 0 !== c.length && (c = d(c, 1)[0]);
+            c && 'object' == (void 0 == c ? 'undefined' : p(c)) && void 0 != c.length && (c = d(c, 1)[0]);
             c instanceof Element || (c = null),
               (o.options.elementInViewport = c),
               (o.image = {
@@ -402,12 +402,12 @@
                       (e.options.keepImg ? (e.image.$item = t.cloneNode(!0)) : ((e.image.$item = t), (e.image.$itemParent = t.parentNode)),
                       (e.image.useImgTag = !0)),
                     !!e.image.$item ||
-                      (null === e.image.src &&
+                      (null == e.image.src &&
                         (e.image.src = e
                           .css(e.$item, 'background-image')
                           .replace(/^url\(['"]?/g, '')
                           .replace(/['"]?\)$/g, '')),
-                      !(!e.image.src || 'none' === e.image.src))
+                      !(!e.image.src || 'none' == e.image.src))
                   );
                 }
               },
@@ -431,8 +431,8 @@
                     }
                   }
                   if (
-                    ('static' === e.css(e.$item, 'position') && e.css(e.$item, { position: 'relative' }),
-                    'auto' === e.css(e.$item, 'z-index') && e.css(e.$item, { zIndex: 0 }),
+                    ('static' == e.css(e.$item, 'position') && e.css(e.$item, { position: 'relative' }),
+                    'auto' == e.css(e.$item, 'z-index') && e.css(e.$item, { zIndex: 0 }),
                     (e.image.$container = document.createElement('div')),
                     e.css(e.image.$container, t),
                     e.css(e.image.$container, { 'z-index': e.options.zIndex }),
@@ -462,16 +462,16 @@
                             t,
                             o
                           ))),
-                    ('opacity' !== e.options.type &&
-                      'scale' !== e.options.type &&
-                      'scale-opacity' !== e.options.type &&
-                      1 !== e.options.speed) ||
+                    ('opacity' != e.options.type &&
+                      'scale' != e.options.type &&
+                      'scale-opacity' != e.options.type &&
+                      1 != e.options.speed) ||
                       (e.image.position = 'absolute'),
-                    'fixed' === e.image.position)
+                    'fixed' == e.image.position)
                   )
-                    for (var a = 0, r = e.$item; null !== r && r !== document && 0 === a; ) {
+                    for (var a = 0, r = e.$item; null != r && r != document && 0 == a; ) {
                       var l = e.css(r, '-webkit-transform') || e.css(r, '-moz-transform') || e.css(r, 'transform');
-                      l && 'none' !== l && ((a = 1), (e.image.position = 'absolute')), (r = r.parentNode);
+                      l && 'none' != l && ((a = 1), (e.image.position = 'absolute')), (r = r.parentNode);
                     }
                   (o.position = e.image.position),
                     e.css(e.image.$item, o),
@@ -480,14 +480,14 @@
                     e.onScroll(!0),
                     e.options.automaticResize && h && h.observe(e.$item),
                     e.options.onInit && e.options.onInit.call(e),
-                    'none' !== e.css(e.$item, 'background-image') && e.css(e.$item, { 'background-image': 'none' }),
+                    'none' != e.css(e.$item, 'background-image') && e.css(e.$item, { 'background-image': 'none' }),
                     e.addToParallaxList();
                 }
               },
               {
                 key: 'addToParallaxList',
                 value: function () {
-                  f.push(this), 1 === f.length && g();
+                  f.push(this), 1 == f.length && g();
                 }
               },
               {
@@ -495,7 +495,7 @@
                 value: function () {
                   var o = this;
                   f.forEach(function (e, t) {
-                    e.instanceID === o.instanceID && f.splice(t, 1);
+                    e.instanceID == o.instanceID && f.splice(t, 1);
                   });
                 }
               },
@@ -524,7 +524,7 @@
               {
                 key: 'clipContainer',
                 value: function () {
-                  if ('fixed' === this.image.position) {
+                  if ('fixed' == this.image.position) {
                     var e = this,
                       t = e.image.$container.getBoundingClientRect(),
                       o = t.width,
@@ -557,7 +557,7 @@
                     t = e.image.$container.getBoundingClientRect(),
                     o = t.height,
                     n = e.options.speed,
-                    i = 'scroll' === e.options.type || 'scroll-opacity' === e.options.type,
+                    i = 'scroll' == e.options.type || 'scroll-opacity' == e.options.type,
                     a = 0,
                     r = o,
                     l = 0;
@@ -571,7 +571,7 @@
                     e.css(e.image.$item, {
                       height: r + 'px',
                       marginTop: l + 'px',
-                      left: 'fixed' === e.image.position ? t.left + 'px' : '0',
+                      left: 'fixed' == e.image.position ? t.left + 'px' : '0',
                       width: t.width + 'px'
                     }),
                     e.options.onCoverImage && e.options.onCoverImage.call(e),
@@ -609,17 +609,17 @@
                       f = 1;
                     if (
                       (i < v ? (f = 1 - (c || u) / i) : s <= v ? (f = s / v) : d <= v && (f = d / v),
-                      ('opacity' !== t.options.type && 'scale-opacity' !== t.options.type && 'scroll-opacity' !== t.options.type) ||
+                      ('opacity' != t.options.type && 'scale-opacity' != t.options.type && 'scroll-opacity' != t.options.type) ||
                         ((a.transform = 'translate3d(0,0,0)'), (a.opacity = f)),
-                      'scale' === t.options.type || 'scale-opacity' === t.options.type)
+                      'scale' == t.options.type || 'scale-opacity' == t.options.type)
                     ) {
                       var y = 1;
                       t.options.speed < 0 ? (y -= t.options.speed * f) : (y += t.options.speed * (1 - f)),
                         (a.transform = 'scale(' + y + ') translate3d(0,0,0)');
                     }
-                    if ('scroll' === t.options.type || 'scroll-opacity' === t.options.type) {
+                    if ('scroll' == t.options.type || 'scroll-opacity' == t.options.type) {
                       var g = t.parallaxScrollDistance * m;
-                      'absolute' === t.image.position && (g -= n), (a.transform = 'translate3d(0,' + g + 'px,0)');
+                      'absolute' == t.image.position && (g -= n), (a.transform = 'translate3d(0,' + g + 'px,0)');
                     }
                     t.css(t.image.$item, a),
                       t.options.onScroll &&
@@ -648,16 +648,16 @@
           );
         })(),
         $ = function (e) {
-          ('object' === ('undefined' == typeof HTMLElement ? 'undefined' : p(HTMLElement))
+          ('object' == ('undefined' == typeof HTMLElement ? 'undefined' : p(HTMLElement))
             ? e instanceof HTMLElement
-            : e && 'object' === (void 0 === e ? 'undefined' : p(e)) && null !== e && 1 === e.nodeType && 'string' == typeof e.nodeName) &&
+            : e && 'object' == (void 0 == e ? 'undefined' : p(e)) && null != e && 1 == e.nodeType && 'string' == typeof e.nodeName) &&
             (e = [e]);
           for (var t = arguments[1], o = Array.prototype.slice.call(arguments, 2), n = e.length, i = 0, a = void 0; i < n; i++)
             if (
-              ('object' === (void 0 === t ? 'undefined' : p(t)) || void 0 === t
+              ('object' == (void 0 == t ? 'undefined' : p(t)) || void 0 == t
                 ? e[i].jarallax || (e[i].jarallax = new w(e[i], t))
                 : e[i].jarallax && (a = e[i].jarallax[t].apply(e[i].jarallax, o)),
-              void 0 !== a)
+              void 0 != a)
             )
               return a;
           return e;
@@ -754,11 +754,11 @@
   function (t, e, n) {
     'use strict';
     t.exports = function (t) {
-      'complete' === document.readyState || 'interactive' === document.readyState
+      'complete' == document.readyState || 'interactive' == document.readyState
         ? t.call()
         : document.attachEvent
           ? document.attachEvent('onreadystatechange', function () {
-              'interactive' === document.readyState && t.call();
+              'interactive' == document.readyState && t.call();
             })
           : document.addEventListener && document.addEventListener('DOMContentLoaded', t);
     };
@@ -767,8 +767,8 @@
     'use strict';
     Object.defineProperty(e, '__esModule', { value: !0 }),
       (e.default = function () {
-        var t = 0 < arguments.length && void 0 !== arguments[0] ? arguments[0] : i.default.jarallax;
-        if (void 0 === t) return;
+        var t = 0 < arguments.length && void 0 != arguments[0] ? arguments[0] : i.default.jarallax;
+        if (void 0 == t) return;
         var e = t.constructor;
         ['initImg', 'canInitParallax', 'init', 'destroy', 'clipContainer', 'coverImage', 'isVisible', 'onScroll', 'onResize'].forEach(
           function (p) {
@@ -777,11 +777,11 @@
               var t = this,
                 e = arguments || [];
               if (
-                ('initImg' === p &&
-                  null !== t.$item.getAttribute('data-jarallax-element') &&
+                ('initImg' == p &&
+                  null != t.$item.getAttribute('data-jarallax-element') &&
                   ((t.options.type = 'element'),
                   (t.pureOptions.speed = t.$item.getAttribute('data-jarallax-element') || t.pureOptions.speed)),
-                'element' !== t.options.type)
+                'element' != t.options.type)
               )
                 return f.apply(t, e);
               switch (((t.pureOptions.threshold = t.$item.getAttribute('data-threshold') || ''), p)) {
@@ -807,8 +807,8 @@
                     u = s * t.options.speedX,
                     c = l,
                     d = u;
-                  null !== t.options.thresholdY && l > t.options.thresholdY && (c = 0),
-                    null !== t.options.thresholdX && u > t.options.thresholdX && (d = 0),
+                  null != t.options.thresholdY && l > t.options.thresholdY && (c = 0),
+                    null != t.options.thresholdX && u > t.options.thresholdX && (d = 0),
                     t.css(t.$item, { transform: 'translate3d(' + d + 'px,' + c + 'px,0)' });
                   break;
                 case 'initImg':
@@ -830,7 +830,7 @@
     'use strict';
     (function (t) {
       var e;
-      (e = 'undefined' != typeof window ? window : void 0 !== t ? t : 'undefined' != typeof self ? self : {}), (n.exports = e);
+      (e = 'undefined' != typeof window ? window : void 0 != t ? t : 'undefined' != typeof self ? self : {}), (n.exports = e);
     }).call(this, e(5));
   },
   function (t, e, n) {
@@ -842,7 +842,7 @@
               return typeof t;
             }
           : function (t) {
-              return t && 'function' == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? 'symbol' : typeof t;
+              return t && 'function' == typeof Symbol && t.constructor == Symbol && t != Symbol.prototype ? 'symbol' : typeof t;
             };
     o = (function () {
       return this;
@@ -850,7 +850,7 @@
     try {
       o = o || Function('return this')() || (0, eval)('this');
     } catch (t) {
-      'object' === ('undefined' == typeof window ? 'undefined' : r(window)) && (o = window);
+      'object' == ('undefined' == typeof window ? 'undefined' : r(window)) && (o = window);
     }
     t.exports = o;
   }

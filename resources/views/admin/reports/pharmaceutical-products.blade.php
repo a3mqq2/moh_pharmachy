@@ -35,14 +35,14 @@
                         <label class="form-label">الحالة</label>
                         <select name="status" class="form-select">
                             <option value="">الكل</option>
-                            <option value="uploading_documents" {{ request('status') === 'uploading_documents' ? 'selected' : '' }}>قيد رفع المستندات</option>
-                            <option value="pending_review" {{ request('status') === 'pending_review' ? 'selected' : '' }}>قيد المراجعة</option>
-                            <option value="preliminary_approved" {{ request('status') === 'preliminary_approved' ? 'selected' : '' }}>موافقة مبدئية</option>
-                            <option value="pending_final_approval" {{ request('status') === 'pending_final_approval' ? 'selected' : '' }}>قيد الموافقة النهائية</option>
-                            <option value="pending_payment" {{ request('status') === 'pending_payment' ? 'selected' : '' }}>قيد السداد</option>
-                            <option value="payment_review" {{ request('status') === 'payment_review' ? 'selected' : '' }}>قيد مراجعة السداد</option>
-                            <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>مرفوضة</option>
-                            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>معتمدة</option>
+                            <option value="uploading_documents" {{ request('status') == 'uploading_documents' ? 'selected' : '' }}>قيد رفع المستندات</option>
+                            <option value="pending_review" {{ request('status') == 'pending_review' ? 'selected' : '' }}>قيد المراجعة</option>
+                            <option value="preliminary_approved" {{ request('status') == 'preliminary_approved' ? 'selected' : '' }}>موافقة مبدئية</option>
+                            <option value="pending_final_approval" {{ request('status') == 'pending_final_approval' ? 'selected' : '' }}>قيد الموافقة النهائية</option>
+                            <option value="pending_payment" {{ request('status') == 'pending_payment' ? 'selected' : '' }}>قيد السداد</option>
+                            <option value="payment_review" {{ request('status') == 'payment_review' ? 'selected' : '' }}>قيد مراجعة السداد</option>
+                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>مرفوضة</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>معتمدة</option>
                         </select>
                     </div>
                     <div class="col-md-3">

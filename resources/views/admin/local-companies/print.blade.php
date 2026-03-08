@@ -281,7 +281,7 @@
                     <td class="text-center">{{ $company->registration_number ?? '-' }}</td>
                     <td>{{ $company->company_name }}</td>
                     <td class="text-center">
-                        <span class="badge badge-{{ $company->company_type === 'distributor' ? 'info' : 'primary' }}">
+                        <span class="badge badge-{{ $company->company_type == 'distributor' ? 'info' : 'primary' }}">
                             {{ $company->company_type_name }}
                         </span>
                     </td>

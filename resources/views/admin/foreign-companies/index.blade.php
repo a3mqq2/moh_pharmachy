@@ -123,7 +123,7 @@
                         </td>
                         <td>{{ $company->country }}</td>
                         <td>
-                            <span class="badge bg-{{ $company->entity_type === 'factory' ? 'info' : 'primary' }}">{{ $company->entity_type_name }}</span>
+                            <span class="badge bg-{{ $company->entity_type == 'factory' ? 'info' : 'primary' }}">{{ $company->entity_type_name }}</span>
                         </td>
                         <td>{{ $company->activity_type_name }}</td>
                         <td>

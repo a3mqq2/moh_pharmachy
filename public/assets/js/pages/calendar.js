@@ -44,12 +44,12 @@
     eventClick: function (info) {
       calendevent = info.event;
       var clickedevent = info.event;
-      var e_title = clickedevent.title === undefined ? '' : clickedevent.title;
-      var e_desc = clickedevent.extendedProps.description === undefined ? '' : clickedevent.extendedProps.description;
-      var e_date_start = clickedevent.start === null ? '' : dateformat(clickedevent.start);
-      var e_date_end = clickedevent.end === null ? '' : " <i class='text-sm'>to</i> " + dateformat(clickedevent.end);
-      e_date_end = clickedevent.end === null ? '' : e_date_end;
-      var e_venue = clickedevent.extendedProps.description === undefined ? '' : clickedevent.extendedProps.venue;
+      var e_title = clickedevent.title == undefined ? '' : clickedevent.title;
+      var e_desc = clickedevent.extendedProps.description == undefined ? '' : clickedevent.extendedProps.description;
+      var e_date_start = clickedevent.start == null ? '' : dateformat(clickedevent.start);
+      var e_date_end = clickedevent.end == null ? '' : " <i class='text-sm'>to</i> " + dateformat(clickedevent.end);
+      e_date_end = clickedevent.end == null ? '' : e_date_end;
+      var e_venue = clickedevent.extendedProps.description == undefined ? '' : clickedevent.extendedProps.venue;
 
       document.querySelector('.calendar-modal-title').innerHTML = e_title;
       document.querySelector('.pc-event-title').innerHTML = e_title;
@@ -211,7 +211,7 @@
             calendevent.remove();
             calendarmodal.hide();
             swalWithBootstrapButtons.fire('Deleted!', 'Your Event has been deleted.', 'success');
-          } else if (result.dismiss === Swal.DismissReason.cancel) {
+          } else if (result.dismiss == Swal.DismissReason.cancel) {
             swalWithBootstrapButtons.fire('Cancelled', 'Your Event data is safe.', 'error');
           }
         });
@@ -223,8 +223,8 @@
     pc_event_add.addEventListener('click', function () {
       var day = true;
       var end = null;
-      var e_date_start = document.getElementById('pc-e-sdate').value === null ? '' : document.getElementById('pc-e-sdate').value;
-      var e_date_end = document.getElementById('pc-e-edate').value === null ? '' : document.getElementById('pc-e-edate').value;
+      var e_date_start = document.getElementById('pc-e-sdate').value == null ? '' : document.getElementById('pc-e-sdate').value;
+      var e_date_end = document.getElementById('pc-e-edate').value == null ? '' : document.getElementById('pc-e-edate').value;
       if (!e_date_end == '') {
         end = new Date(e_date_end);
       }
@@ -268,13 +268,13 @@
   var pc_event_edit = document.querySelector('#pc_event_edit');
   if (pc_event_edit) {
     pc_event_edit.addEventListener('click', function () {
-      var e_title = calendevent.title === undefined ? '' : calendevent.title;
-      var e_desc = calendevent.extendedProps.description === undefined ? '' : calendevent.extendedProps.description;
-      var e_date_start = calendevent.start === null ? '' : dateformat(calendevent.start);
-      var e_date_end = calendevent.end === null ? '' : " <i class='text-sm'>to</i> " + dateformat(calendevent.end);
-      e_date_end = calendevent.end === null ? '' : e_date_end;
-      var e_venue = calendevent.extendedProps.description === undefined ? '' : calendevent.extendedProps.venue;
-      var e_type = calendevent.classNames[0] === undefined ? '' : calendevent.classNames[0];
+      var e_title = calendevent.title == undefined ? '' : calendevent.title;
+      var e_desc = calendevent.extendedProps.description == undefined ? '' : calendevent.extendedProps.description;
+      var e_date_start = calendevent.start == null ? '' : dateformat(calendevent.start);
+      var e_date_end = calendevent.end == null ? '' : " <i class='text-sm'>to</i> " + dateformat(calendevent.end);
+      e_date_end = calendevent.end == null ? '' : e_date_end;
+      var e_venue = calendevent.extendedProps.description == undefined ? '' : calendevent.extendedProps.venue;
+      var e_type = calendevent.classNames[0] == undefined ? '' : calendevent.classNames[0];
 
       document.getElementById('pc-e-title').value = e_title;
       document.getElementById('pc-e-venue').value = e_venue;

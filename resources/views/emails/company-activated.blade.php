@@ -129,18 +129,18 @@
                 <tr>
                     <td>نوع الترخيص:</td>
                     <td>
-                        @if($company->license_type === 'company') شركة
-                        @elseif($company->license_type === 'partnership') شراكة
-                        @elseif($company->license_type === 'authorized_agent') وكيل معتمد
+                        @if($company->license_type == 'company') شركة
+                        @elseif($company->license_type == 'partnership') شراكة
+                        @elseif($company->license_type == 'authorized_agent') وكيل معتمد
                         @endif
                     </td>
                 </tr>
                 <tr>
                     <td>التخصص:</td>
                     <td>
-                        @if($company->license_specialty === 'medicines') أدوية
-                        @elseif($company->license_specialty === 'medical_supplies') مستلزمات طبية
-                        @elseif($company->license_specialty === 'medical_equipment') أجهزة طبية
+                        @if($company->license_specialty == 'medicines') أدوية
+                        @elseif($company->license_specialty == 'medical_supplies') مستلزمات طبية
+                        @elseif($company->license_specialty == 'medical_equipment') أجهزة طبية
                         @endif
                     </td>
                 </tr>

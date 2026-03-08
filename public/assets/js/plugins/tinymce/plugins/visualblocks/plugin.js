@@ -51,7 +51,7 @@
     const setup = (editor, pluginUrl, enabledState) => {
       editor.on('PreviewFormats AfterPreviewFormats', e => {
         if (enabledState.get()) {
-          editor.dom.toggleClass(editor.getBody(), 'mce-visualblocks', e.type === 'afterpreviewformats');
+          editor.dom.toggleClass(editor.getBody(), 'mce-visualblocks', e.type == 'afterpreviewformats');
         }
       });
       editor.on('init', () => {

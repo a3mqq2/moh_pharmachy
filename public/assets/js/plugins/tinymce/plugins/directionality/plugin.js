@@ -12,26 +12,26 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType$1 = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
+    const isType$1 = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
     const isString = isType$1('string');
     const isBoolean = isSimpleType('boolean');
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
     const isNumber = isSimpleType('number');
@@ -109,7 +109,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -190,7 +190,7 @@
       return fromDom(node);
     };
     const fromDom = node => {
-      if (node === null || node === undefined) {
+      if (node == null || node == undefined) {
         throw new Error('Node cannot be null or undefined');
       }
       return { dom: node };
@@ -206,17 +206,17 @@
 
     const is = (element, selector) => {
       const dom = element.dom;
-      if (dom.nodeType !== ELEMENT) {
+      if (dom.nodeType != ELEMENT) {
         return false;
       } else {
         const elem = dom;
-        if (elem.matches !== undefined) {
+        if (elem.matches != undefined) {
           return elem.matches(selector);
-        } else if (elem.msMatchesSelector !== undefined) {
+        } else if (elem.msMatchesSelector != undefined) {
           return elem.msMatchesSelector(selector);
-        } else if (elem.webkitMatchesSelector !== undefined) {
+        } else if (elem.webkitMatchesSelector != undefined) {
           return elem.webkitMatchesSelector(selector);
-        } else if (elem.mozMatchesSelector !== undefined) {
+        } else if (elem.mozMatchesSelector != undefined) {
           return elem.mozMatchesSelector(selector);
         } else {
           throw new Error('Browser lacks native selectors');
@@ -224,19 +224,19 @@
       }
     };
 
-    typeof window !== 'undefined' ? window : Function('return this;')();
+    typeof window != 'undefined' ? window : Function('return this;')();
 
     const name = element => {
       const r = element.dom.nodeName;
       return r.toLowerCase();
     };
     const type = element => element.dom.nodeType;
-    const isType = t => element => type(element) === t;
+    const isType = t => element => type(element) == t;
     const isElement = isType(ELEMENT);
     const isText = isType(TEXT);
     const isDocument = isType(DOCUMENT);
     const isDocumentFragment = isType(DOCUMENT_FRAGMENT);
-    const isTag = tag => e => isElement(e) && name(e) === tag;
+    const isTag = tag => e => isElement(e) && name(e) == tag;
 
     const owner = element => SugarElement.fromDom(element.dom.ownerDocument);
     const documentOrOwner = dos => isDocument(dos) ? dos : owner(dos);
@@ -269,7 +269,7 @@
 
     const inBody = element => {
       const dom = isText(element) ? element.dom.parentNode : element.dom;
-      if (dom === undefined || dom === null || dom.ownerDocument === null) {
+      if (dom == undefined || dom == null || dom.ownerDocument == null) {
         return false;
       }
       const doc = dom.ownerDocument;
@@ -293,17 +293,17 @@
 
     const ancestor = (scope, selector, isRoot) => ancestor$1(scope, e => is(e, selector), isRoot);
 
-    const isSupported = dom => dom.style !== undefined && isFunction(dom.style.getPropertyValue);
+    const isSupported = dom => dom.style != undefined && isFunction(dom.style.getPropertyValue);
 
     const get = (element, property) => {
       const dom = element.dom;
       const styles = window.getComputedStyle(dom);
       const r = styles.getPropertyValue(property);
-      return r === '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
+      return r == '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
     };
     const getUnsafeProperty = (dom, property) => isSupported(dom) ? dom.style.getPropertyValue(property) : '';
 
-    const getDirection = element => get(element, 'direction') === 'rtl' ? 'rtl' : 'ltr';
+    const getDirection = element => get(element, 'direction') == 'rtl' ? 'rtl' : 'ltr';
 
     const children$1 = (scope, predicate) => filter(children$2(scope), predicate);
 
@@ -324,12 +324,12 @@
         normalizedBlockParent.each(parent => {
           dom.setStyle(normalizedBlock.dom, 'direction', null);
           const parentDirection = getDirection(parent);
-          if (parentDirection === dir) {
+          if (parentDirection == dir) {
             remove(normalizedBlock, 'dir');
           } else {
             set(normalizedBlock, 'dir', dir);
           }
-          if (getDirection(normalizedBlock) !== dir) {
+          if (getDirection(normalizedBlock) != dir) {
             dom.setStyle(normalizedBlock.dom, 'direction', dir);
           }
           if (isBlockElementListItem) {
@@ -361,7 +361,7 @@
     const getNodeChangeHandler = (editor, dir) => api => {
       const nodeChangeHandler = e => {
         const element = SugarElement.fromDom(e.element);
-        api.setActive(getDirection(element) === dir);
+        api.setActive(getDirection(element) == dir);
         api.setEnabled(editor.selection.isEditable());
       };
       editor.on('NodeChange', nodeChangeHandler);

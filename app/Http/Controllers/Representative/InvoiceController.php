@@ -55,7 +55,7 @@ class InvoiceController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // Check authorization
-        if ($invoice->localCompany->representative_id !== $representative->id) {
+        if ($invoice->localCompany->representative_id != $representative->id) {
             abort(403);
         }
 
@@ -67,7 +67,7 @@ class InvoiceController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // Check authorization
-        if ($invoice->localCompany->representative_id !== $representative->id) {
+        if ($invoice->localCompany->representative_id != $representative->id) {
             abort(403);
         }
 
@@ -102,7 +102,7 @@ class InvoiceController extends Controller
         ]);
 
         // Update company status to payment_review if it's approved (awaiting payment)
-        if ($invoice->localCompany->status === 'approved') {
+        if ($invoice->localCompany->status == 'approved') {
             $invoice->localCompany->update(['status' => 'payment_review']);
         }
 
@@ -134,7 +134,7 @@ class InvoiceController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // Check authorization
-        if ($invoice->localCompany->representative_id !== $representative->id) {
+        if ($invoice->localCompany->representative_id != $representative->id) {
             abort(403);
         }
 
@@ -150,7 +150,7 @@ class InvoiceController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // Check authorization
-        if ($invoice->localCompany->representative_id !== $representative->id) {
+        if ($invoice->localCompany->representative_id != $representative->id) {
             abort(403);
         }
 

@@ -106,25 +106,25 @@
                             <strong class="text-primary">{{ number_format($invoice->amount, 2) }} د.ل</strong>
                         </td>
                         <td>
-                            @if($invoice->status === 'pending')
+                            @if($invoice->status == 'pending')
                                 <span class="badge bg-warning">قيد الانتظار</span>
-                            @elseif($invoice->status === 'paid')
+                            @elseif($invoice->status == 'paid')
                                 <span class="badge bg-success">مدفوعة</span>
-                            @elseif($invoice->status === 'cancelled')
+                            @elseif($invoice->status == 'cancelled')
                                 <span class="badge bg-danger">ملغاة</span>
                             @endif
                         </td>
                         <td>
                             @if($invoice->receipt_path)
-                                @if($invoice->receipt_status === 'pending')
+                                @if($invoice->receipt_status == 'pending')
                                     <span class="badge bg-info">
                                         <i class="ti ti-clock"></i> قيد المراجعة
                                     </span>
-                                @elseif($invoice->receipt_status === 'approved')
+                                @elseif($invoice->receipt_status == 'approved')
                                     <span class="badge bg-success">
                                         <i class="ti ti-check"></i> موافق عليه
                                     </span>
-                                @elseif($invoice->receipt_status === 'rejected')
+                                @elseif($invoice->receipt_status == 'rejected')
                                     <span class="badge bg-danger">
                                         <i class="ti ti-x"></i> مرفوض
                                     </span>
@@ -146,7 +146,7 @@
                                    title="عرض التفاصيل">
                                     <i class="ti ti-eye"></i>
                                 </a>
-                                @if($invoice->status === 'pending' && !$invoice->receipt_path)
+                                @if($invoice->status == 'pending' && !$invoice->receipt_path)
                                 <a href="{{ route('admin.foreign-company-invoices.edit', $invoice->id) }}"
                                    class="btn btn-sm btn-outline-secondary"
                                    title="تعديل">

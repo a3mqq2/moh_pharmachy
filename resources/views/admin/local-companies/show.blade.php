@@ -14,18 +14,18 @@
     <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
             <h4 class="mb-1">{{ $localCompany->company_name }}</h4>
-            <span class="badge bg-{{ $localCompany->company_type === 'distributor' ? 'info' : 'primary' }} me-1">{{ $localCompany->company_type_name }}</span>
+            <span class="badge bg-{{ $localCompany->company_type == 'distributor' ? 'info' : 'primary' }} me-1">{{ $localCompany->company_type_name }}</span>
             <span class="badge bg-{{ $localCompany->status_color }} me-1">{{ $localCompany->status_name }}</span>
             @if($localCompany->registration_number)
                 <span class="badge bg-dark">رقم القيد: {{ $localCompany->registration_number }}</span>
             @endif
         </div>
         <div class="d-flex gap-2">
-            @if($localCompany->status === 'pending')
+            @if($localCompany->status == 'pending')
                 @php
                     $missingDocs = $localCompany->getMissingDocuments();
                     $hasUnpaidInvoices = $localCompany->hasUnpaidInvoices();
-                    $canApprove = count($missingDocs) === 0 && !$hasUnpaidInvoices;
+                    $canApprove = count($missingDocs) == 0 && !$hasUnpaidInvoices;
                 @endphp
                 @if($canApprove)
                     <form action="{{ route('admin.local-companies.approve', $localCompany) }}" method="POST" class="d-inline approve-form">
@@ -43,7 +43,7 @@
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
                     <i class="ti ti-x me-1"></i>رفض
                 </button>
-            @elseif($localCompany->status === 'rejected')
+            @elseif($localCompany->status == 'rejected')
                 <form action="{{ route('admin.local-companies.restore-pending', $localCompany) }}" method="POST" class="d-inline restore-form">
                     @csrf
                     <button type="submit" class="btn btn-warning"><i class="ti ti-refresh me-1"></i>إعادة للمراجعة</button>
@@ -61,13 +61,13 @@
 
 
 
-@if($localCompany->status === 'rejected' && $localCompany->rejection_reason)
+@if($localCompany->status == 'rejected' && $localCompany->rejection_reason)
 <div class="alert alert-danger">
     <strong><i class="ti ti-alert-circle me-1"></i>سبب الرفض:</strong> {{ $localCompany->rejection_reason }}
 </div>
 @endif
 
-@if($localCompany->status === 'pending' && count($localCompany->getMissingDocuments()) > 0)
+@if($localCompany->status == 'pending' && count($localCompany->getMissingDocuments()) > 0)
 <div class="alert alert-warning">
     <strong><i class="ti ti-alert-triangle me-1"></i>المستندات الناقصة:</strong>
     <ul class="mb-0 mt-2">
@@ -78,7 +78,7 @@
 </div>
 @endif
 
-@if($localCompany->status === 'pending' && $localCompany->hasUnpaidInvoices())
+@if($localCompany->status == 'pending' && $localCompany->hasUnpaidInvoices())
 <div class="alert alert-danger">
     <strong><i class="ti ti-cash me-1"></i>فواتير غير مدفوعة:</strong>
     يوجد {{ $localCompany->invoices()->where('status', 'unpaid')->count() }} فاتورة غير مدفوعة بإجمالي {{ number_format($localCompany->getUnpaidInvoicesTotal(), 2) }} د.ل
@@ -428,14 +428,14 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                        @if($invoice->receipt_path && $invoice->status === 'pending_review')
+                                        @if($invoice->receipt_path && $invoice->status == 'pending_review')
                                             <button type="button" class="btn btn-outline-success btn-sm btn-approve-receipt" data-id="{{ $invoice->id }}" data-company-id="{{ $localCompany->id }}">
                                                 <i class="ti ti-check me-1"></i>موافقة على الإيصال
                                             </button>
                                             <button type="button" class="btn btn-outline-danger btn-sm btn-reject-receipt" data-id="{{ $invoice->id }}" data-number="{{ $invoice->invoice_number }}">
                                                 <i class="ti ti-x me-1"></i>رفض الإيصال
                                             </button>
-                                        @elseif($invoice->status === 'paid')
+                                        @elseif($invoice->status == 'paid')
                                             <button type="button" class="btn btn-outline-warning btn-sm btn-mark-unpaid" data-id="{{ $invoice->id }}">
                                                 <i class="ti ti-x me-1"></i>إلغاء الدفع
                                             </button>
@@ -444,7 +444,7 @@
                                             <a href="{{ route('admin.local-companies.invoices.download-receipt', [$localCompany, $invoice]) }}" class="btn btn-outline-info btn-sm">
                                                 <i class="ti ti-download me-1"></i>تحميل الإيصال
                                             </a>
-                                        @elseif($invoice->status === 'unpaid')
+                                        @elseif($invoice->status == 'unpaid')
                                             <button type="button" class="btn btn-outline-secondary btn-sm btn-upload-receipt" data-id="{{ $invoice->id }}">
                                                 <i class="ti ti-upload me-1"></i>رفع إيصال
                                             </button>
@@ -584,7 +584,7 @@
                             @endphp
                             @foreach(\App\Models\LocalCompanyDocument::documentTypes() as $key => $value)
                                 @php
-                                    $isUploaded = in_array($key, $uploadedTypes) && $key !== 'other';
+                                    $isUploaded = in_array($key, $uploadedTypes) && $key != 'other';
                                 @endphp
                                 <option value="{{ $key }}" {{ $isUploaded ? 'disabled' : '' }}>
                                     {{ $value }}
@@ -865,7 +865,7 @@ document.querySelector('.restore-form')?.addEventListener('submit', function(e) 
 document.getElementById('document_type')?.addEventListener('change', function() {
     const customNameWrapper = document.getElementById('custom_name_wrapper');
     const customNameInput = document.getElementById('custom_name');
-    if (this.value === 'other') {
+    if (this.value == 'other') {
         customNameWrapper.classList.remove('d-none');
         customNameInput.setAttribute('required', 'required');
     } else {

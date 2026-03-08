@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const input = document.getElementById(targetId);
             const icon = this.querySelector('i');
 
-            if (input.type === 'password') {
+            if (input.type == 'password') {
                 input.type = 'text';
                 icon.classList.remove('ti-eye');
                 icon.classList.add('ti-eye-off');
@@ -454,17 +454,17 @@ document.addEventListener('DOMContentLoaded', function() {
         strengthFill.className = 'strength-fill';
         strengthText.className = 'strength-text';
 
-        if (value.length === 0) {
+        if (value.length == 0) {
             strengthText.textContent = 'أدخل كلمة المرور';
-        } else if (strength === 1) {
+        } else if (strength == 1) {
             strengthFill.classList.add('weak');
             strengthText.classList.add('weak');
             strengthText.textContent = 'ضعيفة';
-        } else if (strength === 2) {
+        } else if (strength == 2) {
             strengthFill.classList.add('medium');
             strengthText.classList.add('medium');
             strengthText.textContent = 'متوسطة';
-        } else if (strength === 3) {
+        } else if (strength == 3) {
             strengthFill.classList.add('strong');
             strengthText.classList.add('strong');
             strengthText.textContent = 'قوية';
@@ -477,13 +477,13 @@ document.addEventListener('DOMContentLoaded', function() {
     confirm.addEventListener('input', checkMatch);
 
     function checkMatch() {
-        if (confirm.value.length === 0) {
+        if (confirm.value.length == 0) {
             matchStatus.textContent = '';
             matchStatus.className = 'match-status';
             return;
         }
 
-        if (password.value === confirm.value) {
+        if (password.value == confirm.value) {
             matchStatus.textContent = 'كلمات المرور متطابقة ✓';
             matchStatus.className = 'match-status match';
         } else {

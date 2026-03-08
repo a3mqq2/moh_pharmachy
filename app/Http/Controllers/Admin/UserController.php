@@ -29,7 +29,7 @@ class UserController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('is_active', $request->status === 'active');
+            $query->where('is_active', $request->status == 'active');
         }
 
         if ($request->filled('role')) {
@@ -154,7 +154,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if ($user->id === auth()->id()) {
+        if ($user->id == auth()->id()) {
             return redirect()->route('admin.users.index')
                             ->with('error', 'لا يمكنك حذف حسابك الخاص');
         }

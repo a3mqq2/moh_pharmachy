@@ -91,7 +91,7 @@ class CompanyController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // التحقق من أن الشركة تخص الممثل الحالي
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             abort(403, 'غير مصرح لك بعرض هذه الشركة');
         }
 
@@ -103,7 +103,7 @@ class CompanyController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // التحقق من أن الشركة تخص الممثل الحالي
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             abort(403, 'غير مصرح لك بتعديل هذه الشركة');
         }
 
@@ -121,7 +121,7 @@ class CompanyController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // التحقق من أن الشركة تخص الممثل الحالي
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             abort(403, 'غير مصرح لك بتعديل هذه الشركة');
         }
 
@@ -171,7 +171,7 @@ class CompanyController extends Controller
         $company->update($validated);
 
         // إذا كانت الشركة مرفوضة، نعيدها لحالة uploading_documents
-        $wasRejected = $company->status === 'rejected';
+        $wasRejected = $company->status == 'rejected';
         if ($wasRejected) {
             $company->update([
                 'status' => 'uploading_documents',
@@ -198,7 +198,7 @@ class CompanyController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -215,11 +215,11 @@ class CompanyController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             abort(403, 'غير مصرح لك بإعادة تقديم هذه الشركة');
         }
 
-        if ($company->status !== 'rejected') {
+        if ($company->status != 'rejected') {
             return redirect()->route('representative.companies.show', $company)
                 ->with('error', 'يمكن إعادة التقديم فقط للشركات المرفوضة');
         }

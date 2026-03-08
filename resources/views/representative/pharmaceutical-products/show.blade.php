@@ -23,7 +23,7 @@
 
     
 
-    @if($pharmaceuticalProduct->status === 'preliminary_approved')
+    @if($pharmaceuticalProduct->status == 'preliminary_approved')
     <div class="alert alert-success mb-4">
         <i class="ti ti-circle-check me-2"></i>
         <strong>تمت الموافقة المبدئية على الطلب!</strong>
@@ -38,7 +38,7 @@
     </div>
     @endif
 
-    @if($pharmaceuticalProduct->status === 'pending_final_approval')
+    @if($pharmaceuticalProduct->status == 'pending_final_approval')
     <div class="alert alert-info mb-4">
         <i class="ti ti-clock me-2"></i>
         <strong>في انتظار الموافقة النهائية</strong>
@@ -46,7 +46,7 @@
     </div>
     @endif
 
-    @if($pharmaceuticalProduct->status === 'preliminary_approved' && $pharmaceuticalProduct->hasCompleteDetailedInfo())
+    @if($pharmaceuticalProduct->status == 'preliminary_approved' && $pharmaceuticalProduct->hasCompleteDetailedInfo())
     <div class="alert alert-gradient-success mb-4">
         <div class="d-flex align-items-start gap-3">
             <div class="alert-icon-wrapper">
@@ -165,7 +165,7 @@
                                 </span>
                             </td>
                         </tr>
-                        @if($pharmaceuticalProduct->status === 'rejected' && $pharmaceuticalProduct->rejection_reason)
+                        @if($pharmaceuticalProduct->status == 'rejected' && $pharmaceuticalProduct->rejection_reason)
                         <tr>
                             <th class="bg-light">سبب الرفض</th>
                             <td class="text-danger"><strong>{{ $pharmaceuticalProduct->rejection_reason }}</strong></td>
@@ -330,7 +330,7 @@
                         </table>
                     </div>
 
-                    @if($pharmaceuticalProduct->status === 'preliminary_approved')
+                    @if($pharmaceuticalProduct->status == 'preliminary_approved')
                     <div class="form-actions">
                         <a href="{{ route('representative.pharmaceutical-products.edit-details', $pharmaceuticalProduct) }}" class="btn btn-primary">
                             <i class="ti ti-edit"></i>
@@ -342,12 +342,12 @@
                     <div class="alert alert-warning mb-4">
                         <i class="ti ti-alert-triangle me-2"></i>
                         <strong>لم يتم استكمال البيانات التفصيلية بعد</strong>
-                        @if($pharmaceuticalProduct->status === 'preliminary_approved')
+                        @if($pharmaceuticalProduct->status == 'preliminary_approved')
                         <p class="mb-0 mt-2">يرجى الضغط على زر "استكمال البيانات التفصيلية" لإدخال المعلومات المطلوبة.</p>
                         @endif
                     </div>
 
-                    @if($pharmaceuticalProduct->status === 'preliminary_approved')
+                    @if($pharmaceuticalProduct->status == 'preliminary_approved')
                     <div class="text-center">
                         <a href="{{ route('representative.pharmaceutical-products.edit-details', $pharmaceuticalProduct) }}" class="btn btn-primary btn-lg">
                             <i class="ti ti-edit me-1"></i>
@@ -359,7 +359,7 @@
                 </div>
 
                 <div class="tab-pane fade" id="documents" role="tabpanel">
-                    @if($pharmaceuticalProduct->status === 'rejected' && $pharmaceuticalProduct->rejection_reason)
+                    @if($pharmaceuticalProduct->status == 'rejected' && $pharmaceuticalProduct->rejection_reason)
                         <div class="alert alert-danger mb-4">
                             <div class="d-flex align-items-start gap-2">
                                 <i class="ti ti-alert-triangle" style="font-size: 1.5rem;"></i>
@@ -421,7 +421,7 @@
                             <div class="alert alert-warning mb-4">
                                 <i class="ti ti-alert-circle me-2"></i>
                                 <strong>تنبيه:</strong> يجب رفع جميع المستندات المطلوبة قبل
-                                @if($pharmaceuticalProduct->status === 'rejected')
+                                @if($pharmaceuticalProduct->status == 'rejected')
                                     إعادة إرسال الطلب للمراجعة.
                                 @else
                                     إرسال الطلب للمراجعة.
@@ -430,7 +430,7 @@
                                 <small>أنواع المستندات المرفوعة: {{ $uploadedTypesCount }} من {{ count($documentTypes) }}</small>
                             </div>
                         @else
-                            @if($pharmaceuticalProduct->status === 'rejected')
+                            @if($pharmaceuticalProduct->status == 'rejected')
                                 <div class="alert alert-success mb-4">
                                     <i class="ti ti-check-circle me-2"></i>
                                     <strong>جاهز للإعادة:</strong> تم استكمال جميع المستندات المطلوبة. يمكنك الآن إعادة إرسال الطلب للمراجعة.
@@ -449,7 +449,7 @@
                                 إضافة مستند
                             </button>
 
-                            @if($pharmaceuticalProduct->status === 'uploading_documents' && $pharmaceuticalProduct->hasAllRequiredDocuments())
+                            @if($pharmaceuticalProduct->status == 'uploading_documents' && $pharmaceuticalProduct->hasAllRequiredDocuments())
                                 <form action="{{ route('representative.pharmaceutical-products.submit-for-review', $pharmaceuticalProduct) }}" method="POST" style="margin: 0;" class="submit-review-form">
                                     @csrf
                                     <button type="submit" class="btn btn-success">
@@ -459,7 +459,7 @@
                                 </form>
                             @endif
 
-                            @if($pharmaceuticalProduct->status === 'rejected' && $pharmaceuticalProduct->hasAllRequiredDocuments())
+                            @if($pharmaceuticalProduct->status == 'rejected' && $pharmaceuticalProduct->hasAllRequiredDocuments())
                                 <form action="{{ route('representative.pharmaceutical-products.submit-for-review', $pharmaceuticalProduct) }}" method="POST" style="margin: 0;" class="resubmit-review-form">
                                     @csrf
                                     <button type="submit" class="btn btn-success">
@@ -637,7 +637,7 @@
                                     <div class="card-body">
                                         <h6 class="mb-3 text-muted">إيصال الدفع</h6>
 
-                                        @if($invoice->status === 'unpaid')
+                                        @if($invoice->status == 'unpaid')
                                             <div class="alert alert-warning mb-3">
                                                 <i class="ti ti-alert-circle me-2"></i>
                                                 <strong>يرجى رفع إيصال الدفع</strong>
@@ -655,7 +655,7 @@
                                                     رفع الإيصال
                                                 </button>
                                             </form>
-                                        @elseif($invoice->status === 'pending_review')
+                                        @elseif($invoice->status == 'pending_review')
                                             <div class="alert alert-info mb-3">
                                                 <i class="ti ti-clock me-2"></i>
                                                 <strong>تم رفع الإيصال</strong>
@@ -668,7 +668,7 @@
                                                     عرض الإيصال المرفوع
                                                 </a>
                                             @endif
-                                        @elseif($invoice->status === 'paid')
+                                        @elseif($invoice->status == 'paid')
                                             <div class="alert alert-success mb-3">
                                                 <i class="ti ti-check me-2"></i>
                                                 <strong>تم قبول الإيصال</strong>
@@ -687,7 +687,7 @@
                             </div>
                         </div>
 
-                        @if($pharmaceuticalProduct->status === 'rejected' && $pharmaceuticalProduct->rejection_reason)
+                        @if($pharmaceuticalProduct->status == 'rejected' && $pharmaceuticalProduct->rejection_reason)
                             <div class="alert alert-danger">
                                 <i class="ti ti-alert-circle me-2"></i>
                                 <strong>سبب الرفض:</strong>
@@ -1820,7 +1820,7 @@
     const uploadModal = document.getElementById('uploadModal');
 
     window.addEventListener('click', function(event) {
-        if (event.target === uploadModal) {
+        if (event.target == uploadModal) {
             uploadModal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
@@ -1838,7 +1838,7 @@
     const productStatus = '{{ $pharmaceuticalProduct->status }}';
 
     document.addEventListener('DOMContentLoaded', function() {
-        if (productStatus === 'rejected') {
+        if (productStatus == 'rejected') {
             const documentsTab = document.querySelector('button[data-bs-target="#documents"]');
             if (documentsTab) {
                 const tab = new bootstrap.Tab(documentsTab);
@@ -1964,7 +1964,7 @@
     }
 
     window.addEventListener('click', function(event) {
-        if (event.target === editModal) {
+        if (event.target == editModal) {
             closeEditModal();
         }
     });

@@ -68,7 +68,7 @@
                     <p><strong>تم رفع إيصال الدفع</strong></p>
                     @if($invoice->isPaid())
                         <p class="success-text"><i class="ti ti-check"></i> تم تأكيد الدفع من قبل الإدارة</p>
-                    @elseif($invoice->status === 'rejected')
+                    @elseif($invoice->status == 'rejected')
                         <p class="danger-text"><i class="ti ti-x"></i> تم رفض الإيصال من قبل الإدارة</p>
                         @if($invoice->receipt_rejection_reason)
                             <p class="text-muted">السبب: {{ $invoice->receipt_rejection_reason }}</p>
@@ -838,7 +838,7 @@
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         const modal = document.getElementById('uploadModal');
-        if (event.target === modal) {
+        if (event.target == modal) {
             modal.style.display = 'none';
         }
     });

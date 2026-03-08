@@ -99,7 +99,7 @@
       .then((result) => {
         if (result.isConfirmed) {
           swalWithBootstrapButtons.fire('Deleted!', 'Your file has been deleted.', 'success');
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
+        } else if (result.dismiss == Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire('Cancelled', 'Your imaginary file is safe :)', 'error');
         }
       });
@@ -139,7 +139,7 @@
         clearInterval(timerInterval);
       }
     }).then((result) => {
-      if (result.dismiss === Swal.DismissReason.timer) {
+      if (result.dismiss == Swal.DismissReason.timer) {
       }
     });
   });
@@ -348,7 +348,7 @@
         showCancelButton: true,
         inputValidator: (value) => {
           return new Promise((resolve) => {
-            if (value === 'oranges') {
+            if (value == 'oranges') {
               resolve();
             } else {
               resolve('You need to select oranges :)');

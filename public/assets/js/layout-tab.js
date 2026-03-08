@@ -127,7 +127,7 @@
               '</a></li>'
           );
         }
-        if (flag_hit === true) {
+        if (flag_hit == true) {
           if (pc_tab_link_list) {
             var tmp_flag_count = flag_count - 1;
             if (tmp_flag_count == 0) {
@@ -160,7 +160,7 @@
         pc_new_list += item.outerHTML;
         flag_hit = true;
         item.remove();
-        if (list_index + 1 === pc_menu_list.length) {
+        if (list_index + 1 == pc_menu_list.length) {
           if (pc_tab_link_list) {
             var tmp_flag_count = flag_count;
             pc_tab_link_list.insertAdjacentHTML(

@@ -202,7 +202,7 @@ class LocalCompany extends Model
 
     public function hasAllRequiredDocuments()
     {
-        return count($this->getMissingDocuments()) === 0;
+        return count($this->getMissingDocuments()) == 0;
     }
 
     public function markAsExpired()

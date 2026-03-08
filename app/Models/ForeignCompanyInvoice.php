@@ -166,12 +166,12 @@ class ForeignCompanyInvoice extends Model
 
     public function canUploadReceipt(): bool
     {
-        return $this->status === 'pending' && (empty($this->receipt_path) || $this->receipt_status === 'rejected');
+        return $this->status == 'pending' && (empty($this->receipt_path) || $this->receipt_status == 'rejected');
     }
 
     public function canDeleteReceipt(): bool
     {
-        return $this->status === 'pending' && !empty($this->receipt_path) && $this->receipt_status !== 'approved';
+        return $this->status == 'pending' && !empty($this->receipt_path) && $this->receipt_status != 'approved';
     }
 
     public function getReceiptDownloadUrl(): ?string

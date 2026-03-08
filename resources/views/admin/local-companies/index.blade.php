@@ -2,9 +2,9 @@
 
 @php
     $pageTitle = 'الشركات المحلية';
-    if (request('company_type') === 'distributor') {
+    if (request('company_type') == 'distributor') {
         $pageTitle = 'الشركات الموزعة';
-    } elseif (request('company_type') === 'supplier') {
+    } elseif (request('company_type') == 'supplier') {
         $pageTitle = 'الشركات الموردة';
     }
 @endphp
@@ -152,7 +152,7 @@
                             <strong>{{ $company->company_name }}</strong>
                         </td>
                         <td>
-                            <span class="badge bg-{{ $company->company_type === 'distributor' ? 'info' : 'primary' }}">{{ $company->company_type_name }}</span>
+                            <span class="badge bg-{{ $company->company_type == 'distributor' ? 'info' : 'primary' }}">{{ $company->company_type_name }}</span>
                         </td>
                         <td>
                             <div>{{ $company->manager_name }}</div>

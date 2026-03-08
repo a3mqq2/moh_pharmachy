@@ -65,26 +65,26 @@
             @php
                 $activeTab = session('active_tab_' . $company->id, 'basic');
             @endphp
-            <button class="tab-btn {{ $activeTab === 'basic' ? 'active' : '' }}" data-tab="basic">
+            <button class="tab-btn {{ $activeTab == 'basic' ? 'active' : '' }}" data-tab="basic">
                 <i class="ti ti-building"></i>
                 <span>المعلومات الأساسية</span>
             </button>
-            <button class="tab-btn {{ $activeTab === 'license' ? 'active' : '' }}" data-tab="license">
+            <button class="tab-btn {{ $activeTab == 'license' ? 'active' : '' }}" data-tab="license">
                 <i class="ti ti-license"></i>
                 <span>معلومات الترخيص</span>
             </button>
-            <button class="tab-btn {{ $activeTab === 'manager' ? 'active' : '' }}" data-tab="manager">
+            <button class="tab-btn {{ $activeTab == 'manager' ? 'active' : '' }}" data-tab="manager">
                 <i class="ti ti-user"></i>
                 <span>معلومات المدير</span>
             </button>
-            <button class="tab-btn {{ $activeTab === 'documents' ? 'active' : '' }}" data-tab="documents">
+            <button class="tab-btn {{ $activeTab == 'documents' ? 'active' : '' }}" data-tab="documents">
                 <i class="ti ti-files"></i>
                 <span>المستندات</span>
                 @if(!$company->hasAllRequiredDocuments())
                     <span class="badge-dot"></span>
                 @endif
             </button>
-            <button class="tab-btn {{ $activeTab === 'registration' ? 'active' : '' }}" data-tab="registration">
+            <button class="tab-btn {{ $activeTab == 'registration' ? 'active' : '' }}" data-tab="registration">
                 <i class="ti ti-calendar"></i>
                 <span>معلومات التسجيل</span>
             </button>
@@ -92,7 +92,7 @@
 
         <div class="tabs-content">
             <!-- Basic Information Tab -->
-            <div class="tab-pane {{ $activeTab === 'basic' ? 'active' : '' }}" id="basic">
+            <div class="tab-pane {{ $activeTab == 'basic' ? 'active' : '' }}" id="basic">
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="info-label">اسم الشركة</span>
@@ -136,7 +136,7 @@
             </div>
 
             <!-- License Information Tab -->
-            <div class="tab-pane {{ $activeTab === 'license' ? 'active' : '' }}" id="license">
+            <div class="tab-pane {{ $activeTab == 'license' ? 'active' : '' }}" id="license">
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="info-label">نوع الترخيص</span>
@@ -180,7 +180,7 @@
             </div>
 
             <!-- Manager Information Tab -->
-            <div class="tab-pane {{ $activeTab === 'manager' ? 'active' : '' }}" id="manager">
+            <div class="tab-pane {{ $activeTab == 'manager' ? 'active' : '' }}" id="manager">
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="info-label">اسم المدير</span>
@@ -206,7 +206,7 @@
             </div>
 
             <!-- Documents Tab -->
-            <div class="tab-pane {{ $activeTab === 'documents' ? 'active' : '' }}" id="documents">
+            <div class="tab-pane {{ $activeTab == 'documents' ? 'active' : '' }}" id="documents">
                 @if($company->status == 'uploading_documents' || $company->status == 'pending')
                 <div class="alert-info-box">
                     <i class="ti ti-info-circle"></i>
@@ -303,7 +303,7 @@
             </div>
 
             <!-- Registration Information Tab -->
-            <div class="tab-pane {{ $activeTab === 'registration' ? 'active' : '' }}" id="registration">
+            <div class="tab-pane {{ $activeTab == 'registration' ? 'active' : '' }}" id="registration">
                 <div class="info-grid">
                     <div class="info-item">
                         <span class="info-label">تاريخ التسجيل في النظام</span>
@@ -339,7 +339,7 @@
                             @endphp
                             @foreach(\App\Models\LocalCompanyDocument::documentTypes() as $key => $value)
                                 @php
-                                    $isUploaded = in_array($key, $uploadedTypes) && $key !== 'other';
+                                    $isUploaded = in_array($key, $uploadedTypes) && $key != 'other';
                                     $isRequired = in_array($key, array_keys(\App\Models\LocalCompanyDocument::requiredDocumentTypes()));
                                 @endphp
                                 <option value="{{ $key }}" {{ $isUploaded ? 'disabled' : '' }}>
@@ -1174,7 +1174,7 @@
 
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
-        if (event.target === uploadModal) {
+        if (event.target == uploadModal) {
             uploadModal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
@@ -1184,7 +1184,7 @@
     if (documentTypeSelect) {
         documentTypeSelect.addEventListener('change', function() {
             const customNameWrapper = document.getElementById('custom_name_wrapper');
-            if (this.value === 'other') {
+            if (this.value == 'other') {
                 customNameWrapper.style.display = 'block';
                 document.getElementById('custom_name').required = true;
             } else {

@@ -224,28 +224,28 @@ function setLayout() {
   main_layout_change(layout);
 
   // Load corresponding scripts or perform actions based on the layout value
-  if (layout !== null && layout !== '') {
+  if (layout != null && layout != '') {
     var script = document.createElement('script');
-    if (layout === 'horizontal') {
+    if (layout == 'horizontal') {
       document.querySelector('.pc-sidebar').classList.add('d-none');
       script.src = '../assets/js/layout-horizontal.js'; // Load script for horizontal layout
       document.body.appendChild(script);
-    } else if (layout === 'color-header') {
+    } else if (layout == 'color-header') {
       // Change logo color for color-header layout
       if (document.querySelector('.pc-sidebar .m-header .logo-lg')) {
         document.querySelector('.pc-sidebar .m-header .logo-lg').setAttribute('src', '../assets/images/logo-white.svg');
       }
-    } else if (layout === 'compact') {
+    } else if (layout == 'compact') {
       script.src = '../assets/js/layout-compact.js'; // Load script for compact layout
       document.body.appendChild(script);
-    } else if (layout === 'tab') {
+    } else if (layout == 'tab') {
       script.src = '../assets/js/layout-tab.js'; // Load script for tab layout
       document.body.appendChild(script);
     }
   }
 
   // If no layout data found in localStorage, set default layout to 'vertical'
-  if (layout === null) {
+  if (layout == null) {
     main_layout_change('vertical');
     localStorage.setItem('layout', 'vertical');
   }
@@ -368,13 +368,13 @@ for (var t = 0; t < tc.length; t++) {
   tc[t].setAttribute('src', '../assets/images/logo-white.svg');
 }
 
-// =======================================================
-// =======================================================
+// =====================================
+// =====================================
 
 var rtl_flag = false;
 var dark_flag = false;
 document.addEventListener('DOMContentLoaded', function () {
-  if (typeof Storage !== 'undefined') {
+  if (typeof Storage != 'undefined') {
     layout_change(localStorage.getItem('theme'));
   }
 });
@@ -636,8 +636,8 @@ function change_box_container(value) {
 
 // ----------    new setup end   ------------
 
-// =======================================================
-// =======================================================
+// =====================================
+// =====================================
 
 // Function to remove CSS classes with a given prefix from a DOM node
 function removeClassByPrefix(node, prefix) {
@@ -671,7 +671,7 @@ let slideDown = (target, duration = 0) => {
   target.style.removeProperty('display');
   let display = window.getComputedStyle(target).display;
 
-  if (display === 'none') display = 'block';
+  if (display == 'none') display = 'block';
 
   target.style.display = display;
   let height = target.offsetHeight;
@@ -700,12 +700,12 @@ let slideDown = (target, duration = 0) => {
 
 var slideToggle = (target, duration = 0) => {
   // Slide toggle animation implementation
-  if (window.getComputedStyle(target).display === 'none') {
+  if (window.getComputedStyle(target).display == 'none') {
     return slideDown(target, duration);
   } else {
     return slideUp(target, duration);
   }
 };
 
-// =======================================================
-// =======================================================
+// =====================================
+// =====================================

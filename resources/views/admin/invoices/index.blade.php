@@ -122,11 +122,11 @@
                             <span class="badge bg-dark">{{ $invoice->invoice_number }}</span>
                         </td>
                         <td>
-                            @if($invoice->company_type === 'local')
+                            @if($invoice->company_type == 'local')
                                 <span class="badge bg-info">
                                     <i class="ti ti-building me-1"></i>محلية
                                 </span>
-                            @elseif($invoice->company_type === 'foreign')
+                            @elseif($invoice->company_type == 'foreign')
                                 <span class="badge bg-success">
                                     <i class="ti ti-world me-1"></i>أجنبية
                                 </span>
@@ -146,30 +146,30 @@
                             <strong class="text-primary">{{ number_format($invoice->amount, 2) }} د.ل</strong>
                         </td>
                         <td>
-                            @if($invoice->company_type === 'local')
-                                @if($invoice->status === 'paid')
+                            @if($invoice->company_type == 'local')
+                                @if($invoice->status == 'paid')
                                     <span class="badge bg-success">مدفوعة</span>
-                                @elseif($invoice->status === 'unpaid')
+                                @elseif($invoice->status == 'unpaid')
                                     <span class="badge bg-warning">غير مدفوعة</span>
                                 @else
                                     <span class="badge bg-secondary">{{ $invoice->status }}</span>
                                 @endif
-                            @elseif($invoice->company_type === 'foreign')
-                                @if($invoice->status === 'paid')
+                            @elseif($invoice->company_type == 'foreign')
+                                @if($invoice->status == 'paid')
                                     <span class="badge bg-success">مدفوعة</span>
-                                @elseif($invoice->status === 'pending')
+                                @elseif($invoice->status == 'pending')
                                     <span class="badge bg-warning">قيد الانتظار</span>
-                                @elseif($invoice->status === 'cancelled')
+                                @elseif($invoice->status == 'cancelled')
                                     <span class="badge bg-danger">ملغاة</span>
                                 @else
                                     <span class="badge bg-secondary">{{ $invoice->status }}</span>
                                 @endif
                             @else
-                                @if($invoice->status === 'paid')
+                                @if($invoice->status == 'paid')
                                     <span class="badge bg-success">مدفوعة</span>
-                                @elseif($invoice->status === 'unpaid')
+                                @elseif($invoice->status == 'unpaid')
                                     <span class="badge bg-warning">غير مدفوعة</span>
-                                @elseif($invoice->status === 'pending_review')
+                                @elseif($invoice->status == 'pending_review')
                                     <span class="badge bg-info">قيد المراجعة</span>
                                 @else
                                     <span class="badge bg-secondary">{{ $invoice->status }}</span>
@@ -181,13 +181,13 @@
                             <small class="text-muted">{{ $invoice->created_at->format('h:i A') }}</small>
                         </td>
                         <td>
-                            @if($invoice->company_type === 'local')
+                            @if($invoice->company_type == 'local')
                                 <a href="{{ route('admin.local-companies.show', $invoice->company) }}"
                                    class="btn btn-sm btn-outline-primary"
                                    title="عرض التفاصيل">
                                     <i class="ti ti-eye"></i>
                                 </a>
-                            @elseif($invoice->company_type === 'foreign')
+                            @elseif($invoice->company_type == 'foreign')
                                 <a href="{{ route('admin.foreign-company-invoices.show', $invoice) }}"
                                    class="btn btn-sm btn-outline-primary"
                                    title="عرض التفاصيل">

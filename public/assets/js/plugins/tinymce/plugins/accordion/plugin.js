@@ -21,26 +21,26 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType$1 = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
+    const isType$1 = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
     const isString = isType$1('string');
     const isBoolean = isSimpleType('boolean');
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
     const isNumber = isSimpleType('number');
@@ -52,7 +52,7 @@
       };
     };
     const tripleEquals = (a, b) => {
-      return a === b;
+      return a == b;
     };
     const never = constant(false);
 
@@ -121,7 +121,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -194,7 +194,7 @@
       }
     };
 
-    typeof window !== 'undefined' ? window : Function('return this;')();
+    typeof window != 'undefined' ? window : Function('return this;')();
 
     const COMMENT = 8;
     const DOCUMENT = 9;
@@ -207,8 +207,8 @@
       return r.toLowerCase();
     };
     const type = element => element.dom.nodeType;
-    const isType = t => element => type(element) === t;
-    const isComment = element => type(element) === COMMENT || name(element) === '#comment';
+    const isType = t => element => type(element) == t;
+    const isComment = element => type(element) == COMMENT || name(element) == '#comment';
     const isElement = isType(ELEMENT);
     const isText = isType(TEXT);
     const isDocument = isType(DOCUMENT);
@@ -233,7 +233,7 @@
     };
     const get$2 = (element, key) => {
       const v = element.dom.getAttribute(key);
-      return v === null ? undefined : v;
+      return v == null ? undefined : v;
     };
     const getOpt = (element, key) => Optional.from(get$2(element, key));
     const remove$2 = (element, key) => {
@@ -266,7 +266,7 @@
       return fromDom(node);
     };
     const fromDom = node => {
-      if (node === null || node === undefined) {
+      if (node == null || node == undefined) {
         throw new Error('Node cannot be null or undefined');
       }
       return { dom: node };
@@ -282,34 +282,34 @@
 
     const is$2 = (element, selector) => {
       const dom = element.dom;
-      if (dom.nodeType !== ELEMENT) {
+      if (dom.nodeType != ELEMENT) {
         return false;
       } else {
         const elem = dom;
-        if (elem.matches !== undefined) {
+        if (elem.matches != undefined) {
           return elem.matches(selector);
-        } else if (elem.msMatchesSelector !== undefined) {
+        } else if (elem.msMatchesSelector != undefined) {
           return elem.msMatchesSelector(selector);
-        } else if (elem.webkitMatchesSelector !== undefined) {
+        } else if (elem.webkitMatchesSelector != undefined) {
           return elem.webkitMatchesSelector(selector);
-        } else if (elem.mozMatchesSelector !== undefined) {
+        } else if (elem.mozMatchesSelector != undefined) {
           return elem.mozMatchesSelector(selector);
         } else {
           throw new Error('Browser lacks native selectors');
         }
       }
     };
-    const bypassSelector = dom => dom.nodeType !== ELEMENT && dom.nodeType !== DOCUMENT && dom.nodeType !== DOCUMENT_FRAGMENT || dom.childElementCount === 0;
+    const bypassSelector = dom => dom.nodeType != ELEMENT && dom.nodeType != DOCUMENT && dom.nodeType != DOCUMENT_FRAGMENT || dom.childElementCount == 0;
     const all = (selector, scope) => {
-      const base = scope === undefined ? document : scope.dom;
+      const base = scope == undefined ? document : scope.dom;
       return bypassSelector(base) ? [] : map(base.querySelectorAll(selector), SugarElement.fromDom);
     };
     const one = (selector, scope) => {
-      const base = scope === undefined ? document : scope.dom;
+      const base = scope == undefined ? document : scope.dom;
       return bypassSelector(base) ? Optional.none() : Optional.from(base.querySelector(selector)).map(SugarElement.fromDom);
     };
 
-    const eq = (e1, e2) => e1.dom === e2.dom;
+    const eq = (e1, e2) => e1.dom == e2.dom;
     const is$1 = is$2;
 
     const is = (lhs, rhs, comparator = tripleEquals) => lhs.exists(left => comparator(left, rhs));
@@ -317,7 +317,7 @@
     const blank = r => s => s.replace(r, '');
     const trim = blank(/^\s+|\s+$/g);
 
-    const isSupported = dom => dom.style !== undefined && isFunction(dom.style.getPropertyValue);
+    const isSupported = dom => dom.style != undefined && isFunction(dom.style.getPropertyValue);
 
     const owner = element => SugarElement.fromDom(element.dom.ownerDocument);
     const documentOrOwner = dos => isDocument(dos) ? dos : owner(dos);
@@ -326,11 +326,11 @@
       const stop = isFunction(isRoot) ? isRoot : never;
       let dom = element.dom;
       const ret = [];
-      while (dom.parentNode !== null && dom.parentNode !== undefined) {
+      while (dom.parentNode != null && dom.parentNode != undefined) {
         const rawParent = dom.parentNode;
         const p = SugarElement.fromDom(rawParent);
         ret.push(p);
-        if (stop(p) === true) {
+        if (stop(p) == true) {
           break;
         } else {
           dom = rawParent;
@@ -358,7 +358,7 @@
 
     const inBody = element => {
       const dom = isText(element) ? element.dom.parentNode : element.dom;
-      if (dom === undefined || dom === null || dom.ownerDocument === null) {
+      if (dom == undefined || dom == null || dom.ownerDocument == null) {
         return false;
       }
       const doc = dom.ownerDocument;
@@ -387,7 +387,7 @@
       const dom = element.dom;
       const styles = window.getComputedStyle(dom);
       const r = styles.getPropertyValue(property);
-      return r === '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
+      return r == '' && !inBody(element) ? getUnsafeProperty(dom, property) : r;
     };
     const getUnsafeProperty = (dom, property) => isSupported(dom) ? dom.style.getPropertyValue(property) : '';
     const getRaw = (element, property) => {
@@ -438,7 +438,7 @@
 
     const after = (marker, elements) => {
       each$1(elements, (x, i) => {
-        const e = i === 0 ? marker : elements[i - 1];
+        const e = i == 0 ? marker : elements[i - 1];
         after$1(e, x);
       });
     };
@@ -486,7 +486,7 @@
 
     const remove = element => {
       const dom = element.dom;
-      if (dom.parentNode !== null) {
+      if (dom.parentNode != null) {
         dom.parentNode.removeChild(dom);
       }
     };
@@ -575,7 +575,7 @@
         if (!isElement(element)) {
           return false;
         }
-        if (name(element) === 'body') {
+        if (name(element) == 'body') {
           return true;
         }
         return contains(TagBoundaries, name(element));
@@ -591,7 +591,7 @@
           'input'
         ], name(element));
       };
-      const isNonEditable = element => isElement(element) && get$2(element, 'contenteditable') === 'false';
+      const isNonEditable = element => isElement(element) && get$2(element, 'contenteditable') == 'false';
       const comparePosition = (element, other) => {
         return element.dom.compareDocumentPosition(other.dom);
       };
@@ -687,7 +687,7 @@
     });
 
     const scan = (universe, element, direction) => {
-      if (universe.property().isText(element) && universe.property().getText(element).trim().length === 0 || universe.property().isComment(element)) {
+      if (universe.property().isText(element) && universe.property().getText(element).trim().length == 0 || universe.property().isComment(element)) {
         return direction(element).bind(elem => {
           return scan(universe, elem, direction).orThunk(() => {
             return Optional.some(elem);
@@ -737,8 +737,8 @@
 
     var global$3 = tinymce.util.Tools.resolve('tinymce.util.Tools');
 
-    const isSummary = node => (node === null || node === void 0 ? void 0 : node.nodeName) === 'SUMMARY';
-    const isDetails = node => (node === null || node === void 0 ? void 0 : node.nodeName) === 'DETAILS';
+    const isSummary = node => (node == null || node == void 0 ? void 0 : node.nodeName) == 'SUMMARY';
+    const isDetails = node => (node == null || node == void 0 ? void 0 : node.nodeName) == 'DETAILS';
     const isOpen = details => details.hasAttribute('open');
     const isInSummary = editor => {
       const node = editor.selection.getNode();
@@ -746,7 +746,7 @@
     };
     const isAtDetailsStart = editor => {
       const rng = editor.selection.getRng();
-      return isDetails(rng.startContainer) && rng.collapsed && rng.startOffset === 0;
+      return isDetails(rng.startContainer) && rng.collapsed && rng.startOffset == 0;
     };
     const isInsertAllowed = editor => !isInSummary(editor) && editor.dom.isEditable(editor.selection.getNode());
     const getSelectedDetails = editor => Optional.from(editor.dom.getParent(editor.selection.getNode(), isDetails));
@@ -763,14 +763,14 @@
       editor.selection.setCursorLocation(paragraph, 0);
     };
     const normalizeContent = (editor, accordion) => {
-      if (isSummary(accordion === null || accordion === void 0 ? void 0 : accordion.lastChild)) {
+      if (isSummary(accordion == null || accordion == void 0 ? void 0 : accordion.lastChild)) {
         const paragraph = createParagraph(editor);
         accordion.appendChild(paragraph);
         editor.selection.setCursorLocation(paragraph, 0);
       }
     };
     const normalizeSummary = (editor, accordion) => {
-      if (!isSummary(accordion === null || accordion === void 0 ? void 0 : accordion.firstChild)) {
+      if (!isSummary(accordion == null || accordion == void 0 ? void 0 : accordion.firstChild)) {
         const summary = createSummary(editor);
         accordion.prepend(summary);
         editor.selection.setCursorLocation(summary, 0);
@@ -814,7 +814,7 @@
       });
     };
     const toggleDetailsElement = (details, state) => {
-      const shouldOpen = state !== null && state !== void 0 ? state : !isOpen(details);
+      const shouldOpen = state != null && state != void 0 ? state : !isOpen(details);
       if (shouldOpen) {
         details.setAttribute('open', 'open');
       } else {
@@ -841,10 +841,10 @@
     };
     const toggleAllAccordions = (editor, state) => {
       const accordions = Array.from(editor.getBody().querySelectorAll('details'));
-      if (accordions.length === 0) {
+      if (accordions.length == 0) {
         return;
       }
-      each$1(accordions, accordion => toggleDetailsElement(accordion, state !== null && state !== void 0 ? state : !isOpen(accordion)));
+      each$1(accordions, accordion => toggleDetailsElement(accordion, state != null && state != void 0 ? state : !isOpen(accordion)));
       fireToggleAllAccordionsEvent(editor, accordions, state);
     };
 
@@ -859,7 +859,7 @@
 
     const getClassList = node => {
       var _a, _b;
-      return (_b = (_a = node.attr('class')) === null || _a === void 0 ? void 0 : _a.split(' ')) !== null && _b !== void 0 ? _b : [];
+      return (_b = (_a = node.attr('class')) == null || _a == void 0 ? void 0 : _a.split(' ')) != null && _b != void 0 ? _b : [];
     };
     const addClasses = (node, classes) => {
       const classListSet = new Set([
@@ -875,8 +875,8 @@
       const newClassList = filter(getClassList(node), clazz => !classes.has(clazz));
       node.attr('class', newClassList.length > 0 ? newClassList.join(' ') : null);
     };
-    const isAccordionDetailsNode = node => node.name === accordionTag && contains(getClassList(node), accordionDetailsClass);
-    const isAccordionBodyWrapperNode = node => node.name === accordionBodyWrapperTag && contains(getClassList(node), accordionBodyWrapperClass);
+    const isAccordionDetailsNode = node => node.name == accordionTag && contains(getClassList(node), accordionDetailsClass);
+    const isAccordionBodyWrapperNode = node => node.name == accordionBodyWrapperTag && contains(getClassList(node), accordionBodyWrapperClass);
     const getAccordionChildren = accordionNode => {
       const children = accordionNode.children();
       let summaryNode;
@@ -884,7 +884,7 @@
       const otherNodes = [];
       for (let i = 0; i < children.length; i++) {
         const child = children[i];
-        if (child.name === 'summary' && isNullable(summaryNode)) {
+        if (child.name == 'summary' && isNullable(summaryNode)) {
           summaryNode = child;
         } else if (isAccordionBodyWrapperNode(child) && isNullable(wrapperNode)) {
           wrapperNode = child;
@@ -970,7 +970,7 @@
 
     const setupEnterKeyInSummary = editor => {
       editor.on('keydown', event => {
-        if (!event.shiftKey && event.keyCode === global$1.ENTER && isInSummary(editor) || isAtDetailsStart(editor)) {
+        if (!event.shiftKey && event.keyCode == global$1.ENTER && isInSummary(editor) || isAtDetailsStart(editor)) {
           event.preventDefault();
           editor.execCommand('ToggleAccordion');
         }
@@ -980,7 +980,7 @@
       setupEnterKeyInSummary(editor);
       editor.on('ExecCommand', e => {
         const cmd = e.command.toLowerCase();
-        if ((cmd === 'delete' || cmd === 'forwarddelete') && isDetailsSelected(editor)) {
+        if ((cmd == 'delete' || cmd == 'forwarddelete') && isDetailsSelected(editor)) {
           normalizeDetails(editor);
         }
       });
@@ -994,7 +994,7 @@
           if (isSummary(e.target)) {
             const summary = e.target;
             const rng = editor.selection.getRng();
-            if (rng.collapsed && rng.startContainer === summary.parentNode && rng.startOffset === 0) {
+            if (rng.collapsed && rng.startContainer == summary.parentNode && rng.startOffset == 0) {
               editor.selection.setCursorLocation(summary, 0);
             }
           }

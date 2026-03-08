@@ -25,7 +25,7 @@
       ratioInput.disabled = false;
       var value = ratioInput.value;
       if (!isNumber(value)) {
-        if (value !== '') {
+        if (value != '') {
           ratioInput.classList.add('is-danger');
         }
         return;
@@ -148,7 +148,7 @@
     if (isNaN(parseInt(value))) {
       return false;
     }
-    if (value === '') {
+    if (value == '') {
       return false;
     }
     return true;
@@ -157,9 +157,9 @@
   // parce value
   function parseElementValues(element) {
     var value = element.value;
-    if (element.tagName !== 'SELECT') {
+    if (element.tagName != 'SELECT') {
       if (!isNumber(value)) {
-        if (value !== '') {
+        if (value != '') {
           element.classList.add('is-danger');
         }
         return null;
@@ -182,7 +182,7 @@
 
         // Convert to pixels
       };
-      if (values[2] === '%') {
+      if (values[2] == '%') {
         croppr.options.convertToPixels(croppr.cropperEl);
       }
 

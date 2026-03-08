@@ -35,11 +35,11 @@
                         <label class="form-label">الحالة</label>
                         <select name="status" class="form-select">
                             <option value="">الكل</option>
-                            <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>قيد المراجعة</option>
-                            <option value="uploading_documents" {{ request('status') === 'uploading_documents' ? 'selected' : '' }}>قيد رفع المستندات</option>
-                            <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>معتمدة</option>
-                            <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>مفعلة</option>
-                            <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>مرفوضة</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>قيد المراجعة</option>
+                            <option value="uploading_documents" {{ request('status') == 'uploading_documents' ? 'selected' : '' }}>قيد رفع المستندات</option>
+                            <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>معتمدة</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>مفعلة</option>
+                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>مرفوضة</option>
                         </select>
                     </div>
                     <div class="col-md-3">

@@ -339,7 +339,7 @@ class AuthController extends Controller
     {
         $type = $request->input('type', 'registration');
 
-        if ($type === 'login') {
+        if ($type == 'login') {
             $loginData = session('login_data');
             if (!$loginData) {
                 return response()->json(['success' => false, 'message' => 'انتهت صلاحية الجلسة']);
@@ -349,7 +349,7 @@ class AuthController extends Controller
             Mail::to($loginData['email'])->send(new RepresentativeOtpMail($otp, $loginData['name'], 'login'));
 
             return response()->json(['success' => true, 'message' => 'تم إرسال رمز جديد']);
-        } elseif ($type === 'password_reset') {
+        } elseif ($type == 'password_reset') {
             $resetData = session('password_reset_data');
             if (!$resetData) {
                 return response()->json(['success' => false, 'message' => 'انتهت صلاحية الجلسة']);

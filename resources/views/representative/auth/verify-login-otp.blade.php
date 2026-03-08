@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Only allow numbers
             this.value = this.value.replace(/[^0-9]/g, '');
 
-            if (this.value.length === 1) {
+            if (this.value.length == 1) {
                 this.classList.add('filled');
                 // Move to next input
                 if (index < inputs.length - 1) {
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         input.addEventListener('keydown', function(e) {
             // Handle backspace
-            if (e.key === 'Backspace' && !this.value && index > 0) {
+            if (e.key == 'Backspace' && !this.value && index > 0) {
                 inputs[index - 1].focus();
                 inputs[index - 1].value = '';
                 inputs[index - 1].classList.remove('filled');
@@ -375,10 +375,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Handle arrow keys
-            if (e.key === 'ArrowLeft' && index < inputs.length - 1) {
+            if (e.key == 'ArrowLeft' && index < inputs.length - 1) {
                 inputs[index + 1].focus();
             }
-            if (e.key === 'ArrowRight' && index > 0) {
+            if (e.key == 'ArrowRight' && index > 0) {
                 inputs[index - 1].focus();
             }
         });

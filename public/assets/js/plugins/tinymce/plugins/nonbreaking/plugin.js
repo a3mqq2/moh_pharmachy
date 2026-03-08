@@ -7,7 +7,7 @@
 
     var global$1 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
-    const isSimpleType = type => value => typeof value === type;
+    const isSimpleType = type => value => typeof value == type;
     const isBoolean = isSimpleType('boolean');
     const isNumber = isSimpleType('number');
 
@@ -71,7 +71,7 @@
       const spaces = getKeyboardSpaces(editor);
       if (spaces > 0) {
         editor.on('keydown', e => {
-          if (e.keyCode === global.TAB && !e.isDefaultPrevented()) {
+          if (e.keyCode == global.TAB && !e.isDefaultPrevented()) {
             if (e.shiftKey) {
               return;
             }

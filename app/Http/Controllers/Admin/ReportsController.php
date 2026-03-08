@@ -108,7 +108,7 @@ class ReportsController extends Controller
         $localStats = [];
         $pharmaStats = [];
 
-        if ($type === 'all' || $type === 'local') {
+        if ($type == 'all' || $type == 'local') {
             $localQuery = LocalCompanyInvoice::with('localCompany');
 
             if ($request->filled('status')) {
@@ -137,11 +137,11 @@ class ReportsController extends Controller
             }
         }
 
-        if ($type === 'all' || $type === 'pharmaceutical') {
+        if ($type == 'all' || $type == 'pharmaceutical') {
             $pharmaQuery = PharmaceuticalProductInvoice::with('pharmaceuticalProduct');
 
             if ($request->filled('status')) {
-                $pharmaQuery->where('status', $request->status === 'paid' ? 'paid' : 'unpaid');
+                $pharmaQuery->where('status', $request->status == 'paid' ? 'paid' : 'unpaid');
             }
 
             if ($request->filled('from_date')) {
@@ -287,7 +287,7 @@ class ReportsController extends Controller
         fputcsv($output, ['إجمالي الإيرادات', number_format($stats['total_revenue'], 2) . ' د.ل']);
         fputcsv($output, []);
 
-        if ($type === 'all' || $type === 'local') {
+        if ($type == 'all' || $type == 'local') {
             fputcsv($output, ['فواتير الشركات المحلية']);
             fputcsv($output, ['إجمالي', $stats['local_total']]);
             fputcsv($output, ['مدفوعة', $stats['local_paid']]);
@@ -308,7 +308,7 @@ class ReportsController extends Controller
             fputcsv($output, []);
         }
 
-        if ($type === 'all' || $type === 'pharmaceutical') {
+        if ($type == 'all' || $type == 'pharmaceutical') {
             fputcsv($output, ['فواتير الأصناف الدوائية']);
             fputcsv($output, ['إجمالي', $stats['pharma_total']]);
             fputcsv($output, ['مدفوعة', $stats['pharma_paid']]);

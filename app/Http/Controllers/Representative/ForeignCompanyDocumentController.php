@@ -156,7 +156,7 @@ class ForeignCompanyDocumentController extends Controller
         $document = $company->documents()->findOrFail($documentId);
 
         // Can only replace rejected documents
-        if ($document->status !== 'rejected') {
+        if ($document->status != 'rejected') {
             return redirect()->back()
                 ->with('error', 'يمكن فقط استبدال المستندات المرفوضة');
         }

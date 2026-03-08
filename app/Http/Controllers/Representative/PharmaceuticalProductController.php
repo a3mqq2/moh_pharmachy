@@ -89,7 +89,7 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
@@ -102,7 +102,7 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
@@ -123,7 +123,7 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
@@ -164,11 +164,11 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($pharmaceuticalProduct->status !== 'uploading_documents') {
+        if ($pharmaceuticalProduct->status != 'uploading_documents') {
             return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
                 ->with('error', 'لا يمكن حذف هذا الصنف في حالته الحالية.');
         }
@@ -183,7 +183,7 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($foreignCompany->representative_id !== $representative->id) {
+        if ($foreignCompany->representative_id != $representative->id) {
             abort(403);
         }
 
@@ -196,11 +196,11 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($pharmaceuticalProduct->status !== 'uploading_documents') {
+        if ($pharmaceuticalProduct->status != 'uploading_documents') {
             return back()->with('error', 'لا يمكن رفع مستندات في الحالة الحالية.');
         }
 
@@ -230,15 +230,15 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($document->pharmaceutical_product_id !== $pharmaceuticalProduct->id) {
+        if ($document->pharmaceutical_product_id != $pharmaceuticalProduct->id) {
             abort(403);
         }
 
-        if ($pharmaceuticalProduct->status !== 'uploading_documents' && $pharmaceuticalProduct->status !== 'rejected') {
+        if ($pharmaceuticalProduct->status != 'uploading_documents' && $pharmaceuticalProduct->status != 'rejected') {
             return back()->with('error', 'لا يمكن حذف مستندات في الحالة الحالية.');
         }
 
@@ -252,11 +252,11 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($document->pharmaceutical_product_id !== $pharmaceuticalProduct->id) {
+        if ($document->pharmaceutical_product_id != $pharmaceuticalProduct->id) {
             abort(403);
         }
 
@@ -287,7 +287,7 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
@@ -314,11 +314,11 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($invoice->pharmaceutical_product_id !== $pharmaceuticalProduct->id) {
+        if ($invoice->pharmaceutical_product_id != $pharmaceuticalProduct->id) {
             abort(403);
         }
 
@@ -353,11 +353,11 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($pharmaceuticalProduct->status !== 'preliminary_approved') {
+        if ($pharmaceuticalProduct->status != 'preliminary_approved') {
             return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
                 ->with('error', 'لا يمكن تعديل البيانات التفصيلية في الحالة الحالية.');
         }
@@ -369,11 +369,11 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($pharmaceuticalProduct->status !== 'preliminary_approved') {
+        if ($pharmaceuticalProduct->status != 'preliminary_approved') {
             return back()->with('error', 'لا يمكن تعديل البيانات في الحالة الحالية.');
         }
 
@@ -401,11 +401,11 @@ class PharmaceuticalProductController extends Controller
     {
         $representative = auth('representative')->user();
 
-        if ($pharmaceuticalProduct->representative_id !== $representative->id) {
+        if ($pharmaceuticalProduct->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($pharmaceuticalProduct->status !== 'preliminary_approved') {
+        if ($pharmaceuticalProduct->status != 'preliminary_approved') {
             return back()->with('error', 'لا يمكن إرسال البيانات في الحالة الحالية.');
         }
 

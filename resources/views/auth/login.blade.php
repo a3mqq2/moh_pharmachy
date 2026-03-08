@@ -565,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
 
-            if (passwordField.type === 'password') {
+            if (passwordField.type == 'password') {
                 passwordField.type = 'text';
                 eyeIcon.classList.remove('ti-eye');
                 eyeIcon.classList.add('ti-eye-off');
@@ -583,7 +583,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(function(alert) {
         setTimeout(function() {
-            if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+            if (typeof bootstrap != 'undefined' && bootstrap.Alert) {
                 const bsAlert = new bootstrap.Alert(alert);
                 bsAlert.close();
             }

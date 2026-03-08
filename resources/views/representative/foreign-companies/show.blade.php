@@ -29,7 +29,7 @@
 
     
 
-    @if($company->status === 'rejected' && $company->rejection_reason)
+    @if($company->status == 'rejected' && $company->rejection_reason)
         <div class="alert alert-danger" style="margin-bottom: 20px;">
             <h4><i class="ti ti-alert-circle"></i> تم رفض الطلب</h4>
             <p><strong>سبب الرفض:</strong> {{ $company->rejection_reason }}</p>
@@ -39,13 +39,13 @@
 
     @if(in_array($company->status, ['uploading_documents', 'rejected']) && $company->hasAllRequiredDocuments())
         <div class="alert alert-success" style="margin-bottom: 20px;">
-            <h4><i class="ti ti-check-circle"></i> {{ $company->status === 'rejected' ? 'جاهز لإعادة التقديم' : 'جميع المستندات الإلزامية متوفرة' }}</h4>
-            <p>{{ $company->status === 'rejected' ? 'إن قمت بجميع التعديلات المطلوبة، يمكنك إعادة إرسال الطلب للمراجعة.' : 'تم رفع جميع المستندات المطلوبة. يمكنك الآن إرسال الطلب للمراجعة.' }}</p>
+            <h4><i class="ti ti-check-circle"></i> {{ $company->status == 'rejected' ? 'جاهز لإعادة التقديم' : 'جميع المستندات الإلزامية متوفرة' }}</h4>
+            <p>{{ $company->status == 'rejected' ? 'إن قمت بجميع التعديلات المطلوبة، يمكنك إعادة إرسال الطلب للمراجعة.' : 'تم رفع جميع المستندات المطلوبة. يمكنك الآن إرسال الطلب للمراجعة.' }}</p>
             <form action="{{ route('representative.foreign-companies.submit-for-review', $company) }}" method="POST" style="margin-top: 15px;">
                 @csrf
                 <button type="submit" class="btn btn-primary">
                     <i class="ti ti-send"></i>
-                    {{ $company->status === 'rejected' ? 'إعادة التقديم للمراجعة' : 'إرسال للمراجعة' }}
+                    {{ $company->status == 'rejected' ? 'إعادة التقديم للمراجعة' : 'إرسال للمراجعة' }}
                 </button>
             </form>
         </div>
@@ -176,12 +176,12 @@
                             <a href="{{ route('representative.foreign-companies.documents.download', [$company, $document]) }}" class="btn btn-sm btn-secondary">
                                 <i class="ti ti-download"></i>
                             </a>
-                            @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status === 'rejected')
+                            @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status == 'rejected')
                             <button type="button" class="btn btn-sm btn-warning" onclick="openReplaceModal({{ $document->id }}, '{{ $document->document_type_name }}')" title="استبدال المستند">
                                 <i class="ti ti-refresh"></i>
                             </button>
                             @endif
-                            @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status !== 'approved')
+                            @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status != 'approved')
                             <form action="{{ route('representative.foreign-companies.documents.destroy', [$company, $document]) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
@@ -192,7 +192,7 @@
                             @endif
                         </div>
                     </div>
-                    @if($document->status === 'rejected' && $document->rejection_reason)
+                    @if($document->status == 'rejected' && $document->rejection_reason)
                     <div class="rejection-reason">
                         <i class="ti ti-alert-circle"></i>
                         <strong>سبب الرفض:</strong> {{ $document->rejection_reason }}
@@ -234,8 +234,8 @@
                                     </div>
                                 </div>
                                 <div class="document-actions">
-                                    <span class="badge {{ $invoice->status === 'paid' ? 'badge-success' : ($invoice->status === 'pending' ? 'badge-warning' : 'badge-danger') }}">
-                                        {{ $invoice->status === 'paid' ? 'مدفوعة' : ($invoice->status === 'pending' ? 'معلقة' : 'ملغاة') }}
+                                    <span class="badge {{ $invoice->status == 'paid' ? 'badge-success' : ($invoice->status == 'pending' ? 'badge-warning' : 'badge-danger') }}">
+                                        {{ $invoice->status == 'paid' ? 'مدفوعة' : ($invoice->status == 'pending' ? 'معلقة' : 'ملغاة') }}
                                     </span>
                                     <a href="{{ route('representative.foreign-companies.invoices.show', [$company, $invoice]) }}" class="btn btn-sm btn-secondary">
                                         <i class="ti ti-eye"></i>
@@ -252,7 +252,7 @@
         </div>
     </div>
 
-    @if($company->status === 'rejected' && $company->rejection_reason)
+    @if($company->status == 'rejected' && $company->rejection_reason)
     <div class="alert alert-danger">
         <h4><i class="ti ti-x-circle"></i> تم رفض الطلب</h4>
         <p><strong>السبب:</strong> {{ $company->rejection_reason }}</p>
@@ -1130,7 +1130,7 @@
         });
 
         // Auto-open documents tab if there's a success/error message related to documents
-        @if(session('success') && (strpos(session('success'), 'مستند') !== false || strpos(session('success'), 'المستند') !== false))
+        @if(session('success') && (strpos(session('success'), 'مستند') != false || strpos(session('success'), 'المستند') != false))
             // Activate documents tab
             const documentsTab = document.querySelector('button[data-bs-target="#documents"]');
             if (documentsTab) {
@@ -1199,7 +1199,7 @@
                     }
 
                     // Validate file
-                    if (!hasError && (!file || !file.files || file.files.length === 0)) {
+                    if (!hasError && (!file || !file.files || file.files.length == 0)) {
                         hasError = true;
                         errorMessage = 'يجب اختيار ملف للرفع';
                     }

@@ -12,30 +12,30 @@
       if (predicate(v, constructor.prototype)) {
         return true;
       } else {
-        return ((_a = v.constructor) === null || _a === void 0 ? void 0 : _a.name) === constructor.name;
+        return ((_a = v.constructor) == null || _a == void 0 ? void 0 : _a.name) == constructor.name;
       }
     };
     const typeOf = x => {
       const t = typeof x;
-      if (x === null) {
+      if (x == null) {
         return 'null';
-      } else if (t === 'object' && Array.isArray(x)) {
+      } else if (t == 'object' && Array.isArray(x)) {
         return 'array';
-      } else if (t === 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
+      } else if (t == 'object' && hasProto(x, String, (o, proto) => proto.isPrototypeOf(o))) {
         return 'string';
       } else {
         return t;
       }
     };
-    const isType = type => value => typeOf(value) === type;
-    const isSimpleType = type => value => typeof value === type;
-    const eq = t => a => t === a;
+    const isType = type => value => typeOf(value) == type;
+    const isSimpleType = type => value => typeof value == type;
+    const eq = t => a => t == a;
     const isString = isType('string');
     const isObject = isType('object');
     const isArray = isType('array');
     const isNull = eq(null);
     const isBoolean = isSimpleType('boolean');
-    const isNullable = a => a === null || a === undefined;
+    const isNullable = a => a == null || a == undefined;
     const isNonNullable = a => !isNullable(a);
     const isFunction = isSimpleType('function');
     const isArrayOf = (value, pred) => {
@@ -58,7 +58,7 @@
       };
     };
     const tripleEquals = (a, b) => {
-      return a === b;
+      return a == b;
     };
 
     class Optional {
@@ -126,7 +126,7 @@
       }
       getOrDie(message) {
         if (!this.tag) {
-          throw new Error(message !== null && message !== void 0 ? message : 'Called getOrDie on None');
+          throw new Error(message != null && message != void 0 ? message : 'Called getOrDie on None');
         } else {
           return this.value;
         }
@@ -220,12 +220,12 @@
         processor: value => {
           const valid = isString(value) || isBoolean(value);
           if (valid) {
-            if (value === true) {
+            if (value == true) {
               return {
                 value: 1,
                 valid
               };
-            } else if (value === 'http' || value === 'https') {
+            } else if (value == 'http' || value == 'https') {
               return {
                 value,
                 valid
@@ -308,7 +308,7 @@
       const out = [];
       global$4.each(list, item => {
         const text = getText(item);
-        if (item.menu !== undefined) {
+        if (item.menu != undefined) {
           const items = sanitizeList(item.menu, extractValue);
           out.push({
             text,
@@ -363,13 +363,13 @@
       return t;
     };
     const has = (obj, key) => hasOwnProperty.call(obj, key);
-    const hasNonNullableKey = (obj, key) => has(obj, key) && obj[key] !== undefined && obj[key] !== null;
+    const hasNonNullableKey = (obj, key) => has(obj, key) && obj[key] != undefined && obj[key] != null;
 
     var global$3 = tinymce.util.Tools.resolve('tinymce.dom.TreeWalker');
 
     var global$2 = tinymce.util.Tools.resolve('tinymce.util.URI');
 
-    const isAnchor = elm => isNonNullable(elm) && elm.nodeName.toLowerCase() === 'a';
+    const isAnchor = elm => isNonNullable(elm) && elm.nodeName.toLowerCase() == 'a';
     const isLink = elm => isAnchor(elm) && !!getHref(elm);
     const collectNodesInRange = (rng, predicate) => {
       if (rng.collapsed) {
@@ -391,7 +391,7 @@
     const hasProtocol = url => /^\w+:/i.test(url);
     const getHref = elm => {
       var _a, _b;
-      return (_b = (_a = elm.getAttribute('data-mce-href')) !== null && _a !== void 0 ? _a : elm.getAttribute('href')) !== null && _b !== void 0 ? _b : '';
+      return (_b = (_a = elm.getAttribute('data-mce-href')) != null && _a != void 0 ? _a : elm.getAttribute('href')) != null && _b != void 0 ? _b : '';
     };
     const applyRelTargetRules = (rel, isUnsafe) => {
       const rules = ['noopener'];
@@ -401,7 +401,7 @@
         rels = removeTargetRules(rels);
         return rels.length > 0 ? rels.concat(rules) : rules;
       };
-      const removeTargetRules = rels => rels.filter(val => global$4.inArray(rules, val) === -1);
+      const removeTargetRules = rels => rels.filter(val => global$4.inArray(rules, val) == -1);
       const newRels = isUnsafe ? addTargetRules(rels) : removeTargetRules(rels);
       return newRels.length > 0 ? toString(newRels) : '';
     };
@@ -425,7 +425,7 @@
     const hasLinksInSelection = rng => getLinksInSelection(rng).length > 0;
     const isOnlyTextSelected = editor => {
       const inlineTextElements = editor.schema.getTextInlineElements();
-      const isElement = elm => elm.nodeType === 1 && !isAnchor(elm) && !has(inlineTextElements, elm.nodeName.toLowerCase());
+      const isElement = elm => elm.nodeType == 1 && !isAnchor(elm) && !has(inlineTextElements, elm.nodeName.toLowerCase());
       const isInBlockAnchor = getAnchorElement(editor).exists(anchor => anchor.hasAttribute('data-mce-block'));
       if (isInBlockAnchor) {
         return false;
@@ -433,12 +433,12 @@
       const rng = editor.selection.getRng();
       if (!rng.collapsed) {
         const elements = collectNodesInRange(rng, isElement);
-        return elements.length === 0;
+        return elements.length == 0;
       } else {
         return true;
       }
     };
-    const isImageFigure = elm => isNonNullable(elm) && elm.nodeName === 'FIGURE' && /\bimage\b/i.test(elm.className);
+    const isImageFigure = elm => isNonNullable(elm) && elm.nodeName == 'FIGURE' && /\bimage\b/i.test(elm.className);
     const getLinkAttrs = data => {
       const attrs = [
         'title',
@@ -454,18 +454,18 @@
       }, { href: data.href });
     };
     const handleExternalTargets = (href, assumeExternalTargets) => {
-      if ((assumeExternalTargets === 'http' || assumeExternalTargets === 'https') && !hasProtocol(href)) {
+      if ((assumeExternalTargets == 'http' || assumeExternalTargets == 'https') && !hasProtocol(href)) {
         return assumeExternalTargets + '://' + href;
       }
       return href;
     };
     const applyLinkOverrides = (editor, linkAttrs) => {
       const newLinkAttrs = { ...linkAttrs };
-      if (getRelList(editor).length === 0 && !allowUnsafeLinkTarget(editor)) {
-        const newRel = applyRelTargetRules(newLinkAttrs.rel, newLinkAttrs.target === '_blank');
+      if (getRelList(editor).length == 0 && !allowUnsafeLinkTarget(editor)) {
+        const newRel = applyRelTargetRules(newLinkAttrs.rel, newLinkAttrs.target == '_blank');
         newLinkAttrs.rel = newRel ? newRel : null;
       }
-      if (Optional.from(newLinkAttrs.target).isNone() && getTargetList(editor) === false) {
+      if (Optional.from(newLinkAttrs.target).isNone() && getTargetList(editor) == false) {
         newLinkAttrs.target = getDefaultLinkTarget(editor);
       }
       newLinkAttrs.href = handleExternalTargets(newLinkAttrs.href, assumeExternalTargets(editor));
@@ -499,7 +499,7 @@
       const anchorElm = getAnchorElement(editor, selectedElm);
       const linkAttrs = applyLinkOverrides(editor, getLinkAttrs(data));
       editor.undoManager.transact(() => {
-        if (data.href === attachState.href) {
+        if (data.href == attachState.href) {
           attachState.attach();
         }
         anchorElm.fold(() => {
@@ -553,7 +553,7 @@
         target: target.getOrNull(),
         text: text.getOrNull(),
         title: title.getOrNull()
-      }, (v, _k) => isNull(v) === false);
+      }, (v, _k) => isNull(v) == false);
     };
     const sanitizeData = (editor, data) => {
       const getOption = editor.options.get;
@@ -581,7 +581,7 @@
       if (img) {
         const a = editor.dom.getParents(img, 'a[href]', fig)[0];
         if (a) {
-          (_a = a.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(img, a);
+          (_a = a.parentNode) == null || _a == void 0 ? void 0 : _a.insertBefore(img, a);
           editor.dom.remove(a);
         }
       }
@@ -591,7 +591,7 @@
       const img = dom.select('img', fig)[0];
       if (img) {
         const a = dom.create('a', attrs);
-        (_a = img.parentNode) === null || _a === void 0 ? void 0 : _a.insertBefore(a, img);
+        (_a = img.parentNode) == null || _a == void 0 ? void 0 : _a.insertBefore(a, img);
         a.appendChild(img);
       }
     };
@@ -601,13 +601,13 @@
       if (isListGroup(item)) {
         return findTextByValue(value, item.items);
       } else {
-        return someIf(item.value === value, item);
+        return someIf(item.value == value, item);
       }
     });
     const getDelta = (persistentText, fieldName, catalog, data) => {
       const value = data[fieldName];
       const hasPersistentText = persistentText.length > 0;
-      return value !== undefined ? findTextByValue(value, catalog).map(i => ({
+      return value != undefined ? findTextByValue(value, catalog).map(i => ({
         url: {
           value: i.value,
           meta: {
@@ -619,9 +619,9 @@
       })) : Optional.none();
     };
     const findCatalog = (catalogs, fieldName) => {
-      if (fieldName === 'link') {
+      if (fieldName == 'link') {
         return catalogs.link;
-      } else if (fieldName === 'anchor') {
+      } else if (fieldName == 'anchor') {
         return catalogs.anchor;
       } else {
         return Optional.none();
@@ -634,11 +634,11 @@
       };
       const getTitleFromUrlChange = url => {
         var _a;
-        return someIf(persistentData.title.length <= 0, Optional.from((_a = url.meta) === null || _a === void 0 ? void 0 : _a.title).getOr(''));
+        return someIf(persistentData.title.length <= 0, Optional.from((_a = url.meta) == null || _a == void 0 ? void 0 : _a.title).getOr(''));
       };
       const getTextFromUrlChange = url => {
         var _a;
-        return someIf(persistentData.text.length <= 0, Optional.from((_a = url.meta) === null || _a === void 0 ? void 0 : _a.text).getOr(url.value));
+        return someIf(persistentData.text.length <= 0, Optional.from((_a = url.meta) == null || _a == void 0 ? void 0 : _a.text).getOr(url.value));
       };
       const onUrlChange = data => {
         const text = getTextFromUrlChange(data.url);
@@ -658,14 +658,14 @@
       };
       const onChange = (getData, change) => {
         const name = change.name;
-        if (name === 'url') {
+        if (name == 'url') {
           return onUrlChange(getData());
         } else if (contains([
             'anchor',
             'link'
           ], name)) {
           return onCatalogChange(getData(), name);
-        } else if (name === 'text' || name === 'title') {
+        } else if (name == 'text' || name == 'title') {
           persistentData[name] = getData()[name];
           return Optional.none();
         } else {
@@ -692,7 +692,7 @@
     };
     const tryEmailTransform = data => {
       const url = data.href;
-      const suggestMailTo = url.indexOf('@') > 0 && url.indexOf('/') === -1 && url.indexOf('mailto:') === -1;
+      const suggestMailTo = url.indexOf('@') > 0 && url.indexOf('/') == -1 && url.indexOf('mailto:') == -1;
       return suggestMailTo ? Optional.some({
         message: 'The URL you entered seems to be an email address. Do you want to add the required mailto: prefix?',
         preprocess: oldData => ({
@@ -703,7 +703,7 @@
     };
     const tryProtocolTransform = (assumeExternalTargets, defaultLinkProtocol) => data => {
       const url = data.href;
-      const suggestProtocol = assumeExternalTargets === 1 && !hasProtocol(url) || assumeExternalTargets === 0 && /^\s*www(\.|\d\.)/i.test(url);
+      const suggestProtocol = assumeExternalTargets == 1 && !hasProtocol(url) || assumeExternalTargets == 0 && /^\s*www(\.|\d\.)/i.test(url);
       return suggestProtocol ? Optional.some({
         message: `The URL you entered seems to be an external link. Do you want to add the required ${ defaultLinkProtocol }:// prefix?`,
         preprocess: oldData => ({
@@ -783,7 +783,7 @@
       const list = getRelList(editor);
       if (list.length > 0) {
         const isTargetBlank = is(initialTarget, '_blank');
-        const enforceSafe = allowUnsafeLinkTarget(editor) === false;
+        const enforceSafe = allowUnsafeLinkTarget(editor) == false;
         const safeRelExtractor = item => applyRelTargetRules(ListOptions.getValue(item), isTargetBlank);
         const sanitizer = enforceSafe ? ListOptions.sanitizeWith(safeRelExtractor) : ListOptions.sanitize;
         return sanitizer(list);
@@ -806,7 +806,7 @@
       const list = getTargetList(editor);
       if (isArray(list)) {
         return ListOptions.sanitize(list).orThunk(() => Optional.some(fallbacks));
-      } else if (list === false) {
+      } else if (list == false) {
         return Optional.none();
       }
       return Optional.some(fallbacks);
@@ -815,7 +815,7 @@
 
     const nonEmptyAttr = (dom, elem, name) => {
       const val = dom.getAttrib(elem, name);
-      return val !== null && val.length > 0 ? Optional.some(val) : Optional.none();
+      return val != null && val.length > 0 ? Optional.some(val) : Optional.none();
     };
     const extractFromAnchor = (editor, anchor) => {
       const dom = editor.dom;
@@ -870,7 +870,7 @@
       };
       const attachState = {
         href: data.url.value,
-        attach: data.url.meta !== undefined && data.url.meta.attach ? data.url.meta.attach : noop
+        attach: data.url.meta != undefined && data.url.meta.attach ? data.url.meta.attach : noop
       };
       DialogConfirms.preprocess(editor, changedData).then(pData => {
         link(editor, attachState, pData);
@@ -973,7 +973,7 @@
 
     const register = editor => {
       editor.addCommand('mceLink', (_ui, value) => {
-        if ((value === null || value === void 0 ? void 0 : value.dialog) === true || !useQuickLink(editor)) {
+        if ((value == null || value == void 0 ? void 0 : value.dialog) == true || !useQuickLink(editor)) {
           open$1(editor);
         } else {
           editor.dispatch('contexttoolbar-show', { toolbarKey: 'quicklink' });
@@ -1001,7 +1001,7 @@
     const getLink = (editor, elm) => editor.dom.getParent(elm, 'a[href]');
     const getSelectedLink = editor => getLink(editor, editor.selection.getStart());
     const hasOnlyAltModifier = e => {
-      return e.altKey === true && e.shiftKey === false && e.ctrlKey === false && e.metaKey === false;
+      return e.altKey == true && e.shiftKey == false && e.ctrlKey == false && e.metaKey == false;
     };
     const gotoLink = (editor, a) => {
       if (a) {
@@ -1031,7 +1031,7 @@
         }
       });
       editor.on('keydown', e => {
-        if (!e.isDefaultPrevented() && e.keyCode === 13 && hasOnlyAltModifier(e)) {
+        if (!e.isDefaultPrevented() && e.keyCode == 13 && hasOnlyAltModifier(e)) {
           const link = getSelectedLink(editor);
           if (link) {
             e.preventDefault();
@@ -1061,7 +1061,7 @@
     };
     const hasExactlyOneLinkInSelection = editor => {
       const links = editor.selection.isCollapsed() ? getLinks$1(editor.dom.getParents(editor.selection.getStart())) : getLinksInSelection(editor.selection.getRng());
-      return links.length === 1;
+      return links.length == 1;
     };
     const toggleGotoLinkState = editor => api => {
       const updateState = () => api.setEnabled(hasExactlyOneLinkInSelection(editor));
@@ -1152,7 +1152,7 @@
         const onlyText = isOnlyTextSelected(editor);
         if (anchor.isNone() && onlyText) {
           const text = getAnchorText(editor.selection, anchor);
-          return someIf(text.length === 0, value);
+          return someIf(text.length == 0, value);
         } else {
           return Optional.none();
         }

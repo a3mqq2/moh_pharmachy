@@ -232,7 +232,7 @@ class LocalCompanyController extends Controller
         $oldStatus = $localCompany->status;
         $localCompany->update($validated);
 
-        if ($request->status === 'approved' && !$localCompany->registration_number) {
+        if ($request->status == 'approved' && !$localCompany->registration_number) {
             $localCompany->update([
                 'registration_number' => LocalCompany::generateRegistrationNumber(),
                 'registration_date' => now(),
@@ -241,7 +241,7 @@ class LocalCompanyController extends Controller
 
         $localCompany->logActivity('updated', 'تم تحديث بيانات الشركة');
 
-        if ($oldStatus !== $request->status) {
+        if ($oldStatus != $request->status) {
             $statusNames = LocalCompany::statuses();
             $localCompany->logActivity('status_changed', 'تم تغيير الحالة من "' . ($statusNames[$oldStatus] ?? $oldStatus) . '" إلى "' . ($statusNames[$request->status] ?? $request->status) . '"');
         }

@@ -21,12 +21,12 @@
             @endif
         </div>
         <div class="d-flex gap-2">
-            @if($product->status === 'active')
+            @if($product->status == 'active')
                 <a href="{{ route('admin.pharmaceutical-products.certificate', $product) }}" target="_blank" class="btn btn-primary">
                     <i class="ti ti-certificate me-1"></i>طباعة الشهادة
                 </a>
             @endif
-            @if($product->status === 'pending_review')
+            @if($product->status == 'pending_review')
                 <form action="{{ route('admin.pharmaceutical-products.approve', $product) }}" method="POST" class="d-inline preliminary-approve-form">
                     @csrf
                     <button type="submit" class="btn btn-success"><i class="ti ti-check me-1"></i>موافقة مبدئية</button>
@@ -34,12 +34,12 @@
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
                     <i class="ti ti-x me-1"></i>رفض
                 </button>
-            @elseif($product->status === 'pending_final_approval')
+            @elseif($product->status == 'pending_final_approval')
                 <form action="{{ route('admin.pharmaceutical-products.final-approve', $product) }}" method="POST" class="d-inline final-approve-form">
                     @csrf
                     <button type="submit" class="btn btn-success"><i class="ti ti-check-circle me-1"></i>موافقة نهائية</button>
                 </form>
-            @elseif($product->status === 'rejected')
+            @elseif($product->status == 'rejected')
                 <form action="{{ route('admin.pharmaceutical-products.approve', $product) }}" method="POST" class="d-inline restore-form">
                     @csrf
                     <button type="submit" class="btn btn-warning"><i class="ti ti-refresh me-1"></i>إعادة للمراجعة</button>
@@ -51,7 +51,7 @@
 </div>
 
 
-@if($product->status === 'rejected' && $product->rejection_reason)
+@if($product->status == 'rejected' && $product->rejection_reason)
 <div class="alert alert-danger">
     <strong><i class="ti ti-alert-circle me-1"></i>سبب الرفض:</strong> {{ $product->rejection_reason }}
 </div>
@@ -329,7 +329,7 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                        @if($invoice->receipt_path && $invoice->status === 'pending_review')
+                                        @if($invoice->receipt_path && $invoice->status == 'pending_review')
                                             <a href="{{ $invoice->receipt_url }}" target="_blank" class="btn btn-outline-info btn-sm">
                                                 <i class="ti ti-eye me-1"></i>عرض الإيصال
                                             </a>
@@ -339,11 +339,11 @@
                                             <button type="button" class="btn btn-outline-danger btn-sm btn-reject-receipt" data-id="{{ $invoice->id }}" data-number="{{ $invoice->invoice_number }}">
                                                 <i class="ti ti-x me-1"></i>رفض
                                             </button>
-                                        @elseif($invoice->receipt_path && $invoice->status === 'paid')
+                                        @elseif($invoice->receipt_path && $invoice->status == 'paid')
                                             <a href="{{ $invoice->receipt_url }}" target="_blank" class="btn btn-outline-info btn-sm">
                                                 <i class="ti ti-eye me-1"></i>عرض الإيصال
                                             </a>
-                                        @elseif($invoice->status === 'unpaid')
+                                        @elseif($invoice->status == 'unpaid')
                                             <span class="text-muted">في انتظار رفع الإيصال</span>
                                         @endif
                                     </div>
@@ -427,7 +427,7 @@
     </div>
 </div>
 
-@if($product->status === 'pending_review')
+@if($product->status == 'pending_review')
 <div class="modal fade" id="rejectModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">

@@ -16,7 +16,7 @@ class DocumentController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // التحقق من أن الشركة تخص الممثل الحالي
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             abort(403, 'غير مصرح لك برفع مستندات لهذه الشركة');
         }
 
@@ -55,7 +55,7 @@ class DocumentController extends Controller
         ]);
 
         // Check if all required documents are uploaded
-        if ($company->hasAllRequiredDocuments() && $company->status === 'uploading_documents') {
+        if ($company->hasAllRequiredDocuments() && $company->status == 'uploading_documents') {
             $company->update(['status' => 'pending']);
 
             session(['active_tab_' . $company->id => 'documents']);
@@ -75,11 +75,11 @@ class DocumentController extends Controller
         $representative = Auth::guard('representative')->user();
 
         // التحقق من أن الشركة تخص الممثل الحالي
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($document->local_company_id !== $company->id) {
+        if ($document->local_company_id != $company->id) {
             abort(404);
         }
 
@@ -90,11 +90,11 @@ class DocumentController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($document->local_company_id !== $company->id) {
+        if ($document->local_company_id != $company->id) {
             abort(404);
         }
 
@@ -135,11 +135,11 @@ class DocumentController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        if ($company->representative_id !== $representative->id) {
+        if ($company->representative_id != $representative->id) {
             abort(403);
         }
 
-        if ($document->local_company_id !== $company->id) {
+        if ($document->local_company_id != $company->id) {
             abort(404);
         }
 

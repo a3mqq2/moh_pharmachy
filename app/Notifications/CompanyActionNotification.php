@@ -72,7 +72,7 @@ class CompanyActionNotification extends Notification
      */
     private function getMessage(): string
     {
-        $companyTypeArabic = $this->companyType === 'local' ? 'محلية' : 'أجنبية';
+        $companyTypeArabic = $this->companyType == 'local' ? 'محلية' : 'أجنبية';
 
         return match($this->action) {
             'company_created' => "قام {$this->representativeName} بإنشاء شركة {$companyTypeArabic} جديدة: {$this->companyName}",
@@ -91,7 +91,7 @@ class CompanyActionNotification extends Notification
      */
     private function getUrl(): string
     {
-        if ($this->companyType === 'local') {
+        if ($this->companyType == 'local') {
             return route('admin.local-companies.show', $this->companyId);
         } else {
             return route('admin.foreign-companies.show', $this->companyId);
