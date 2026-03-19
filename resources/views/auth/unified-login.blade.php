@@ -28,8 +28,9 @@
     
 
     <!-- Login Form -->
-    <form method="POST" action="{{ route('login.submit') }}" class="login-form" dir="rtl">
+    <form method="POST" action="{{ route('login.submit') }}" class="login-form" dir="rtl" id="loginForm">
         @csrf
+        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
 
         <div class="form-group">
             <label for="email">البريد الإلكتروني</label>
@@ -584,8 +585,27 @@
 @endpush
 
 @push('scripts')
+@if(config('services.recaptcha.site_key'))
+<script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+@endif
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    var loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            var siteKey = '{{ config("services.recaptcha.site_key") }}';
+            if (siteKey && typeof grecaptcha !== 'undefined') {
+                e.preventDefault();
+                grecaptcha.ready(function() {
+                    grecaptcha.execute(siteKey, {action: 'login'}).then(function(token) {
+                        document.getElementById('recaptcha_token').value = token;
+                        loginForm.submit();
+                    });
+                });
+            }
+        });
+    }
+
     // Toggle Password Visibility
     const togglePassword = document.getElementById('togglePassword');
     const passwordField = document.getElementById('password');

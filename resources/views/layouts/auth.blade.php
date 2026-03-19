@@ -321,6 +321,10 @@
         font-size: 1.1rem;
       }
 
+      .grecaptcha-badge {
+        visibility: hidden;
+      }
+
       @media (max-width: 768px) {
         .user-info span {
           display: none;

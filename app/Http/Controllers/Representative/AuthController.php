@@ -9,10 +9,30 @@ use App\Models\RepresentativeOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
+    protected function verifyRecaptcha(?string $token, string $action): bool
+    {
+        $secretKey = config('services.recaptcha.secret_key');
+        if (!$secretKey || !$token) {
+            return true;
+        }
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $token,
+        ]);
+
+        $result = $response->json();
+
+        return ($result['success'] ?? false)
+            && ($result['action'] ?? '') === $action
+            && ($result['score'] ?? 0) >= 0.5;
+    }
+
     public function showRegisterForm()
     {
         return view('representative.auth.register');
@@ -33,6 +53,12 @@ class AuthController extends Controller
             'email.email' => 'البريد الإلكتروني غير صالح',
             'email.unique' => 'البريد الإلكتروني مسجل مسبقاً',
         ]);
+
+        if (!$this->verifyRecaptcha($request->input('recaptcha_token'), 'register')) {
+            return back()
+                ->withInput()
+                ->with('error', 'فشل التحقق الأمني، يرجى المحاولة مرة أخرى');
+        }
 
         // Store registration data in session
         session([
@@ -247,6 +273,12 @@ class AuthController extends Controller
             'email.email' => 'البريد الإلكتروني غير صالح',
             'email.exists' => 'البريد الإلكتروني غير مسجل',
         ]);
+
+        if (!$this->verifyRecaptcha($request->input('recaptcha_token'), 'forgot_password')) {
+            return back()
+                ->withInput()
+                ->with('error', 'فشل التحقق الأمني، يرجى المحاولة مرة أخرى');
+        }
 
         $representative = CompanyRepresentative::where('email', $request->email)->first();
 

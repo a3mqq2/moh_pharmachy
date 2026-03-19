@@ -28,8 +28,9 @@
     
 
     <!-- Register Form -->
-    <form method="POST" action="{{ route('register.submit') }}" class="login-form" dir="rtl">
+    <form method="POST" action="{{ route('register.submit') }}" class="login-form" dir="rtl" id="registerForm">
         @csrf
+        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
 
         <div class="form-group">
             <label for="name">الاسم الكامل</label>
@@ -130,6 +131,31 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+@if(config('services.recaptcha.site_key'))
+<script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+@endif
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            var siteKey = '{{ config("services.recaptcha.site_key") }}';
+            if (siteKey && typeof grecaptcha !== 'undefined') {
+                e.preventDefault();
+                grecaptcha.ready(function() {
+                    grecaptcha.execute(siteKey, {action: 'register'}).then(function(token) {
+                        document.getElementById('recaptcha_token').value = token;
+                        registerForm.submit();
+                    });
+                });
+            }
+        });
+    }
+});
+</script>
+@endpush
 
 @push('styles')
 <style>

@@ -20,8 +20,9 @@
     
 
     <!-- Forgot Password Form -->
-    <form method="POST" action="{{ route('forgot-password.submit') }}"  dir="rtl">
+    <form method="POST" action="{{ route('forgot-password.submit') }}" dir="rtl" id="forgotPasswordForm">
         @csrf
+        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
 
         <div class="form-group">
             <label for="email">البريد الإلكتروني</label>
@@ -63,6 +64,31 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+@if(config('services.recaptcha.site_key'))
+<script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+@endif
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var forgotForm = document.getElementById('forgotPasswordForm');
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', function(e) {
+            var siteKey = '{{ config("services.recaptcha.site_key") }}';
+            if (siteKey && typeof grecaptcha !== 'undefined') {
+                e.preventDefault();
+                grecaptcha.ready(function() {
+                    grecaptcha.execute(siteKey, {action: 'forgot_password'}).then(function(token) {
+                        document.getElementById('recaptcha_token').value = token;
+                        forgotForm.submit();
+                    });
+                });
+            }
+        });
+    }
+});
+</script>
+@endpush
 
 @push('styles')
 <style>

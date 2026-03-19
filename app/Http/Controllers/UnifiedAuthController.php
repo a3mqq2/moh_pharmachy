@@ -7,9 +7,29 @@ use App\Models\CompanyRepresentative;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 class UnifiedAuthController extends Controller
 {
+    protected function verifyRecaptcha(?string $token, string $action): bool
+    {
+        $secretKey = config('services.recaptcha.secret_key');
+        if (!$secretKey || !$token) {
+            return true;
+        }
+
+        $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => $secretKey,
+            'response' => $token,
+        ]);
+
+        $result = $response->json();
+
+        return ($result['success'] ?? false)
+            && ($result['action'] ?? '') === $action
+            && ($result['score'] ?? 0) >= 0.5;
+    }
+
     public function showLoginForm()
     {
         return view('auth.unified-login');
@@ -26,6 +46,12 @@ class UnifiedAuthController extends Controller
             'password.required' => 'كلمة المرور مطلوبة',
             'password.min' => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل',
         ]);
+
+        if (!$this->verifyRecaptcha($request->input('recaptcha_token'), 'login')) {
+            return back()
+                ->withInput($request->except('password'))
+                ->with('error', 'فشل التحقق الأمني، يرجى المحاولة مرة أخرى');
+        }
 
         $credentials = $request->only('email', 'password');
         $remember = $request->has('remember');
