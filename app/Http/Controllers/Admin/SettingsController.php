@@ -29,7 +29,7 @@ class SettingsController extends Controller
 
         Setting::clearCache();
 
-        return redirect()->route('admin.settings.index')
+        return redirect()->route('admin.app-settings.index')
             ->with('success', 'تم تحديث الإعدادات بنجاح');
     }
 

@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.auth')
 
 @section('title', 'تفاصيل الفاتورة')
@@ -328,14 +329,17 @@
                 <div class="mb-3">
                     <label class="form-label">الإيصال الحالي</label>
                     <div class="d-flex gap-2">
-                        <a href="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}" class="btn btn-outline-primary" target="_blank">
+                        <button type="button" class="btn btn-outline-info btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}">
+                            <i class="ti ti-eye"></i> عرض الإيصال
+                        </button>
+                        <a href="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}" class="btn btn-outline-primary">
                             <i class="ti ti-download"></i> تحميل الإيصال
                         </a>
                         @if($invoice->receipt_status == 'rejected')
-                        <form action="{{ route('representative.foreign-companies.invoices.delete-receipt', [$company, $invoice]) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف الإيصال؟')">
+                        <form action="{{ route('representative.foreign-companies.invoices.delete-receipt', [$company, $invoice]) }}" method="POST" class="d-inline" id="delete-receipt-form">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger">
+                            <button type="button" class="btn btn-outline-danger" onclick="confirmDelete('delete-receipt-form')">
                                 <i class="ti ti-trash"></i> حذف الإيصال
                             </button>
                         </form>
@@ -392,7 +396,10 @@
                 @endif
             </div>
             @if($invoice->receipt_path)
-            <a href="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}" class="btn btn-primary" target="_blank">
+            <button type="button" class="btn btn-info btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}">
+                <i class="ti ti-eye"></i> عرض الإيصال
+            </button>
+            <a href="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}" class="btn btn-primary">
                 <i class="ti ti-download"></i> تحميل الإيصال
             </a>
             @endif

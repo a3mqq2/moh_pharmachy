@@ -10,17 +10,22 @@
 @endsection
 
 @section('content')
-<div class="card mt-3 mb-3">
-    <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+<div class="show-header mt-3 mb-3 p-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <h4 class="mb-1">{{ $product->product_name }}</h4>
-            <span class="badge {{ $product->status_badge_class }} me-1">{{ $product->status_name }}</span>
-            <span class="badge bg-info me-1">{{ $product->pharmaceutical_form }}</span>
-            @if($product->concentration)
-                <span class="badge bg-dark">التركيز: {{ $product->concentration }}</span>
-            @endif
+            <h4 class="mb-2"><i class="ti ti-pill me-2 text-primary"></i>{{ $product->product_name }}</h4>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge {{ $product->status_badge_class }}">{{ $product->status_name }}</span>
+                <span class="badge bg-info">{{ $product->pharmaceutical_form }}</span>
+                @if($product->concentration)
+                    <span class="badge bg-dark">{{ $product->concentration }}</span>
+                @endif
+                @if($product->registration_number)
+                    <span class="badge bg-dark">{{ $product->registration_number }}</span>
+                @endif
+            </div>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
             @if($product->status == 'active')
                 <a href="{{ route('admin.pharmaceutical-products.certificate', $product) }}" target="_blank" class="btn btn-primary">
                     <i class="ti ti-certificate me-1"></i>طباعة الشهادة
@@ -35,17 +40,16 @@
                     <i class="ti ti-x me-1"></i>رفض
                 </button>
             @elseif($product->status == 'pending_final_approval')
-                <form action="{{ route('admin.pharmaceutical-products.final-approve', $product) }}" method="POST" class="d-inline final-approve-form">
-                    @csrf
-                    <button type="submit" class="btn btn-success"><i class="ti ti-check-circle me-1"></i>موافقة نهائية</button>
-                </form>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#finalApproveModal">
+                    <i class="ti ti-check-circle me-1"></i>موافقة نهائية
+                </button>
             @elseif($product->status == 'rejected')
                 <form action="{{ route('admin.pharmaceutical-products.approve', $product) }}" method="POST" class="d-inline restore-form">
                     @csrf
                     <button type="submit" class="btn btn-warning"><i class="ti ti-refresh me-1"></i>إعادة للمراجعة</button>
                 </form>
             @endif
-            <a href="{{ route('admin.pharmaceutical-products.index') }}" class="btn btn-secondary"><i class="ti ti-arrow-right me-1"></i>رجوع</a>
+            <a href="{{ route('admin.pharmaceutical-products.index') }}" class="btn btn-outline-secondary"><i class="ti ti-arrow-right me-1"></i>رجوع</a>
         </div>
     </div>
 </div>
@@ -61,7 +65,7 @@
     <div class="card-header p-0 border-bottom">
         <ul class="nav nav-tabs" id="productTabs">
             <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-basic">المعلومات الأساسية</button>
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-basic"><i class="ti ti-info-circle me-1"></i>المعلومات الأساسية</button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-detailed">
@@ -88,7 +92,7 @@
                 </button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-companies">معلومات الشركات</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-companies"><i class="ti ti-building me-1"></i>معلومات الشركات</button>
             </li>
         </ul>
     </div>
@@ -97,18 +101,29 @@
             <div class="tab-pane fade show active" id="tab-basic">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">بيانات الصنف الدوائي</h6>
-                        <table class="table table-striped">
-                            <tr><th class="bg-light" width="40%">اسم الصنف الدوائي</th><td>{{ $product->product_name }}</td></tr>
+                        <h6 class="section-title"><i class="ti ti-pill me-2"></i>بيانات الصنف الدوائي</h6>
+                        <table class="table table-striped info-table">
+                            <tr><th class="bg-light" width="40%">الاسم التجاري</th><td>{{ $product->product_name }}</td></tr>
+                            <tr><th class="bg-light">الاسم العلمي</th><td>{{ $product->scientific_name }}</td></tr>
                             <tr><th class="bg-light">الشكل الصيدلاني</th><td>{{ $product->pharmaceutical_form }}</td></tr>
                             <tr><th class="bg-light">التركيز</th><td>{{ $product->concentration }}</td></tr>
                             <tr><th class="bg-light">طريقة الاستعمال</th><td>{{ $product->usage_methods_text }}</td></tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">معلومات التسجيل</h6>
-                        <table class="table table-striped">
-                            <tr><th class="bg-light" width="40%">تاريخ التسجيل</th><td>{{ $product->created_at->format('Y-m-d h:i A') }}</td></tr>
+                        <h6 class="section-title"><i class="ti ti-clipboard me-2"></i>معلومات التسجيل</h6>
+                        <table class="table table-striped info-table">
+                            <tr>
+                                <th class="bg-light" width="40%">رقم القيد</th>
+                                <td>
+                                    @if($product->registration_number)
+                                        <span class="fw-bold text-primary fs-6">{{ $product->registration_number }}</span>
+                                    @else
+                                        <span class="text-muted">لم يُصدر بعد</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr><th class="bg-light" width="40%">تاريخ التقديم</th><td>{{ $product->created_at->format('Y-m-d') }}</td></tr>
                             <tr><th class="bg-light">الحالة</th><td><span class="badge {{ $product->status_badge_class }}">{{ $product->status_name }}</span></td></tr>
                             @if($product->reviewed_by)
                             <tr><th class="bg-light">تمت المراجعة بواسطة</th><td>{{ $product->reviewedBy->name ?? 'غير محدد' }}</td></tr>
@@ -141,15 +156,15 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">المعلومات الأساسية</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-info-circle me-2"></i>المعلومات الأساسية</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">الاسم التجاري</th><td>{{ $product->trade_name }}</td></tr>
                             <tr><th class="bg-light">البلد المنشأ</th><td>{{ $product->origin }}</td></tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">معلومات التعبئة والتغليف</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-package me-2"></i>معلومات التعبئة والتغليف</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">الوحدة</th><td>{{ $product->unit }}</td></tr>
                             <tr><th class="bg-light">نوع التعبئة</th><td>{{ $product->packaging }}</td></tr>
                             <tr><th class="bg-light">كمية العبوة</th><td>{{ $product->quantity }}</td></tr>
@@ -162,15 +177,15 @@
 
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">الصلاحية والتخزين</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-clock me-2"></i>الصلاحية والتخزين</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">مدة الصلاحية</th><td>{{ $product->shelf_life_months }} شهر</td></tr>
                             <tr><th class="bg-light">ظروف التخزين</th><td>{{ $product->storage_conditions }}</td></tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">معلومات إضافية</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-dots me-2"></i>معلومات إضافية</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">نوع البيع</th><td>{{ $product->free_sale }}</td></tr>
                             <tr><th class="bg-light">العينات</th><td>{{ $product->samples }}</td></tr>
                             <tr><th class="bg-light">المرجع الدستوري</th><td>{{ $product->pharmacopeal_ref }}</td></tr>
@@ -186,15 +201,15 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">المعلومات الأساسية</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-info-circle me-2"></i>المعلومات الأساسية</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">الاسم التجاري</th><td>{{ $product->trade_name ?: '-' }}</td></tr>
                             <tr><th class="bg-light">البلد المنشأ</th><td>{{ $product->origin ?: '-' }}</td></tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">معلومات التعبئة والتغليف</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-package me-2"></i>معلومات التعبئة والتغليف</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">الوحدة</th><td>{{ $product->unit ?: '-' }}</td></tr>
                             <tr><th class="bg-light">نوع التعبئة</th><td>{{ $product->packaging ?: '-' }}</td></tr>
                             <tr><th class="bg-light">كمية العبوة</th><td>{{ $product->quantity ?: '-' }}</td></tr>
@@ -205,15 +220,15 @@
 
                 <div class="row mt-3">
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">الصلاحية والتخزين</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-clock me-2"></i>الصلاحية والتخزين</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">مدة الصلاحية</th><td>{{ $product->shelf_life_months ? $product->shelf_life_months . ' شهر' : '-' }}</td></tr>
                             <tr><th class="bg-light">ظروف التخزين</th><td>{{ $product->storage_conditions ?: '-' }}</td></tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">معلومات إضافية</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-dots me-2"></i>معلومات إضافية</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">نوع البيع</th><td>{{ $product->free_sale ?: '-' }}</td></tr>
                             <tr><th class="bg-light">العينات</th><td>{{ $product->samples ?: '-' }}</td></tr>
                             <tr><th class="bg-light">المرجع الدستوري</th><td>{{ $product->pharmacopeal_ref ?: '-' }}</td></tr>
@@ -233,7 +248,7 @@
                 @if($product->documents->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead style="background-color: #f8f9fa;">
+                        <thead>
                             <tr>
                                 <th width="5%">#</th>
                                 <th width="30%">نوع المستند</th>
@@ -272,9 +287,12 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ $document->file_url }}" target="_blank" class="btn btn-outline-info" title="عرض">
+                                        <button type="button" class="btn btn-outline-info btn-doc-preview" title="عرض"
+                                            data-file-url="{{ $document->file_url }}"
+                                            data-file-name="{{ $document->original_name ?? $document->document_type_name }}"
+                                            data-download-url="{{ $document->file_url }}">
                                             <i class="ti ti-eye"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -302,7 +320,7 @@
                 @if($product->invoices->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead style="background-color: #f8f9fa;">
+                        <thead>
                             <tr>
                                 <th width="15%">رقم الفاتورة</th>
                                 <th width="15%">المبلغ</th>
@@ -330,9 +348,12 @@
                                 <td class="text-center">
                                     <div class="d-flex flex-wrap gap-1 justify-content-center">
                                         @if($invoice->receipt_path && $invoice->status == 'pending_review')
-                                            <a href="{{ $invoice->receipt_url }}" target="_blank" class="btn btn-outline-info btn-sm">
+                                            <button type="button" class="btn btn-outline-info btn-sm btn-doc-preview"
+                                                data-file-url="{{ $invoice->receipt_url }}"
+                                                data-file-name="إيصال - {{ $invoice->invoice_number }}"
+                                                data-download-url="{{ $invoice->receipt_url }}">
                                                 <i class="ti ti-eye me-1"></i>عرض الإيصال
-                                            </a>
+                                            </button>
                                             <button type="button" class="btn btn-outline-success btn-sm btn-approve-receipt" data-id="{{ $invoice->id }}" data-product-id="{{ $product->id }}">
                                                 <i class="ti ti-check me-1"></i>موافقة
                                             </button>
@@ -340,9 +361,12 @@
                                                 <i class="ti ti-x me-1"></i>رفض
                                             </button>
                                         @elseif($invoice->receipt_path && $invoice->status == 'paid')
-                                            <a href="{{ $invoice->receipt_url }}" target="_blank" class="btn btn-outline-info btn-sm">
+                                            <button type="button" class="btn btn-outline-info btn-sm btn-doc-preview"
+                                                data-file-url="{{ $invoice->receipt_url }}"
+                                                data-file-name="إيصال - {{ $invoice->invoice_number }}"
+                                                data-download-url="{{ $invoice->receipt_url }}">
                                                 <i class="ti ti-eye me-1"></i>عرض الإيصال
-                                            </a>
+                                            </button>
                                         @elseif($invoice->status == 'unpaid')
                                             <span class="text-muted">في انتظار رفع الإيصال</span>
                                         @endif
@@ -368,8 +392,8 @@
             <div class="tab-pane fade" id="tab-companies">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">الشركة الأجنبية</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-world me-2"></i>الشركة الأجنبية</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">اسم الشركة</th><td>{{ $product->foreignCompany->company_name }}</td></tr>
                             <tr><th class="bg-light">الدولة</th><td>{{ $product->foreignCompany->country }}</td></tr>
                             <tr><th class="bg-light">البريد الإلكتروني</th><td>{{ $product->foreignCompany->email }}</td></tr>
@@ -379,8 +403,8 @@
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">الشركة المحلية</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-building-skyscraper me-2"></i>الشركة المحلية</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">اسم الشركة</th><td>{{ $product->foreignCompany->localCompany->company_name }}</td></tr>
                             <tr><th class="bg-light">رقم السجل التجاري</th><td>{{ $product->foreignCompany->localCompany->commercial_registration_number }}</td></tr>
                             <tr><th class="bg-light">البريد الإلكتروني</th><td>{{ $product->foreignCompany->localCompany->email }}</td></tr>
@@ -392,8 +416,8 @@
                 </div>
 
                 <div class="mt-4">
-                    <h6 class="mb-3 text-muted">ممثل الشركة</h6>
-                    <table class="table table-striped">
+                    <h6 class="section-title"><i class="ti ti-user me-2"></i>ممثل الشركة</h6>
+                    <table class="table table-striped info-table">
                         <tr>
                             <th class="bg-light" width="15%">الاسم</th>
                             <td width="35%">{{ $product->representative->name }}</td>
@@ -444,6 +468,51 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                     <button type="submit" class="btn btn-danger">تأكيد الرفض</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+@if($product->status == 'pending_final_approval')
+<div class="modal fade" id="finalApproveModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.pharmaceutical-products.final-approve', $product) }}" method="POST" class="final-approve-form">
+                @csrf
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">الموافقة النهائية على الصنف الدوائي</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>سيتم إنشاء فاتورة وإرسال إشعار للممثل.</p>
+                    <hr>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="is_pre_registered" value="1" id="productPreRegistered">
+                            <label class="form-check-label" for="productPreRegistered">صنف مسجل مسبقاً (قبل النظام)</label>
+                        </div>
+                    </div>
+                    <div id="productPreRegFields" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">سنة التسجيل <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_year" class="form-control" min="1990" max="{{ date('Y') }}" placeholder="مثال: 2020">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الرقم التسلسلي <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_sequence" class="form-control" min="1" placeholder="مثال: 15">
+                            </div>
+                        </div>
+                        <div class="alert alert-light py-2">
+                            <small>رقم القيد: <strong id="pharmaPreRegPreview">-</strong></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-success">تأكيد الموافقة النهائية</button>
                 </div>
             </form>
         </div>
@@ -515,22 +584,20 @@ document.querySelector('.preliminary-approve-form')?.addEventListener('submit', 
     });
 });
 
-document.querySelector('.final-approve-form')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = this;
-    Swal.fire({
-        title: 'تأكيد الموافقة النهائية',
-        html: 'سيتم إنشاء فاتورة بقيمة <strong>3000 د.ل</strong> وإرسال إشعار للممثل.<br>هل أنت متأكد من الموافقة النهائية؟',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#198754',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'نعم، موافقة نهائية',
-        cancelButtonText: 'إلغاء'
-    }).then((result) => {
-        if (result.isConfirmed) form.submit();
-    });
+document.getElementById('productPreRegistered')?.addEventListener('change', function() {
+    document.getElementById('productPreRegFields').style.display = this.checked ? '' : 'none';
 });
+
+function updatePharmaPreRegPreview() {
+    const year = document.querySelector('#finalApproveModal input[name="pre_registration_year"]')?.value;
+    const seq = document.querySelector('#finalApproveModal input[name="pre_registration_sequence"]')?.value;
+    const preview = document.getElementById('pharmaPreRegPreview');
+    if (preview) {
+        preview.textContent = (year && seq) ? year + '-' + seq : '-';
+    }
+}
+document.querySelector('#finalApproveModal input[name="pre_registration_year"]')?.addEventListener('input', updatePharmaPreRegPreview);
+document.querySelector('#finalApproveModal input[name="pre_registration_sequence"]')?.addEventListener('input', updatePharmaPreRegPreview);
 
 document.querySelector('.restore-form')?.addEventListener('submit', function(e) {
     e.preventDefault();

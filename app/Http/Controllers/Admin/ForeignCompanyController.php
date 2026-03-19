@@ -8,14 +8,34 @@ use App\Mail\ForeignCompanyApproved;
 use App\Mail\ForeignCompanyRejected;
 use App\Models\ForeignCompany;
 use App\Models\ForeignCompanyInvoice;
+use App\Models\LocalCompany;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
-class ForeignCompanyController extends Controller
+class ForeignCompanyController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:view_foreign_companies', only: ['index', 'show']),
+            new Middleware('permission:create_foreign_company', only: ['create', 'store']),
+            new Middleware('permission:approve_foreign_company', only: ['approve']),
+            new Middleware('permission:reject_foreign_company', only: ['reject']),
+            new Middleware('permission:activate_foreign_company', only: ['activate']),
+            new Middleware('permission:suspend_foreign_company', only: ['suspend', 'unsuspend']),
+            new Middleware('permission:manage_cgmp_certificate', only: ['uploadCgmp', 'downloadCgmp', 'deleteCgmp']),
+            new Middleware('permission:print_foreign_company_certificate', only: ['certificate']),
+            new Middleware('permission:export_foreign_companies', only: ['print']),
+            new Middleware('permission:reject_foreign_company|approve_foreign_company', only: ['restorePending']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = ForeignCompany::with([
@@ -113,6 +133,51 @@ class ForeignCompanyController extends Controller
         return view('admin.foreign-companies.print', compact('companies'));
     }
 
+    public function create()
+    {
+        $localCompanies = LocalCompany::where('company_type', 'supplier')
+            ->where('status', 'active')
+            ->get();
+
+        $countries = $this->getCountriesList();
+
+        return view('admin.foreign-companies.create', compact('localCompanies', 'countries'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'local_company_id' => 'required|exists:local_companies,id',
+            'company_name' => 'required|string|max:255',
+            'country' => 'required|string|max:100',
+            'entity_type' => 'required|in:company,factory',
+            'address' => 'required|string',
+            'email' => 'required|email|max:255',
+            'activity_type' => 'required|in:medicines,medical_supplies,both',
+            'products_count' => 'required|integer|min:1',
+            'registered_countries' => 'nullable|array',
+            'registered_countries.*' => 'string|max:100',
+        ], [
+            'local_company_id.required' => 'الشركة المحلية مطلوبة',
+            'company_name.required' => 'اسم الشركة مطلوب',
+            'country.required' => 'الدولة مطلوبة',
+            'entity_type.required' => 'نوع الكيان مطلوب',
+            'address.required' => 'العنوان مطلوب',
+            'email.required' => 'البريد الإلكتروني مطلوب',
+            'activity_type.required' => 'نوع النشاط مطلوب',
+            'products_count.required' => 'عدد المنتجات مطلوب',
+        ]);
+
+        $localCompany = LocalCompany::findOrFail($validated['local_company_id']);
+        $validated['representative_id'] = $localCompany->representative_id;
+        $validated['status'] = 'uploading_documents';
+
+        $company = ForeignCompany::create($validated);
+
+        return redirect()->route('admin.foreign-companies.show', $company->id)
+            ->with('success', 'تم إنشاء الشركة الأجنبية بنجاح');
+    }
+
     public function show($id)
     {
         $foreignCompany = ForeignCompany::with([
@@ -141,7 +206,7 @@ class ForeignCompanyController extends Controller
         return view('admin.foreign-companies.certificate', compact('foreignCompany'));
     }
 
-    public function approve($id)
+    public function approve(Request $request, $id)
     {
         $company = ForeignCompany::with('representative')->findOrFail($id);
 
@@ -155,9 +220,22 @@ class ForeignCompanyController extends Controller
                 ->with('error', 'الشركة لم ترفع جميع المستندات المطلوبة');
         }
 
-        DB::transaction(function () use ($company) {
-            // Mark company as approved
-            $company->markAsApproved(auth()->id());
+        $meetingNumber = $request->input('meeting_number');
+        $meetingDate = $request->input('meeting_date');
+
+        if ($request->has('is_pre_registered')) {
+            $year = $request->input('pre_registration_year');
+            $seq = $request->input('pre_registration_sequence');
+            $company->update([
+                'is_pre_registered' => true,
+                'pre_registration_number' => ($year && $seq) ? "{$year}-{$seq}" : null,
+                'pre_registration_year' => $year,
+            ]);
+            $company->refresh();
+        }
+
+        DB::transaction(function () use ($company, $meetingNumber, $meetingDate) {
+            $company->markAsApproved(auth()->id(), $meetingNumber, $meetingDate);
 
             // Generate invoice
             $registrationFee = $this->getRegistrationFee();
@@ -174,17 +252,21 @@ class ForeignCompanyController extends Controller
             $company->markAsPendingPayment();
         });
 
-        // Send email notification to representative
+        $emailFailed = false;
         if ($company->representative && $company->representative->email) {
             try {
                 Mail::to($company->representative->email)->send(new ForeignCompanyApproved($company));
             } catch (\Exception $e) {
                 Log::error('Failed to send foreign company approved email: ' . $e->getMessage());
+                $emailFailed = true;
             }
         }
 
+        $message = 'تمت الموافقة على الشركة وتم إصدار الفاتورة بنجاح';
+        $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : '';
+
         return redirect()->route('admin.foreign-companies.show', $company->id)
-            ->with('success', 'تمت الموافقة على الشركة وتم إصدار الفاتورة بنجاح');
+            ->with('success', $message);
     }
 
 
@@ -201,19 +283,34 @@ class ForeignCompanyController extends Controller
             'rejection_reason' => 'required|string|min:10',
         ]);
 
-        $company->markAsRejected($validated['rejection_reason']);
+        DB::transaction(function () use ($company, $validated) {
+            $company->invoices()
+                ->where('status', 'pending')
+                ->each(function ($invoice) {
+                    $invoice->update([
+                        'status' => 'cancelled',
+                        'description' => $invoice->description . ' (ملغاة بسبب رفض الشركة)',
+                    ]);
+                });
 
-        // Send email notification to representative
-        if ($company->representative && $company->representative->email) {
-            try {
-                Mail::to($company->representative->email)->send(new ForeignCompanyRejected($company));
-            } catch (\Exception $e) {
-                Log::error('Failed to send foreign company rejected email: ' . $e->getMessage());
+            $company->markAsRejected($validated['rejection_reason']);
+        });
+
+            $emailFailed = false;
+            if ($company->representative && $company->representative->email) {
+                try {
+                    Mail::to($company->representative->email)->send(new ForeignCompanyRejected($company));
+                } catch (\Exception $e) {
+                    Log::error('Failed to send foreign company rejected email: ' . $e->getMessage());
+                    $emailFailed = true;
+                }
             }
-        }
 
-        return redirect()->route('admin.foreign-companies.show', $company->id)
-            ->with('success', 'تم رفض الشركة بنجاح');
+            $message = 'تم رفض الشركة بنجاح';
+            $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : '';
+
+            return redirect()->route('admin.foreign-companies.show', $company->id)
+                ->with('success', $message);
     }
 
     public function restorePending($id)
@@ -253,26 +350,30 @@ class ForeignCompanyController extends Controller
 
         $company->markAsActive();
 
-        // Send email notification to representative
+        $emailFailed = false;
         if ($company->representative && $company->representative->email) {
             try {
                 Mail::to($company->representative->email)->send(new ForeignCompanyActivated($company));
             } catch (\Exception $e) {
                 Log::error('Failed to send foreign company activated email: ' . $e->getMessage());
+                $emailFailed = true;
             }
         }
 
+        $message = 'تم تفعيل الشركة بنجاح';
+        $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : '';
+
         return redirect()->route('admin.foreign-companies.show', $company->id)
-            ->with('success', 'تم تفعيل الشركة بنجاح');
+            ->with('success', $message);
     }
 
     public function suspend(Request $request, $id)
     {
         $company = ForeignCompany::findOrFail($id);
 
-        if ($company->status != 'active') {
+        if (!in_array($company->status, ['active', 'expired'])) {
             return redirect()->back()
-                ->with('error', 'يمكن فقط تعليق الشركات المفعلة');
+                ->with('error', 'لا يمكن تعليق الشركة في حالتها الحالية');
         }
 
         $validated = $request->validate([
@@ -281,7 +382,7 @@ class ForeignCompanyController extends Controller
 
         $company->update([
             'status' => 'suspended',
-            'rejection_reason' => $validated['suspension_reason'],
+            'suspension_reason' => $validated['suspension_reason'],
         ]);
 
         return redirect()->route('admin.foreign-companies.show', $company->id)
@@ -297,16 +398,130 @@ class ForeignCompanyController extends Controller
                 ->with('error', 'الشركة غير معلقة');
         }
 
-        $company->markAsActive();
+        $previousStatus = ($company->expires_at && $company->expires_at->isPast()) ? 'expired' : 'active';
+
+        $company->update([
+            'status' => $previousStatus,
+            'suspension_reason' => null,
+        ]);
 
         return redirect()->route('admin.foreign-companies.show', $company->id)
             ->with('success', 'تم إلغاء تعليق الشركة بنجاح');
     }
 
+    public function requestRenewal($id)
+    {
+        $company = ForeignCompany::findOrFail($id);
+
+        if (!in_array($company->status, ['active', 'expired'])) {
+            return redirect()->route('admin.foreign-companies.show', $company->id)
+                ->with('error', 'لا يمكن طلب تجديد الشركة في حالتها الحالية');
+        }
+
+        $hasRecentRenewal = $company->invoices()
+            ->where('description', 'like', '%تجديد%')
+            ->whereIn('status', ['pending', 'paid'])
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->exists();
+
+        if ($hasRecentRenewal) {
+            return redirect()->route('admin.foreign-companies.show', $company->id)
+                ->with('error', 'يوجد فاتورة تجديد قائمة بالفعل');
+        }
+
+        $renewalFee = Setting::where('key', 'foreign_company_renewal_fee')->first()?->value ?? 1000.00;
+
+        DB::transaction(function () use ($company, $renewalFee) {
+            $invoice = $company->invoices()->create([
+                'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
+                'amount' => $renewalFee,
+                'description' => 'رسوم تجديد الشركة الأجنبية',
+                'status' => 'pending',
+                'issued_by' => auth()->id(),
+            ]);
+
+            if ($company->status === 'active' && $company->isExpired()) {
+                $company->update(['status' => 'expired']);
+            }
+        });
+
+        return redirect()->route('admin.foreign-companies.show', $company->id)
+            ->with('success', 'تم إنشاء فاتورة التجديد بنجاح');
+    }
+
+    public function uploadCgmp(Request $request, $id)
+    {
+        $company = ForeignCompany::findOrFail($id);
+
+        $request->validate([
+            'cgmp_certificate' => 'required|file|max:10240|mimes:pdf,jpg,jpeg,png',
+        ], [
+            'cgmp_certificate.required' => 'ملف الشهادة مطلوب',
+            'cgmp_certificate.max' => 'حجم الملف يجب أن لا يتجاوز 10 ميجابايت',
+            'cgmp_certificate.mimes' => 'يجب أن يكون الملف من نوع PDF أو صورة',
+        ]);
+
+        if ($company->cgmp_certificate_path) {
+            Storage::disk('public')->delete($company->cgmp_certificate_path);
+        }
+
+        $file = $request->file('cgmp_certificate');
+        $path = $file->store('foreign-companies/' . $company->id . '/cgmp', 'public');
+
+        $company->update([
+            'cgmp_certificate_path' => $path,
+            'cgmp_certificate_name' => $file->getClientOriginalName(),
+            'cgmp_uploaded_at' => now(),
+        ]);
+
+        return redirect()->route('admin.foreign-companies.show', $company->id)
+            ->with('success', 'تم رفع شهادة CGMP بنجاح');
+    }
+
+    public function downloadCgmp($id)
+    {
+        $company = ForeignCompany::findOrFail($id);
+
+        if (!$company->cgmp_certificate_path) {
+            return redirect()->back()->with('error', 'لا توجد شهادة CGMP مرفوعة');
+        }
+
+        return Storage::disk('public')->download($company->cgmp_certificate_path, $company->cgmp_certificate_name);
+    }
+
+    public function deleteCgmp($id)
+    {
+        $company = ForeignCompany::findOrFail($id);
+
+        if ($company->cgmp_certificate_path) {
+            Storage::disk('public')->delete($company->cgmp_certificate_path);
+            $company->update([
+                'cgmp_certificate_path' => null,
+                'cgmp_certificate_name' => null,
+                'cgmp_uploaded_at' => null,
+            ]);
+        }
+
+        return redirect()->route('admin.foreign-companies.show', $company->id)
+            ->with('success', 'تم حذف شهادة CGMP بنجاح');
+    }
+
     private function getRegistrationFee(): float
     {
-        // Get registration fee from settings or return default
         $setting = Setting::where('key', 'foreign_company_initial_fee')->first();
         return $setting ? floatval($setting->value) : 1000.00;
+    }
+
+    private function getCountriesList(): array
+    {
+        return [
+            'مصر', 'السعودية', 'الإمارات', 'الأردن', 'الكويت', 'قطر', 'البحرين', 'عمان',
+            'المغرب', 'تونس', 'الجزائر', 'السودان', 'اليمن', 'لبنان', 'سوريا', 'العراق', 'فلسطين',
+            'الصين', 'الهند', 'تركيا', 'إيران', 'باكستان',
+            'الولايات المتحدة', 'المملكة المتحدة', 'ألمانيا', 'فرنسا', 'إيطاليا', 'إسبانيا',
+            'سويسرا', 'بلجيكا', 'هولندا', 'السويد', 'الدنمارك', 'النرويج', 'فنلندا',
+            'كندا', 'أستراليا', 'اليابان', 'كوريا الجنوبية', 'البرازيل', 'المكسيك', 'الأرجنتين',
+            'جنوب أفريقيا', 'نيجيريا', 'كينيا', 'أخرى',
+        ];
     }
 }

@@ -99,7 +99,7 @@
                 <div class="checkbox-group">
                     <label class="checkbox-label">
                         <input type="checkbox" name="is_pre_registered" id="is_pre_registered" value="1" {{ old('is_pre_registered', $company->is_pre_registered) ? 'checked' : '' }}>
-                        <span>الشركة مسجلة مسبقاً قبل وجود النظام</span>
+                        <span>الشركة مسجلة من قبل</span>
                     </label>
                 </div>
 
@@ -112,15 +112,10 @@
                         </div>
                     </div>
 
+                    @php
+                        $existingSeq = $company->pre_registration_number ? (int) last(explode('-', $company->pre_registration_number)) : '';
+                    @endphp
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="pre_registration_number">رقم القيد السابق <span class="required">*</span></label>
-                            <input type="text" name="pre_registration_number" id="pre_registration_number" class="form-control" value="{{ old('pre_registration_number', $company->pre_registration_number) }}" placeholder="مثال: 2024/15">
-                            @error('pre_registration_number')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-
                         <div class="form-group">
                             <label for="pre_registration_year">سنة التسجيل <span class="required">*</span></label>
                             <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ old('pre_registration_year', $company->pre_registration_year) }}" placeholder="مثال: 2024" min="1990" max="{{ date('Y') }}">
@@ -128,6 +123,17 @@
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
                         </div>
+
+                        <div class="form-group">
+                            <label for="pre_registration_sequence">الرقم التسلسلي <span class="required">*</span></label>
+                            <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ old('pre_registration_sequence', $existingSeq) }}" placeholder="مثال: 15" min="1">
+                            @error('pre_registration_sequence')
+                                <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <small>رقم القيد: <strong id="repEditPreRegPreview">{{ $company->pre_registration_number ?? '-' }}</strong></small>
                     </div>
                 </div>
             </div>
@@ -156,6 +162,14 @@
                 @error('company_address')
                     <span class="error-message">{{ $message }}</span>
                 @enderror
+            </div>
+
+            <div class="form-group">
+                <label>تحديد الموقع على الخريطة</label>
+                <div id="map" style="height: 350px; border-radius: 8px; border: 1px solid #d1d5db; margin-bottom: 8px;"></div>
+                <small style="color: #6b7280;">انقر على الخريطة لتحديد موقع الشركة</small>
+                <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', $company->latitude) }}">
+                <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude', $company->longitude) }}">
             </div>
 
             <div class="form-row">
@@ -254,8 +268,8 @@
             </div>
 
             <div class="form-group">
-                <label for="food_drug_registration_number">رقم التسجيل في هيئة الغذاء والدواء</label>
-                <input type="text" name="food_drug_registration_number" id="food_drug_registration_number" class="form-control" value="{{ old('food_drug_registration_number', $company->food_drug_registration_number) }}">
+                <label for="food_drug_registration_number">رقم التسجيل في هيئة الغذاء والدواء <span class="text-danger">*</span></label>
+                <input type="text" name="food_drug_registration_number" id="food_drug_registration_number" class="form-control" value="{{ old('food_drug_registration_number', $company->food_drug_registration_number) }}" required>
                 @error('food_drug_registration_number')
                     <span class="error-message">{{ $message }}</span>
                 @enderror
@@ -331,6 +345,7 @@
 @endsection
 
 @push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     .auth-form {
         width: 100%;
@@ -887,20 +902,75 @@
 
     document.getElementById('is_pre_registered').addEventListener('change', function() {
         const preRegFields = document.getElementById('preRegistrationFields');
-        const preRegNumber = document.getElementById('pre_registration_number');
+        const preRegSeq = document.getElementById('pre_registration_sequence');
         const preRegYear = document.getElementById('pre_registration_year');
 
         if (this.checked) {
             preRegFields.style.display = 'block';
-            preRegNumber.required = true;
+            preRegSeq.required = true;
             preRegYear.required = true;
         } else {
             preRegFields.style.display = 'none';
-            preRegNumber.required = false;
+            preRegSeq.required = false;
             preRegYear.required = false;
-            preRegNumber.value = '';
+            preRegSeq.value = '';
             preRegYear.value = '';
         }
+    });
+
+    function updateRepEditPreview() {
+        const year = document.getElementById('pre_registration_year')?.value;
+        const seq = document.getElementById('pre_registration_sequence')?.value;
+        const preview = document.getElementById('repEditPreRegPreview');
+        if (preview) {
+            preview.textContent = (year && seq) ? year + '-' + seq : '-';
+        }
+    }
+    document.getElementById('pre_registration_year')?.addEventListener('input', updateRepEditPreview);
+    document.getElementById('pre_registration_sequence')?.addEventListener('input', updateRepEditPreview);
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var savedLat = '{{ old('latitude', $company->latitude) }}';
+        var savedLng = '{{ old('longitude', $company->longitude) }}';
+        var defaultLat = 32.9022;
+        var defaultLng = 13.1800;
+        var initialLat = savedLat ? parseFloat(savedLat) : defaultLat;
+        var initialLng = savedLng ? parseFloat(savedLng) : defaultLng;
+        var hasMarker = savedLat ? true : false;
+
+        var map = L.map('map').setView([initialLat, initialLng], hasMarker ? 15 : 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        var marker = null;
+
+        if (hasMarker) {
+            marker = L.marker([initialLat, initialLng]).addTo(map);
+        }
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat.toFixed(7);
+            var lng = e.latlng.lng.toFixed(7);
+
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+        });
+
+        document.querySelectorAll('.step-nav-btn, .nav-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                setTimeout(function() { map.invalidateSize(); }, 200);
+            });
+        });
     });
 </script>
 @endpush

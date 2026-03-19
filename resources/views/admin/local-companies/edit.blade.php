@@ -9,6 +9,7 @@
 @endsection
 
 @push('styles')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     .wizard-steps {
         display: flex;
@@ -294,6 +295,14 @@
                         @enderror
                     </div>
 
+                    <div class="col-12 mb-4">
+                        <label class="form-label"><i class="ti ti-map-pin me-1"></i>تحديد الموقع على الخريطة</label>
+                        <div id="map" style="height: 350px; border-radius: 8px; border: 1px solid #d1d5db; margin-bottom: 8px;"></div>
+                        <small class="text-muted">انقر على الخريطة لتحديد موقع الشركة</small>
+                        <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', $localCompany->latitude) }}">
+                        <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude', $localCompany->longitude) }}">
+                    </div>
+
                     <div class="col-md-6 mb-4">
                         <label class="form-label">الشارع</label>
                         <input type="text" name="street" class="form-control @error('street') is-invalid @enderror" value="{{ old('street', $localCompany->street) }}" placeholder="اسم الشارع">
@@ -443,8 +452,8 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label">رقم التسجيل بمركز الرقابة على الأدوية والأغذية</label>
-                        <input type="text" name="food_drug_registration_number" class="form-control @error('food_drug_registration_number') is-invalid @enderror" value="{{ old('food_drug_registration_number', $localCompany->food_drug_registration_number) }}" placeholder="رقم التسجيل">
+                        <label class="form-label">رقم التسجيل بمركز الرقابة على الأدوية والأغذية <span class="text-danger">*</span></label>
+                        <input type="text" name="food_drug_registration_number" class="form-control @error('food_drug_registration_number') is-invalid @enderror" value="{{ old('food_drug_registration_number', $localCompany->food_drug_registration_number) }}" placeholder="رقم التسجيل" required>
                         @error('food_drug_registration_number')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -646,6 +655,44 @@
                 return false;
             }
         }
+    });
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var savedLat = document.getElementById('latitude').value;
+        var savedLng = document.getElementById('longitude').value;
+        var center = (savedLat && savedLng) ? [parseFloat(savedLat), parseFloat(savedLng)] : [32.9022, 13.1800];
+        var zoom = (savedLat && savedLng) ? 15 : 12;
+
+        var map = L.map('map').setView(center, zoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker = null;
+        if (savedLat && savedLng) {
+            marker = L.marker([parseFloat(savedLat), parseFloat(savedLng)]).addTo(map);
+        }
+
+        map.on('click', function(e) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('latitude').value = e.latlng.lat.toFixed(7);
+            document.getElementById('longitude').value = e.latlng.lng.toFixed(7);
+        });
+
+        document.querySelectorAll('.wizard-step, .btn-next, .btn-prev').forEach(function(el) {
+            el.addEventListener('click', function() {
+                setTimeout(function() { map.invalidateSize(); }, 300);
+            });
+        });
+
+        var observer = new MutationObserver(function() {
+            setTimeout(function() { map.invalidateSize(); }, 300);
+        });
+        var step1 = document.getElementById('step-1');
+        if (step1) observer.observe(step1, { attributes: true, attributeFilter: ['class', 'style'] });
     });
 </script>
 @endpush

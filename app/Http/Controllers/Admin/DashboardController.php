@@ -10,151 +10,173 @@ use App\Models\LocalCompanyInvoice;
 use App\Models\CompanyRepresentative;
 use App\Models\PharmaceuticalProductInvoice;
 use App\Models\PharmaceuticalProduct;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $localCompaniesTotal = LocalCompany::count();
-        $localCompaniesActive = LocalCompany::where('status', 'active')->count();
-        $localCompaniesPending = LocalCompany::whereIn('status', ['pending', 'uploading_documents'])->count();
-        $localCompaniesRejected = LocalCompany::where('status', 'rejected')->count();
-        $localCompaniesApproved = LocalCompany::where('status', 'approved')->count();
+        $today = Carbon::today();
+        $weekStart = Carbon::now()->startOfWeek();
+        $monthStart = Carbon::now()->startOfMonth();
 
-        $foreignCompaniesTotal = ForeignCompany::count();
-        $foreignCompaniesActive = ForeignCompany::where('status', 'active')->count();
+        $stats = Cache::remember('dashboard_stats', 300, function () use ($today, $weekStart, $monthStart) {
+            $localStats = LocalCompany::selectRaw("
+                COUNT(*) as total,
+                COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
+                COUNT(CASE WHEN status IN ('pending', 'uploading_documents') THEN 1 END) as pending,
+                COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected,
+                COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved,
+                COUNT(CASE WHEN DATE(created_at) = ? THEN 1 END) as today,
+                COUNT(CASE WHEN created_at >= ? THEN 1 END) as week,
+                COUNT(CASE WHEN created_at >= ? THEN 1 END) as month
+            ", [$today, $weekStart, $monthStart])->first();
 
-        $representativesTotal = CompanyRepresentative::count();
-        $representativesActive = CompanyRepresentative::where('is_verified', 1)->count();
+            $foreignStats = ForeignCompany::selectRaw("
+                COUNT(*) as total,
+                COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
+                COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
+                COUNT(CASE WHEN status = 'uploading_documents' THEN 1 END) as uploading_documents,
+                COUNT(CASE WHEN status = 'pending_payment' THEN 1 END) as pending_payment,
+                COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved,
+                COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected,
+                COUNT(CASE WHEN status = 'suspended' THEN 1 END) as suspended,
+                COUNT(CASE WHEN status = 'expired' THEN 1 END) as expired,
+                COUNT(CASE WHEN DATE(created_at) = ? THEN 1 END) as today,
+                COUNT(CASE WHEN created_at >= ? THEN 1 END) as week,
+                COUNT(CASE WHEN created_at >= ? THEN 1 END) as month
+            ", [$today, $weekStart, $monthStart])->first();
 
-        $invoicesTotal = LocalCompanyInvoice::count();
-        $invoicesPaid = LocalCompanyInvoice::where('status', 'paid')->count();
-        $invoicesUnpaid = LocalCompanyInvoice::where('status', 'unpaid')->count();
-        $totalRevenue = LocalCompanyInvoice::where('status', 'paid')->sum('amount');
+            $pharmaStats = PharmaceuticalProduct::selectRaw("
+                COUNT(*) as total,
+                COUNT(CASE WHEN status = 'active' THEN 1 END) as active,
+                COUNT(CASE WHEN status = 'pending_review' THEN 1 END) as pending_review,
+                COUNT(CASE WHEN status = 'preliminary_approved' THEN 1 END) as preliminary_approved,
+                COUNT(CASE WHEN status = 'pending_final_approval' THEN 1 END) as pending_final_approval,
+                COUNT(CASE WHEN status = 'pending_payment' THEN 1 END) as pending_payment,
+                COUNT(CASE WHEN status = 'payment_review' THEN 1 END) as payment_review,
+                COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected,
+                COUNT(CASE WHEN DATE(created_at) = ? THEN 1 END) as today,
+                COUNT(CASE WHEN created_at >= ? THEN 1 END) as week,
+                COUNT(CASE WHEN created_at >= ? THEN 1 END) as month
+            ", [$today, $weekStart, $monthStart])->first();
 
-        $recentLocalCompanies = LocalCompany::with('representative')
-            ->latest()
-            ->take(5)
-            ->get();
+            $repStats = CompanyRepresentative::selectRaw("
+                COUNT(*) as total,
+                COUNT(CASE WHEN is_verified = 1 THEN 1 END) as active
+            ")->first();
 
-        $recentInvoices = LocalCompanyInvoice::with('localCompany')
-            ->latest()
-            ->take(5)
-            ->get();
+            $localRevenue = LocalCompanyInvoice::selectRaw("
+                SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as total,
+                SUM(CASE WHEN status = 'paid' AND DATE(updated_at) = ? THEN amount ELSE 0 END) as today,
+                SUM(CASE WHEN status = 'paid' AND updated_at >= ? THEN amount ELSE 0 END) as week,
+                SUM(CASE WHEN status = 'paid' AND updated_at >= ? THEN amount ELSE 0 END) as month,
+                COUNT(CASE WHEN status = 'paid' THEN 1 END) as paid_count,
+                COUNT(CASE WHEN status = 'unpaid' THEN 1 END) as unpaid_count
+            ", [$today, $weekStart, $monthStart])->first();
 
-        $pharmaceuticalInvoicesNeedReceipt = PharmaceuticalProductInvoice::with(['pharmaceuticalProduct.representative'])
-            ->where('status', 'unpaid')
-            ->latest()
-            ->take(10)
-            ->get();
+            $pharmaRevenue = PharmaceuticalProductInvoice::selectRaw("
+                SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as total,
+                SUM(CASE WHEN status = 'paid' AND DATE(updated_at) = ? THEN amount ELSE 0 END) as today,
+                SUM(CASE WHEN status = 'paid' AND updated_at >= ? THEN amount ELSE 0 END) as week,
+                SUM(CASE WHEN status = 'paid' AND updated_at >= ? THEN amount ELSE 0 END) as month,
+                COUNT(CASE WHEN status = 'paid' THEN 1 END) as paid_count,
+                COUNT(CASE WHEN status = 'unpaid' THEN 1 END) as unpaid_count
+            ", [$today, $weekStart, $monthStart])->first();
 
-        $recentPharmaceuticalProducts = PharmaceuticalProduct::with(['foreignCompany', 'representative'])
-            ->latest()
-            ->take(5)
-            ->get();
+            return [
+                'local_companies' => [
+                    'total' => $localStats->total,
+                    'active' => $localStats->active,
+                    'pending' => $localStats->pending,
+                    'rejected' => $localStats->rejected,
+                    'approved' => $localStats->approved,
+                    'today' => $localStats->today,
+                    'week' => $localStats->week,
+                    'month' => $localStats->month,
+                ],
+                'foreign_companies' => [
+                    'total' => $foreignStats->total,
+                    'active' => $foreignStats->active,
+                    'pending' => $foreignStats->pending,
+                    'uploading_documents' => $foreignStats->uploading_documents,
+                    'pending_payment' => $foreignStats->pending_payment,
+                    'approved' => $foreignStats->approved,
+                    'rejected' => $foreignStats->rejected,
+                    'suspended' => $foreignStats->suspended,
+                    'expired' => $foreignStats->expired,
+                    'today' => $foreignStats->today,
+                    'week' => $foreignStats->week,
+                    'month' => $foreignStats->month,
+                ],
+                'pharmaceutical_products' => [
+                    'total' => $pharmaStats->total,
+                    'active' => $pharmaStats->active,
+                    'pending_review' => $pharmaStats->pending_review,
+                    'preliminary_approved' => $pharmaStats->preliminary_approved,
+                    'pending_final_approval' => $pharmaStats->pending_final_approval,
+                    'pending_payment' => $pharmaStats->pending_payment,
+                    'payment_review' => $pharmaStats->payment_review,
+                    'rejected' => $pharmaStats->rejected,
+                    'today' => $pharmaStats->today,
+                    'week' => $pharmaStats->week,
+                    'month' => $pharmaStats->month,
+                ],
+                'representatives' => [
+                    'total' => $repStats->total,
+                    'active' => $repStats->active,
+                ],
+                'revenue' => [
+                    'local_total' => $localRevenue->total ?? 0,
+                    'local_today' => $localRevenue->today ?? 0,
+                    'local_week' => $localRevenue->week ?? 0,
+                    'local_month' => $localRevenue->month ?? 0,
+                    'pharma_total' => $pharmaRevenue->total ?? 0,
+                    'pharma_today' => $pharmaRevenue->today ?? 0,
+                    'pharma_week' => $pharmaRevenue->week ?? 0,
+                    'pharma_month' => $pharmaRevenue->month ?? 0,
+                    'invoices_paid' => ($localRevenue->paid_count ?? 0) + ($pharmaRevenue->paid_count ?? 0),
+                    'invoices_unpaid' => ($localRevenue->unpaid_count ?? 0) + ($pharmaRevenue->unpaid_count ?? 0),
+                    'total' => ($localRevenue->total ?? 0) + ($pharmaRevenue->total ?? 0),
+                    'today' => ($localRevenue->today ?? 0) + ($pharmaRevenue->today ?? 0),
+                    'week' => ($localRevenue->week ?? 0) + ($pharmaRevenue->week ?? 0),
+                    'month' => ($localRevenue->month ?? 0) + ($pharmaRevenue->month ?? 0),
+                ],
+            ];
+        });
 
-        $pharmaceuticalProductsNeedApproval = PharmaceuticalProduct::with(['foreignCompany', 'representative'])
+        $pendingApprovalProducts = PharmaceuticalProduct::with(['foreignCompany', 'representative'])
             ->whereIn('status', ['pending_review', 'pending_final_approval'])
             ->latest()
             ->take(10)
             ->get();
 
-        $recentForeignCompanies = ForeignCompany::with('localCompany')
+        $pendingReceiptInvoices = PharmaceuticalProductInvoice::with(['pharmaceuticalProduct.representative'])
+            ->where('status', 'unpaid')
             ->latest()
-            ->take(5)
+            ->take(10)
             ->get();
 
-        $monthlyRevenue = LocalCompanyInvoice::select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-                DB::raw('SUM(CASE WHEN status = "paid" THEN amount ELSE 0 END) as local_revenue')
-            )
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
+        $pendingLocalCompanies = LocalCompany::with('representative')
+            ->whereIn('status', ['pending'])
+            ->latest()
+            ->take(10)
             ->get();
 
-        $monthlyPharmaceuticalRevenue = PharmaceuticalProductInvoice::select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-                DB::raw('SUM(CASE WHEN status = "paid" THEN amount ELSE 0 END) as pharma_revenue')
-            )
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
+        $pendingForeignCompanies = ForeignCompany::with(['localCompany', 'representative'])
+            ->where('status', 'pending')
+            ->latest()
+            ->take(10)
             ->get();
-
-        $pharmaceuticalProductsTotal = PharmaceuticalProduct::count();
-        $pharmaceuticalProductsActive = PharmaceuticalProduct::where('status', 'active')->count();
-        $pharmaceuticalProductsPendingReview = PharmaceuticalProduct::where('status', 'pending_review')->count();
-        $pharmaceuticalProductsPreliminaryApproved = PharmaceuticalProduct::where('status', 'preliminary_approved')->count();
-        $pharmaceuticalProductsPendingFinalApproval = PharmaceuticalProduct::where('status', 'pending_final_approval')->count();
-        $pharmaceuticalProductsPendingPayment = PharmaceuticalProduct::where('status', 'pending_payment')->count();
-        $pharmaceuticalProductsPaymentReview = PharmaceuticalProduct::where('status', 'payment_review')->count();
-        $pharmaceuticalProductsRejected = PharmaceuticalProduct::where('status', 'rejected')->count();
-
-        $pharmaceuticalInvoicesTotal = PharmaceuticalProductInvoice::count();
-        $pharmaceuticalInvoicesPaid = PharmaceuticalProductInvoice::where('status', 'paid')->count();
-        $pharmaceuticalInvoicesUnpaid = PharmaceuticalProductInvoice::where('status', 'unpaid')->count();
-        $pharmaceuticalRevenue = PharmaceuticalProductInvoice::where('status', 'paid')->sum('amount');
-
-        $monthlyRegistrations = LocalCompany::select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-                DB::raw('count(*) as count')
-            )
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
-
-        $monthlyPharmaceuticalRegistrations = PharmaceuticalProduct::select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
-                DB::raw('count(*) as count')
-            )
-            ->where('created_at', '>=', now()->subMonths(6))
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
-
-        $stats = [
-            'local_companies_total' => $localCompaniesTotal,
-            'local_companies_active' => $localCompaniesActive,
-            'local_companies_pending' => $localCompaniesPending,
-            'local_companies_rejected' => $localCompaniesRejected,
-            'local_companies_approved' => $localCompaniesApproved,
-            'foreign_companies_total' => $foreignCompaniesTotal,
-            'foreign_companies_active' => $foreignCompaniesActive,
-            'representatives_total' => $representativesTotal,
-            'representatives_active' => $representativesActive,
-            'invoices_total' => $invoicesTotal,
-            'invoices_paid' => $invoicesPaid,
-            'invoices_unpaid' => $invoicesUnpaid,
-            'total_revenue' => $totalRevenue,
-            'pharmaceutical_products_total' => $pharmaceuticalProductsTotal,
-            'pharmaceutical_products_active' => $pharmaceuticalProductsActive,
-            'pharmaceutical_products_pending_review' => $pharmaceuticalProductsPendingReview,
-            'pharmaceutical_products_preliminary_approved' => $pharmaceuticalProductsPreliminaryApproved,
-            'pharmaceutical_products_pending_final_approval' => $pharmaceuticalProductsPendingFinalApproval,
-            'pharmaceutical_products_pending_payment' => $pharmaceuticalProductsPendingPayment,
-            'pharmaceutical_products_payment_review' => $pharmaceuticalProductsPaymentReview,
-            'pharmaceutical_products_rejected' => $pharmaceuticalProductsRejected,
-            'pharmaceutical_invoices_total' => $pharmaceuticalInvoicesTotal,
-            'pharmaceutical_invoices_paid' => $pharmaceuticalInvoicesPaid,
-            'pharmaceutical_invoices_unpaid' => $pharmaceuticalInvoicesUnpaid,
-            'pharmaceutical_revenue' => $pharmaceuticalRevenue,
-        ];
 
         return view('admin.dashboard', compact(
             'stats',
-            'recentLocalCompanies',
-            'recentInvoices',
-            'pharmaceuticalInvoicesNeedReceipt',
-            'monthlyRegistrations',
-            'monthlyPharmaceuticalRegistrations',
-            'recentPharmaceuticalProducts',
-            'pharmaceuticalProductsNeedApproval',
-            'recentForeignCompanies',
-            'monthlyRevenue',
-            'monthlyPharmaceuticalRevenue'
+            'pendingApprovalProducts',
+            'pendingReceiptInvoices',
+            'pendingLocalCompanies',
+            'pendingForeignCompanies'
         ));
     }
 }

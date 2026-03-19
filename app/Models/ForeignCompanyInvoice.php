@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ForeignCompanyInvoice extends Model
@@ -35,7 +36,6 @@ class ForeignCompanyInvoice extends Model
         'paid_at' => 'datetime',
     ];
 
-    // Relations
     public function foreignCompany(): BelongsTo
     {
         return $this->belongsTo(ForeignCompany::class);
@@ -56,7 +56,6 @@ class ForeignCompanyInvoice extends Model
         return $this->belongsTo(User::class, 'receipt_reviewed_by');
     }
 
-    // Accessors
     public function getStatusNameAttribute(): string
     {
         return match($this->status) {
@@ -105,7 +104,6 @@ class ForeignCompanyInvoice extends Model
         };
     }
 
-    // Methods
     public function hasReceipt(): bool
     {
         return !empty($this->receipt_path) && Storage::disk('public')->exists($this->receipt_path);
@@ -113,19 +111,20 @@ class ForeignCompanyInvoice extends Model
 
     public function approveReceipt(?int $reviewedBy = null): bool
     {
-        $updated = $this->update([
-            'receipt_status' => 'approved',
-            'receipt_rejection_reason' => null,
-            'receipt_reviewed_by' => $reviewedBy ?? (auth()->check() ? auth()->id() : null),
-            'receipt_reviewed_at' => now(),
-        ]);
+        return DB::transaction(function () use ($reviewedBy) {
+            $updated = $this->update([
+                'receipt_status' => 'approved',
+                'receipt_rejection_reason' => null,
+                'receipt_reviewed_by' => $reviewedBy ?? (auth()->check() ? auth()->id() : null),
+                'receipt_reviewed_at' => now(),
+            ]);
 
-        if ($updated) {
-            // Mark invoice as paid
-            $this->markAsPaid();
-        }
+            if ($updated) {
+                $this->markAsPaid();
+            }
 
-        return $updated;
+            return $updated;
+        });
     }
 
     public function rejectReceipt(string $reason, ?int $reviewedBy = null): bool
@@ -140,6 +139,10 @@ class ForeignCompanyInvoice extends Model
 
     public function markAsPaid(): bool
     {
+        if ($this->status === 'paid') {
+            return true;
+        }
+
         return $this->update([
             'status' => 'paid',
             'paid_at' => now(),
@@ -149,7 +152,6 @@ class ForeignCompanyInvoice extends Model
 
     public function markAsUnpaid(): bool
     {
-        // Delete receipt file if exists
         if ($this->receipt_path && Storage::disk('public')->exists($this->receipt_path)) {
             Storage::disk('public')->delete($this->receipt_path);
         }
@@ -188,18 +190,23 @@ class ForeignCompanyInvoice extends Model
 
     public static function generateInvoiceNumber(): string
     {
-        $year = now()->year;
-        $lastInvoice = self::whereYear('created_at', $year)
-            ->orderBy('id', 'desc')
-            ->first();
+        return DB::transaction(function () {
+            $year = now()->year;
+            $prefix = "FC-{$year}-";
 
-        if ($lastInvoice) {
-            $lastNumber = intval(substr($lastInvoice->invoice_number, -6));
-            $newNumber = $lastNumber + 1;
-        } else {
-            $newNumber = 1;
-        }
+            DB::statement("SELECT GET_LOCK('foreign_invoice_number_{$year}', 10)");
 
-        return 'FC-' . $year . '-' . str_pad($newNumber, 6, '0', STR_PAD_LEFT);
+            try {
+                $lastInvoice = self::where('invoice_number', 'like', "{$prefix}%")
+                    ->orderByRaw('CAST(SUBSTRING(invoice_number, -6) AS UNSIGNED) DESC')
+                    ->first();
+
+                $newNumber = $lastInvoice ? intval(substr($lastInvoice->invoice_number, -6)) + 1 : 1;
+
+                return $prefix . str_pad($newNumber, 6, '0', STR_PAD_LEFT);
+            } finally {
+                DB::statement("SELECT RELEASE_LOCK('foreign_invoice_number_{$year}')");
+            }
+        });
     }
 }

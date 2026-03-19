@@ -76,6 +76,16 @@ class PharmaceuticalProductDocument extends Model
         return round($bytes, 2) . ' ' . $units[$i];
     }
 
+    public function updateRequests()
+    {
+        return $this->morphMany(\App\Models\DocumentUpdateRequest::class, 'documentable');
+    }
+
+    public function pendingUpdateRequest()
+    {
+        return $this->morphOne(\App\Models\DocumentUpdateRequest::class, 'documentable')->where('status', 'pending');
+    }
+
     public static function getDocumentTypes(): array
     {
         return self::$documentTypes;

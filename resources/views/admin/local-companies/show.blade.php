@@ -10,17 +10,19 @@
 @endsection
 
 @section('content')
-<div class="card mt-3 mb-3">
-    <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+<div class="show-header mt-3 mb-3 p-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <h4 class="mb-1">{{ $localCompany->company_name }}</h4>
-            <span class="badge bg-{{ $localCompany->company_type == 'distributor' ? 'info' : 'primary' }} me-1">{{ $localCompany->company_type_name }}</span>
-            <span class="badge bg-{{ $localCompany->status_color }} me-1">{{ $localCompany->status_name }}</span>
-            @if($localCompany->registration_number)
-                <span class="badge bg-dark">رقم القيد: {{ $localCompany->registration_number }}</span>
-            @endif
+            <h4 class="mb-2"><i class="ti ti-building-skyscraper me-2 text-primary"></i>{{ $localCompany->company_name }}</h4>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-{{ $localCompany->company_type == 'distributor' ? 'info' : 'primary' }}">{{ $localCompany->company_type_name }}</span>
+                <span class="badge bg-{{ $localCompany->status_color }}">{{ $localCompany->status_name }}</span>
+                @if($localCompany->registration_number)
+                    <span class="badge bg-dark">رقم القيد: {{ $localCompany->registration_number }}</span>
+                @endif
+            </div>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
             @if($localCompany->status == 'pending')
                 @php
                     $missingDocs = $localCompany->getMissingDocuments();
@@ -28,10 +30,9 @@
                     $canApprove = count($missingDocs) == 0 && !$hasUnpaidInvoices;
                 @endphp
                 @if($canApprove)
-                    <form action="{{ route('admin.local-companies.approve', $localCompany) }}" method="POST" class="d-inline approve-form">
-                        @csrf
-                        <button type="submit" class="btn btn-success"><i class="ti ti-check me-1"></i>قبول</button>
-                    </form>
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
+                        <i class="ti ti-check me-1"></i>قبول
+                    </button>
                 @else
                     @php
                         $disabledReason = count($missingDocs) > 0 ? 'يجب رفع جميع المستندات المطلوبة' : 'يجب دفع جميع الفواتير المستحقة';
@@ -52,14 +53,73 @@
                 <a href="{{ route('admin.local-companies.certificate', $localCompany) }}" class="btn btn-info" target="_blank">
                     <i class="ti ti-certificate me-1"></i>طباعة شهادة التسجيل
                 </a>
+                @if(in_array($localCompany->status, ['active']))
+                    <form action="{{ route('admin.local-companies.request-renewal', $localCompany) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-warning"><i class="ti ti-refresh me-1"></i>طلب تجديد</button>
+                    </form>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#suspendModal">
+                        <i class="ti ti-ban me-1"></i>تعليق
+                    </button>
+                @endif
+            @elseif($localCompany->status == 'expired')
+                <form action="{{ route('admin.local-companies.request-renewal', $localCompany) }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-warning"><i class="ti ti-refresh me-1"></i>طلب تجديد</button>
+                </form>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#suspendModal">
+                    <i class="ti ti-ban me-1"></i>تعليق
+                </button>
+            @elseif($localCompany->status == 'suspended')
+                <form action="{{ route('admin.local-companies.unsuspend', $localCompany) }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-success"><i class="ti ti-player-play me-1"></i>إلغاء التعليق</button>
+                </form>
             @endif
             <a href="{{ route('admin.local-companies.edit', $localCompany) }}" class="btn btn-primary"><i class="ti ti-edit me-1"></i>تعديل</a>
-            <a href="{{ route('admin.local-companies.index') }}" class="btn btn-secondary"><i class="ti ti-arrow-right me-1"></i>رجوع</a>
+            <a href="{{ route('admin.local-companies.index') }}" class="btn btn-outline-secondary"><i class="ti ti-arrow-right me-1"></i>رجوع</a>
         </div>
     </div>
 </div>
 
 
+
+@if($localCompany->status == 'active' && $localCompany->expires_at && $localCompany->isExpired())
+@php $expiredDays = (int) abs(now()->diffInDays($localCompany->expires_at)); @endphp
+<div class="alert alert-danger d-flex align-items-center justify-content-between">
+    <div>
+        <i class="ti ti-alert-octagon me-2 fs-4"></i>
+        <strong>تنبيه:</strong> هذه الشركة مفعلة لكن صلاحيتها منتهية منذ <strong>{{ $expiredDays }} يوم</strong> ({{ $localCompany->expires_at->format('Y-m-d') }}).
+        يجب إنشاء فاتورة تجديد أو تعليق الشركة.
+    </div>
+    <form action="{{ route('admin.local-companies.request-renewal', $localCompany) }}" method="POST" class="d-inline ms-3">
+        @csrf
+        <button type="submit" class="btn btn-warning btn-sm"><i class="ti ti-refresh me-1"></i>طلب تجديد الآن</button>
+    </form>
+</div>
+@elseif($localCompany->status == 'active' && $localCompany->expires_at && !$localCompany->isExpired())
+@php $daysUntilExpiry = (int) now()->diffInDays($localCompany->expires_at, false); @endphp
+@if($daysUntilExpiry <= 90)
+<div class="alert alert-warning">
+    <i class="ti ti-clock-exclamation me-2"></i>
+    <strong>تنبيه:</strong> صلاحية هذه الشركة ستنتهي خلال <strong>{{ $daysUntilExpiry }} يوم</strong> ({{ $localCompany->expires_at->format('Y-m-d') }}).
+</div>
+@endif
+@endif
+
+@if($localCompany->status == 'expired')
+<div class="alert alert-danger">
+    <i class="ti ti-alert-octagon me-2 fs-4"></i>
+    <strong>الشركة منتهية الصلاحية.</strong> يجب إنشاء فاتورة تجديد ليتمكن الممثل من الدفع وإعادة التفعيل.
+</div>
+@endif
+
+@if($localCompany->status == 'suspended' && $localCompany->suspension_reason)
+<div class="alert alert-secondary">
+    <i class="ti ti-ban me-2"></i>
+    <strong>الشركة معلقة — السبب:</strong> {{ $localCompany->suspension_reason }}
+</div>
+@endif
 
 @if($localCompany->status == 'rejected' && $localCompany->rejection_reason)
 <div class="alert alert-danger">
@@ -90,16 +150,16 @@
     <div class="card-header p-0 border-bottom">
         <ul class="nav nav-tabs" id="companyTabs">
             <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-company">بيانات الشركة</button>
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-company"><i class="ti ti-building me-1"></i>بيانات الشركة</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-license">بيانات الترخيص</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-license"><i class="ti ti-license me-1"></i>بيانات الترخيص</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-manager">المدير المسؤول</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-manager"><i class="ti ti-user me-1"></i>المدير المسؤول</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-representative">ممثل الشركة</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-representative"><i class="ti ti-id me-1"></i>ممثل الشركة</button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-documents">
@@ -129,32 +189,87 @@
             <div class="tab-pane fade show active" id="tab-company">
                 <div class="row">
                     <div class="col-md-6">
-                        <table class="table table-striped">
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">اسم الشركة</th><td>{{ $localCompany->company_name }}</td></tr>
+                            <tr><th class="bg-light">نوع الشركة</th><td>{{ $localCompany->company_type_name }}</td></tr>
                             <tr><th class="bg-light">البريد الإلكتروني</th><td>{{ $localCompany->email }}</td></tr>
                             <tr><th class="bg-light">الهاتف</th><td dir="ltr" class="text-end">{{ $localCompany->phone }}</td></tr>
                             <tr><th class="bg-light">هاتف محمول</th><td dir="ltr" class="text-end">{{ $localCompany->mobile ?? '-' }}</td></tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <table class="table table-striped">
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">العنوان</th><td>{{ $localCompany->company_address ?? '-' }}</td></tr>
                             <tr><th class="bg-light">الشارع</th><td>{{ $localCompany->street ?? '-' }}</td></tr>
                             <tr><th class="bg-light">المدينة</th><td>{{ $localCompany->city }}</td></tr>
                         </table>
                     </div>
+                    <div class="col-12 mt-3">
+                        <div class="card border">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="mb-0"><i class="ti ti-certificate me-2"></i>بيانات القيد والصلاحية</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-striped mb-0">
+                                    <tr>
+                                        <th class="bg-light" width="20%">رقم القيد</th>
+                                        <td width="30%">
+                                            @if($localCompany->registration_number)
+                                                <span class="fw-bold text-primary fs-6">{{ $localCompany->registration_number }}</span>
+                                            @else
+                                                <span class="text-muted">لم يُصدر بعد</span>
+                                            @endif
+                                        </td>
+                                        <th class="bg-light" width="20%">تاريخ التسجيل</th>
+                                        <td width="30%">{{ $localCompany->registration_date?->format('Y-m-d') ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-light">آخر تاريخ تجديد</th>
+                                        <td>{{ $localCompany->last_renewal_date?->format('Y-m-d') ?? '-' }}</td>
+                                        <th class="bg-light">تاريخ انتهاء الصلاحية</th>
+                                        <td>
+                                            @if($localCompany->expires_at)
+                                                @php
+                                                    $daysLeft = (int) now()->diffInDays($localCompany->expires_at, false);
+                                                @endphp
+                                                {{ $localCompany->expires_at->format('Y-m-d') }}
+                                                @if($localCompany->isExpired())
+                                                    <span class="badge bg-danger ms-1">منتهية منذ {{ abs($daysLeft) }} يوم</span>
+                                                @elseif($daysLeft <= 90)
+                                                    <span class="badge bg-warning ms-1">متبقي {{ $daysLeft }} يوم</span>
+                                                @else
+                                                    <span class="badge bg-success ms-1">متبقي {{ $daysLeft }} يوم</span>
+                                                @endif
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                @if($localCompany->latitude && $localCompany->longitude)
+                <div class="mt-3">
+                    <h6><i class="ti ti-map-pin me-1"></i>موقع الشركة</h6>
+                    <div id="map" style="height: 350px; border-radius: 8px; border: 1px solid #d1d5db;"></div>
+                </div>
+                @endif
 
                 @if($localCompany->is_pre_registered)
                 <div class="alert alert-info mt-3">
                     <i class="ti ti-info-circle me-2"></i>
-                    <strong>شركة مسجلة مسبقاً:</strong>
-                    <br>
-                    <small>رقم القيد السابق: <strong>{{ $localCompany->pre_registration_number }}</strong></small>
-                    <br>
-                    <small>سنة التسجيل: <strong>{{ $localCompany->pre_registration_year }}</strong></small>
-                    <br>
-                    <small class="text-warning">سيتم استخدام رقم القيد السابق عند الموافقة على الشركة</small>
+                    <strong>شركة مسجلة مسبقاً</strong>
+                    @if($localCompany->pre_registration_number)
+                        <br>
+                        <small>رقم القيد: <strong>{{ $localCompany->pre_registration_number }}</strong></small>
+                    @endif
+                    @if($localCompany->pre_registration_year)
+                        <br>
+                        <small>سنة التسجيل: <strong>{{ $localCompany->pre_registration_year }}</strong></small>
+                    @endif
                 </div>
                 @endif
             </div>
@@ -162,47 +277,14 @@
             <div class="tab-pane fade" id="tab-license">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">بيانات التسجيل</h6>
-                        <table class="table table-striped">
-                            <tr>
-                                <th class="bg-light" width="40%">رقم القيد</th>
-                                <td>
-                                    @if($localCompany->registration_number)
-                                        <strong class="text-primary">{{ $localCompany->registration_number }}</strong>
-                                    @else
-                                        <span class="text-muted">سيُولد عند القبول</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr><th class="bg-light">تاريخ التسجيل</th><td>{{ $localCompany->registration_date?->format('Y-m-d') ?? '-' }}</td></tr>
-                            @if($localCompany->last_renewal_date)
-                            <tr>
-                                <th class="bg-light">آخر تاريخ تجديد</th>
-                                <td>
-                                    <span class="badge bg-success">{{ $localCompany->last_renewal_date->format('Y-m-d') }}</span>
-                                </td>
-                            </tr>
-                            @endif
-                            @if($localCompany->expires_at)
-                            <tr>
-                                <th class="bg-light">تاريخ انتهاء الصلاحية</th>
-                                <td>
-                                    <span class="badge bg-{{ $localCompany->isExpired() ? 'danger' : 'info' }}">
-                                        {{ $localCompany->expires_at->format('Y-m-d') }}
-                                    </span>
-                                    @if($localCompany->isExpired())
-                                        <small class="text-danger d-block mt-1">منتهية الصلاحية</small>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endif
-                            <tr><th class="bg-light">نوع الترخيص</th><td>{{ $localCompany->license_type_name }}</td></tr>
+                        <table class="table table-striped info-table">
+                            <tr><th class="bg-light" width="40%">نوع الترخيص</th><td>{{ $localCompany->license_type_name }}</td></tr>
                             <tr><th class="bg-light">تخصص الترخيص</th><td>{{ $localCompany->license_specialty_name }}</td></tr>
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">التراخيص الرسمية</h6>
-                        <table class="table table-striped">
+                        <h6 class="section-title"><i class="ti ti-license me-2"></i>التراخيص الرسمية</h6>
+                        <table class="table table-striped info-table">
                             <tr><th class="bg-light" width="40%">رقم الترخيص</th><td>{{ $localCompany->license_number ?? '-' }}</td></tr>
                             <tr><th class="bg-light">جهة الإصدار</th><td>{{ $localCompany->license_issuer ?? '-' }}</td></tr>
                             <tr><th class="bg-light">رقم الرقابة على الأدوية</th><td>{{ $localCompany->food_drug_registration_number ?? '-' }}</td></tr>
@@ -213,7 +295,7 @@
             </div>
 
             <div class="tab-pane fade" id="tab-manager">
-                <table class="table table-striped">
+                <table class="table table-striped info-table">
                     <tr>
                         <th class="bg-light" width="15%">الاسم</th>
                         <td width="35%">{{ $localCompany->manager_name }}</td>
@@ -238,7 +320,7 @@
             <div class="tab-pane fade" id="tab-representative">
                 @if($localCompany->representative)
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped info-table">
                         <tr>
                             <th class="bg-light" width="15%">الاسم</th>
                             <td width="35%">{{ $localCompany->representative->name }}</td>
@@ -290,7 +372,7 @@
                 @if($localCompany->documents->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead style="background-color: #f8f9fa;">
+                        <thead>
                             <tr>
                                 <th width="5%">#</th>
                                 <th width="10%">معاينة</th>
@@ -309,7 +391,7 @@
                                 </td>
                                 <td>
                                     @if($document->isImage())
-                                        <a href="{{ Storage::url($document->file_path) }}" target="_blank" data-bs-toggle="tooltip" title="انقر للتكبير">
+                                        <a href="#" class="btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->display_name }}" data-download-url="{{ Storage::url($document->file_path) }}">
                                             <img src="{{ Storage::url($document->file_path) }}" alt="{{ $document->display_name }}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
                                         </a>
                                     @else
@@ -341,11 +423,9 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm">
-                                        @if($document->isImage())
-                                            <a href="{{ Storage::url($document->file_path) }}" target="_blank" class="btn btn-outline-info" title="عرض">
-                                                <i class="ti ti-eye"></i>
-                                            </a>
-                                        @endif
+                                        <button type="button" class="btn btn-outline-info btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->original_name ?? $document->display_name }}" data-download-url="{{ route('admin.local-companies.documents.download', [$localCompany, $document]) }}" title="عرض">
+                                            <i class="ti ti-eye"></i>
+                                        </button>
                                         <a href="{{ route('admin.local-companies.documents.download', [$localCompany, $document]) }}" class="btn btn-outline-primary" title="تحميل">
                                             <i class="ti ti-download"></i>
                                         </a>
@@ -391,7 +471,7 @@
                 @if($localCompany->invoices->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead style="background-color: #f8f9fa;">
+                        <thead>
                             <tr>
                                 <th width="12%">رقم الفاتورة</th>
                                 <th width="15%">النوع</th>
@@ -441,6 +521,9 @@
                                             </button>
                                         @endif
                                         @if($invoice->receipt_path)
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('admin.local-companies.invoices.download-receipt', [$localCompany, $invoice]) }}">
+                                                <i class="ti ti-eye me-1"></i>عرض
+                                            </button>
                                             <a href="{{ route('admin.local-companies.invoices.download-receipt', [$localCompany, $invoice]) }}" class="btn btn-outline-info btn-sm">
                                                 <i class="ti ti-download me-1"></i>تحميل الإيصال
                                             </a>
@@ -498,7 +581,7 @@
                 @if($localCompany->activities->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead style="background-color: #f8f9fa;">
+                        <thead>
                             <tr>
                                 <th width="5%">#</th>
                                 <th width="45%">الوصف</th>
@@ -539,6 +622,78 @@
                 </div>
                 @endif
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="approveModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('admin.local-companies.approve', $localCompany) }}" method="POST" class="approve-form">
+                @csrf
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">قبول الشركة المحلية</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>هل أنت متأكد من قبول هذه الشركة؟ سيتم تغيير حالتها إلى "مقبولة" وإصدار فاتورة.</p>
+                    @if($localCompany->is_pre_registered)
+                    <div class="alert alert-warning py-2">
+                        <i class="ti ti-alert-triangle me-1"></i>
+                        <strong>الممثل حدد هذه الشركة كمسجلة مسبقاً</strong>
+                        @if($localCompany->pre_registration_number)
+                            <br><small>رقم القيد المُدخل: <strong>{{ $localCompany->pre_registration_number }}</strong></small>
+                        @endif
+                        @if($localCompany->pre_registration_year)
+                            <br><small>سنة التسجيل: <strong>{{ $localCompany->pre_registration_year }}</strong></small>
+                        @endif
+                    </div>
+                    @endif
+                    <hr>
+                    @php
+                        $isPreReg = $localCompany->is_pre_registered;
+                        $existingSeq = $localCompany->pre_registration_number ? (int) last(explode('-', $localCompany->pre_registration_number)) : '';
+                    @endphp
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="is_pre_registered" value="1" id="isPreRegistered" {{ $isPreReg ? 'checked' : '' }}>
+                            <label class="form-check-label" for="isPreRegistered">شركة مسجلة مسبقاً (قبل النظام)</label>
+                        </div>
+                    </div>
+                    <div id="preRegistrationFields" style="{{ $isPreReg ? '' : 'display:none;' }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">سنة التسجيل <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_year" class="form-control" min="1990" max="{{ date('Y') }}" placeholder="مثال: 2020" value="{{ $localCompany->pre_registration_year }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الرقم التسلسلي <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_sequence" class="form-control" min="1" placeholder="مثال: 15" value="{{ $existingSeq }}">
+                            </div>
+                        </div>
+                        <div class="alert alert-light py-2">
+                            <small>رقم القيد: <strong id="localPreRegPreview">-</strong></small>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="create_renewal_invoice" value="1" id="createRenewalInvoice">
+                                <label class="form-check-label" for="createRenewalInvoice">إنشاء فاتورة تجديد</label>
+                            </div>
+                        </div>
+                        <div id="renewalDateField">
+                            <div class="mb-3">
+                                <label class="form-label">آخر تاريخ تجديد</label>
+                                <input type="date" name="last_renewal_date" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-success">تأكيد القبول</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -733,9 +888,53 @@
         </div>
     </div>
 </div>
+@if(in_array($localCompany->status, ['active', 'expired']))
+<div class="modal fade" id="suspendModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ route('admin.local-companies.suspend', $localCompany) }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="ti ti-ban me-2"></i>تعليق الشركة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>سيتم تعليق الشركة <strong>{{ $localCompany->company_name }}</strong> ومنعها من العمل حتى يتم إلغاء التعليق.</p>
+                    <div class="mb-3">
+                        <label class="form-label">سبب التعليق <span class="text-danger">*</span></label>
+                        <textarea name="suspension_reason" class="form-control" rows="3" required placeholder="أدخل سبب تعليق الشركة..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-danger"><i class="ti ti-ban me-1"></i>تعليق الشركة</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
 @endsection
 
+@push('styles')
+@if($localCompany->latitude && $localCompany->longitude)
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+@endif
+@endpush
+
 @push('scripts')
+@if($localCompany->latitude && $localCompany->longitude)
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('map').setView([{{ $localCompany->latitude }}, {{ $localCompany->longitude }}], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        L.marker([{{ $localCompany->latitude }}, {{ $localCompany->longitude }}]).addTo(map);
+    });
+</script>
+@endif
 <script>
 // Save and restore active tab
 const tabKey = 'localCompanyTab_{{ $localCompany->id }}';
@@ -754,95 +953,27 @@ document.querySelectorAll('#companyTabs button[data-bs-toggle="tab"]').forEach(f
     });
 });
 
-document.querySelector('.approve-form')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = this;
-    const isPreRegistered = {{ $localCompany->is_pre_registered ? 'true' : 'false' }};
-    const preRegNumber = '{{ $localCompany->pre_registration_number }}';
-    const preRegYear = '{{ $localCompany->pre_registration_year }}';
-
-    if (isPreRegistered) {
-        Swal.fire({
-            title: 'شركة مسجلة مسبقاً',
-            html: `
-                <div style="text-align: right;">
-                    <p><strong>رقم القيد المدخل:</strong> ${preRegNumber}</p>
-                    <p><strong>سنة التسجيل:</strong> ${preRegYear}</p>
-                    <hr>
-                    <p class="text-warning"><i class="ti ti-alert-circle"></i> يرجى التحقق من أن رقم القيد المدخل صحيح</p>
-                    <hr>
-                    <p><strong>هل تود إنشاء فاتورة تجديد لهذه الشركة؟</strong></p>
-                </div>
-            `,
-            icon: 'question',
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonColor: '#198754',
-            denyButtonColor: '#0d6efd',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'نعم، إنشاء فاتورة تجديد',
-            denyButtonText: 'لا، إدخال تاريخ يدوي',
-            cancelButtonText: 'إلغاء',
-            customClass: {
-                popup: 'text-end'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'create_renewal_invoice';
-                input.value = '1';
-                form.appendChild(input);
-                form.submit();
-            } else if (result.isDenied) {
-                Swal.fire({
-                    title: 'إدخال تاريخ آخر تجديد',
-                    html: `
-                        <div style="text-align: right;">
-                            <label for="last_renewal_date" class="form-label">آخر تاريخ تجديد</label>
-                            <input type="date" id="last_renewal_date" class="form-control" value="${new Date().getFullYear()}-01-01" required>
-                        </div>
-                    `,
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonColor: '#198754',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'موافقة',
-                    cancelButtonText: 'إلغاء',
-                    preConfirm: () => {
-                        const date = document.getElementById('last_renewal_date').value;
-                        if (!date) {
-                            Swal.showValidationMessage('يرجى إدخال التاريخ');
-                            return false;
-                        }
-                        return date;
-                    }
-                }).then((dateResult) => {
-                    if (dateResult.isConfirmed) {
-                        const dateInput = document.createElement('input');
-                        dateInput.type = 'hidden';
-                        dateInput.name = 'last_renewal_date';
-                        dateInput.value = dateResult.value;
-                        form.appendChild(dateInput);
-                        form.submit();
-                    }
-                });
-            }
-        });
-    } else {
-        Swal.fire({
-            title: 'تأكيد القبول',
-            text: 'هل أنت متأكد من قبول هذه الشركة؟',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#198754',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'نعم',
-            cancelButtonText: 'إلغاء'
-        }).then((result) => {
-            if (result.isConfirmed) form.submit();
-        });
+document.getElementById('isPreRegistered')?.addEventListener('change', function() {
+    document.getElementById('preRegistrationFields').style.display = this.checked ? '' : 'none';
+    if (!this.checked) {
+        document.getElementById('createRenewalInvoice').checked = false;
+        document.getElementById('renewalDateField').style.display = 'none';
     }
+});
+
+function updateLocalPreRegPreview() {
+    const year = document.querySelector('#approveModal input[name="pre_registration_year"]')?.value;
+    const seq = document.querySelector('#approveModal input[name="pre_registration_sequence"]')?.value;
+    const preview = document.getElementById('localPreRegPreview');
+    if (preview) {
+        preview.textContent = (year && seq) ? year + '-' + seq : '-';
+    }
+}
+document.querySelector('#approveModal input[name="pre_registration_year"]')?.addEventListener('input', updateLocalPreRegPreview);
+document.querySelector('#approveModal input[name="pre_registration_sequence"]')?.addEventListener('input', updateLocalPreRegPreview);
+
+document.getElementById('createRenewalInvoice')?.addEventListener('change', function() {
+    document.getElementById('renewalDateField').style.display = this.checked ? 'none' : 'block';
 });
 
 document.querySelector('.restore-form')?.addEventListener('submit', function(e) {

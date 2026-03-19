@@ -35,7 +35,7 @@ class LocalCompanyActivity extends Model
     {
         return self::create([
             'local_company_id' => $company->id,
-            'user_id' => auth()->id(),
+            'user_id' => auth()->guard('web')->id(),
             'action' => $action,
             'description' => $description,
             'properties' => $properties ?: null,

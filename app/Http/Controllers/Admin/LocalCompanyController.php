@@ -12,12 +12,30 @@ use App\Models\LocalCompanyDocument;
 use App\Models\LocalCompanyInvoice;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
-class LocalCompanyController extends Controller
+class LocalCompanyController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:view_local_companies', only: ['index', 'show']),
+            new Middleware('permission:create_local_company', only: ['create', 'store']),
+            new Middleware('permission:edit_local_company', only: ['edit', 'update']),
+            new Middleware('permission:delete_local_company', only: ['destroy']),
+            new Middleware('permission:approve_local_company', only: ['approve']),
+            new Middleware('permission:reject_local_company', only: ['reject']),
+            new Middleware('permission:activate_local_company', only: ['activate']),
+            new Middleware('permission:print_local_company_certificate', only: ['certificate']),
+            new Middleware('permission:export_local_companies', only: ['print']),
+            new Middleware('permission:reject_local_company|approve_local_company', only: ['restorePending']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = LocalCompany::query();
@@ -135,6 +153,8 @@ class LocalCompanyController extends Controller
             'company_name' => 'required|string|max:255',
             'company_type' => 'required|in:distributor,supplier',
             'company_address' => 'nullable|string',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'street' => 'nullable|string|max:255',
             'city' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
@@ -145,7 +165,7 @@ class LocalCompanyController extends Controller
             'license_specialty' => 'required|in:medicines,medical_supplies,medical_equipment',
             'license_number' => 'nullable|string|max:100',
             'license_issuer' => 'nullable|string|max:255',
-            'food_drug_registration_number' => 'nullable|string|max:100',
+            'food_drug_registration_number' => 'required|string|max:100',
             'chamber_of_commerce_number' => 'nullable|string|max:100',
             'manager_name' => 'required|string|max:255',
             'manager_position' => 'nullable|string|max:255',
@@ -153,6 +173,7 @@ class LocalCompanyController extends Controller
             'manager_email' => 'nullable|email|max:255',
             'manager_password' => 'nullable|string|min:6',
         ], [
+            'food_drug_registration_number.required' => 'رقم التسجيل في هيئة الغذاء والدواء مطلوب',
             'company_name.required' => 'اسم الشركة مطلوب',
             'company_type.required' => 'نوع الشركة مطلوب',
             'city.required' => 'المدينة مطلوبة',
@@ -208,6 +229,8 @@ class LocalCompanyController extends Controller
             'company_name' => 'required|string|max:255',
             'company_type' => 'required|in:distributor,supplier',
             'company_address' => 'nullable|string',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'street' => 'nullable|string|max:255',
             'city' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
@@ -218,7 +241,7 @@ class LocalCompanyController extends Controller
             'license_specialty' => 'required|in:medicines,medical_supplies,medical_equipment',
             'license_number' => 'nullable|string|max:100',
             'license_issuer' => 'nullable|string|max:255',
-            'food_drug_registration_number' => 'nullable|string|max:100',
+            'food_drug_registration_number' => 'required|string|max:100',
             'chamber_of_commerce_number' => 'nullable|string|max:100',
             'manager_name' => 'required|string|max:255',
             'manager_position' => 'nullable|string|max:255',
@@ -260,6 +283,11 @@ class LocalCompanyController extends Controller
 
     public function approve(Request $request, LocalCompany $localCompany)
     {
+        if (!in_array($localCompany->status, ['pending', 'uploading_documents'])) {
+            return redirect()->route('admin.local-companies.show', $localCompany)
+                ->with('error', 'لا يمكن قبول الشركة في حالتها الحالية');
+        }
+
         $localCompany->load(['documents', 'invoices', 'representative']);
 
         if (!$localCompany->hasAllRequiredDocuments()) {
@@ -270,32 +298,23 @@ class LocalCompanyController extends Controller
         }
 
         DB::transaction(function () use ($localCompany, $request) {
-            if ($localCompany->is_pre_registered && $localCompany->pre_registration_number) {
-                $existingCompany = LocalCompany::whereNotNull('registration_number')
-                    ->where('registration_number', $localCompany->pre_registration_number)
-                    ->first();
-
-                if ($existingCompany) {
-                    throw new \Exception('رقم القيد ' . $localCompany->pre_registration_number . ' مستخدم بالفعل من قبل الشركة: ' . $existingCompany->company_name);
-                }
-
-                $registrationNumber = $localCompany->pre_registration_number;
-                $registrationDate = $localCompany->pre_registration_year ?
-                    \Carbon\Carbon::createFromDate($localCompany->pre_registration_year, 1, 1) :
-                    now();
-            } else {
-                $registrationNumber = LocalCompany::generateRegistrationNumber();
-                $registrationDate = now();
+            if ($request->has('is_pre_registered')) {
+                $year = $request->input('pre_registration_year');
+                $seq = $request->input('pre_registration_sequence');
+                $localCompany->update([
+                    'is_pre_registered' => true,
+                    'pre_registration_number' => ($year && $seq) ? "{$year}-{$seq}" : null,
+                    'pre_registration_year' => $year,
+                ]);
+                $localCompany->refresh();
             }
 
             $localCompany->update([
                 'status' => 'approved',
                 'rejection_reason' => null,
-                'registration_number' => $registrationNumber,
-                'registration_date' => $registrationDate,
             ]);
 
-            $localCompany->logActivity('approved', 'تم قبول الشركة - رقم القيد: ' . $registrationNumber);
+            $localCompany->logActivity('approved', 'تم قبول الشركة');
 
             if ($localCompany->is_pre_registered) {
                 if ($request->has('create_renewal_invoice')) {
@@ -313,12 +332,22 @@ class LocalCompanyController extends Controller
                     ]);
 
                     $localCompany->logActivity('invoice_created', 'تم إصدار فاتورة التجديد رقم: ' . $invoice->invoice_number);
-                } elseif ($request->has('last_renewal_date')) {
+                } else {
+                    $lastRenewalDate = $request->input('last_renewal_date', now()->format('Y-m-d'));
+                    $validityYears = $localCompany->company_type === 'distributor' ? 5 : 1;
+
                     $localCompany->update([
-                        'last_renewal_date' => $request->last_renewal_date,
+                        'status' => 'active',
+                        'last_renewal_date' => $lastRenewalDate,
+                        'activated_at' => $localCompany->activated_at ?? now(),
+                        'registration_number' => $localCompany->pre_registration_number,
+                        'registration_date' => $localCompany->pre_registration_year
+                            ? \Carbon\Carbon::createFromDate($localCompany->pre_registration_year, 1, 1)
+                            : now(),
+                        'expires_at' => \Carbon\Carbon::parse($lastRenewalDate)->addYears($validityYears),
                     ]);
 
-                    $localCompany->logActivity('renewal_date_set', 'تم تحديد تاريخ آخر تجديد: ' . $request->last_renewal_date);
+                    $localCompany->logActivity('activated', 'تم تفعيل الشركة المسجلة مسبقاً - تاريخ آخر تجديد: ' . $lastRenewalDate);
                 }
             } else {
                 $registrationFee = Setting::get('local_company_annual_fee', 1000.00);
@@ -337,14 +366,6 @@ class LocalCompanyController extends Controller
                 $localCompany->logActivity('invoice_created', 'تم إصدار فاتورة التسجيل رقم: ' . $invoice->invoice_number);
             }
 
-            // Send emails to representative
-            try {
-                Mail::to($localCompany->representative->email)->send(new CompanyApprovedMail($localCompany));
-                Mail::to($localCompany->representative->email)->send(new InvoiceCreatedMail($localCompany, $invoice));
-                $localCompany->logActivity('email_sent', 'تم إرسال إيميلات الإشعار إلى: ' . $localCompany->representative->email);
-            } catch (\Exception $e) {
-                Log::error('Failed to send emails: ' . $e->getMessage());
-            }
         });
 
         $message = 'تم قبول الشركة بنجاح. ';
@@ -352,12 +373,24 @@ class LocalCompanyController extends Controller
             if ($request->has('create_renewal_invoice')) {
                 $message .= 'تم إصدار فاتورة تجديد.';
             } else {
-                $message .= 'تم تحديد تاريخ آخر تجديد.';
+                $message .= 'تم تفعيل الشركة مباشرة.';
             }
         } else {
             $message .= 'تم إصدار فاتورة التسجيل.';
         }
-        $message .= ' سيتم إشعار الممثل عبر البريد الإلكتروني.';
+
+        $emailFailed = false;
+        if ($localCompany->representative && $localCompany->representative->email) {
+            try {
+                Mail::to($localCompany->representative->email)->send(new CompanyApprovedMail($localCompany));
+                $localCompany->logActivity('email_sent', 'تم إرسال إيميل الإشعار إلى: ' . $localCompany->representative->email);
+            } catch (\Exception $e) {
+                Log::error('Failed to send emails: ' . $e->getMessage());
+                $emailFailed = true;
+            }
+        }
+
+        $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : ' تم إشعار الممثل عبر البريد الإلكتروني.';
 
         return redirect()->route('admin.local-companies.show', $localCompany)
             ->with('success', $message);
@@ -367,17 +400,31 @@ class LocalCompanyController extends Controller
     {
         $localCompany->load(['invoices', 'representative']);
 
-        $invoice = $localCompany->invoices()
-            ->whereIn('type', ['registration', 'renewal'])
-            ->where('status', '!=', 'paid')
-            ->first();
-
-        if (!$invoice) {
+        if (!in_array($localCompany->status, ['approved', 'payment_review'])) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا توجد فاتورة للشركة أو تم دفعها بالفعل');
+                ->with('error', 'لا يمكن تفعيل الشركة في حالتها الحالية');
         }
 
-        $registrationInvoice = $invoice;
+        $registrationInvoice = $localCompany->invoices()
+            ->whereIn('type', ['registration', 'renewal'])
+            ->where('status', 'pending_review')
+            ->where('receipt_status', 'pending')
+            ->first();
+
+        if (!$registrationInvoice) {
+            $paidInvoice = $localCompany->invoices()
+                ->whereIn('type', ['registration', 'renewal'])
+                ->where('status', 'paid')
+                ->first();
+
+            if ($paidInvoice) {
+                return redirect()->route('admin.local-companies.show', $localCompany)
+                    ->with('info', 'تم دفع الفاتورة وتفعيل الشركة مسبقاً');
+            }
+
+            return redirect()->route('admin.local-companies.show', $localCompany)
+                ->with('error', 'لا يوجد إيصال قيد المراجعة لتفعيل الشركة');
+        }
 
         if (!$registrationInvoice->receipt_path) {
             return redirect()->route('admin.local-companies.show', $localCompany)
@@ -385,7 +432,7 @@ class LocalCompanyController extends Controller
         }
 
         DB::transaction(function () use ($localCompany, $registrationInvoice) {
-            $validityYears = (int) (Setting::where('key', 'local_company_validity_years')->first()?->value ?? 1);
+            $validityYears = $localCompany->company_type === 'distributor' ? 5 : 1;
 
             $localCompany->update([
                 'status' => 'active',
@@ -394,21 +441,18 @@ class LocalCompanyController extends Controller
                 'expires_at' => now()->addYears($validityYears),
             ]);
 
-            $registrationInvoice->update([
-                'status' => 'paid',
-                'paid_at' => now(),
-                'paid_by' => auth()->id(),
-            ]);
+            $registrationInvoice->approveReceipt(auth()->id());
 
             $localCompany->logActivity('activated', 'تم تفعيل الشركة');
         });
 
-        // Send email notification to representative
-        try {
-            Mail::to($localCompany->representative->email)->send(new CompanyActivatedMail($localCompany));
-            $localCompany->logActivity('email_sent', 'تم إرسال إيميل إشعار التفعيل إلى: ' . $localCompany->representative->email);
-        } catch (\Exception $e) {
-            Log::error('Failed to send company activated email: ' . $e->getMessage());
+        if ($localCompany->representative && $localCompany->representative->email) {
+            try {
+                Mail::to($localCompany->representative->email)->send(new CompanyActivatedMail($localCompany));
+                $localCompany->logActivity('email_sent', 'تم إرسال إيميل إشعار التفعيل إلى: ' . $localCompany->representative->email);
+            } catch (\Exception $e) {
+                Log::error('Failed to send company activated email: ' . $e->getMessage());
+            }
         }
 
         return redirect()->route('admin.local-companies.show', $localCompany)
@@ -417,6 +461,11 @@ class LocalCompanyController extends Controller
 
     public function reject(Request $request, LocalCompany $localCompany)
     {
+        if (!in_array($localCompany->status, ['pending', 'approved', 'uploading_documents'])) {
+            return redirect()->route('admin.local-companies.show', $localCompany)
+                ->with('error', 'لا يمكن رفض الشركة في حالتها الحالية');
+        }
+
         $request->validate([
             'rejection_reason' => 'required|string|max:1000',
         ], [
@@ -430,17 +479,31 @@ class LocalCompanyController extends Controller
 
         $localCompany->logActivity('rejected', 'تم رفض الشركة. السبب: ' . $request->rejection_reason);
 
+        $emailFailed = false;
         if ($localCompany->email) {
-            Mail::to($localCompany->email)->send(new LocalCompanyRejected($localCompany));
-            $localCompany->logActivity('email_sent', 'تم إرسال إيميل إشعار الرفض إلى: ' . $localCompany->email);
+            try {
+                Mail::to($localCompany->email)->send(new LocalCompanyRejected($localCompany));
+                $localCompany->logActivity('email_sent', 'تم إرسال إيميل إشعار الرفض إلى: ' . $localCompany->email);
+            } catch (\Exception $e) {
+                Log::error('Failed to send local company rejected email: ' . $e->getMessage());
+                $emailFailed = true;
+            }
         }
 
+        $message = 'تم رفض الشركة';
+        $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : '';
+
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم رفض الشركة');
+            ->with('success', $message);
     }
 
     public function restorePending(LocalCompany $localCompany)
     {
+        if ($localCompany->status !== 'rejected') {
+            return redirect()->route('admin.local-companies.show', $localCompany)
+                ->with('error', 'يمكن فقط إعادة الشركات المرفوضة للمراجعة');
+        }
+
         $localCompany->update([
             'status' => 'pending',
             'rejection_reason' => null,
@@ -450,6 +513,92 @@ class LocalCompanyController extends Controller
 
         return redirect()->route('admin.local-companies.show', $localCompany)
             ->with('success', 'تم إعادة الشركة للمراجعة');
+    }
+
+    public function suspend(Request $request, LocalCompany $localCompany)
+    {
+        if (!in_array($localCompany->status, ['active', 'expired'])) {
+            return redirect()->route('admin.local-companies.show', $localCompany)
+                ->with('error', 'لا يمكن تعليق الشركة في حالتها الحالية');
+        }
+
+        $request->validate([
+            'suspension_reason' => 'required|string|max:1000',
+        ], [
+            'suspension_reason.required' => 'يرجى إدخال سبب التعليق',
+        ]);
+
+        $localCompany->update([
+            'status' => 'suspended',
+            'suspension_reason' => $request->suspension_reason,
+        ]);
+
+        $localCompany->logActivity('suspended', 'تم تعليق الشركة. السبب: ' . $request->suspension_reason);
+
+        return redirect()->route('admin.local-companies.show', $localCompany)
+            ->with('success', 'تم تعليق الشركة بنجاح');
+    }
+
+    public function unsuspend(LocalCompany $localCompany)
+    {
+        if ($localCompany->status !== 'suspended') {
+            return redirect()->route('admin.local-companies.show', $localCompany)
+                ->with('error', 'الشركة غير معلقة');
+        }
+
+        $previousStatus = ($localCompany->expires_at && $localCompany->expires_at->isPast()) ? 'expired' : 'active';
+
+        $localCompany->update([
+            'status' => $previousStatus,
+            'suspension_reason' => null,
+        ]);
+
+        $localCompany->logActivity('unsuspended', 'تم إلغاء تعليق الشركة');
+
+        return redirect()->route('admin.local-companies.show', $localCompany)
+            ->with('success', 'تم إلغاء تعليق الشركة');
+    }
+
+    public function requestRenewal(LocalCompany $localCompany)
+    {
+        if (!in_array($localCompany->status, ['active', 'expired'])) {
+            return redirect()->route('admin.local-companies.show', $localCompany)
+                ->with('error', 'لا يمكن طلب تجديد الشركة في حالتها الحالية');
+        }
+
+        $hasRecentRenewal = $localCompany->invoices()
+            ->where('type', 'renewal')
+            ->whereIn('status', ['unpaid', 'pending_review'])
+            ->exists();
+
+        if ($hasRecentRenewal) {
+            return redirect()->route('admin.local-companies.show', $localCompany)
+                ->with('error', 'يوجد فاتورة تجديد غير مدفوعة بالفعل');
+        }
+
+        $renewalFee = Setting::where('key', 'local_company_renewal_fee')->first()?->value ?? 500.00;
+
+        DB::transaction(function () use ($localCompany, $renewalFee) {
+            $invoice = $localCompany->invoices()->create([
+                'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
+                'type' => 'renewal',
+                'description' => 'رسوم تجديد الشركة المحلية',
+                'amount' => $renewalFee,
+                'status' => 'unpaid',
+                'due_date' => now()->addDays(30),
+                'created_by' => auth()->id(),
+            ]);
+
+            if ($localCompany->status === 'active' && $localCompany->isExpired()) {
+                $localCompany->update(['status' => 'expired']);
+                $localCompany->logActivity('expired', 'تم تغيير حالة الشركة إلى منتهية');
+            }
+
+            $localCompany->logActivity('renewal_requested', 'تم إنشاء فاتورة تجديد رقم: ' . $invoice->invoice_number);
+        });
+
+        return redirect()->route('admin.local-companies.show', $localCompany)
+            ->with('success', 'تم إنشاء فاتورة التجديد بنجاح');
     }
 
     public function certificate(LocalCompany $localCompany)

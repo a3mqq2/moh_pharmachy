@@ -14,6 +14,12 @@ use App\Http\Controllers\Representative\AuthController as RepresentativeAuthCont
 
 Route::redirect('/', '/login');
 
+Route::prefix('verify')->name('verify.')->group(function () {
+    Route::get('local-company/{localCompany}', [\App\Http\Controllers\VerificationController::class, 'localCompany'])->name('local-company');
+    Route::get('foreign-company/{foreignCompany}', [\App\Http\Controllers\VerificationController::class, 'foreignCompany'])->name('foreign-company');
+    Route::get('pharmaceutical-product/{product}', [\App\Http\Controllers\VerificationController::class, 'pharmaceuticalProduct'])->name('pharmaceutical-product');
+});
+
 Route::middleware(['guest:web', 'guest:representative'])->group(function () {
     Route::get('/login', [UnifiedAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [UnifiedAuthController::class, 'login'])->name('login.submit');
@@ -108,6 +114,8 @@ Route::middleware('auth:representative')->prefix('clea')->name('representative.'
     Route::post('pharmaceutical-products/{pharmaceuticalProduct}/update-details', [\App\Http\Controllers\Representative\PharmaceuticalProductController::class, 'updateDetails'])->name('pharmaceutical-products.update-details');
     Route::post('pharmaceutical-products/{pharmaceuticalProduct}/submit-details', [\App\Http\Controllers\Representative\PharmaceuticalProductController::class, 'submitDetails'])->name('pharmaceutical-products.submit-details');
     Route::post('pharmaceutical-products/{pharmaceuticalProduct}/invoices/{invoice}/upload-receipt', [\App\Http\Controllers\Representative\PharmaceuticalProductController::class, 'uploadReceipt'])->name('pharmaceutical-products.invoices.upload-receipt');
+
+    Route::post('document-update-requests', [\App\Http\Controllers\Representative\DocumentUpdateRequestController::class, 'store'])->name('document-update-requests.store');
 });
 
 /*

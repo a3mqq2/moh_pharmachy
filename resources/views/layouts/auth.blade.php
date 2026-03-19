@@ -486,6 +486,125 @@
       });
     </script>
 
+    <!-- Document Viewer Modal -->
+    <div class="modal fade" id="docViewerModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 shadow" style="height: 90vh;">
+                <div class="modal-header py-2 bg-dark text-white">
+                    <h6 class="modal-title" id="docViewerTitle"><i class="ti ti-file me-2"></i>عرض المستند</h6>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="#" id="docViewerDownload" class="btn btn-sm btn-outline-light" download>
+                            <i class="ti ti-download me-1"></i>تحميل
+                        </a>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="modal-body p-0 position-relative" style="overflow: hidden;">
+                    <div id="docViewerLoading" class="position-absolute top-50 start-50 translate-middle text-center d-none">
+                        <div class="spinner-border text-primary mb-2" role="status"></div>
+                        <p class="text-muted">جاري تحميل المستند...</p>
+                    </div>
+                    <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" class="d-none"></iframe>
+                    <div id="docViewerImage" class="d-none h-100 w-100 d-flex align-items-center justify-content-center overflow-auto bg-dark">
+                        <img src="" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    </div>
+                    <div id="docViewerUnsupported" class="d-none position-absolute top-50 start-50 translate-middle text-center">
+                        <i class="ti ti-file-off f-48 text-muted d-block mb-3"></i>
+                        <h6 class="text-muted mb-2">لا يمكن عرض هذا النوع من الملفات</h6>
+                        <p class="text-muted f-13 mb-3">يمكنك تحميل الملف لعرضه على جهازك</p>
+                        <a href="#" id="docViewerFallbackDownload" class="btn btn-primary">
+                            <i class="ti ti-download me-1"></i>تحميل الملف
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function openDocViewer(fileUrl, fileName, downloadUrl) {
+        const modal = document.getElementById('docViewerModal');
+        const frame = document.getElementById('docViewerFrame');
+        const imgContainer = document.getElementById('docViewerImage');
+        const unsupported = document.getElementById('docViewerUnsupported');
+        const loading = document.getElementById('docViewerLoading');
+        const title = document.getElementById('docViewerTitle');
+        const downloadBtn = document.getElementById('docViewerDownload');
+        const fallbackBtn = document.getElementById('docViewerFallbackDownload');
+
+        frame.classList.add('d-none');
+        frame.src = '';
+        imgContainer.classList.add('d-none');
+        unsupported.classList.add('d-none');
+        loading.classList.remove('d-none');
+
+        title.innerHTML = '<i class="ti ti-file me-2"></i>' + (fileName || 'عرض المستند');
+        downloadBtn.href = downloadUrl || fileUrl;
+        fallbackBtn.href = downloadUrl || fileUrl;
+
+        const ext = fileName ? fileName.split('.').pop().toLowerCase() : fileUrl.split('.').pop().toLowerCase().split('?')[0];
+        const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+        const pdfExts = ['pdf'];
+
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+
+        if (pdfExts.includes(ext)) {
+            frame.onload = function() { loading.classList.add('d-none'); };
+            frame.src = fileUrl;
+            frame.classList.remove('d-none');
+            loading.classList.add('d-none');
+        } else if (imageExts.includes(ext)) {
+            const img = imgContainer.querySelector('img');
+            img.onload = function() { loading.classList.add('d-none'); };
+            img.src = fileUrl;
+            imgContainer.classList.remove('d-none');
+            imgContainer.classList.add('d-flex');
+            loading.classList.add('d-none');
+        } else {
+            loading.classList.add('d-none');
+            unsupported.classList.remove('d-none');
+        }
+
+        modal.addEventListener('hidden.bs.modal', function cleanup() {
+            frame.src = '';
+            imgContainer.querySelector('img').src = '';
+            frame.classList.add('d-none');
+            imgContainer.classList.add('d-none');
+            unsupported.classList.add('d-none');
+            modal.removeEventListener('hidden.bs.modal', cleanup);
+        }, { once: true });
+    }
+
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.btn-doc-preview');
+        if (btn) {
+            e.preventDefault();
+            openDocViewer(btn.dataset.fileUrl, btn.dataset.fileName, btn.dataset.downloadUrl);
+        }
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    function confirmDelete(formId) {
+        Swal.fire({
+            title: 'تأكيد الحذف',
+            text: 'هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'نعم، احذف',
+            cancelButtonText: 'إلغاء'
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            }
+        });
+    }
+    </script>
+
     <!-- [Custom JS] -->
     @stack('scripts')
   </body>

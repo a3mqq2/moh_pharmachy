@@ -81,6 +81,7 @@ class CompanyActionNotification extends Notification
             'receipt_uploaded' => "قام {$this->representativeName} برفع إيصال دفع للشركة {$companyTypeArabic}: {$this->companyName}",
             'receipt_deleted' => "قام {$this->representativeName} بحذف إيصال دفع للشركة {$companyTypeArabic}: {$this->companyName}",
             'document_uploaded' => "قام {$this->representativeName} برفع مستند للشركة {$companyTypeArabic}: {$this->companyName}",
+            'document_updated' => "قام {$this->representativeName} بتعديل مستند للشركة {$companyTypeArabic} المفعلة: {$this->companyName} - يحتاج مراجعة",
             'document_deleted' => "قام {$this->representativeName} بحذف مستند للشركة {$companyTypeArabic}: {$this->companyName}",
             default => "إجراء جديد من {$this->representativeName} للشركة {$companyTypeArabic}: {$this->companyName}",
         };
@@ -110,6 +111,7 @@ class CompanyActionNotification extends Notification
             'receipt_uploaded' => 'ti-upload',
             'receipt_deleted' => 'ti-trash',
             'document_uploaded' => 'ti-file-upload',
+            'document_updated' => 'ti-file-alert',
             'document_deleted' => 'ti-file-x',
             default => 'ti-bell',
         };

@@ -24,12 +24,22 @@
         <div class="form-section">
             <h3>معلومات الصنف الدوائي</h3>
 
-            <div class="form-group">
-                <label for="product_name">اسم الصنف الدوائي المراد تسجيله <span class="required">*</span></label>
-                <input type="text" id="product_name" name="product_name" class="form-control @error('product_name') is-invalid @enderror" value="{{ old('product_name') }}" required>
-                @error('product_name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="product_name">الاسم التجاري <span class="required">*</span></label>
+                    <input type="text" id="product_name" name="product_name" class="form-control @error('product_name') is-invalid @enderror" value="{{ old('product_name') }}" required>
+                    @error('product_name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="scientific_name">الاسم العلمي <span class="required">*</span></label>
+                    <input type="text" id="scientific_name" name="scientific_name" class="form-control @error('scientific_name') is-invalid @enderror" value="{{ old('scientific_name') }}" required>
+                    @error('scientific_name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
 
             <div class="form-row">
@@ -85,6 +95,47 @@
                 @error('other_usage_method')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>التسجيل المسبق</h3>
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_pre_registered" id="is_pre_registered" value="1" {{ old('is_pre_registered') ? 'checked' : '' }}>
+                    <span>الصنف الدوائي مسجل من قبل</span>
+                </label>
+            </div>
+
+            <div id="preRegistrationFields" class="pre-registration-fields" style="display: {{ old('is_pre_registered') ? 'block' : 'none' }};">
+                <div class="alert-info-box">
+                    <i class="ti ti-info-circle"></i>
+                    <div>
+                        <strong>ملاحظة هامة</strong>
+                        <p>يرجى إدخال رقم القيد وسنة التسجيل الخاصة بالصنف المسجل مسبقاً. سيتم التحقق من هذه البيانات من قبل الإدارة.</p>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pre_registration_year">سنة التسجيل <span class="required">*</span></label>
+                        <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ old('pre_registration_year') }}" placeholder="مثال: 2024" min="1990" max="{{ date('Y') }}">
+                        @error('pre_registration_year')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pre_registration_sequence">الرقم التسلسلي <span class="required">*</span></label>
+                        <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ old('pre_registration_sequence') }}" placeholder="مثال: 15" min="1">
+                        @error('pre_registration_sequence')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group">
+                    <small>رقم القيد: <strong id="preRegPreview">-</strong></small>
+                </div>
             </div>
         </div>
 
@@ -307,6 +358,46 @@
         accent-color: #1a5f4a;
     }
 
+    .checkbox-group {
+        margin-bottom: 15px;
+    }
+
+    .pre-registration-fields {
+        margin-top: 15px;
+        padding: 15px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+    }
+
+    .alert-info-box {
+        display: flex;
+        gap: 10px;
+        padding: 12px 15px;
+        background: #dbeafe;
+        border: 1px solid #93c5fd;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        color: #1e40af;
+        font-size: 0.825rem;
+        align-items: flex-start;
+    }
+
+    .alert-info-box i {
+        font-size: 1.2rem;
+        margin-top: 2px;
+    }
+
+    .alert-info-box strong {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .alert-info-box p {
+        margin: 0;
+        line-height: 1.5;
+    }
+
     .local-company-info {
         margin-top: 15px;
     }
@@ -448,5 +539,41 @@
     if (document.getElementById('foreign_company_id').value) {
         document.getElementById('foreign_company_id').dispatchEvent(new Event('change'));
     }
+
+    var preRegCheckbox = document.getElementById('is_pre_registered');
+    var preRegFields = document.getElementById('preRegistrationFields');
+    var preRegYear = document.getElementById('pre_registration_year');
+    var preRegSeq = document.getElementById('pre_registration_sequence');
+    var preRegPreview = document.getElementById('preRegPreview');
+
+    if (preRegCheckbox) {
+        preRegCheckbox.addEventListener('change', function() {
+            preRegFields.style.display = this.checked ? 'block' : 'none';
+            if (!this.checked) {
+                preRegYear.value = '';
+                preRegSeq.value = '';
+                preRegPreview.textContent = '-';
+                preRegYear.removeAttribute('required');
+                preRegSeq.removeAttribute('required');
+            } else {
+                preRegYear.setAttribute('required', 'required');
+                preRegSeq.setAttribute('required', 'required');
+            }
+        });
+    }
+
+    function updatePreRegPreview() {
+        var year = preRegYear ? preRegYear.value : '';
+        var seq = preRegSeq ? preRegSeq.value : '';
+        if (year && seq) {
+            preRegPreview.textContent = year + '-' + seq;
+        } else {
+            preRegPreview.textContent = '-';
+        }
+    }
+
+    if (preRegYear) preRegYear.addEventListener('input', updatePreRegPreview);
+    if (preRegSeq) preRegSeq.addEventListener('input', updatePreRegPreview);
+    updatePreRegPreview();
 </script>
 @endpush

@@ -248,13 +248,15 @@
         <thead>
             <tr>
                 <th width="3%">#</th>
-                <th width="20%">اسم الصنف</th>
-                <th width="12%">الشكل الصيدلاني</th>
-                <th width="12%">التركيز</th>
-                <th width="20%">الشركة الأجنبية</th>
-                <th width="15%">الممثل</th>
-                <th width="10%">الحالة</th>
-                <th width="8%">تاريخ التسجيل</th>
+                <th width="13%">الاسم التجاري</th>
+                <th width="8%">رقم القيد</th>
+                <th width="11%">الاسم العلمي</th>
+                <th width="9%">الشكل الصيدلاني</th>
+                <th width="10%">التركيز</th>
+                <th width="18%">الشركة الأجنبية</th>
+                <th width="13%">الممثل</th>
+                <th width="8%">الحالة</th>
+                <th width="7%">تاريخ التسجيل</th>
             </tr>
         </thead>
         <tbody>
@@ -262,6 +264,8 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $product->product_name }}</td>
+                <td>{{ $product->registration_number ?? '-' }}</td>
+                <td>{{ $product->scientific_name }}</td>
                 <td>{{ $product->pharmaceutical_form }}</td>
                 <td>{{ $product->concentration }}</td>
                 <td>{{ $product->foreignCompany->company_name }}</td>
@@ -273,7 +277,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="7">إجمالي الأصناف</td>
+                <td colspan="8">إجمالي الأصناف</td>
                 <td>{{ $stats['total'] }}</td>
             </tr>
         </tfoot>

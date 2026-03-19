@@ -30,6 +30,8 @@ class CompanyController extends Controller
             'company_name' => 'required|string|max:255',
             'company_type' => 'required|in:distributor,supplier',
             'company_address' => 'nullable|string',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'street' => 'nullable|string|max:255',
             'city' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
@@ -38,7 +40,7 @@ class CompanyController extends Controller
 
             // Pre-registration fields
             'is_pre_registered' => 'nullable|boolean',
-            'pre_registration_number' => 'required_if:is_pre_registered,1|nullable|string|max:255',
+            'pre_registration_sequence' => 'required_if:is_pre_registered,1|nullable|integer|min:1',
             'pre_registration_year' => 'required_if:is_pre_registered,1|nullable|integer|min:1990|max:' . date('Y'),
 
             // Step 2: License Information
@@ -47,7 +49,7 @@ class CompanyController extends Controller
             'license_number' => 'nullable|string|max:255',
             'license_issuer' => 'nullable|string|max:255',
             'registration_date' => 'nullable|date',
-            'food_drug_registration_number' => 'nullable|string|max:255',
+            'food_drug_registration_number' => 'required|string|max:255',
             'chamber_of_commerce_number' => 'nullable|string|max:255',
 
             // Step 3: Manager Information
@@ -56,11 +58,17 @@ class CompanyController extends Controller
             'manager_phone' => 'required|string|max:255',
             'manager_email' => 'nullable|email|max:255',
         ], [
-            'pre_registration_number.required_if' => 'رقم القيد السابق مطلوب عند تحديد الشركة كمسجلة مسبقاً',
+            'food_drug_registration_number.required' => 'رقم التسجيل في هيئة الغذاء والدواء مطلوب',
+            'pre_registration_sequence.required_if' => 'الرقم التسلسلي مطلوب عند تحديد الشركة كمسجلة مسبقاً',
             'pre_registration_year.required_if' => 'سنة التسجيل مطلوبة عند تحديد الشركة كمسجلة مسبقاً',
             'pre_registration_year.min' => 'سنة التسجيل يجب أن تكون 1990 أو أحدث',
             'pre_registration_year.max' => 'سنة التسجيل لا يمكن أن تكون في المستقبل',
         ]);
+
+        if (!empty($validated['is_pre_registered']) && !empty($validated['pre_registration_sequence']) && !empty($validated['pre_registration_year'])) {
+            $validated['pre_registration_number'] = $validated['pre_registration_year'] . '-' . $validated['pre_registration_sequence'];
+        }
+        unset($validated['pre_registration_sequence']);
 
         $representative = Auth::guard('representative')->user();
 
@@ -136,6 +144,8 @@ class CompanyController extends Controller
             'company_name' => 'required|string|max:255',
             'company_type' => 'required|in:distributor,supplier',
             'company_address' => 'nullable|string',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'street' => 'nullable|string|max:255',
             'city' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
@@ -144,7 +154,7 @@ class CompanyController extends Controller
 
             // Pre-registration fields
             'is_pre_registered' => 'nullable|boolean',
-            'pre_registration_number' => 'required_if:is_pre_registered,1|nullable|string|max:255',
+            'pre_registration_sequence' => 'required_if:is_pre_registered,1|nullable|integer|min:1',
             'pre_registration_year' => 'required_if:is_pre_registered,1|nullable|integer|min:1990|max:' . date('Y'),
 
             // Step 2: License Information
@@ -153,7 +163,7 @@ class CompanyController extends Controller
             'license_number' => 'nullable|string|max:255',
             'license_issuer' => 'nullable|string|max:255',
             'registration_date' => 'nullable|date',
-            'food_drug_registration_number' => 'nullable|string|max:255',
+            'food_drug_registration_number' => 'required|string|max:255',
             'chamber_of_commerce_number' => 'nullable|string|max:255',
 
             // Step 3: Manager Information
@@ -162,11 +172,17 @@ class CompanyController extends Controller
             'manager_phone' => 'required|string|max:255',
             'manager_email' => 'nullable|email|max:255',
         ], [
-            'pre_registration_number.required_if' => 'رقم القيد السابق مطلوب عند تحديد الشركة كمسجلة مسبقاً',
+            'food_drug_registration_number.required' => 'رقم التسجيل في هيئة الغذاء والدواء مطلوب',
+            'pre_registration_sequence.required_if' => 'الرقم التسلسلي مطلوب عند تحديد الشركة كمسجلة مسبقاً',
             'pre_registration_year.required_if' => 'سنة التسجيل مطلوبة عند تحديد الشركة كمسجلة مسبقاً',
             'pre_registration_year.min' => 'سنة التسجيل يجب أن تكون 1990 أو أحدث',
             'pre_registration_year.max' => 'سنة التسجيل لا يمكن أن تكون في المستقبل',
         ]);
+
+        if (!empty($validated['is_pre_registered']) && !empty($validated['pre_registration_sequence']) && !empty($validated['pre_registration_year'])) {
+            $validated['pre_registration_number'] = $validated['pre_registration_year'] . '-' . $validated['pre_registration_sequence'];
+        }
+        unset($validated['pre_registration_sequence']);
 
         $company->update($validated);
 

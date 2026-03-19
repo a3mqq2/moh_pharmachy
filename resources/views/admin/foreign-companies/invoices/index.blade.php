@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.app')
 
 @section('title', 'فواتير الشركات الأجنبية')
@@ -9,15 +10,17 @@
 
 @section('content')
 
-
-<div class="card mt-3">
-    <div class="card-body py-2">
+<div class="card">
+    <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <h5 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>فواتير الشركات الأجنبية</h5>
+                <span class="badge bg-secondary">{{ $invoices->total() }} فاتورة</span>
+            </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="ti ti-filter me-1"></i> الفلاتر
+                    <i class="fas fa-filter me-1"></i> الفلاتر
                 </button>
-                <span class="badge bg-secondary align-self-center">{{ $invoices->total() }} فاتورة</span>
             </div>
         </div>
     </div>
@@ -64,19 +67,16 @@
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="ti ti-search me-1"></i> تطبيق
+                            <i class="fas fa-search me-1"></i> تطبيق
                         </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-</div>
-
-<div class="card mt-3">
-    <div class="card-body">
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover table-bordered mb-0">
                 <thead>
                     <tr>
                         <th>رقم الفاتورة</th>
@@ -118,20 +118,20 @@
                             @if($invoice->receipt_path)
                                 @if($invoice->receipt_status == 'pending')
                                     <span class="badge bg-info">
-                                        <i class="ti ti-clock"></i> قيد المراجعة
+                                        <i class="fas fa-clock"></i> قيد المراجعة
                                     </span>
                                 @elseif($invoice->receipt_status == 'approved')
                                     <span class="badge bg-success">
-                                        <i class="ti ti-check"></i> موافق عليه
+                                        <i class="fas fa-check"></i> موافق عليه
                                     </span>
                                 @elseif($invoice->receipt_status == 'rejected')
                                     <span class="badge bg-danger">
-                                        <i class="ti ti-x"></i> مرفوض
+                                        <i class="fas fa-times"></i> مرفوض
                                     </span>
                                 @endif
                             @else
                                 <span class="badge bg-secondary">
-                                    <i class="ti ti-file-off"></i> لا يوجد إيصال
+                                    <i class="fas fa-file"></i> لا يوجد إيصال
                                 </span>
                             @endif
                         </td>
@@ -144,21 +144,23 @@
                                 <a href="{{ route('admin.foreign-company-invoices.show', $invoice->id) }}"
                                    class="btn btn-sm btn-outline-primary"
                                    title="عرض التفاصيل">
-                                    <i class="ti ti-eye"></i>
+                                    <i class="fas fa-eye"></i>
                                 </a>
                                 @if($invoice->status == 'pending' && !$invoice->receipt_path)
                                 <a href="{{ route('admin.foreign-company-invoices.edit', $invoice->id) }}"
                                    class="btn btn-sm btn-outline-secondary"
                                    title="تعديل">
-                                    <i class="ti ti-edit"></i>
+                                    <i class="fas fa-edit"></i>
                                 </a>
                                 @endif
                                 @if($invoice->receipt_path)
+                                <button type="button" class="btn btn-sm btn-outline-primary btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('admin.foreign-companies.invoices.download-receipt', [$invoice->foreign_company_id, $invoice->id]) }}" title="عرض الإيصال">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                                 <a href="{{ route('admin.foreign-companies.invoices.download-receipt', [$invoice->foreign_company_id, $invoice->id]) }}"
                                    class="btn btn-sm btn-outline-info"
-                                   title="تحميل الإيصال"
-                                   target="_blank">
-                                    <i class="ti ti-download"></i>
+                                   title="تحميل الإيصال">
+                                    <i class="fas fa-download"></i>
                                 </a>
                                 @endif
                             </div>
@@ -167,7 +169,7 @@
                     @empty
                     <tr>
                         <td colspan="7" class="text-center py-5">
-                            <i class="ti ti-file-invoice" style="font-size: 3rem; color: #ccc;"></i>
+                            <i class="fas fa-file-invoice" style="font-size: 3rem; color: #ccc;"></i>
                             <p class="text-muted mt-2">لا توجد فواتير</p>
                         </td>
                     </tr>
@@ -175,13 +177,14 @@
                 </tbody>
             </table>
         </div>
-
-        @if($invoices->hasPages())
-        <div class="mt-4">
+    </div>
+    @if($invoices->hasPages())
+    <div class="card-footer">
+        <div class="d-flex justify-content-center">
             {{ $invoices->appends(request()->query())->links() }}
         </div>
-        @endif
     </div>
+    @endif
 </div>
 @endsection
 

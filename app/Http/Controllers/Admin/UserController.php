@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -11,11 +14,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the users.
-     */
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:view_users', only: ['index']),
+            new Middleware('permission:create_user', only: ['create', 'store']),
+            new Middleware('permission:edit_user', only: ['edit', 'update']),
+            new Middleware('permission:delete_user', only: ['destroy', 'bulkAction']),
+            new Middleware('permission:toggle_user_status', only: ['toggleStatus']),
+        ];
+    }
 
     public function index(Request $request)
     {
@@ -61,9 +71,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all();
+        $permissions = Permission::orderBy('group')->get()->groupBy('group');
         $roles = \Spatie\Permission\Models\Role::all();
-        return view('users.create', compact('permissions', 'roles'));
+        $departments = Department::where('is_active', true)->orderBy('sort_order')->get();
+        $groupLabels = $this->getPermissionGroupLabels();
+        return view('users.create', compact('permissions', 'roles', 'departments', 'groupLabels'));
     }
 
 
@@ -80,6 +92,8 @@ class UserController extends Controller
             'roles.*' => 'exists:roles,name',
             'permissions' => 'sometimes|array',
             'permissions.*' => 'exists:permissions,name',
+            'department_id' => 'nullable|exists:departments,id',
+            'job_title' => 'nullable|string|max:255',
         ]);
 
         $user = User::create([
@@ -87,6 +101,8 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'is_active' => true,
+            'department_id' => $request->department_id,
+            'job_title' => $request->job_title,
         ]);
 
         $user->syncRoles($request->input('roles', []));
@@ -102,10 +118,12 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $permissions = Permission::all();
+        $permissions = Permission::orderBy('group')->get()->groupBy('group');
         $roles = \Spatie\Permission\Models\Role::all();
+        $departments = Department::where('is_active', true)->orderBy('sort_order')->get();
         $user->load(['permissions', 'roles']);
-        return view('users.edit', compact('user', 'permissions', 'roles'));
+        $groupLabels = $this->getPermissionGroupLabels();
+        return view('users.edit', compact('user', 'permissions', 'roles', 'departments', 'groupLabels'));
     }
 
     /**
@@ -127,12 +145,16 @@ class UserController extends Controller
             'roles.*' => 'exists:roles,name',
             'permissions' => 'sometimes|array',
             'permissions.*' => 'exists:permissions,name',
+            'department_id' => 'nullable|exists:departments,id',
+            'job_title' => 'nullable|string|max:255',
         ]);
 
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'is_active' => true,
+            'department_id' => $request->department_id,
+            'job_title' => $request->job_title,
         ];
 
         if ($request->filled('password')) {
@@ -213,5 +235,19 @@ class UserController extends Controller
                         ->with('success', $message);
     }
 
-
+    private function getPermissionGroupLabels(): array
+    {
+        return [
+            'local_companies' => ['label' => 'الشركات المحلية', 'icon' => 'fas fa-building', 'color' => 'primary'],
+            'foreign_companies' => ['label' => 'الشركات الأجنبية', 'icon' => 'fas fa-globe-americas', 'color' => 'info'],
+            'pharmaceutical_products' => ['label' => 'الأصناف الدوائية', 'icon' => 'fas fa-capsules', 'color' => 'success'],
+            'invoices' => ['label' => 'الفواتير', 'icon' => 'fas fa-file-invoice-dollar', 'color' => 'warning'],
+            'documents' => ['label' => 'المستندات', 'icon' => 'fas fa-folder-open', 'color' => 'secondary'],
+            'users' => ['label' => 'المستخدمين والأقسام', 'icon' => 'fas fa-users-cog', 'color' => 'danger'],
+            'announcements' => ['label' => 'التعميمات', 'icon' => 'fas fa-bullhorn', 'color' => 'primary'],
+            'reports' => ['label' => 'التقارير', 'icon' => 'fas fa-chart-bar', 'color' => 'info'],
+            'representatives' => ['label' => 'ممثلي الشركات', 'icon' => 'fas fa-id-card', 'color' => 'success'],
+            'settings' => ['label' => 'الإعدادات', 'icon' => 'fas fa-cogs', 'color' => 'dark'],
+        ];
+    }
 }

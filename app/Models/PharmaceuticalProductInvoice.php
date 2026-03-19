@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class PharmaceuticalProductInvoice extends Model
@@ -55,18 +56,23 @@ class PharmaceuticalProductInvoice extends Model
 
     public static function generateInvoiceNumber(): string
     {
-        $year = date('Y');
-        $lastInvoice = self::whereYear('created_at', $year)
-            ->orderBy('id', 'desc')
-            ->first();
+        return DB::transaction(function () {
+            $year = date('Y');
+            $prefix = "PP-{$year}-";
 
-        if (!$lastInvoice) {
-            $sequence = 1;
-        } else {
-            $lastNumber = (int) substr($lastInvoice->invoice_number, -4);
-            $sequence = $lastNumber + 1;
-        }
+            DB::statement("SELECT GET_LOCK('pharma_invoice_number_{$year}', 10)");
 
-        return 'INV-' . $year . '-' . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+            try {
+                $lastInvoice = self::where('invoice_number', 'like', "{$prefix}%")
+                    ->orderByRaw('CAST(SUBSTRING(invoice_number, -4) AS UNSIGNED) DESC')
+                    ->first();
+
+                $sequence = $lastInvoice ? (int) substr($lastInvoice->invoice_number, -4) + 1 : 1;
+
+                return $prefix . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+            } finally {
+                DB::statement("SELECT RELEASE_LOCK('pharma_invoice_number_{$year}')");
+            }
+        });
     }
 }

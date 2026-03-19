@@ -21,6 +21,66 @@
 
     
 
+    @if($announcements->count() > 0)
+        <div class="announcements-section">
+            <div class="section-header" style="margin-top: 0;">
+                <h2><i class="ti ti-speakerphone" style="margin-left: 8px; color: #1a5f4a;"></i>التعميمات</h2>
+            </div>
+            @foreach($announcements as $announcement)
+                <div class="announcement-card announcement-{{ $announcement->priority }}">
+                    <div class="announcement-header">
+                        <div class="announcement-title-row">
+                            @if($announcement->priority === 'urgent')
+                                <span class="announcement-badge urgent">عاجل</span>
+                            @elseif($announcement->priority === 'important')
+                                <span class="announcement-badge important">مهم</span>
+                            @endif
+                            <h4 class="announcement-title">{{ $announcement->title }}</h4>
+                        </div>
+                        <span class="announcement-date">{{ $announcement->created_at->diffForHumans() }}</span>
+                    </div>
+                    <div class="announcement-body">{{ Str::limit($announcement->body, 200) }}</div>
+                </div>
+            @endforeach
+        </div>
+    @endif
+
+    @if($expiringItems->count() > 0)
+        <div class="expiry-alert">
+            <div class="alert-icon expiry-icon">
+                <i class="ti ti-clock-exclamation"></i>
+            </div>
+            <div class="alert-content">
+                <h3>تنبيه - قرب انتهاء الصلاحية</h3>
+                <p>الشركات التالية ستنتهي صلاحيتها خلال الثلاثة أشهر القادمة. يرجى رفع إيصال تحويل رسوم التجديد قبل انتهاء الصلاحية.</p>
+                <div class="expiry-items-list">
+                    @foreach($expiringItems as $item)
+                        <div class="expiry-item">
+                            <div class="expiry-info">
+                                @if($item['type'] === 'local_company')
+                                    <span class="expiry-type-badge local">شركة محلية</span>
+                                @else
+                                    <span class="expiry-type-badge foreign">شركة أجنبية</span>
+                                @endif
+                                <span class="expiry-name">{{ $item['name'] }}</span>
+                                <span class="expiry-date">ينتهي في: {{ $item['expires_at'] }}</span>
+                            </div>
+                            <div class="expiry-actions">
+                                <span class="expiry-days">{{ $item['days_remaining'] }} يوم متبقي</span>
+                                @if($item['invoice_route'])
+                                    <a href="{{ $item['invoice_route'] }}" class="expiry-pay-link">
+                                        <i class="ti ti-upload"></i>
+                                        رفع الإيصال
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if($pendingInvoices->count() > 0)
         <div class="pending-invoices-alert">
             <div class="alert-icon">
@@ -277,6 +337,134 @@
 
     .invoice-link i {
         font-size: 1rem;
+    }
+
+    /* Expiry Alert */
+    .expiry-alert {
+        display: flex;
+        gap: 20px;
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        border: 2px solid #f87171;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+    }
+
+    .expiry-icon {
+        flex-shrink: 0;
+        width: 50px;
+        height: 50px;
+        background: #ef4444;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .expiry-icon i {
+        font-size: 1.75rem;
+        color: #ffffff;
+    }
+
+    .expiry-alert .alert-content h3 {
+        color: #991b1b;
+    }
+
+    .expiry-alert .alert-content p {
+        color: #7f1d1d;
+    }
+
+    .expiry-items-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .expiry-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #ffffff;
+        border: 1px solid #f87171;
+        border-radius: 6px;
+        padding: 12px 18px;
+    }
+
+    .expiry-info {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .expiry-type-badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .expiry-type-badge.local {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .expiry-type-badge.foreign {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .expiry-name {
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.9rem;
+    }
+
+    .expiry-date {
+        color: #6b7280;
+        font-size: 0.8rem;
+    }
+
+    .expiry-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .expiry-days {
+        background: #fef2f2;
+        color: #991b1b;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .expiry-pay-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        background: #1a5f4a;
+        color: #ffffff;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .expiry-pay-link:hover {
+        background: #164538;
+    }
+
+    .expiry-pay-link i {
+        font-size: 0.9rem;
     }
 
     /* Empty State */
@@ -538,6 +726,87 @@
         color: #9ca3af;
     }
 
+    /* Announcements */
+    .announcements-section {
+        margin-bottom: 30px;
+    }
+
+    .announcement-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 18px 20px;
+        margin-bottom: 12px;
+        transition: all 0.2s ease;
+        border-right: 4px solid #3b82f6;
+    }
+
+    .announcement-card:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .announcement-card.announcement-important {
+        border-right-color: #f59e0b;
+        background: #fffbeb;
+    }
+
+    .announcement-card.announcement-urgent {
+        border-right-color: #ef4444;
+        background: #fef2f2;
+    }
+
+    .announcement-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .announcement-title-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .announcement-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .announcement-badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .announcement-badge.urgent {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .announcement-badge.important {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .announcement-date {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        flex-shrink: 0;
+    }
+
+    .announcement-body {
+        font-size: 0.875rem;
+        color: #4b5563;
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .dashboard-header {
@@ -555,6 +824,24 @@
 
         .companies-table {
             font-size: 0.8rem;
+        }
+
+        .expiry-alert {
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .expiry-item {
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .expiry-info {
+            flex-direction: column;
+            gap: 6px;
+            align-items: flex-start;
         }
 
         .pending-invoices-alert {

@@ -5,15 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class LocalCompany extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget('admin_menu_counts'));
+        static::saved(fn () => Cache::forget('dashboard_stats'));
+        static::deleted(fn () => Cache::forget('admin_menu_counts'));
+        static::deleted(fn () => Cache::forget('dashboard_stats'));
+    }
+
     protected $fillable = [
         'company_name',
         'company_type',
         'company_address',
+        'latitude',
+        'longitude',
         'street',
         'city',
         'phone',
@@ -33,6 +45,7 @@ class LocalCompany extends Model
         'manager_email',
         'status',
         'rejection_reason',
+        'suspension_reason',
         'user_id',
         'representative_id',
         'is_pre_registered',
@@ -41,6 +54,7 @@ class LocalCompany extends Model
         'last_renewal_date',
         'expires_at',
         'last_renewed_at',
+        'activated_at',
     ];
 
     protected $casts = [
@@ -93,21 +107,26 @@ class LocalCompany extends Model
 
     public static function generateRegistrationNumber()
     {
-        $currentYear = date('Y');
+        return DB::transaction(function () {
+            $currentYear = date('Y');
 
-        $lastCompany = self::whereNotNull('registration_number')
-            ->where('registration_number', 'like', $currentYear . '/%')
-            ->orderByRaw("CAST(SUBSTRING_INDEX(registration_number, '/', -1) AS UNSIGNED) DESC")
-            ->first();
+            DB::statement("SELECT GET_LOCK('local_reg_number_{$currentYear}', 10)");
 
-        if ($lastCompany && $lastCompany->registration_number) {
-            $parts = explode('/', $lastCompany->registration_number);
-            $lastSequence = (int) end($parts);
-            $newSequence = $lastSequence + 1;
-            return $currentYear . '/' . str_pad($newSequence, 2, '0', STR_PAD_LEFT);
-        }
+            try {
+                $lastCompany = self::whereNotNull('registration_number')
+                    ->where('registration_number', 'like', $currentYear . '-%')
+                    ->orderByRaw("CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED) DESC")
+                    ->first();
 
-        return $currentYear . '/01';
+                $nextSequence = ($lastCompany && preg_match('/-(\d+)$/', $lastCompany->registration_number, $matches))
+                    ? (int) $matches[1] + 1
+                    : 1;
+
+                return $currentYear . '-' . $nextSequence;
+            } finally {
+                DB::statement("SELECT RELEASE_LOCK('local_reg_number_{$currentYear}')");
+            }
+        });
     }
 
     public static function licenseTypes()
@@ -213,12 +232,13 @@ class LocalCompany extends Model
 
     public function renewCompany()
     {
-        $validityYears = (int) (Setting::where('key', 'local_company_validity_years')->first()?->value ?? 1);
+        $validityYears = $this->company_type === 'distributor' ? 5 : 1;
+        $baseDate = ($this->expires_at && $this->expires_at->isFuture()) ? $this->expires_at : now();
 
         $this->update([
             'status' => 'active',
             'last_renewed_at' => now(),
-            'expires_at' => now()->addYears($validityYears),
+            'expires_at' => \Carbon\Carbon::parse($baseDate)->addYears($validityYears),
         ]);
 
         $this->logActivity('renewed', 'تم تجديد صلاحية الشركة لمدة ' . $validityYears . ' سنة');
@@ -226,7 +246,7 @@ class LocalCompany extends Model
 
     public function calculateExpiryDate()
     {
-        $validityYears = (int) (Setting::where('key', 'local_company_validity_years')->first()?->value ?? 1);
+        $validityYears = $this->company_type === 'distributor' ? 5 : 1;
         return now()->addYears($validityYears);
     }
 

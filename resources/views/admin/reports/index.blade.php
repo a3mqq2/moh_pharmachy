@@ -10,7 +10,7 @@
                     <div class="d-flex align-items-center mb-3">
                         <div class="flex-shrink-0">
                             <div class="avtar avtar-lg bg-light-primary">
-                                <i class="ti ti-building fs-1 text-primary"></i>
+                                <i class="fas fa-building fs-1 text-primary"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
@@ -25,7 +25,36 @@
 
                     <div class="d-grid">
                         <a href="{{ route('admin.reports.local-companies') }}" class="btn btn-primary">
-                            <i class="ti ti-eye me-1"></i>
+                            <i class="fas fa-eye me-1"></i>
+                            عرض التقرير
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 border-info shadow-sm hover-card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <div class="avtar avtar-lg bg-light-info">
+                                <i class="fas fa-globe-americas fs-1 text-info"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">تقرير الشركات الأجنبية</h5>
+                            <small class="text-muted">تقرير شامل عن الشركات الأجنبية المسجلة</small>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-4">
+                        يعرض هذا التقرير معلومات عن الشركات الأجنبية مع خط الإنتاج والمنشأ وتاريخ الصلاحية
+                    </p>
+
+                    <div class="d-grid">
+                        <a href="{{ route('admin.reports.foreign-companies') }}" class="btn btn-info">
+                            <i class="fas fa-eye me-1"></i>
                             عرض التقرير
                         </a>
                     </div>
@@ -39,7 +68,7 @@
                     <div class="d-flex align-items-center mb-3">
                         <div class="flex-shrink-0">
                             <div class="avtar avtar-lg bg-light-success">
-                                <i class="ti ti-pill fs-1 text-success"></i>
+                                <i class="fas fa-capsules fs-1 text-success"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
@@ -54,7 +83,7 @@
 
                     <div class="d-grid">
                         <a href="{{ route('admin.reports.pharmaceutical-products') }}" class="btn btn-success">
-                            <i class="ti ti-eye me-1"></i>
+                            <i class="fas fa-eye me-1"></i>
                             عرض التقرير
                         </a>
                     </div>
@@ -68,7 +97,7 @@
                     <div class="d-flex align-items-center mb-3">
                         <div class="flex-shrink-0">
                             <div class="avtar avtar-lg bg-light-warning">
-                                <i class="ti ti-receipt fs-1 text-warning"></i>
+                                <i class="fas fa-file-invoice-dollar fs-1 text-warning"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
@@ -83,7 +112,7 @@
 
                     <div class="d-grid">
                         <a href="{{ route('admin.reports.invoices') }}" class="btn btn-warning">
-                            <i class="ti ti-eye me-1"></i>
+                            <i class="fas fa-eye me-1"></i>
                             عرض التقرير
                         </a>
                     </div>

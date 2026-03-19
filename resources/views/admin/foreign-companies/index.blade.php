@@ -9,19 +9,19 @@
 
 @section('content')
 
-
-<div class="card mb-3 mt-3">
-    <div class="card-body py-2">
+<div class="card">
+    <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="ti ti-filter me-1"></i> الفلاتر
-                </button>
-                <span class="badge bg-secondary align-self-center">{{ $companies->total() }} شركة</span>
+            <div class="d-flex align-items-center gap-2">
+                <h5 class="mb-0"><i class="fas fa-globe-americas me-2"></i>الشركات الأجنبية</h5>
+                <span class="badge bg-secondary">{{ $companies->total() }} شركة</span>
             </div>
             <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
+                    <i class="fas fa-filter me-1"></i> الفلاتر
+                </button>
                 <a href="{{ route('admin.foreign-companies.print', request()->query()) }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                    <i class="ti ti-printer me-1"></i> طباعة كشف
+                    <i class="fas fa-print me-1"></i> طباعة كشف
                 </a>
             </div>
         </div>
@@ -81,11 +81,11 @@
                     <div class="col-md-8">
                         <div class="d-flex gap-2 justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-search me-1"></i> بحث
+                                <i class="fas fa-search me-1"></i> بحث
                             </button>
                             @if(request()->hasAny(['search', 'status', 'entity_type', 'activity_type', 'country', 'date_from', 'date_to']))
                                 <a href="{{ route('admin.foreign-companies.index') }}" class="btn btn-outline-secondary">
-                                    <i class="ti ti-x me-1"></i> مسح الفلاتر
+                                    <i class="fas fa-times me-1"></i> مسح الفلاتر
                                 </a>
                             @endif
                         </div>
@@ -94,27 +94,32 @@
             </form>
         </div>
     </div>
-</div>
-
-<div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover table-bordered mb-0">
-                <thead class="text-white" style="background-color: #000000;">
+                <thead>
                     <tr>
-                        <th class="text-white">اسم الشركة</th>
-                        <th class="text-white">الدولة</th>
-                        <th class="text-white">النوع</th>
-                        <th class="text-white">النشاط</th>
-                        <th class="text-white">الشركة المحلية</th>
-                        <th class="text-white">المستندات</th>
-                        <th class="text-white">الحالة</th>
-                        <th class="text-white">تاريخ التسجيل</th>
+                        <th>رقم القيد</th>
+                        <th>اسم الشركة</th>
+                        <th>الدولة</th>
+                        <th>النوع</th>
+                        <th>النشاط</th>
+                        <th>الشركة المحلية</th>
+                        <th>المستندات</th>
+                        <th>الحالة</th>
+                        <th>تاريخ التسجيل</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($companies as $company)
                     <tr onclick="window.location='{{ route('admin.foreign-companies.show', $company) }}'" style="cursor: pointer;">
+                        <td>
+                            @if($company->registration_number)
+                                <span class="badge bg-dark">{{ $company->registration_number }}</span>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                         <td>
                             <strong>{{ $company->company_name }}</strong>
                             @if($company->email)
@@ -151,9 +156,9 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-5">
+                        <td colspan="9" class="text-center py-5">
                             <div class="text-muted">
-                                <i class="ti ti-world fs-1 d-block mb-2"></i>
+                                <i class="fas fa-globe-americas fs-1 d-block mb-2"></i>
                                 لا توجد شركات أجنبية مسجلة
                             </div>
                         </td>

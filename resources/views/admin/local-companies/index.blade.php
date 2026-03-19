@@ -18,21 +18,22 @@
 @section('content')
 
 
-<div class="card mb-3 mt-3">
-    <div class="card-body py-2">
+<div class="card">
+    <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <div class="d-flex gap-2">
-                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="ti ti-filter me-1"></i> الفلاتر
-                </button>
-                <span class="badge bg-secondary align-self-center">{{ $companies->total() }} شركة</span>
+            <div class="d-flex align-items-center gap-2">
+                <h5 class="mb-0"><i class="fas fa-building me-2"></i>{{ $pageTitle }}</h5>
+                <span class="badge bg-secondary">{{ $companies->total() }} شركة</span>
             </div>
             <div class="d-flex gap-2">
+                <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
+                    <i class="fas fa-filter me-1"></i> الفلاتر
+                </button>
                 <a href="{{ route('admin.local-companies.print', request()->query()) }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                    <i class="ti ti-printer me-1"></i> طباعة كشف
+                    <i class="fas fa-print me-1"></i> طباعة كشف
                 </a>
                 <a href="{{ route('admin.local-companies.create') }}" class="btn btn-success btn-sm">
-                    <i class="ti ti-plus me-1"></i> إضافة شركة جديدة
+                    <i class="fas fa-plus me-1"></i> إضافة شركة جديدة
                 </a>
             </div>
         </div>
@@ -99,7 +100,7 @@
                         <div class="form-check mt-4">
                             <input type="checkbox" name="missing_docs" value="1" class="form-check-input" id="missing_docs" {{ request('missing_docs') ? 'checked' : '' }}>
                             <label class="form-check-label" for="missing_docs">
-                                <i class="ti ti-alert-triangle text-warning me-1"></i>
+                                <i class="fas fa-exclamation-triangle text-warning me-1"></i>
                                 شركات بمستندات ناقصة
                             </label>
                         </div>
@@ -107,11 +108,11 @@
                     <div class="col-md-3">
                         <div class="d-flex gap-2 justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-search me-1"></i> بحث
+                                <i class="fas fa-search me-1"></i> بحث
                             </button>
                             @if(request()->hasAny(['search', 'status', 'company_type', 'license_type', 'license_specialty', 'city', 'date_from', 'date_to', 'missing_docs']))
                                 <a href="{{ route('admin.local-companies.index') }}" class="btn btn-outline-secondary">
-                                    <i class="ti ti-x me-1"></i> مسح الفلاتر
+                                    <i class="fas fa-times me-1"></i> مسح الفلاتر
                                 </a>
                             @endif
                         </div>
@@ -120,22 +121,19 @@
             </form>
         </div>
     </div>
-</div>
-
-<div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover table-bordered mb-0">
-                <thead class="text-white" style="background-color: #000000;">
+                <thead>
                     <tr>
-                        <th class="text-white">رقم القيد</th>
-                        <th class="text-white">اسم الشركة</th>
-                        <th class="text-white">التصنيف</th>
-                        <th class="text-white">المدير المسؤول</th>
-                        <th class="text-white">المدينة</th>
-                        <th class="text-white">الترخيص</th>
-                        <th class="text-white">الحالة</th>
-                        <th class="text-white">تاريخ الإضافة</th>
+                        <th>رقم القيد</th>
+                        <th>اسم الشركة</th>
+                        <th>التصنيف</th>
+                        <th>المدير المسؤول</th>
+                        <th>المدينة</th>
+                        <th>الترخيص</th>
+                        <th>الحالة</th>
+                        <th>تاريخ الإضافة</th>
                     </tr>
                 </thead>
                 <tbody>

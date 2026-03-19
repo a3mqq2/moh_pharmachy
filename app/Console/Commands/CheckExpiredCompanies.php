@@ -43,13 +43,22 @@ class CheckExpiredCompanies extends Command
         foreach ($companies as $company) {
             $company->markAsExpired();
 
-            $company->invoices()->create([
-                'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
-                'amount' => $renewalFee,
-                'description' => 'رسوم تجديد الشركة المحلية',
-                'status' => 'unpaid',
-                'due_date' => now()->addDays(30),
-            ]);
+            $hasRecentRenewal = $company->invoices()
+                ->where('type', 'renewal')
+                ->whereIn('status', ['unpaid', 'paid'])
+                ->where('created_at', '>=', now()->subMonths(6))
+                ->exists();
+
+            if (!$hasRecentRenewal) {
+                $company->invoices()->create([
+                    'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
+                    'type' => 'renewal',
+                    'amount' => $renewalFee,
+                    'description' => 'رسوم تجديد الشركة المحلية',
+                    'status' => 'unpaid',
+                    'due_date' => now()->addDays(30),
+                ]);
+            }
 
             $count++;
         }
@@ -71,13 +80,21 @@ class CheckExpiredCompanies extends Command
         foreach ($companies as $company) {
             $company->markAsExpired();
 
-            $company->invoices()->create([
-                'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
-                'amount' => $renewalFee,
-                'description' => 'رسوم تجديد الشركة الأجنبية',
-                'status' => 'pending',
-                'due_date' => now()->addDays(30),
-            ]);
+            $hasRecentRenewal = $company->invoices()
+                ->where('description', 'like', '%تجديد%')
+                ->whereIn('status', ['pending', 'paid'])
+                ->where('created_at', '>=', now()->subMonths(6))
+                ->exists();
+
+            if (!$hasRecentRenewal) {
+                $company->invoices()->create([
+                    'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
+                    'amount' => $renewalFee,
+                    'description' => 'رسوم تجديد الشركة الأجنبية',
+                    'status' => 'pending',
+                    'due_date' => now()->addDays(30),
+                ]);
+            }
 
             $count++;
         }

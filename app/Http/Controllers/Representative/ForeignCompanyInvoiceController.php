@@ -61,32 +61,30 @@ class ForeignCompanyInvoiceController extends Controller
             'receipt' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB max
         ]);
 
-        // Delete old receipt if exists
         if ($invoice->receipt_path && Storage::disk('public')->exists($invoice->receipt_path)) {
             Storage::disk('public')->delete($invoice->receipt_path);
         }
 
-        // Store new receipt
         $file = $request->file('receipt');
-        $fileName = 'receipt_' . time() . '_' . $file->getClientOriginalName();
+        $fileName = \Illuminate\Support\Str::random(32) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs(
             'foreign_companies/' . $company->id . '/receipts',
             $fileName,
             'public'
         );
 
-        // Update invoice
-        $invoice->update([
-            'receipt_path' => $filePath,
-            'receipt_uploaded_at' => now(),
-            'receipt_status' => 'pending',
-            'receipt_rejection_reason' => null,
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($invoice, $filePath, $company) {
+            $invoice->update([
+                'receipt_path' => $filePath,
+                'receipt_uploaded_at' => now(),
+                'receipt_status' => 'pending',
+                'receipt_rejection_reason' => null,
+            ]);
 
-        // Company status remains as 'pending_payment' to indicate payment receipt is under review
-        // It will only change to 'active' after admin approves the receipt
-
-        // Send notification to admins
+            if (in_array($company->status, ['pending_payment', 'active', 'expired'])) {
+                $company->update(['status' => 'payment_review']);
+            }
+        });
         $representative = auth('representative')->user();
         NotificationHelper::notifyAdmins(
             'receipt_uploaded',
@@ -140,12 +138,10 @@ class ForeignCompanyInvoiceController extends Controller
                 ->with('error', 'لا يمكن حذف إيصال الدفع في الحالة الحالية');
         }
 
-        // Delete receipt file
         if ($invoice->receipt_path && Storage::disk('public')->exists($invoice->receipt_path)) {
             Storage::disk('public')->delete($invoice->receipt_path);
         }
 
-        // Update invoice
         $invoice->update([
             'receipt_path' => null,
             'receipt_uploaded_at' => null,
@@ -153,7 +149,19 @@ class ForeignCompanyInvoiceController extends Controller
             'receipt_rejection_reason' => null,
         ]);
 
-        // Send notification to admins
+        if ($company->status === 'payment_review') {
+            $hasOtherPendingReceipts = $company->invoices()
+                ->where('id', '!=', $invoice->id)
+                ->where('receipt_status', 'pending')
+                ->exists();
+
+            if (!$hasOtherPendingReceipts) {
+                $previousStatus = $company->expires_at && $company->expires_at->isPast() ? 'expired' : 'pending_payment';
+                $company->update(['status' => $previousStatus]);
+            }
+        }
+
+
         NotificationHelper::notifyAdmins(
             'receipt_deleted',
             'foreign',
@@ -180,8 +188,6 @@ class ForeignCompanyInvoiceController extends Controller
             ->with('issuedBy')
             ->findOrFail($invoiceId);
 
-        // Generate PDF (you can use a library like DomPDF or similar)
-        // For now, returning a view that can be printed
         return view('representative.foreign-companies.invoices.pdf', compact('company', 'invoice'));
     }
 }

@@ -9,15 +9,17 @@
 
 @section('content')
 
-
-<div class="card mb-3 mt-3">
-    <div class="card-body py-2">
+<div class="card">
+    <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <h5 class="mb-0"><i class="fas fa-capsules me-2"></i>الأصناف الدوائية</h5>
+                <span class="badge bg-secondary">{{ $products->total() }} صنف دوائي</span>
+            </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="ti ti-filter me-1"></i> الفلاتر
+                    <i class="fas fa-filter me-1"></i> الفلاتر
                 </button>
-                <span class="badge bg-secondary align-self-center">{{ $products->total() }} صنف دوائي</span>
             </div>
         </div>
     </div>
@@ -57,11 +59,11 @@
                     <div class="col-md-3">
                         <div class="d-flex gap-2 justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-search me-1"></i> بحث
+                                <i class="fas fa-search me-1"></i> بحث
                             </button>
                             @if(request()->hasAny(['search', 'status', 'foreign_company', 'local_company']))
                                 <a href="{{ route('admin.pharmaceutical-products.index') }}" class="btn btn-outline-secondary">
-                                    <i class="ti ti-x me-1"></i> مسح الفلاتر
+                                    <i class="fas fa-times me-1"></i> مسح الفلاتر
                                 </a>
                             @endif
                         </div>
@@ -70,22 +72,20 @@
             </form>
         </div>
     </div>
-</div>
-
-<div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover table-bordered mb-0">
-                <thead class="text-white" style="background-color: #000000;">
+                <thead>
                     <tr>
-                        <th class="text-white">#</th>
-                        <th class="text-white">اسم الصنف الدوائي</th>
-                        <th class="text-white">الشكل الصيدلاني</th>
-                        <th class="text-white">الشركة الأجنبية</th>
-                        <th class="text-white">الشركة المحلية</th>
-                        <th class="text-white">الممثل</th>
-                        <th class="text-white">الحالة</th>
-                        <th class="text-white">تاريخ التقديم</th>
+                        <th>#</th>
+                        <th>الاسم التجاري</th>
+                        <th>الاسم العلمي</th>
+                        <th>الشكل الصيدلاني</th>
+                        <th>الشركة الأجنبية</th>
+                        <th>الشركة المحلية</th>
+                        <th>الممثل</th>
+                        <th>الحالة</th>
+                        <th>تاريخ التقديم</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,7 +96,11 @@
                         </td>
                         <td>
                             <strong>{{ $product->product_name }}</strong>
+                            @if($product->registration_number)
+                                <br><small class="text-muted">{{ $product->registration_number }}</small>
+                            @endif
                         </td>
+                        <td>{{ $product->scientific_name }}</td>
                         <td>{{ $product->pharmaceutical_form }}</td>
                         <td>{{ $product->foreignCompany->company_name }}</td>
                         <td>{{ $product->foreignCompany->localCompany->company_name }}</td>
@@ -104,11 +108,11 @@
                             <div>{{ $product->representative->name }}</div>
                             <div class="d-flex gap-2 mt-1">
                                 <a href="tel:{{ $product->representative->phone }}" class="text-decoration-none" onclick="event.stopPropagation();" title="اتصال">
-                                    <i class="ti ti-phone text-primary"></i>
+                                    <i class="fas fa-phone text-primary"></i>
                                 </a>
                                 @if($product->representative->phone)
                                 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $product->representative->phone) }}" target="_blank" class="text-decoration-none" onclick="event.stopPropagation();" title="واتساب">
-                                    <i class="ti ti-brand-whatsapp text-success"></i>
+                                    <i class="fab fa-whatsapp text-success"></i>
                                 </a>
                                 @endif
                                 <small class="text-muted" dir="ltr">{{ $product->representative->phone }}</small>
@@ -126,7 +130,7 @@
                     <tr>
                         <td colspan="8" class="text-center py-5">
                             <div class="text-muted">
-                                <i class="ti ti-pill fs-1 d-block mb-2"></i>
+                                <i class="fas fa-capsules fs-1 d-block mb-2"></i>
                                 لا توجد أصناف دوائية مسجلة
                             </div>
                         </td>

@@ -19,6 +19,10 @@ class ForeignCompanyDocument extends Model
         'file_size',
         'mime_type',
         'notes',
+        'status',
+        'rejection_reason',
+        'reviewed_by',
+        'reviewed_at',
     ];
 
     // Relations
@@ -94,6 +98,16 @@ class ForeignCompanyDocument extends Model
     }
 
     // Static methods
+    public function updateRequests()
+    {
+        return $this->morphMany(DocumentUpdateRequest::class, 'documentable');
+    }
+
+    public function pendingUpdateRequest()
+    {
+        return $this->morphOne(DocumentUpdateRequest::class, 'documentable')->where('status', 'pending');
+    }
+
     public static function getDocumentTypes(): array
     {
         return [

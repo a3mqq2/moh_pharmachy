@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Representative;
 
+use App\Helpers\NotificationHelper;
 use App\Http\Controllers\Controller;
 use App\Models\ForeignCompany;
 use App\Models\ForeignCompanyDocument;
@@ -69,14 +70,13 @@ class ForeignCompanyDocumentController extends Controller
 
         // Store the file
         $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
+        $fileName = \Illuminate\Support\Str::random(32) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs(
             'foreign_companies/' . $company->id . '/documents',
             $fileName,
             'public'
         );
 
-        // Create document record
         $document = $company->documents()->create([
             'document_type' => $validated['document_type'],
             'document_name' => $validated['document_name'],
@@ -84,9 +84,23 @@ class ForeignCompanyDocumentController extends Controller
             'file_size' => $file->getSize(),
             'mime_type' => $file->getMimeType(),
             'notes' => $validated['notes'] ?? null,
-            'status' => 'pending',
+            'status' => $company->isActiveOrApproved() ? 'pending' : 'approved',
         ]);
 
+
+        if ($company->isActiveOrApproved()) {
+            NotificationHelper::notifyAdmins(
+                'document_updated',
+                'foreign',
+                $company->company_name,
+                $company->id,
+                $representative->name,
+                ['المستند' => $validated['document_type']]
+            );
+
+            return redirect()->route('representative.foreign-companies.show', $company->id)
+                ->with('success', 'تم رفع المستند بنجاح. سيتم مراجعته من قبل الإدارة.');
+        }
 
         return redirect()->route('representative.foreign-companies.show', $company->id)
             ->with('success', 'تم رفع المستند بنجاح');
@@ -155,8 +169,7 @@ class ForeignCompanyDocumentController extends Controller
 
         $document = $company->documents()->findOrFail($documentId);
 
-        // Can only replace rejected documents
-        if ($document->status != 'rejected') {
+        if (!$company->isActiveOrApproved() && $document->status != 'rejected') {
             return redirect()->back()
                 ->with('error', 'يمكن فقط استبدال المستندات المرفوضة');
         }
@@ -174,26 +187,39 @@ class ForeignCompanyDocumentController extends Controller
 
         // Store new file
         $file = $request->file('file');
-        $fileName = time() . '_' . $file->getClientOriginalName();
+        $fileName = \Illuminate\Support\Str::random(32) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs(
             'foreign_companies/' . $company->id . '/documents',
             $fileName,
             'public'
         );
 
-        // Update document
         $document->update([
             'document_name' => $validated['document_name'],
             'file_path' => $filePath,
             'file_size' => $file->getSize(),
             'mime_type' => $file->getMimeType(),
             'notes' => $validated['notes'] ?? null,
-            'status' => 'pending',
+            'status' => $company->isActiveOrApproved() ? 'pending' : 'approved',
             'rejection_reason' => null,
             'reviewed_by' => null,
             'reviewed_at' => null,
         ]);
 
+
+        if ($company->isActiveOrApproved()) {
+            NotificationHelper::notifyAdmins(
+                'document_updated',
+                'foreign',
+                $company->company_name,
+                $company->id,
+                $representative->name,
+                ['المستند' => $document->document_type]
+            );
+
+            return redirect()->route('representative.foreign-companies.show', $company->id)
+                ->with('success', 'تم استبدال المستند بنجاح. سيتم مراجعته من قبل الإدارة.');
+        }
 
         return redirect()->route('representative.foreign-companies.show', $company->id)
             ->with('success', 'تم استبدال المستند بنجاح');

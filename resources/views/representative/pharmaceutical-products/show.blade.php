@@ -18,6 +18,11 @@
             <span class="badge {{ $pharmaceuticalProduct->status_badge_class }}">
                 {{ $pharmaceuticalProduct->status_name }}
             </span>
+            @if($pharmaceuticalProduct->registration_number)
+                <span class="badge" style="background: #1f2937; color: #fff;">
+                    {{ $pharmaceuticalProduct->registration_number }}
+                </span>
+            @endif
         </div>
     </div>
 
@@ -137,9 +142,19 @@
                 <div class="tab-pane fade show active" id="basic-info" role="tabpanel">
                     <h4 class="section-title">بيانات الصنف الدوائي</h4>
                     <table class="table table-bordered">
+                        @if($pharmaceuticalProduct->registration_number)
                         <tr>
-                            <th class="bg-light" width="30%">اسم الصنف الدوائي</th>
+                            <th class="bg-light" width="30%">رقم القيد</th>
+                            <td><strong>{{ $pharmaceuticalProduct->registration_number }}</strong></td>
+                        </tr>
+                        @endif
+                        <tr>
+                            <th class="bg-light" width="30%">الاسم التجاري</th>
                             <td><strong>{{ $pharmaceuticalProduct->product_name }}</strong></td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light">الاسم العلمي</th>
+                            <td>{{ $pharmaceuticalProduct->scientific_name }}</td>
                         </tr>
                         <tr>
                             <th class="bg-light">الشكل الصيدلاني</th>
@@ -576,6 +591,15 @@
                                                                     حذف
                                                                 </button>
                                                             </form>
+                                                        @elseif(!in_array($pharmaceuticalProduct->status, ['pending_final_approval']))
+                                                            @if($document->pendingUpdateRequest)
+                                                                <span class="badge bg-warning text-dark" style="font-size: 0.7rem;"><i class="ti ti-clock me-1"></i>طلب تعديل معلق</span>
+                                                            @else
+                                                                <button type="button" class="btn-doc btn-edit" style="color: #fff; background: #f59e0b; border-color: #f59e0b;" onclick="openUpdateRequestModal({{ $document->id }}, '{{ $document->original_name }}', 'pharmaceutical_product_document')">
+                                                                    <i class="ti ti-replace"></i>
+                                                                    طلب تعديل
+                                                                </button>
+                                                            @endif
                                                         @endif
                                                     </div>
                                                 </div>
@@ -795,6 +819,38 @@
                 <button type="submit" class="btn btn-primary"><i class="ti ti-save"></i> حفظ التعديل</button>
             </div>
         </form>
+    </div>
+</div>
+
+<div class="modal fade" id="updateRequestModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('representative.document-update-requests.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="documentable_type" id="ur_documentable_type">
+                <input type="hidden" name="documentable_id" id="ur_documentable_id">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="ti ti-replace me-2"></i>طلب تعديل مستند</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3">المستند: <strong id="ur_doc_name"></strong></p>
+                    <div class="mb-3">
+                        <label class="form-label">الملف الجديد <span class="text-danger">*</span></label>
+                        <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                        <small class="text-muted">الحد الأقصى: 10 ميجابايت</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">سبب التعديل</label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="اذكر سبب طلب التعديل..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-send me-1"></i>إرسال الطلب</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 @endsection
@@ -1816,6 +1872,24 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function openUpdateRequestModal(docId, docName, docType) {
+    var modal = document.getElementById('updateRequestModal');
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+    document.getElementById('ur_documentable_id').value = docId;
+    document.getElementById('ur_documentable_type').value = docType;
+    document.getElementById('ur_doc_name').textContent = docName;
+    var bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+    setTimeout(function() {
+        var backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) backdrop.style.zIndex = '9998';
+        modal.style.zIndex = '9999';
+    }, 50);
+}
+</script>
 <script>
     const uploadModal = document.getElementById('uploadModal');
 

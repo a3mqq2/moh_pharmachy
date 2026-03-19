@@ -71,10 +71,22 @@ class ForeignCompanyController extends Controller
             'products_count' => 'required|integer|min:1',
             'registered_countries' => 'nullable|array',
             'registered_countries.*' => 'string|max:100',
+            'is_pre_registered' => 'nullable|boolean',
+            'pre_registration_year' => 'required_if:is_pre_registered,1|nullable|integer|min:1990|max:' . date('Y'),
+            'pre_registration_sequence' => 'required_if:is_pre_registered,1|nullable|integer|min:1',
         ]);
 
         $validated['representative_id'] = $representative->id;
         $validated['status'] = 'uploading_documents';
+
+        if ($request->is_pre_registered) {
+            $validated['is_pre_registered'] = true;
+            $validated['pre_registration_number'] = $request->pre_registration_year . '-' . $request->pre_registration_sequence;
+        } else {
+            $validated['is_pre_registered'] = false;
+        }
+
+        unset($validated['pre_registration_year'], $validated['pre_registration_sequence']);
 
         $company = ForeignCompany::create($validated);
 
@@ -216,7 +228,20 @@ class ForeignCompanyController extends Controller
             'products_count' => 'required|integer|min:1',
             'registered_countries' => 'nullable|array',
             'registered_countries.*' => 'string|max:100',
+            'is_pre_registered' => 'nullable|boolean',
+            'pre_registration_year' => 'required_if:is_pre_registered,1|nullable|integer|min:1990|max:' . date('Y'),
+            'pre_registration_sequence' => 'required_if:is_pre_registered,1|nullable|integer|min:1',
         ]);
+
+        if ($request->is_pre_registered) {
+            $validated['is_pre_registered'] = true;
+            $validated['pre_registration_number'] = $request->pre_registration_year . '-' . $request->pre_registration_sequence;
+        } else {
+            $validated['is_pre_registered'] = false;
+            $validated['pre_registration_number'] = null;
+        }
+
+        unset($validated['pre_registration_year'], $validated['pre_registration_sequence']);
 
         $company->update($validated);
 

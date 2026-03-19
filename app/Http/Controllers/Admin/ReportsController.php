@@ -3,15 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ForeignCompany;
 use App\Models\LocalCompany;
 use App\Models\PharmaceuticalProduct;
 use App\Models\LocalCompanyInvoice;
 use App\Models\PharmaceuticalProductInvoice;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 
-class ReportsController extends Controller
+class ReportsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:view_reports'),
+        ];
+    }
+
     public function index()
     {
         return view('admin.reports.index');
@@ -19,6 +29,14 @@ class ReportsController extends Controller
 
     public function localCompanies(Request $request)
     {
+        $filtered = $request->hasAny(['status', 'from_date', 'to_date']);
+
+        if (!$filtered) {
+            $companies = collect();
+            $stats = ['total' => 0, 'active' => 0, 'pending' => 0, 'approved' => 0, 'rejected' => 0];
+            return view('admin.reports.local-companies', compact('companies', 'stats', 'filtered'));
+        }
+
         $query = LocalCompany::with('representative');
 
         if ($request->filled('status')) {
@@ -54,11 +72,19 @@ class ReportsController extends Controller
 
         $companies = $query->orderBy('created_at', 'desc')->paginate(50)->withQueryString();
 
-        return view('admin.reports.local-companies', compact('companies', 'stats'));
+        return view('admin.reports.local-companies', compact('companies', 'stats', 'filtered'));
     }
 
     public function pharmaceuticalProducts(Request $request)
     {
+        $filtered = $request->hasAny(['status', 'from_date', 'to_date']);
+
+        if (!$filtered) {
+            $products = collect();
+            $stats = ['total' => 0, 'active' => 0, 'pending_review' => 0, 'preliminary_approved' => 0, 'pending_final_approval' => 0, 'pending_payment' => 0, 'payment_review' => 0, 'rejected' => 0];
+            return view('admin.reports.pharmaceutical-products', compact('products', 'stats', 'filtered'));
+        }
+
         $query = PharmaceuticalProduct::with(['foreignCompany', 'representative']);
 
         if ($request->filled('status')) {
@@ -96,11 +122,74 @@ class ReportsController extends Controller
 
         $products = $query->orderBy('created_at', 'desc')->paginate(50)->withQueryString();
 
-        return view('admin.reports.pharmaceutical-products', compact('products', 'stats'));
+        return view('admin.reports.pharmaceutical-products', compact('products', 'stats', 'filtered'));
+    }
+
+    public function foreignCompanies(Request $request)
+    {
+        $filtered = $request->hasAny(['status', 'country', 'from_date', 'to_date']);
+
+        if (!$filtered) {
+            $companies = collect();
+            $stats = ['total' => 0, 'active' => 0, 'pending' => 0, 'approved' => 0, 'rejected' => 0, 'expired' => 0, 'suspended' => 0];
+            return view('admin.reports.foreign-companies', compact('companies', 'stats', 'filtered'));
+        }
+
+        $query = ForeignCompany::with(['representative', 'localCompany']);
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('country')) {
+            $query->where('country', $request->country);
+        }
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        $stats = [
+            'total' => (clone $query)->count(),
+            'active' => (clone $query)->where('status', 'active')->count(),
+            'pending' => (clone $query)->whereIn('status', ['pending', 'uploading_documents'])->count(),
+            'approved' => (clone $query)->where('status', 'approved')->count(),
+            'rejected' => (clone $query)->where('status', 'rejected')->count(),
+            'expired' => (clone $query)->where('status', 'expired')->count(),
+            'suspended' => (clone $query)->where('status', 'suspended')->count(),
+        ];
+
+        if ($request->has('print')) {
+            $companies = $query->orderBy('created_at', 'desc')->get();
+            return view('admin.reports.foreign-companies-print', compact('companies', 'stats'));
+        }
+
+        if ($request->has('export')) {
+            $companies = $query->orderBy('created_at', 'desc')->get();
+            return $this->exportForeignCompanies($companies, $stats);
+        }
+
+        $companies = $query->orderBy('created_at', 'desc')->paginate(50)->withQueryString();
+
+        return view('admin.reports.foreign-companies', compact('companies', 'stats', 'filtered'));
     }
 
     public function invoices(Request $request)
     {
+        $filtered = $request->hasAny(['type', 'status', 'from_date', 'to_date']);
+
+        if (!$filtered) {
+            $localInvoices = collect();
+            $pharmaInvoices = collect();
+            $stats = ['local_total' => 0, 'local_paid' => 0, 'local_unpaid' => 0, 'local_revenue' => 0, 'pharma_total' => 0, 'pharma_paid' => 0, 'pharma_unpaid' => 0, 'pharma_revenue' => 0, 'total_invoices' => 0, 'total_revenue' => 0];
+            $type = 'all';
+            return view('admin.reports.invoices', compact('localInvoices', 'pharmaInvoices', 'stats', 'type', 'filtered'));
+        }
+
         $type = $request->get('type', 'all');
 
         $localInvoices = collect();
@@ -188,7 +277,7 @@ class ReportsController extends Controller
             return $this->exportInvoices($localInvoices, $pharmaInvoices, $stats, $type);
         }
 
-        return view('admin.reports.invoices', compact('localInvoices', 'pharmaInvoices', 'stats', 'type'));
+        return view('admin.reports.invoices', compact('localInvoices', 'pharmaInvoices', 'stats', 'type', 'filtered'));
     }
 
     private function exportLocalCompanies($companies, $stats)
@@ -262,6 +351,44 @@ class ReportsController extends Controller
                 $product->representative->name,
                 $product->status_name,
                 $product->created_at->format('Y-m-d'),
+            ]);
+        }
+
+        fclose($output);
+        exit;
+    }
+
+    private function exportForeignCompanies($companies, $stats)
+    {
+        $filename = 'foreign_companies_report_' . date('Y-m-d') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        $output = fopen('php://output', 'w');
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        fputcsv($output, ['تقرير الشركات الأجنبية']);
+        fputcsv($output, ['تاريخ التقرير: ' . date('Y-m-d')]);
+        fputcsv($output, []);
+        fputcsv($output, ['الإجماليات']);
+        fputcsv($output, ['إجمالي الشركات', $stats['total']]);
+        fputcsv($output, ['مفعلة', $stats['active']]);
+        fputcsv($output, ['قيد المراجعة', $stats['pending']]);
+        fputcsv($output, ['مرفوضة', $stats['rejected']]);
+        fputcsv($output, ['منتهية', $stats['expired']]);
+        fputcsv($output, []);
+
+        fputcsv($output, ['اسم الشركة', 'الممثل', 'خط الإنتاج', 'المنشأ', 'الحالة', 'تاريخ الصلاحية']);
+
+        foreach ($companies as $company) {
+            fputcsv($output, [
+                $company->company_name,
+                $company->representative?->name ?? '-',
+                $company->activity_type_name,
+                $company->country,
+                $company->status_name,
+                $company->expires_at ? $company->expires_at->format('Y-m-d') : '-',
             ]);
         }
 

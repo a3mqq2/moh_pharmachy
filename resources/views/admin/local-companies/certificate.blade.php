@@ -133,6 +133,27 @@
             font-weight: bold;
         }
 
+        .qr-section {
+            position: absolute;
+            bottom: -29px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qr-code {
+            width: 60px;
+            height: 60px;
+        }
+
+        .qr-label {
+            font-size: 8pt;
+            color: #666;
+            font-weight: bold;
+        }
+
         @media print {
             body {
                 -webkit-print-color-adjust: exact !important;
@@ -149,27 +170,36 @@
             }
         }
 
-        .print-button {
+        .actions-bar {
             position: fixed;
             top: 20px;
             left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .action-button {
             padding: 10px 30px;
-            background: #0d47a1;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            z-index: 1000;
         }
 
-        .print-button:hover {
-            background: #1565c0;
-        }
+        .action-button.print { background: #0d47a1; }
+        .action-button.print:hover { background: #1565c0; }
+        .action-button.download { background: #2e7d32; }
+        .action-button.download:hover { background: #388e3c; }
+        .action-button:disabled { opacity: 0.6; cursor: wait; }
     </style>
 </head>
 <body>
-    <button class="print-button no-print" onclick="window.print()">طباعة الشهادة</button>
+    <div class="actions-bar no-print">
+        <button class="action-button print" onclick="window.print()">طباعة الشهادة</button>
+        <button class="action-button download" id="downloadBtn" onclick="downloadPDF()">تنزيل PDF</button>
+    </div>
 
     <div class="certificate-container">
         <div class="certificate-content">
@@ -227,12 +257,50 @@
                     <div class="signature-line"></div>
                 </div>
             </div>
+
+            <div class="qr-section">
+                <div class="qr-code" id="qrcode"></div>
+                <span class="qr-label">تحقق من هنا</span>
+            </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script>
-        // Auto print when ready (optional)
-        // window.onload = function() { window.print(); }
+    new QRCode(document.getElementById('qrcode'), {
+        text: '{{ route('verify.local-company', $localCompany->id) }}',
+        width: 60,
+        height: 60,
+        colorDark: '#0d47a1',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+    });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    function downloadPDF() {
+        var btn = document.getElementById('downloadBtn');
+        btn.disabled = true;
+        btn.textContent = 'جاري التحميل...';
+        var element = document.querySelector('.certificate-container');
+        html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff'
+        }).then(function(canvas) {
+            var imgData = canvas.toDataURL('image/jpeg', 0.95);
+            var pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+            pdf.save('شهادة_تسجيل_{{ $localCompany->company_name }}.pdf');
+            btn.disabled = false;
+            btn.textContent = 'تنزيل PDF';
+        }).catch(function() {
+            btn.disabled = false;
+            btn.textContent = 'تنزيل PDF';
+        });
+    }
     </script>
 </body>
 </html>

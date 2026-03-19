@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.app')
 
 @section('title', 'تفاصيل الفاتورة - ' . $invoice->invoice_number)
@@ -98,7 +99,7 @@
             <div class="tab-pane fade show active" id="invoice-content" role="tabpanel">
                 <div class="row">
                     <div class="col-md-6">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered info-table">
                             <tr>
                                 <th class="bg-light" width="40%">رقم الفاتورة</th>
                                 <td>
@@ -126,7 +127,7 @@
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered info-table">
                             <tr>
                                 <th class="bg-light" width="40%">تاريخ الإصدار</th>
                                 <td>{{ $invoice->created_at->format('Y-m-d H:i') }}</td>
@@ -159,7 +160,7 @@
             <div class="tab-pane fade" id="company-content" role="tabpanel">
                 <div class="row">
                     <div class="col-md-6">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered info-table">
                             <tr>
                                 <th class="bg-light" width="40%">اسم الشركة</th>
                                 <td><strong>{{ $invoice->foreignCompany->company_name }}</strong></td>
@@ -192,7 +193,7 @@
                         </table>
                     </div>
                     <div class="col-md-6">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered info-table">
                             <tr>
                                 <th class="bg-light" width="40%">ممثل الشركة</th>
                                 <td><strong>{{ $invoice->foreignCompany->representative->name ?? 'غير معروف' }}</strong></td>
@@ -277,10 +278,12 @@
                                 </tr>
                             </table>
 
-                            <div class="mt-3">
+                            <div class="mt-3 d-flex gap-2">
+                                <button type="button" class="btn btn-info btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('admin.foreign-companies.invoices.download-receipt', [$invoice->foreign_company_id, $invoice->id]) }}">
+                                    <i class="ti ti-eye me-1"></i>عرض الإيصال
+                                </button>
                                 <a href="{{ route('admin.foreign-companies.invoices.download-receipt', [$invoice->foreign_company_id, $invoice->id]) }}"
-                                   class="btn btn-primary"
-                                   target="_blank">
+                                   class="btn btn-primary">
                                     <i class="ti ti-download me-1"></i>
                                     تحميل الإيصال
                                 </a>

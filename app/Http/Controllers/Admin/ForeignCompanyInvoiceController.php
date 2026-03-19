@@ -8,12 +8,28 @@ use App\Models\ForeignCompany;
 use App\Models\ForeignCompanyInvoice;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
-class ForeignCompanyInvoiceController extends Controller
+class ForeignCompanyInvoiceController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:view_invoices', only: ['index', 'show']),
+            new Middleware('permission:create_invoice', only: ['store']),
+            new Middleware('permission:edit_invoice', only: ['edit', 'update']),
+            new Middleware('permission:delete_invoice', only: ['destroy']),
+            new Middleware('permission:cancel_invoice', only: ['cancel']),
+            new Middleware('permission:approve_payment_receipt', only: ['approveReceipt']),
+            new Middleware('permission:reject_payment_receipt', only: ['rejectReceipt']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = ForeignCompanyInvoice::with([
@@ -23,29 +39,24 @@ class ForeignCompanyInvoiceController extends Controller
             'approvedBy'
         ]);
 
-        // Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Filter by receipt status
         if ($request->filled('receipt_status')) {
             $query->where('receipt_status', $request->receipt_status);
         }
 
-        // Search by invoice number
         if ($request->filled('search')) {
             $query->where('invoice_number', 'like', '%' . $request->search . '%');
         }
 
-        // Sort
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
         $query->orderBy($sortBy, $sortOrder);
 
         $invoices = $query->paginate(15);
 
-        // Statistics
         $stats = [
             'total' => ForeignCompanyInvoice::count(),
             'pending' => ForeignCompanyInvoice::where('status', 'pending')->count(),
@@ -77,22 +88,11 @@ class ForeignCompanyInvoiceController extends Controller
     {
         $company = ForeignCompany::findOrFail($companyId);
 
-        if ($company->status != 'approved') {
+        if (!in_array($company->status, ['approved', 'active', 'expired'])) {
             return redirect()->back()
-                ->with('error', 'لا يمكن إصدار فاتورة إلا للشركات المقبولة');
+                ->with('error', 'لا يمكن إصدار فاتورة للشركة في حالتها الحالية');
         }
 
-        // Check if there's already a pending invoice
-        $existingInvoice = $company->invoices()
-            ->where('status', 'pending')
-            ->first();
-
-        if ($existingInvoice) {
-            return redirect()->back()
-                ->with('error', 'يوجد فاتورة قائمة بالفعل لهذه الشركة');
-        }
-
-        // Get default amount from settings
         $defaultAmount = Setting::get('foreign_company_initial_fee', 5000);
 
         $validated = $request->validate([
@@ -100,19 +100,38 @@ class ForeignCompanyInvoiceController extends Controller
             'description' => 'nullable|string|max:500',
         ]);
 
-        $invoice = $company->invoices()->create([
-            'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
-            'amount' => $validated['amount'] ?? $defaultAmount,
-            'description' => $validated['description'] ?? 'رسوم تسجيل شركة أجنبية',
-            'status' => 'pending',
-            'issued_by' => auth()->id(),
-        ]);
+        $invoice = DB::transaction(function () use ($company, $validated, $defaultAmount) {
+            $lockedCompany = ForeignCompany::lockForUpdate()->find($company->id);
 
-        // Update company status
-        $company->markAsPendingPayment();
+            $existingInvoice = $lockedCompany->invoices()
+                ->where('status', 'pending')
+                ->first();
 
+            if ($existingInvoice) {
+                return null;
+            }
 
-        return redirect()->route('admin.foreign-companies.invoices.show', $invoice->id)
+            $invoice = $lockedCompany->invoices()->create([
+                'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
+                'amount' => $validated['amount'] ?? $defaultAmount,
+                'description' => $validated['description'] ?? 'رسوم تسجيل شركة أجنبية',
+                'status' => 'pending',
+                'issued_by' => auth()->id(),
+            ]);
+
+            if ($lockedCompany->status === 'approved') {
+                $lockedCompany->markAsPendingPayment();
+            }
+
+            return $invoice;
+        });
+
+        if (!$invoice) {
+            return redirect()->back()
+                ->with('error', 'يوجد فاتورة قائمة بالفعل لهذه الشركة');
+        }
+
+        return redirect()->route('admin.foreign-company-invoices.show', $invoice->id)
             ->with('success', 'تم إصدار الفاتورة بنجاح');
     }
 
@@ -122,6 +141,11 @@ class ForeignCompanyInvoiceController extends Controller
         $invoice = $company->invoices()
             ->with('foreignCompany')
             ->findOrFail($invoiceId);
+
+        if ($invoice->status == 'cancelled') {
+            return redirect()->back()
+                ->with('error', 'لا يمكن التعامل مع فاتورة ملغاة');
+        }
 
         if ($invoice->receipt_status == 'approved') {
             return redirect()->back()
@@ -138,24 +162,52 @@ class ForeignCompanyInvoiceController extends Controller
                 ->with('error', 'لا يمكن الموافقة على هذا الإيصال في حالته الحالية');
         }
 
-        $invoice->approveReceipt();
+        DB::transaction(function () use ($company, $invoice) {
+            $invoice->approveReceipt();
 
-        if ($company->status == 'approved' || $company->status == 'pending_payment') {
-            $company->markAsActive();
+            if (!$company->registration_number) {
+                if ($company->is_pre_registered && $company->pre_registration_number) {
+                    $existingCompany = ForeignCompany::whereNotNull('registration_number')
+                        ->where('registration_number', $company->pre_registration_number)
+                        ->where('id', '!=', $company->id)
+                        ->first();
 
-            if ($company->representative && $company->representative->email) {
-                try {
-                    Mail::to($company->representative->email)->send(new ForeignCompanyActivated($company));
-                } catch (\Exception $e) {
-                    Log::error('Failed to send foreign company activated email: ' . $e->getMessage());
+                    if ($existingCompany) {
+                        throw new \Exception('رقم القيد ' . $company->pre_registration_number . ' مستخدم بالفعل');
+                    }
+
+                    $company->update([
+                        'registration_number' => $company->pre_registration_number,
+                    ]);
+                } else {
+                    $company->update([
+                        'registration_number' => ForeignCompany::generateRegistrationNumber(),
+                    ]);
                 }
             }
-        } elseif ($company->status == 'expired') {
-            $company->renewCompany();
+
+            if (in_array($company->status, ['approved', 'pending_payment'])) {
+                $company->markAsActive();
+            } elseif (in_array($company->status, ['payment_review', 'expired'])) {
+                $company->renewCompany();
+            }
+        });
+
+        $emailFailed = false;
+        if (in_array($company->status, ['active']) && $company->representative && $company->representative->email) {
+            try {
+                Mail::to($company->representative->email)->send(new ForeignCompanyActivated($company));
+            } catch (\Exception $e) {
+                Log::error('Failed to send foreign company activated email: ' . $e->getMessage());
+                $emailFailed = true;
+            }
         }
 
+        $message = 'تمت الموافقة على إيصال الدفع وتم تفعيل الشركة بنجاح';
+        $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : '';
+
         return redirect()->route('admin.foreign-companies.show', $company->id)
-            ->with('success', 'تمت الموافقة على إيصال الدفع وتم تفعيل الشركة بنجاح');
+            ->with('success', $message);
     }
 
     public function rejectReceipt(Request $request, $companyId, $invoiceId)
@@ -164,6 +216,11 @@ class ForeignCompanyInvoiceController extends Controller
         $invoice = $company->invoices()
             ->with('foreignCompany')
             ->findOrFail($invoiceId);
+
+        if ($invoice->status == 'cancelled') {
+            return redirect()->back()
+                ->with('error', 'لا يمكن التعامل مع فاتورة ملغاة');
+        }
 
         if ($invoice->receipt_status == 'rejected') {
             return redirect()->back()
@@ -184,12 +241,23 @@ class ForeignCompanyInvoiceController extends Controller
             'rejection_reason' => 'required|string|min:10|max:500',
         ]);
 
-        // Reject the receipt
-        $invoice->rejectReceipt($validated['rejection_reason']);
+        DB::transaction(function () use ($invoice, $validated, $company) {
+            $invoice->rejectReceipt($validated['rejection_reason']);
 
-        $company = $invoice->foreignCompany;
+            if ($company->status === 'payment_review') {
+                $hasPendingReceipts = $company->invoices()
+                    ->where('id', '!=', $invoice->id)
+                    ->where('receipt_status', 'pending')
+                    ->exists();
 
-        return redirect()->route('admin.foreign-companies.invoices.show', $invoice->id)
+                if (!$hasPendingReceipts) {
+                    $previousStatus = $company->expires_at && $company->expires_at->isPast() ? 'expired' : 'pending_payment';
+                    $company->update(['status' => $previousStatus]);
+                }
+            }
+        });
+
+        return redirect()->route('admin.foreign-company-invoices.show', $invoice->id)
             ->with('success', 'تم رفض إيصال الدفع بنجاح');
     }
 
@@ -217,8 +285,6 @@ class ForeignCompanyInvoiceController extends Controller
             'issuedBy'
         ])->findOrFail($invoiceId);
 
-        // Generate PDF (you can use a library like DomPDF or similar)
-        // For now, returning a view that can be printed
         return view('admin.foreign-companies.invoices.pdf', compact('invoice'));
     }
 
@@ -241,7 +307,6 @@ class ForeignCompanyInvoiceController extends Controller
             'cancellation_reason' => 'nullable|string|max:500',
         ]);
 
-        // Cancel the invoice
         $invoice->update([
             'status' => 'cancelled',
             'description' => $invoice->description . ' (ملغاة: ' . ($validated['cancellation_reason'] ?? 'بدون سبب محدد') . ')',
@@ -249,7 +314,7 @@ class ForeignCompanyInvoiceController extends Controller
 
         $company = $invoice->foreignCompany;
 
-        return redirect()->route('admin.foreign-companies.invoices.show', $invoice->id)
+        return redirect()->route('admin.foreign-company-invoices.show', $invoice->id)
             ->with('success', 'تم إلغاء الفاتورة بنجاح');
     }
 
@@ -288,7 +353,7 @@ class ForeignCompanyInvoiceController extends Controller
 
         $company = $invoice->foreignCompany;
 
-        return redirect()->route('admin.foreign-companies.invoices.show', $invoice->id)
+        return redirect()->route('admin.foreign-company-invoices.show', $invoice->id)
             ->with('success', 'تم تحديث الفاتورة بنجاح');
     }
 }

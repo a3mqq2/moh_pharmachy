@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.auth')
 
 @section('title', 'تفاصيل الفاتورة')
@@ -78,6 +79,9 @@
                     @endif
                 </div>
                 <div class="receipt-actions">
+                    <button type="button" class="btn-icon btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.invoices.download-receipt', $invoice) }}" title="عرض">
+                        <i class="ti ti-eye"></i>
+                    </button>
                     <a href="{{ route('representative.invoices.download-receipt', $invoice) }}" class="btn-icon" title="تحميل">
                         <i class="ti ti-download"></i>
                     </a>

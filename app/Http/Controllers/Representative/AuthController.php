@@ -205,8 +205,13 @@ class AuthController extends Controller
             return back()->with('error', 'رمز التحقق غير صحيح أو منتهي الصلاحية');
         }
 
-        // Find representative and login
         $representative = CompanyRepresentative::find($loginData['representative_id']);
+
+        if (!$representative) {
+            session()->forget('login_data');
+            return redirect()->route('login')
+                ->with('error', 'الحساب غير موجود. يرجى التسجيل مرة أخرى');
+        }
 
         Auth::guard('representative')->login($representative, $loginData['remember']);
         $request->session()->regenerate();
@@ -322,8 +327,14 @@ class AuthController extends Controller
                 ->with('error', 'انتهت صلاحية الجلسة، يرجى المحاولة مرة أخرى');
         }
 
-        // Update password
         $representative = CompanyRepresentative::find($resetData['representative_id']);
+
+        if (!$representative) {
+            session()->forget('password_reset_data');
+            return redirect()->route('forgot-password')
+                ->with('error', 'الحساب غير موجود');
+        }
+
         $representative->update([
             'password' => Hash::make($request->password),
         ]);

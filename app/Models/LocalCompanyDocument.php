@@ -20,6 +20,9 @@ class LocalCompanyDocument extends Model
         'file_size',
         'notes',
         'uploaded_by',
+        'status',
+        'reviewed_by',
+        'reviewed_at',
     ];
 
     public function localCompany()
@@ -43,6 +46,7 @@ class LocalCompanyDocument extends Model
             'assignment_letter' => 'رسالة التكليف + رقم الهوية / الجواز',
             'practice_permit' => 'إذن مزاولة المهنة + إذن فتح منشأة',
             'official_email' => 'بريد إلكتروني رسمي باسم الشركة',
+            'factory_registration' => 'رسالة التنفيذ من المصنع أو شهادة تسجيل سارية المفعول للتسجيل المصنعي',
             'other' => 'أخرى',
         ];
     }
@@ -93,6 +97,16 @@ class LocalCompanyDocument extends Model
         return in_array(strtolower($this->file_extension), ['jpg', 'jpeg', 'png', 'gif', 'webp']);
     }
 
+    public function updateRequests()
+    {
+        return $this->morphMany(DocumentUpdateRequest::class, 'documentable');
+    }
+
+    public function pendingUpdateRequest()
+    {
+        return $this->morphOne(DocumentUpdateRequest::class, 'documentable')->where('status', 'pending');
+    }
+
     public static function requiredDocumentTypes()
     {
         return [
@@ -104,6 +118,7 @@ class LocalCompanyDocument extends Model
             'assignment_letter',
             'practice_permit',
             'official_email',
+            'factory_registration',
         ];
     }
 }

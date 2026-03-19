@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Representative;
 
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
+use App\Models\ForeignCompany;
+use App\Models\LocalCompany;
 use App\Models\LocalCompanyInvoice;
 use App\Models\ForeignCompanyInvoice;
 use App\Models\PharmaceuticalProductInvoice;
@@ -76,6 +79,66 @@ class DashboardController extends Controller
                 ];
             }));
 
-        return view('representative.dashboard', compact('representative', 'hasActiveSupplierCompany', 'pendingInvoices'));
+        $hasLocalCompanies = $representative->companies()->exists();
+        $hasForeignCompanies = $representative->foreignCompanies()->exists();
+
+        $announcementsQuery = Announcement::latest()->take(5);
+        if ($hasLocalCompanies && !$hasForeignCompanies) {
+            $announcementsQuery->whereIn('target', ['all', 'local']);
+        } elseif (!$hasLocalCompanies && $hasForeignCompanies) {
+            $announcementsQuery->whereIn('target', ['all', 'foreign']);
+        }
+
+        $announcements = $announcementsQuery->get();
+
+        $threeMonthsFromNow = now()->addMonths(3);
+
+        $expiringItems = collect();
+
+        $expiringLocalCompanies = LocalCompany::where('representative_id', $representative->id)
+            ->where('status', 'active')
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '>', now())
+            ->where('expires_at', '<=', $threeMonthsFromNow)
+            ->get();
+
+        foreach ($expiringLocalCompanies as $company) {
+            $renewalInvoice = $company->invoices()
+                ->where('description', 'رسوم تجديد الشركة المحلية')
+                ->where('status', 'unpaid')
+                ->first();
+
+            $expiringItems->push([
+                'type' => 'local_company',
+                'name' => $company->company_name,
+                'expires_at' => $company->expires_at->format('Y-m-d'),
+                'days_remaining' => (int) now()->diffInDays($company->expires_at),
+                'invoice_route' => $renewalInvoice ? route('representative.invoices.show', $renewalInvoice->id) : null,
+            ]);
+        }
+
+        $expiringForeignCompanies = ForeignCompany::where('representative_id', $representative->id)
+            ->where('status', 'active')
+            ->whereNotNull('expires_at')
+            ->where('expires_at', '>', now())
+            ->where('expires_at', '<=', $threeMonthsFromNow)
+            ->get();
+
+        foreach ($expiringForeignCompanies as $company) {
+            $renewalInvoice = $company->invoices()
+                ->where('description', 'رسوم تجديد الشركة الأجنبية')
+                ->where('status', 'pending')
+                ->first();
+
+            $expiringItems->push([
+                'type' => 'foreign_company',
+                'name' => $company->company_name,
+                'expires_at' => $company->expires_at->format('Y-m-d'),
+                'days_remaining' => (int) now()->diffInDays($company->expires_at),
+                'invoice_route' => $renewalInvoice ? route('representative.foreign-companies.invoices.show', [$company->id, $renewalInvoice->id]) : null,
+            ]);
+        }
+
+        return view('representative.dashboard', compact('representative', 'hasActiveSupplierCompany', 'pendingInvoices', 'announcements', 'expiringItems'));
     }
 }

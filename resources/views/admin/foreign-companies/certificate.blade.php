@@ -40,96 +40,178 @@
 
         .certificate-content {
             position: absolute;
-            top: 340px;
+            top: 350px;
             left: 50px;
             right: 50px;
-            bottom: 120px;
+            bottom: 80px;
             display: flex;
             flex-direction: column;
             padding: 10px 30px;
         }
 
-        .certificate-body {
+        .approval-text {
             text-align: center;
+            font-size: 12pt;
             line-height: 1.8;
-            font-size: 14pt;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .reg-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+
+        .reg-table td {
+            padding: 4px 10px;
+            font-size: 11pt;
+            vertical-align: top;
+        }
+
+        .reg-table .label-cell {
+            width: 35%;
+            font-weight: bold;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .reg-table .sep-cell {
+            width: 3%;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .reg-table .value-cell {
+            width: 62%;
             color: #1a1a1a;
         }
 
-        .certificate-body p {
-            margin-bottom: 12px;
+        .reg-numbers {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 8px 0;
+            border-top: 1px solid #999;
+            border-bottom: 1px solid #999;
         }
 
-        .company-name {
-            font-size: 18pt;
+        .reg-num-item {
+            text-align: center;
+            font-size: 10pt;
+        }
+
+        .reg-num-label {
             font-weight: bold;
-            color: #b88f5c;
-            margin: 15px 0;
+            color: #555;
+            display: block;
+            margin-bottom: 2px;
         }
 
-        .info-row {
+        .reg-num-value {
+            font-weight: bold;
+            color: #1a1a1a;
+            font-size: 11pt;
+        }
+
+        .info-table {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .info-table td {
+            padding: 6px 10px;
+            font-size: 11.5pt;
+            vertical-align: top;
+        }
+
+        .info-label {
+            width: 38%;
+            font-weight: bold;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .info-sep {
+            width: 3%;
             text-align: center;
-            margin: 12px 0;
-            font-size: 13pt;
+            font-weight: bold;
         }
 
-        .registration-info {
-            text-align: center;
-            margin: 15px 0;
-            font-size: 12pt;
-        }
-
-        .registration-date-row {
-            text-align: center;
-            margin: 15px 0;
-            font-size: 12pt;
-        }
-
-        .registration-date-row p {
-            margin: 5px 0;
+        .info-value {
+            text-transform: uppercase;
+            color: #1a1a1a;
         }
 
         .validity-notice {
-            font-size: 11pt;
-            color: #666;
-            font-style: italic;
+            text-align: left;
+            font-size: 10.5pt;
+            margin-top: 15px;
+            padding-top: 10px;
+        }
+
+        .validity-notice span {
+            font-weight: bold;
         }
 
         .signatures {
             position: absolute;
-            bottom: 80px;
+            bottom: 60px;
             left: 50px;
             right: 50px;
             display: flex;
             justify-content: space-between;
-            font-size: 11pt;
+            font-size: 10pt;
             color: #333;
         }
 
         .signature-block {
             text-align: center;
-            width: 30%;
+            width: 45%;
         }
 
         .signature-title {
             font-weight: bold;
-            margin-bottom: 40px;
+            font-size: 10pt;
+            margin-bottom: 5px;
         }
 
         .signature-line {
             border-top: 1px solid #333;
-            margin-top: 50px;
+            margin-top: 45px;
             padding-top: 5px;
         }
 
-        .label {
-            font-weight: bold;
-            color: #555;
+        .qr-section {
+            position: absolute;
+            bottom: -29px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .value {
-            color: #b88f5c;
+        .qr-code {
+            width: 60px;
+            height: 60px;
+        }
+
+        .qr-label {
+            font-size: 8pt;
+            color: #666;
             font-weight: bold;
+        }
+
+        .prepared-by {
+            position: absolute;
+            bottom: 155px;
+            left: 50px;
+            right: 50px;
+            text-align: center;
+            font-size: 10pt;
+            font-weight: bold;
+            color: #333;
         }
 
         @media print {
@@ -148,97 +230,154 @@
             }
         }
 
-        .print-button {
+        .actions-bar {
             position: fixed;
             top: 20px;
             left: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .action-button {
             padding: 10px 30px;
-            background: #0d47a1;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            z-index: 1000;
         }
 
-        .print-button:hover {
-            background: #1565c0;
-        }
+        .action-button.print { background: #0d47a1; }
+        .action-button.print:hover { background: #1565c0; }
+        .action-button.download { background: #2e7d32; }
+        .action-button.download:hover { background: #388e3c; }
+        .action-button:disabled { opacity: 0.6; cursor: wait; }
     </style>
 </head>
 <body>
-    <button class="print-button no-print" onclick="window.print()">Print Certificate</button>
+    <div class="actions-bar no-print">
+        <button class="action-button print" onclick="window.print()">Print Certificate</button>
+        <button class="action-button download" id="downloadBtn" onclick="downloadPDF()">Download PDF</button>
+    </div>
 
     <div class="certificate-container">
         <div class="certificate-content">
-            <div class="certificate-body">
-                <p>
-                    This is to certify that the manufacturing site documents submitted for registration
-                    <br>
-                    to the Pharmacy Department, Ministry of Health have been reviewed and approved for:
-                </p>
+            <div class="approval-text">
+                The High Supreme Committee for Registration of Pharmaceutical Companies
+                and Products has approved
+                @if($foreignCompany->meeting_number)
+                    in its meeting No. (<strong>{{ $foreignCompany->meeting_number }}</strong>)
+                @endif
+                @if($foreignCompany->meeting_date)
+                    on (<strong>{{ $foreignCompany->meeting_date->format('d/m/Y') }}</strong>),
+                @endif
+                the registration of the following company:
+            </div>
 
-                <p><span class="label">Company:</span></p>
-                <p class="company-name">{{ $foreignCompany->company_name }}</p>
-
-                <div class="info-row">
-                    <p>
-                        <span class="label">Address:</span>
-                        <span class="value">{{ $foreignCompany->address }}</span>
-                    </p>
+            <div class="reg-numbers">
+                <div class="reg-num-item">
+                    <span class="reg-num-label">REGISTRATION NO.</span>
+                    <span class="reg-num-value">{{ $foreignCompany->registration_number ?? '-' }}</span>
                 </div>
-
-                <div class="info-row">
-                    <p>
-                        <span class="label">Country:</span>
-                        <span class="value">{{ $foreignCompany->country_en }}</span>
-                    </p>
+                <div class="reg-num-item">
+                    <span class="reg-num-label">REFERENCE NO.</span>
+                    <span class="reg-num-value">{{ $foreignCompany->reference_number }}</span>
                 </div>
-
-                <div class="registration-info">
-                    <p>
-                        <span class="label">Entity Type:</span>
-                        <span class="value">{{ ucfirst($foreignCompany->entity_type) }}</span>
-                        <span style="margin: 0 20px;">-</span>
-                        <span class="label">Activity Type:</span>
-                        <span class="value">{{ ucfirst(str_replace('_', ' ', $foreignCompany->activity_type)) }}</span>
-                    </p>
-                </div>
-
-                <div class="registration-date-row">
-                    <p>
-                        <span class="label">Registration Date:</span>
-                        <span class="value">{{ $foreignCompany->approved_at?->format('Y-m-d') }}</span>
-                    </p>
-                    <p class="validity-notice">
-                        This certificate is valid for one year from the date of issue.
-                    </p>
+                <div class="reg-num-item">
+                    <span class="reg-num-label">DATE OF ISSUE</span>
+                    <span class="reg-num-value">{{ $foreignCompany->approved_at?->format('d/m/Y') ?? '-' }}</span>
                 </div>
             </div>
 
+            <table class="info-table">
+                <tr>
+                    <td class="info-label">MANUFACTURING NAME</td>
+                    <td class="info-sep">:</td>
+                    <td class="info-value">{{ $foreignCompany->company_name }}</td>
+                </tr>
+                <tr>
+                    <td class="info-label">COUNTRY OF ORIGIN</td>
+                    <td class="info-sep">:</td>
+                    <td class="info-value">{{ $foreignCompany->country_en }}</td>
+                </tr>
+                <tr>
+                    <td class="info-label">MANUFACTURER ADDRESS</td>
+                    <td class="info-sep">:</td>
+                    <td class="info-value">{{ $foreignCompany->address }}</td>
+                </tr>
+                <tr>
+                    <td class="info-label">PRODUCTION LINE(S)</td>
+                    <td class="info-sep">:</td>
+                    <td class="info-value">{{ $foreignCompany->activity_type_en }}</td>
+                </tr>
+                <tr>
+                    <td class="info-label">LOCAL AGENT</td>
+                    <td class="info-sep">:</td>
+                    <td class="info-value">{{ $foreignCompany->localCompany?->company_name ?? '-' }}</td>
+                </tr>
+            </table>
+
+            <div class="validity-notice">
+                &#9734; <span>VALID FOR FIVE YEARS FROM DATE OF ISSUE.</span>
+            </div>
+
+            <div class="prepared-by">PREPARED BY:</div>
+
             <div class="signatures">
                 <div class="signature-block">
-                    <div class="signature-title">Prepared By</div>
                     <div class="signature-line"></div>
+                    <div class="signature-title">DIRECTOR OF PHARMACY<br>DEPARTMENT</div>
                 </div>
-
                 <div class="signature-block">
-                    <div class="signature-title">Head of Registration & Inspection</div>
                     <div class="signature-line"></div>
+                    <div class="signature-title">HEAD OF REGISTRATION<br>SECTION</div>
                 </div>
+            </div>
 
-                <div class="signature-block">
-                    <div class="signature-title">Director of Pharmacy Department</div>
-                    <div class="signature-line"></div>
-                </div>
+            <div class="qr-section">
+                <div class="qr-code" id="qrcode"></div>
+                <span class="qr-label">Verify Here</span>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script>
-        // Auto print when ready (optional)
-        // window.onload = function() { window.print(); }
+    new QRCode(document.getElementById('qrcode'), {
+        text: '{{ route('verify.foreign-company', $foreignCompany->id) }}',
+        width: 60,
+        height: 60,
+        colorDark: '#0d47a1',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+    });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+    function downloadPDF() {
+        var btn = document.getElementById('downloadBtn');
+        btn.disabled = true;
+        btn.textContent = 'Downloading...';
+        var element = document.querySelector('.certificate-container');
+        html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff'
+        }).then(function(canvas) {
+            var imgData = canvas.toDataURL('image/jpeg', 0.95);
+            var pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+            pdf.save('Registration_Certificate_{{ $foreignCompany->company_name }}.pdf');
+            btn.disabled = false;
+            btn.textContent = 'Download PDF';
+        }).catch(function() {
+            btn.disabled = false;
+            btn.textContent = 'Download PDF';
+        });
+    }
     </script>
 </body>
 </html>

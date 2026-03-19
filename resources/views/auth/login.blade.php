@@ -28,7 +28,7 @@
     
 
     <!-- Login Form -->
-    <form method="POST" action="{{ route('admin.login.submit') }}" class="login-form" dir="rtl">
+    <form method="POST" action="{{ route('login.submit') }}" class="login-form" dir="rtl">
         @csrf
 
         <div class="form-group">

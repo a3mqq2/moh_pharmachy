@@ -108,20 +108,30 @@ class GenerateAnnualInvoices extends Command
             $stats['foreign_companies_processed']++;
 
             try {
-                // Check if company activation was at least 1 year ago
                 $activationDate = Carbon::parse($company->activated_at);
-                $lastAnniversary = $activationDate->copy();
 
-                // Find the most recent anniversary
-                while ($lastAnniversary->addYear()->isPast()) {
-                    // Keep adding years
+                if ($activationDate->copy()->addYear()->isFuture()) {
+                    continue;
                 }
-                $lastAnniversary->subYear(); // Go back to the last anniversary that has passed
 
-                // Check if we already have an invoice for this anniversary
+                $lastAnniversary = $activationDate->copy();
+                while ($lastAnniversary->copy()->addYear()->isPast()) {
+                    $lastAnniversary->addYear();
+                }
+
+                $yearNumber = $activationDate->diffInYears($lastAnniversary);
+                if ($yearNumber < 1) {
+                    continue;
+                }
+
+                $now = Carbon::now();
+                if ($lastAnniversary->month != $now->month || $lastAnniversary->year != $now->year) {
+                    continue;
+                }
+
                 $existingInvoice = $company->invoices()
                     ->where('description', 'LIKE', '%رسوم تجديد سنوي%')
-                    ->where('created_at', '>=', $lastAnniversary)
+                    ->where('created_at', '>=', $lastAnniversary->copy()->startOfDay())
                     ->where('created_at', '<', $lastAnniversary->copy()->addDays(30))
                     ->first();
 
@@ -130,30 +140,31 @@ class GenerateAnnualInvoices extends Command
                     continue;
                 }
 
-                // Check if the anniversary is within the current month
-                $now = Carbon::now();
-                if ($lastAnniversary->month != $now->month || $lastAnniversary->year != $now->year) {
-                    continue;
-                }
-
                 if (!$testMode) {
-                    DB::transaction(function () use ($company, $annualFee, $activationDate, $lastAnniversary) {
-                        $yearNumber = $lastAnniversary->year - $activationDate->year;
+                    DB::transaction(function () use ($company, $annualFee, $yearNumber, $lastAnniversary) {
+                        $lockedCompany = ForeignCompany::lockForUpdate()->find($company->id);
+                        if (!$lockedCompany || $lockedCompany->status != 'active') {
+                            return;
+                        }
+
+                        $duplicateCheck = $lockedCompany->invoices()
+                            ->where('description', 'LIKE', '%رسوم تجديد سنوي%')
+                            ->where('created_at', '>=', $lastAnniversary->copy()->startOfDay())
+                            ->first();
+
+                        if ($duplicateCheck) {
+                            return;
+                        }
 
                         ForeignCompanyInvoice::create([
-                            'foreign_company_id' => $company->id,
+                            'foreign_company_id' => $lockedCompany->id,
                             'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
                             'amount' => $annualFee,
                             'description' => "رسوم تجديد سنوي للشركة الأجنبية - السنة {$yearNumber}",
                             'status' => 'pending',
-                            'issued_by' => 1, // System user
+                            'issued_by' => 1,
                             'due_date' => now()->addDays(30),
                         ]);
-
-                        // Update company status if needed
-                        if ($company->status == 'active') {
-                            $company->update(['status' => 'pending_payment']);
-                        }
                     });
 
                     $stats['foreign_invoices_created']++;
@@ -188,20 +199,30 @@ class GenerateAnnualInvoices extends Command
             $stats['local_companies_processed']++;
 
             try {
-                // Check if company activation was at least 1 year ago
                 $activationDate = Carbon::parse($company->activated_at);
-                $lastAnniversary = $activationDate->copy();
 
-                // Find the most recent anniversary
-                while ($lastAnniversary->addYear()->isPast()) {
-                    // Keep adding years
+                if ($activationDate->copy()->addYear()->isFuture()) {
+                    continue;
                 }
-                $lastAnniversary->subYear(); // Go back to the last anniversary that has passed
 
-                // Check if we already have an invoice for this anniversary
+                $lastAnniversary = $activationDate->copy();
+                while ($lastAnniversary->copy()->addYear()->isPast()) {
+                    $lastAnniversary->addYear();
+                }
+
+                $yearNumber = $activationDate->diffInYears($lastAnniversary);
+                if ($yearNumber < 1) {
+                    continue;
+                }
+
+                $now = Carbon::now();
+                if ($lastAnniversary->month != $now->month || $lastAnniversary->year != $now->year) {
+                    continue;
+                }
+
                 $existingInvoice = $company->invoices()
                     ->where('description', 'LIKE', '%رسوم تجديد سنوي%')
-                    ->where('created_at', '>=', $lastAnniversary)
+                    ->where('created_at', '>=', $lastAnniversary->copy()->startOfDay())
                     ->where('created_at', '<', $lastAnniversary->copy()->addDays(30))
                     ->first();
 
@@ -210,30 +231,31 @@ class GenerateAnnualInvoices extends Command
                     continue;
                 }
 
-                // Check if the anniversary is within the current month
-                $now = Carbon::now();
-                if ($lastAnniversary->month != $now->month || $lastAnniversary->year != $now->year) {
-                    continue;
-                }
-
                 if (!$testMode) {
-                    DB::transaction(function () use ($company, $annualFee, $activationDate, $lastAnniversary) {
-                        $yearNumber = $lastAnniversary->year - $activationDate->year;
+                    DB::transaction(function () use ($company, $annualFee, $yearNumber, $lastAnniversary) {
+                        $lockedCompany = LocalCompany::lockForUpdate()->find($company->id);
+                        if (!$lockedCompany || $lockedCompany->status != 'active') {
+                            return;
+                        }
+
+                        $duplicateCheck = $lockedCompany->invoices()
+                            ->where('description', 'LIKE', '%رسوم تجديد سنوي%')
+                            ->where('created_at', '>=', $lastAnniversary->copy()->startOfDay())
+                            ->first();
+
+                        if ($duplicateCheck) {
+                            return;
+                        }
 
                         LocalCompanyInvoice::create([
-                            'local_company_id' => $company->id,
+                            'local_company_id' => $lockedCompany->id,
                             'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
                             'amount' => $annualFee,
                             'description' => "رسوم تجديد سنوي للشركة المحلية - السنة {$yearNumber}",
-                            'status' => 'pending',
-                            'issued_by' => 1, // System user
+                            'status' => 'unpaid',
+                            'created_by' => 1,
                             'due_date' => now()->addDays(30),
                         ]);
-
-                        // Update company status if needed
-                        if ($company->status == 'active') {
-                            $company->update(['status' => 'pending_payment']);
-                        }
                     });
 
                     $stats['local_invoices_created']++;

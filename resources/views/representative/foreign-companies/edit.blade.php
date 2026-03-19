@@ -69,6 +69,56 @@
                         <small class="help-text">يجب أن تكون الشركة المحلية من نوع "مورد" ومفعلة</small>
                     </div>
                 </div>
+
+                <div class="form-section">
+                    <h3 class="section-title">
+                        <i class="ti ti-history"></i>
+                        التسجيل المسبق
+                    </h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="is_pre_registered" id="is_pre_registered" value="1" {{ (old('is_pre_registered') ?? $company->is_pre_registered) ? 'checked' : '' }}>
+                            <span>الشركة مسجلة من قبل</span>
+                        </label>
+                    </div>
+
+                    @php
+                        $preRegParts = $company->pre_registration_number ? explode('-', $company->pre_registration_number) : [null, null];
+                        $preRegYear = old('pre_registration_year') ?? ($preRegParts[0] ?? '');
+                        $preRegSeq = old('pre_registration_sequence') ?? ($preRegParts[1] ?? '');
+                    @endphp
+
+                    <div id="preRegistrationFields" class="pre-registration-fields" style="display: {{ (old('is_pre_registered') ?? $company->is_pre_registered) ? 'block' : 'none' }};">
+                        <div class="alert-info-box">
+                            <i class="ti ti-info-circle"></i>
+                            <div>
+                                <strong>ملاحظة هامة</strong>
+                                <p>يرجى إدخال رقم القيد وسنة التسجيل الخاصة بالشركة المسجلة مسبقاً. سيتم التحقق من هذه البيانات من قبل الإدارة.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="pre_registration_year">سنة التسجيل <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ $preRegYear }}" placeholder="مثال: 2024" min="1990" max="{{ date('Y') }}">
+                                @error('pre_registration_year')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pre_registration_sequence">الرقم التسلسلي <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ $preRegSeq }}" placeholder="مثال: 15" min="1">
+                                @error('pre_registration_sequence')
+                                    <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <small>رقم القيد: <strong id="preRegPreview">-</strong></small>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Step 2: معلومات الشركة الأساسية -->
@@ -573,6 +623,67 @@
         background: #f9fafb;
     }
 
+    /* Pre-registration */
+    .checkbox-group {
+        margin-bottom: 15px;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #1a5f4a;
+    }
+
+    .pre-registration-fields {
+        margin-top: 15px;
+        padding: 15px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+    }
+
+    .alert-info-box {
+        display: flex;
+        gap: 10px;
+        padding: 12px 15px;
+        background: #dbeafe;
+        border: 1px solid #93c5fd;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        color: #1e40af;
+        font-size: 0.825rem;
+        align-items: flex-start;
+    }
+
+    .alert-info-box i {
+        font-size: 1.2rem;
+        margin-top: 2px;
+    }
+
+    .alert-info-box strong {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .alert-info-box p {
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .text-danger {
+        color: #ef4444;
+    }
+
     /* Select2 Customization */
     .select2-container {
         width: 100% !important;
@@ -821,6 +932,43 @@
             } else {
                 console.error('Previous button not found!');
             }
+
+            // Pre-registration toggle
+            var preRegCheckbox = document.getElementById('is_pre_registered');
+            var preRegFields = document.getElementById('preRegistrationFields');
+            var preRegYear = document.getElementById('pre_registration_year');
+            var preRegSeq = document.getElementById('pre_registration_sequence');
+            var preRegPreview = document.getElementById('preRegPreview');
+
+            if (preRegCheckbox) {
+                preRegCheckbox.addEventListener('change', function() {
+                    preRegFields.style.display = this.checked ? 'block' : 'none';
+                    if (!this.checked) {
+                        preRegYear.value = '';
+                        preRegSeq.value = '';
+                        preRegPreview.textContent = '-';
+                        preRegYear.removeAttribute('required');
+                        preRegSeq.removeAttribute('required');
+                    } else {
+                        preRegYear.setAttribute('required', 'required');
+                        preRegSeq.setAttribute('required', 'required');
+                    }
+                });
+            }
+
+            function updatePreRegPreview() {
+                var year = preRegYear ? preRegYear.value : '';
+                var seq = preRegSeq ? preRegSeq.value : '';
+                if (year && seq) {
+                    preRegPreview.textContent = year + '-' + seq;
+                } else {
+                    preRegPreview.textContent = '-';
+                }
+            }
+
+            if (preRegYear) preRegYear.addEventListener('input', updatePreRegPreview);
+            if (preRegSeq) preRegSeq.addEventListener('input', updatePreRegPreview);
+            updatePreRegPreview();
 
             // Initialize first step
             showStep(1);

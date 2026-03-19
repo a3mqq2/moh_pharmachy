@@ -7,9 +7,18 @@ use App\Models\ForeignCompanyInvoice;
 use App\Models\LocalCompanyInvoice;
 use App\Models\PharmaceuticalProductInvoice;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class InvoiceController extends Controller
+class InvoiceController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:view_invoices'),
+        ];
+    }
+
     public function index(Request $request)
     {
         $type = $request->get('type', 'all');
@@ -17,6 +26,8 @@ class InvoiceController extends Controller
         $search = $request->get('search');
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
+        $fromDate = $request->get('from_date');
+        $toDate = $request->get('to_date');
 
         $localInvoices = collect();
         $foreignInvoices = collect();
@@ -27,6 +38,14 @@ class InvoiceController extends Controller
 
             if ($status) {
                 $query->where('status', $status);
+            }
+
+            if ($fromDate) {
+                $query->whereDate('created_at', '>=', $fromDate);
+            }
+
+            if ($toDate) {
+                $query->whereDate('created_at', '<=', $toDate);
             }
 
             if ($search) {
@@ -52,6 +71,14 @@ class InvoiceController extends Controller
                 $query->where('status', $status);
             }
 
+            if ($fromDate) {
+                $query->whereDate('created_at', '>=', $fromDate);
+            }
+
+            if ($toDate) {
+                $query->whereDate('created_at', '<=', $toDate);
+            }
+
             if ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('invoice_number', 'like', "%{$search}%")
@@ -73,6 +100,14 @@ class InvoiceController extends Controller
 
             if ($status) {
                 $query->where('status', $status);
+            }
+
+            if ($fromDate) {
+                $query->whereDate('created_at', '>=', $fromDate);
+            }
+
+            if ($toDate) {
+                $query->whereDate('created_at', '<=', $toDate);
             }
 
             if ($search) {
@@ -106,36 +141,82 @@ class InvoiceController extends Controller
                 : $invoices->sortBy('amount');
         }
 
+        $stats = [
+            'total' => $invoices->count(),
+            'local_total' => $localInvoices->count(),
+            'foreign_total' => $foreignInvoices->count(),
+            'pharmaceutical_total' => $pharmaceuticalInvoices->count(),
+            'pending' => $invoices->filter(fn($i) => in_array($i->status, ['unpaid', 'pending', 'pending_review']))->count(),
+            'paid' => $invoices->where('status', 'paid')->count(),
+            'total_revenue' => $invoices->where('status', 'paid')->sum('amount'),
+        ];
+
+        if ($request->has('print')) {
+            return view('admin.invoices.print', compact('invoices', 'stats'));
+        }
+
+        if ($request->has('export')) {
+            return $this->exportInvoices($invoices, $stats);
+        }
+
         $perPage = 15;
         $currentPage = $request->get('page', 1);
         $total = $invoices->count();
-        $invoices = $invoices->forPage($currentPage, $perPage);
+        $invoicesPage = $invoices->forPage($currentPage, $perPage);
 
         $pagination = new \Illuminate\Pagination\LengthAwarePaginator(
-            $invoices,
+            $invoicesPage,
             $total,
             $perPage,
             $currentPage,
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        $stats = [
-            'total' => LocalCompanyInvoice::count() + ForeignCompanyInvoice::count() + PharmaceuticalProductInvoice::count(),
-            'local_total' => LocalCompanyInvoice::count(),
-            'foreign_total' => ForeignCompanyInvoice::count(),
-            'pharmaceutical_total' => PharmaceuticalProductInvoice::count(),
-            'pending' => LocalCompanyInvoice::where('status', 'unpaid')->count() +
-                        ForeignCompanyInvoice::where('status', 'pending')->count() +
-                        PharmaceuticalProductInvoice::where('status', 'unpaid')->count() +
-                        PharmaceuticalProductInvoice::where('status', 'pending_review')->count(),
-            'paid' => LocalCompanyInvoice::where('status', 'paid')->count() +
-                     ForeignCompanyInvoice::where('status', 'paid')->count() +
-                     PharmaceuticalProductInvoice::where('status', 'paid')->count(),
-        ];
-
         return view('admin.invoices.index', [
             'invoices' => $pagination,
             'stats' => $stats,
         ]);
+    }
+
+    private function exportInvoices($invoices, $stats)
+    {
+        $filename = 'invoices_' . date('Y-m-d') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+
+        $output = fopen('php://output', 'w');
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        fputcsv($output, ['كشف الفواتير']);
+        fputcsv($output, ['تاريخ الكشف: ' . date('Y-m-d')]);
+        fputcsv($output, []);
+        fputcsv($output, ['إجمالي الفواتير', $stats['total']]);
+        fputcsv($output, ['مدفوعة', $stats['paid']]);
+        fputcsv($output, ['قيد الانتظار', $stats['pending']]);
+        fputcsv($output, ['إجمالي الإيرادات', number_format($stats['total_revenue'], 2) . ' د.ل']);
+        fputcsv($output, []);
+
+        fputcsv($output, ['رقم الفاتورة', 'النوع', 'اسم الشركة', 'المبلغ', 'الحالة', 'تاريخ الإنشاء']);
+
+        foreach ($invoices as $invoice) {
+            $typeName = match($invoice->company_type) {
+                'local' => 'محلية',
+                'foreign' => 'أجنبية',
+                default => 'دوائية',
+            };
+
+            fputcsv($output, [
+                $invoice->invoice_number,
+                $typeName,
+                $invoice->company?->company_name ?? 'غير متوفر',
+                number_format($invoice->amount, 2),
+                $invoice->status,
+                $invoice->created_at->format('Y-m-d'),
+            ]);
+        }
+
+        fclose($output);
+        exit;
     }
 }

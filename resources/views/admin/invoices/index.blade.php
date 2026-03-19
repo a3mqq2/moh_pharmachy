@@ -9,48 +9,61 @@
 
 @section('content')
 
-<div class="card mb-3 mt-3">
-    <div class="card-body py-2">
+<div class="card">
+    <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <h5 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>الفواتير</h5>
+                <span class="badge bg-secondary">{{ $invoices->total() }} فاتورة</span>
+            </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="ti ti-filter me-1"></i> الفلاتر
+                    <i class="fas fa-filter me-1"></i> الفلاتر
                 </button>
-                <span class="badge bg-secondary align-self-center">{{ $invoices->total() }} فاتورة</span>
+                <button type="button" class="btn btn-outline-success btn-sm" onclick="window.open('{{ route('admin.invoices.index', array_merge(request()->all(), ['print' => 1])) }}', '_blank')">
+                    <i class="fas fa-print me-1"></i> طباعة
+                </button>
+                <a href="{{ route('admin.invoices.index', array_merge(request()->all(), ['export' => 1])) }}" class="btn btn-success btn-sm">
+                    <i class="fas fa-file-excel me-1"></i> تصدير Excel
+                </a>
             </div>
-            <div class="d-flex gap-2 flex-wrap">
-                <div class="badge bg-light text-dark">
-                    <i class="ti ti-file-invoice me-1"></i>
-                    الإجمالي: {{ $stats['total'] }}
-                </div>
-                <div class="badge bg-info">
-                    <i class="ti ti-building me-1"></i>
-                    محلية: {{ $stats['local_total'] }}
-                </div>
-                <div class="badge bg-success">
-                    <i class="ti ti-world me-1"></i>
-                    أجنبية: {{ $stats['foreign_total'] }}
-                </div>
-                <div class="badge bg-purple" style="background-color: #6f42c1;">
-                    <i class="ti ti-pill me-1"></i>
-                    دوائية: {{ $stats['pharmaceutical_total'] }}
-                </div>
-                <div class="badge bg-warning">
-                    <i class="ti ti-clock me-1"></i>
-                    قيد الانتظار: {{ $stats['pending'] }}
-                </div>
-                <div class="badge bg-primary">
-                    <i class="ti ti-check me-1"></i>
-                    مدفوعة: {{ $stats['paid'] }}
-                </div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap mt-2">
+            <div class="badge bg-light text-dark">
+                <i class="fas fa-file-invoice me-1"></i>
+                الإجمالي: {{ $stats['total'] }}
+            </div>
+            <div class="badge bg-info">
+                <i class="fas fa-building me-1"></i>
+                محلية: {{ $stats['local_total'] }}
+            </div>
+            <div class="badge bg-success">
+                <i class="fas fa-globe-americas me-1"></i>
+                أجنبية: {{ $stats['foreign_total'] }}
+            </div>
+            <div class="badge bg-purple" style="background-color: #6f42c1;">
+                <i class="fas fa-capsules me-1"></i>
+                دوائية: {{ $stats['pharmaceutical_total'] }}
+            </div>
+            <div class="badge bg-warning">
+                <i class="fas fa-clock me-1"></i>
+                قيد الانتظار: {{ $stats['pending'] }}
+            </div>
+            <div class="badge bg-primary">
+                <i class="fas fa-check me-1"></i>
+                مدفوعة: {{ $stats['paid'] }}
+            </div>
+            <div class="badge bg-success">
+                <i class="fas fa-coins me-1"></i>
+                الإيرادات: {{ number_format($stats['total_revenue'], 2) }} د.ل
             </div>
         </div>
     </div>
-    <div class="collapse {{ request()->hasAny(['search', 'status', 'type', 'sort_by', 'sort_order']) ? 'show' : '' }}" id="filtersCollapse">
+    <div class="collapse {{ request()->hasAny(['search', 'status', 'type', 'sort_by', 'sort_order', 'from_date', 'to_date']) ? 'show' : '' }}" id="filtersCollapse">
         <div class="card-body border-top bg-light pt-3">
             <form method="GET">
                 <div class="row g-3 align-items-end">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label">بحث</label>
                         <input type="text" name="search" class="form-control" placeholder="رقم الفاتورة، اسم الشركة..." value="{{ request('search') }}">
                     </div>
@@ -75,20 +88,21 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">ترتيب حسب</label>
-                        <select name="sort_by" class="form-select">
-                            <option value="created_at" {{ request('sort_by', 'created_at') == 'created_at' ? 'selected' : '' }}>التاريخ</option>
-                            <option value="amount" {{ request('sort_by') == 'amount' ? 'selected' : '' }}>المبلغ</option>
-                        </select>
+                        <label class="form-label">من تاريخ</label>
+                        <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <label class="form-label">إلى تاريخ</label>
+                        <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
+                    </div>
+                    <div class="col-md-2">
                         <div class="d-flex gap-2 justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-search me-1"></i> بحث
+                                <i class="fas fa-search me-1"></i> بحث
                             </button>
-                            @if(request()->hasAny(['search', 'status', 'type', 'sort_by', 'sort_order']))
+                            @if(request()->hasAny(['search', 'status', 'type', 'sort_by', 'sort_order', 'from_date', 'to_date']))
                                 <a href="{{ route('admin.invoices.index') }}" class="btn btn-outline-secondary">
-                                    <i class="ti ti-x me-1"></i> مسح الفلاتر
+                                    <i class="fas fa-times"></i>
                                 </a>
                             @endif
                         </div>
@@ -97,22 +111,19 @@
             </form>
         </div>
     </div>
-</div>
-
-<div class="card">
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover table-bordered mb-0">
-                <thead class="text-white" style="background-color: #000000;">
+                <thead>
                     <tr>
-                        <th class="text-white">رقم الفاتورة</th>
-                        <th class="text-white">نوع الشركة</th>
-                        <th class="text-white">اسم الشركة</th>
-                        <th class="text-white">الوصف</th>
-                        <th class="text-white">المبلغ</th>
-                        <th class="text-white">الحالة</th>
-                        <th class="text-white">تاريخ الإنشاء</th>
-                        <th class="text-white">الإجراءات</th>
+                        <th>رقم الفاتورة</th>
+                        <th>نوع الفاتورة</th>
+                        <th>اسم الشركة</th>
+                        <th>الوصف</th>
+                        <th>المبلغ</th>
+                        <th>الحالة</th>
+                        <th>تاريخ الإنشاء</th>
+                        <th>الإجراءات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,15 +135,15 @@
                         <td>
                             @if($invoice->company_type == 'local')
                                 <span class="badge bg-info">
-                                    <i class="ti ti-building me-1"></i>محلية
+                                    <i class="fas fa-building me-1"></i>شركة محلية
                                 </span>
                             @elseif($invoice->company_type == 'foreign')
                                 <span class="badge bg-success">
-                                    <i class="ti ti-world me-1"></i>أجنبية
+                                    <i class="fas fa-globe-americas me-1"></i>شركة أجنبية
                                 </span>
                             @else
                                 <span class="badge" style="background-color: #6f42c1;">
-                                    <i class="ti ti-pill me-1"></i>دوائية
+                                    <i class="fas fa-capsules me-1"></i>صنف دوائي
                                 </span>
                             @endif
                         </td>
@@ -185,19 +196,19 @@
                                 <a href="{{ route('admin.local-companies.show', $invoice->company) }}"
                                    class="btn btn-sm btn-outline-primary"
                                    title="عرض التفاصيل">
-                                    <i class="ti ti-eye"></i>
+                                    <i class="fas fa-eye"></i>
                                 </a>
                             @elseif($invoice->company_type == 'foreign')
                                 <a href="{{ route('admin.foreign-company-invoices.show', $invoice) }}"
                                    class="btn btn-sm btn-outline-primary"
                                    title="عرض التفاصيل">
-                                    <i class="ti ti-eye"></i>
+                                    <i class="fas fa-eye"></i>
                                 </a>
                             @else
                                 <a href="{{ route('admin.pharmaceutical-products.show', $invoice->pharmaceuticalProduct) }}"
                                    class="btn btn-sm btn-outline-primary"
                                    title="عرض التفاصيل">
-                                    <i class="ti ti-eye"></i>
+                                    <i class="fas fa-eye"></i>
                                 </a>
                             @endif
                         </td>
@@ -206,7 +217,7 @@
                     <tr>
                         <td colspan="8" class="text-center py-5">
                             <div class="text-muted">
-                                <i class="ti ti-file-invoice fs-1 d-block mb-2"></i>
+                                <i class="fas fa-file-invoice fs-1 d-block mb-2"></i>
                                 لا توجد فواتير مسجلة
                             </div>
                         </td>

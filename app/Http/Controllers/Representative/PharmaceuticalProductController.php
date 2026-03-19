@@ -52,12 +52,16 @@ class PharmaceuticalProductController extends Controller
     {
         $validated = $request->validate([
             'product_name' => 'required|string|max:255',
+            'scientific_name' => 'required|string|max:255',
             'pharmaceutical_form' => 'required|string|max:255',
             'concentration' => 'required|string|max:255',
             'usage_methods' => 'required|array|min:1',
             'usage_methods.*' => 'in:oral,injection,topical,inhalation,other',
             'other_usage_method' => 'required_if:usage_methods.*,other|nullable|string|max:255',
             'foreign_company_id' => 'required|exists:foreign_companies,id',
+            'is_pre_registered' => 'nullable|boolean',
+            'pre_registration_year' => 'required_if:is_pre_registered,1|nullable|integer|min:1990|max:' . date('Y'),
+            'pre_registration_sequence' => 'required_if:is_pre_registered,1|nullable|integer|min:1',
         ]);
 
         $representative = auth('representative')->user();
@@ -67,16 +71,26 @@ class PharmaceuticalProductController extends Controller
             ->where('status', 'active')
             ->firstOrFail();
 
-        $product = PharmaceuticalProduct::create([
+        $productData = [
             'foreign_company_id' => $validated['foreign_company_id'],
             'representative_id' => $representative->id,
             'product_name' => $validated['product_name'],
+            'scientific_name' => $validated['scientific_name'],
             'pharmaceutical_form' => $validated['pharmaceutical_form'],
             'concentration' => $validated['concentration'],
             'usage_methods' => $validated['usage_methods'],
             'other_usage_method' => $validated['other_usage_method'] ?? null,
             'status' => 'uploading_documents',
-        ]);
+        ];
+
+        if ($request->is_pre_registered) {
+            $productData['is_pre_registered'] = true;
+            $productData['pre_registration_number'] = $request->pre_registration_year . '-' . $request->pre_registration_sequence;
+        } else {
+            $productData['is_pre_registered'] = false;
+        }
+
+        $product = PharmaceuticalProduct::create($productData);
 
         $admins = User::role('admin')->get();
         Notification::send($admins, new NewPharmaceuticalProductRegistered($product, $representative));
@@ -134,12 +148,16 @@ class PharmaceuticalProductController extends Controller
 
         $validated = $request->validate([
             'product_name' => 'required|string|max:255',
+            'scientific_name' => 'required|string|max:255',
             'pharmaceutical_form' => 'required|string|max:255',
             'concentration' => 'required|string|max:255',
             'usage_methods' => 'required|array|min:1',
             'usage_methods.*' => 'in:oral,injection,topical,inhalation,other',
             'other_usage_method' => 'required_if:usage_methods.*,other|nullable|string|max:255',
             'foreign_company_id' => 'required|exists:foreign_companies,id',
+            'is_pre_registered' => 'nullable|boolean',
+            'pre_registration_year' => 'required_if:is_pre_registered,1|nullable|integer|min:1990|max:' . date('Y'),
+            'pre_registration_sequence' => 'required_if:is_pre_registered,1|nullable|integer|min:1',
         ]);
 
         $foreignCompany = ForeignCompany::where('id', $validated['foreign_company_id'])
@@ -147,14 +165,25 @@ class PharmaceuticalProductController extends Controller
             ->where('status', 'active')
             ->firstOrFail();
 
-        $pharmaceuticalProduct->update([
+        $updateData = [
             'foreign_company_id' => $validated['foreign_company_id'],
             'product_name' => $validated['product_name'],
+            'scientific_name' => $validated['scientific_name'],
             'pharmaceutical_form' => $validated['pharmaceutical_form'],
             'concentration' => $validated['concentration'],
             'usage_methods' => $validated['usage_methods'],
             'other_usage_method' => $validated['other_usage_method'] ?? null,
-        ]);
+        ];
+
+        if ($request->is_pre_registered) {
+            $updateData['is_pre_registered'] = true;
+            $updateData['pre_registration_number'] = $request->pre_registration_year . '-' . $request->pre_registration_sequence;
+        } else {
+            $updateData['is_pre_registered'] = false;
+            $updateData['pre_registration_number'] = null;
+        }
+
+        $pharmaceuticalProduct->update($updateData);
 
         return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
             ->with('success', 'تم تحديث بيانات الصنف الدوائي بنجاح.');
@@ -200,7 +229,7 @@ class PharmaceuticalProductController extends Controller
             abort(403);
         }
 
-        if ($pharmaceuticalProduct->status != 'uploading_documents') {
+        if (!in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected'])) {
             return back()->with('error', 'لا يمكن رفع مستندات في الحالة الحالية.');
         }
 
@@ -211,7 +240,7 @@ class PharmaceuticalProductController extends Controller
         ]);
 
         $file = $request->file('document');
-        $fileName = time() . '_' . uniqid() . '_' . $pharmaceuticalProduct->id . '_' . $validated['document_type'] . '.' . $file->getClientOriginalExtension();
+        $fileName = \Illuminate\Support\Str::random(32) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs('pharmaceutical-documents', $fileName, 'public');
 
         $pharmaceuticalProduct->documents()->create([
@@ -271,7 +300,7 @@ class PharmaceuticalProductController extends Controller
         Storage::disk('public')->delete($document->file_path);
 
         $file = $request->file('document');
-        $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $fileName = \Illuminate\Support\Str::random(32) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs('pharmaceutical_product_documents', $fileName, 'public');
 
         $document->update([
@@ -331,7 +360,7 @@ class PharmaceuticalProductController extends Controller
         }
 
         $file = $request->file('receipt');
-        $fileName = 'receipt_' . $invoice->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $fileName = \Illuminate\Support\Str::random(32) . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs('pharmaceutical_product_invoices', $fileName, 'public');
 
         $invoice->update([

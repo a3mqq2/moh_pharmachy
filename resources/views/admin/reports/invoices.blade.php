@@ -1,82 +1,88 @@
 @extends('layouts.app')
-@section('title', 'الفواتير')
-@section('content')
-<div class="container-fluid mt-3">
 
-    <div class="card mb-4">
-           <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <a href="{{ route('admin.reports.index') }}" class="btn btn-sm btn-outline-secondary mb-2">
-                        <i class="ti ti-arrow-right me-1"></i>
-                        العودة للتقارير
-                    </a>
-                </div>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-success" onclick="window.open('{{ route('admin.reports.invoices', array_merge(request()->all(), ['print' => 1])) }}', '_blank')">
-                        <i class="ti ti-printer me-1"></i>
-                        طباعة
-                    </button>
-                    <a href="{{ route('admin.reports.invoices', array_merge(request()->all(), ['export' => 1])) }}" class="btn btn-success">
-                        <i class="ti ti-file-spreadsheet me-1"></i>
-                        تصدير Excel
-                    </a>
-                </div>
+@section('title', 'تقرير الفواتير')
+
+@section('breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.reports.index') }}">التقارير</a></li>
+    <li class="breadcrumb-item active">الفواتير</li>
+@endsection
+
+@section('content')
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <h5 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>تقرير الفواتير</h5>
+                @if($filtered)
+                <span class="badge bg-secondary">{{ $stats['total_invoices'] }} فاتورة</span>
+                @endif
+            </div>
+            <div class="d-flex gap-2">
+                @if($filtered)
+                <button type="button" class="btn btn-outline-success btn-sm" onclick="window.open('{{ route('admin.reports.invoices', array_merge(request()->all(), ['print' => 1])) }}', '_blank')">
+                    <i class="fas fa-print me-1"></i> طباعة
+                </button>
+                <a href="{{ route('admin.reports.invoices', array_merge(request()->all(), ['export' => 1])) }}" class="btn btn-success btn-sm">
+                    <i class="fas fa-file-excel me-1"></i> تصدير Excel
+                </a>
+                @endif
             </div>
         </div>
-        <div class="card-body">
-            <h5 class="mb-3">
-                <i class="ti ti-filter me-2"></i>
-                تصفية النتائج
-            </h5>
-            <form method="GET" action="{{ route('admin.reports.invoices') }}">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">نوع الفاتورة</label>
-                        <select name="type" class="form-select">
-                            <option value="all" {{ request('type', 'all') == 'all' ? 'selected' : '' }}>الكل</option>
-                            <option value="local" {{ request('type') == 'local' ? 'selected' : '' }}>شركات محلية</option>
-                            <option value="pharmaceutical" {{ request('type') == 'pharmaceutical' ? 'selected' : '' }}>أصناف دوائية</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">الحالة</label>
-                        <select name="status" class="form-select">
-                            <option value="">الكل</option>
-                            <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>مدفوعة</option>
-                            <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>غير مدفوعة</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">من تاريخ</label>
-                        <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">إلى تاريخ</label>
-                        <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
-                    </div>
-                    <div class="col-md-1 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="ti ti-search"></i>
+    </div>
+    <div class="card-body border-top bg-light pt-3">
+        <form method="GET" action="{{ route('admin.reports.invoices') }}">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label">نوع الفاتورة</label>
+                    <select name="type" class="form-select">
+                        <option value="all" {{ request('type', 'all') == 'all' ? 'selected' : '' }}>الكل</option>
+                        <option value="local" {{ request('type') == 'local' ? 'selected' : '' }}>شركات محلية</option>
+                        <option value="pharmaceutical" {{ request('type') == 'pharmaceutical' ? 'selected' : '' }}>أصناف دوائية</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">الحالة</label>
+                    <select name="status" class="form-select">
+                        <option value="">الكل</option>
+                        <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>مدفوعة</option>
+                        <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>غير مدفوعة</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">من تاريخ</label>
+                    <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">إلى تاريخ</label>
+                    <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i> بحث
                         </button>
+                        @if($filtered)
+                            <a href="{{ route('admin.reports.invoices') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> مسح
+                            </a>
+                        @endif
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
-
-    @if(request('type', 'all') == 'all' || request('type') == 'local')
-    <div class="card mb-4">
-        <div class="card-header bg-primary bg-opacity-10">
-            <h5 class="mb-0 text-white">
-                <i class="ti ti-building me-2"></i>
-                فواتير الشركات المحلية
-            </h5>
-        </div>
-        <div class="card-body">
+    @if($filtered)
+    <div class="card-body p-0">
+        @if($type == 'all' || $type == 'local')
+        <div class="border-bottom">
+            <div class="px-3 py-2 bg-light border-bottom">
+                <strong><i class="fas fa-building me-1"></i> فواتير الشركات المحلية</strong>
+            </div>
             <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
+                <table class="table table-hover table-bordered mb-0">
+                    <thead>
                         <tr>
                             <th>#</th>
                             <th>رقم الفاتورة</th>
@@ -89,63 +95,45 @@
                     <tbody>
                         @forelse($localInvoices as $invoice)
                         <tr>
-                            <td>{{ method_exists($localInvoices, 'currentPage') ? ($localInvoices->currentPage() - 1) * $localInvoices->perPage() + $loop->iteration : $loop->iteration }}</td>
+                            <td><span class="badge bg-dark">{{ method_exists($localInvoices, 'currentPage') ? ($localInvoices->currentPage() - 1) * $localInvoices->perPage() + $loop->iteration : $loop->iteration }}</span></td>
                             <td><span class="badge bg-dark">{{ $invoice->invoice_number }}</span></td>
                             <td>{{ $invoice->localCompany->company_name }}</td>
                             <td><strong class="text-primary">{{ number_format($invoice->amount, 2) }} د.ل</strong></td>
                             <td><span class="badge bg-{{ $invoice->status == 'paid' ? 'success' : 'warning' }}">{{ $invoice->status_name }}</span></td>
-                            <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
+                            <td><small>{{ $invoice->created_at->format('Y-m-d') }}</small></td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">لا توجد فواتير</td>
+                            <td colspan="6" class="text-center text-muted py-3">لا توجد فواتير</td>
                         </tr>
                         @endforelse
                     </tbody>
                     <tfoot class="table-light">
                         <tr>
-                            <th colspan="3" class="text-end">إجمالي الفواتير:</th>
-                            <th colspan="3">{{ $stats['local_total'] }}</th>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="text-end">مدفوعة:</th>
-                            <th colspan="3" class="text-success">{{ $stats['local_paid'] }}</th>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="text-end">غير مدفوعة:</th>
-                            <th colspan="3" class="text-warning">{{ $stats['local_unpaid'] }}</th>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="text-end">إجمالي الإيرادات:</th>
-                            <th colspan="3" class="text-success">{{ number_format($stats['local_revenue'], 2) }} د.ل</th>
+                            <th colspan="3" class="text-end">إجمالي:</th>
+                            <th>{{ $stats['local_total'] }}</th>
+                            <th>مدفوعة: {{ $stats['local_paid'] }}</th>
+                            <th>{{ number_format($stats['local_revenue'], 2) }} د.ل</th>
                         </tr>
                     </tfoot>
                 </table>
             </div>
-
             @if(method_exists($localInvoices, 'hasPages') && $localInvoices->hasPages())
-            <div class="card-footer">
-                <div class="d-flex justify-content-center">
-                    {{ $localInvoices->links() }}
-                </div>
+            <div class="d-flex justify-content-center py-2">
+                {{ $localInvoices->links() }}
             </div>
             @endif
         </div>
-    </div>
-    @endif
+        @endif
 
-    @if(request('type', 'all') == 'all' || request('type') == 'pharmaceutical')
-    <div class="card mb-4">
-        <div class="card-header bg-success bg-opacity-10">
-            <h5 class="mb-0">
-                <i class="ti ti-pill me-2"></i>
-                فواتير الأصناف الدوائية
-            </h5>
-        </div>
-        <div class="card-body">
+        @if($type == 'all' || $type == 'pharmaceutical')
+        <div>
+            <div class="px-3 py-2 bg-light border-bottom">
+                <strong><i class="fas fa-capsules me-1"></i> فواتير الأصناف الدوائية</strong>
+            </div>
             <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
+                <table class="table table-hover table-bordered mb-0">
+                    <thead>
                         <tr>
                             <th>#</th>
                             <th>رقم الفاتورة</th>
@@ -158,76 +146,64 @@
                     <tbody>
                         @forelse($pharmaInvoices as $invoice)
                         <tr>
-                            <td>{{ method_exists($pharmaInvoices, 'currentPage') ? ($pharmaInvoices->currentPage() - 1) * $pharmaInvoices->perPage() + $loop->iteration : $loop->iteration }}</td>
+                            <td><span class="badge bg-dark">{{ method_exists($pharmaInvoices, 'currentPage') ? ($pharmaInvoices->currentPage() - 1) * $pharmaInvoices->perPage() + $loop->iteration : $loop->iteration }}</span></td>
                             <td><span class="badge bg-dark">{{ $invoice->invoice_number }}</span></td>
                             <td>{{ $invoice->pharmaceuticalProduct->product_name }}</td>
                             <td><strong class="text-success">{{ number_format($invoice->amount, 2) }} د.ل</strong></td>
                             <td><span class="badge bg-{{ $invoice->status == 'paid' ? 'success' : 'warning' }}">{{ $invoice->status_name }}</span></td>
-                            <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
+                            <td><small>{{ $invoice->created_at->format('Y-m-d') }}</small></td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted">لا توجد فواتير</td>
+                            <td colspan="6" class="text-center text-muted py-3">لا توجد فواتير</td>
                         </tr>
                         @endforelse
                     </tbody>
                     <tfoot class="table-light">
                         <tr>
-                            <th colspan="3" class="text-end">إجمالي الفواتير:</th>
-                            <th colspan="3">{{ $stats['pharma_total'] }}</th>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="text-end">مدفوعة:</th>
-                            <th colspan="3" class="text-success">{{ $stats['pharma_paid'] }}</th>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="text-end">غير مدفوعة:</th>
-                            <th colspan="3" class="text-warning">{{ $stats['pharma_unpaid'] }}</th>
-                        </tr>
-                        <tr>
-                            <th colspan="3" class="text-end">إجمالي الإيرادات:</th>
-                            <th colspan="3" class="text-success">{{ number_format($stats['pharma_revenue'], 2) }} د.ل</th>
+                            <th colspan="3" class="text-end">إجمالي:</th>
+                            <th>{{ $stats['pharma_total'] }}</th>
+                            <th>مدفوعة: {{ $stats['pharma_paid'] }}</th>
+                            <th>{{ number_format($stats['pharma_revenue'], 2) }} د.ل</th>
                         </tr>
                     </tfoot>
                 </table>
-
+            </div>
             @if(method_exists($pharmaInvoices, 'hasPages') && $pharmaInvoices->hasPages())
-            <div class="card-footer">
-                <div class="d-flex justify-content-center">
-                    {{ $pharmaInvoices->links() }}
-                </div>
+            <div class="d-flex justify-content-center py-2">
+                {{ $pharmaInvoices->links() }}
             </div>
             @endif
+        </div>
+        @endif
+    </div>
+    @if($type == 'all')
+    <div class="card-footer">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+                    <span><strong>إجمالي الفواتير:</strong></span>
+                    <span class="badge bg-info fs-6">{{ $stats['total_invoices'] }}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+                    <span><strong>إجمالي الإيرادات:</strong></span>
+                    <span class="badge bg-success fs-6">{{ number_format($stats['total_revenue'], 2) }} د.ل</span>
+                </div>
             </div>
         </div>
     </div>
     @endif
-
-    @if(request('type', 'all') == 'all')
-    <div class="card">
-        <div class="card-header bg-info bg-opacity-10">
-            <h5 class="mb-0">
-                <i class="ti ti-calculator me-2"></i>
-                الإجماليات الكلية
-            </h5>
-        </div>
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="d-flex justify-content-between align-items-center p-3 border rounded">
-                        <span><strong>إجمالي الفواتير:</strong></span>
-                        <span class="badge bg-info fs-5">{{ $stats['total_invoices'] }}</span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex justify-content-between align-items-center p-3 border rounded">
-                        <span><strong>إجمالي الإيرادات:</strong></span>
-                        <span class="badge bg-success fs-5">{{ number_format($stats['total_revenue'], 2) }} د.ل</span>
-                    </div>
-                </div>
-            </div>
+    @else
+    <div class="card-body text-center py-5">
+        <div class="text-muted">
+            <i class="fas fa-filter fs-1 d-block mb-3"></i>
+            <h5>استخدم الفلاتر أعلاه لعرض النتائج</h5>
+            <p>اختر نوع الفاتورة أو الحالة أو التاريخ ثم اضغط بحث</p>
         </div>
     </div>
     @endif
 </div>
+
 @endsection

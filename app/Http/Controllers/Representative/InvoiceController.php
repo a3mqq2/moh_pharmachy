@@ -66,12 +66,15 @@ class InvoiceController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        // Check authorization
         if ($invoice->localCompany->representative_id != $representative->id) {
             abort(403);
         }
 
-        // Validate
+        if (!$invoice->canUploadReceipt()) {
+            return redirect()->route('representative.invoices.show', $invoice)
+                ->with('error', 'لا يمكن رفع إيصال لهذه الفاتورة في حالتها الحالية');
+        }
+
         $request->validate([
             'receipt' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'notes' => 'nullable|string|max:1000',
@@ -82,31 +85,28 @@ class InvoiceController extends Controller
             'receipt.max' => 'حجم الملف يجب أن لا يتجاوز 10 ميجابايت',
         ]);
 
-        // Delete old receipt if exists
         if ($invoice->receipt_path) {
             Storage::disk('public')->delete($invoice->receipt_path);
         }
 
-        // Upload new receipt
         $file = $request->file('receipt');
-        $path = $file->store('invoices/receipts', 'public');
+        $path = $file->store('local-companies/' . $invoice->local_company_id . '/receipts', 'public');
 
-        // Update invoice
-        $invoice->update([
-            'receipt_path' => $path,
-            'receipt_uploaded_at' => now(),
-            'receipt_status' => 'pending',
-            'receipt_rejection_reason' => null,
-            'status' => 'pending_review',
-            'notes' => $request->notes,
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($invoice, $path, $request) {
+            $invoice->update([
+                'receipt_path' => $path,
+                'receipt_uploaded_at' => now(),
+                'receipt_status' => 'pending',
+                'receipt_rejection_reason' => null,
+                'status' => 'pending_review',
+                'notes' => $request->notes,
+            ]);
 
-        // Update company status to payment_review if it's approved (awaiting payment)
-        if ($invoice->localCompany->status == 'approved') {
-            $invoice->localCompany->update(['status' => 'payment_review']);
-        }
+            if (in_array($invoice->localCompany->status, ['approved', 'active', 'expired'])) {
+                $invoice->localCompany->update(['status' => 'payment_review']);
+            }
+        });
 
-        // Log activity
         $invoice->localCompany->logActivity(
             'invoice_receipt_uploaded',
             'تم رفع إيصال الدفع للفاتورة رقم: ' . $invoice->invoice_number
@@ -149,23 +149,24 @@ class InvoiceController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        // Check authorization
         if ($invoice->localCompany->representative_id != $representative->id) {
             abort(403);
         }
 
-        // Only allow deletion if invoice is not yet marked as paid by admin
-        if ($invoice->isPaid()) {
+        if (!$invoice->canDeleteReceipt()) {
             return redirect()->route('representative.invoices.show', $invoice)
-                ->with('error', 'لا يمكن حذف الإيصال بعد تأكيد الدفع من قبل الإدارة');
+                ->with('error', 'لا يمكن حذف الإيصال في حالته الحالية');
         }
 
-        // Delete receipt file
+        $previousCompanyStatus = null;
+        if ($invoice->localCompany->status === 'payment_review') {
+            $previousCompanyStatus = 'approved';
+        }
+
         if ($invoice->receipt_path) {
             Storage::disk('public')->delete($invoice->receipt_path);
         }
 
-        // Update invoice
         $invoice->update([
             'receipt_path' => null,
             'receipt_uploaded_at' => null,
@@ -174,7 +175,17 @@ class InvoiceController extends Controller
             'status' => 'unpaid',
         ]);
 
-        // Log activity
+        if ($previousCompanyStatus) {
+            $hasOtherPendingReceipts = $invoice->localCompany->invoices()
+                ->where('id', '!=', $invoice->id)
+                ->where('receipt_status', 'pending')
+                ->exists();
+
+            if (!$hasOtherPendingReceipts) {
+                $invoice->localCompany->update(['status' => $previousCompanyStatus]);
+            }
+        }
+
         $invoice->localCompany->logActivity(
             'invoice_receipt_deleted',
             'تم حذف إيصال الدفع للفاتورة رقم: ' . $invoice->invoice_number

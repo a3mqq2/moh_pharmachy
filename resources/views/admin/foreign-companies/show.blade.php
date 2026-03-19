@@ -10,19 +10,32 @@
 @endsection
 
 @section('content')
-<div class="card mt-3 mb-3">
-    <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-3">
+<div class="show-header mt-3 mb-3 p-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <h4 class="mb-1">{{ $foreignCompany->company_name }}</h4>
-            <span class="badge bg-{{ $foreignCompany->entity_type == 'factory' ? 'info' : 'primary' }} me-1">{{ $foreignCompany->entity_type_name }}</span>
-            <span class="badge {{ str_replace('badge-', 'bg-', $foreignCompany->status_badge_class) }} me-1">{{ $foreignCompany->status_name }}</span>
-            <span class="badge bg-dark">{{ $foreignCompany->country }}</span>
+            <h4 class="mb-2"><i class="ti ti-world me-2 text-primary"></i>{{ $foreignCompany->company_name }}</h4>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-{{ $foreignCompany->entity_type == 'factory' ? 'info' : 'primary' }}">{{ $foreignCompany->entity_type_name }}</span>
+                <span class="badge {{ str_replace('badge-', 'bg-', $foreignCompany->status_badge_class) }}">{{ $foreignCompany->status_name }}</span>
+                <span class="badge bg-dark">{{ $foreignCompany->country }}</span>
+                @if($foreignCompany->registration_number)
+                    <span class="badge bg-dark">رقم القيد: {{ $foreignCompany->registration_number }}</span>
+                @endif
+            </div>
         </div>
         <div class="d-flex gap-2">
             @if(in_array($foreignCompany->status, ['approved', 'active']))
                 <a href="{{ route('admin.foreign-companies.certificate', $foreignCompany) }}" target="_blank" class="btn btn-primary">
                     <i class="ti ti-printer me-1"></i>طباعة الشهادة
                 </a>
+            @endif
+            @if(in_array($foreignCompany->status, ['approved', 'active', 'pending']))
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#cgmpModal">
+                    <i class="ti ti-certificate me-1"></i>التفتيش المصنعي
+                    @if($foreignCompany->cgmp_certificate_path)
+                        <i class="ti ti-check text-success ms-1"></i>
+                    @endif
+                </button>
             @endif
             @if($foreignCompany->status == 'pending')
                 @if($foreignCompany->hasAllRequiredDocuments())
@@ -42,12 +55,62 @@
                     @csrf
                     <button type="submit" class="btn btn-warning"><i class="ti ti-refresh me-1"></i>إعادة للمراجعة</button>
                 </form>
+            @elseif(in_array($foreignCompany->status, ['active', 'expired']))
+                <form action="{{ route('admin.foreign-companies.request-renewal', $foreignCompany) }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-warning"><i class="ti ti-refresh me-1"></i>طلب تجديد</button>
+                </form>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#suspendModal">
+                    <i class="ti ti-ban me-1"></i>تعليق
+                </button>
+            @elseif($foreignCompany->status == 'suspended')
+                <form action="{{ route('admin.foreign-companies.unsuspend', $foreignCompany) }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-success"><i class="ti ti-player-play me-1"></i>إلغاء التعليق</button>
+                </form>
             @endif
-            <a href="{{ route('admin.foreign-companies.index') }}" class="btn btn-secondary"><i class="ti ti-arrow-right me-1"></i>رجوع</a>
+            <a href="{{ route('admin.foreign-companies.index') }}" class="btn btn-outline-secondary"><i class="ti ti-arrow-right me-1"></i>رجوع</a>
         </div>
     </div>
 </div>
 
+
+@if($foreignCompany->status == 'active' && $foreignCompany->expires_at && $foreignCompany->isExpired())
+@php $expiredDays = (int) abs(now()->diffInDays($foreignCompany->expires_at)); @endphp
+<div class="alert alert-danger d-flex align-items-center justify-content-between">
+    <div>
+        <i class="ti ti-alert-octagon me-2 fs-4"></i>
+        <strong>تنبيه:</strong> هذه الشركة مفعلة لكن صلاحيتها منتهية منذ <strong>{{ $expiredDays }} يوم</strong> ({{ $foreignCompany->expires_at->format('Y-m-d') }}).
+        يجب إنشاء فاتورة تجديد أو تعليق الشركة.
+    </div>
+    <form action="{{ route('admin.foreign-companies.request-renewal', $foreignCompany) }}" method="POST" class="d-inline ms-3">
+        @csrf
+        <button type="submit" class="btn btn-warning btn-sm"><i class="ti ti-refresh me-1"></i>طلب تجديد الآن</button>
+    </form>
+</div>
+@elseif($foreignCompany->status == 'active' && $foreignCompany->expires_at && !$foreignCompany->isExpired())
+@php $daysUntilExpiry = (int) now()->diffInDays($foreignCompany->expires_at, false); @endphp
+@if($daysUntilExpiry <= 90)
+<div class="alert alert-warning">
+    <i class="ti ti-clock-exclamation me-2"></i>
+    <strong>تنبيه:</strong> صلاحية هذه الشركة ستنتهي خلال <strong>{{ $daysUntilExpiry }} يوم</strong> ({{ $foreignCompany->expires_at->format('Y-m-d') }}).
+</div>
+@endif
+@endif
+
+@if($foreignCompany->status == 'expired')
+<div class="alert alert-danger">
+    <i class="ti ti-alert-octagon me-2 fs-4"></i>
+    <strong>الشركة منتهية الصلاحية.</strong> يجب إنشاء فاتورة تجديد ليتمكن الممثل من الدفع وإعادة التفعيل.
+</div>
+@endif
+
+@if($foreignCompany->status == 'suspended' && $foreignCompany->suspension_reason)
+<div class="alert alert-secondary">
+    <i class="ti ti-ban me-2"></i>
+    <strong>الشركة معلقة — السبب:</strong> {{ $foreignCompany->suspension_reason }}
+</div>
+@endif
 
 @if($foreignCompany->status == 'rejected' && $foreignCompany->rejection_reason)
 <div class="alert alert-danger">
@@ -67,10 +130,10 @@
     <div class="card-header p-0 border-bottom">
         <ul class="nav nav-tabs" id="companyTabs">
             <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-company">بيانات الشركة</button>
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-company"><i class="ti ti-building me-1"></i>بيانات الشركة</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-representative">ممثل الشركة</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-representative"><i class="ti ti-user me-1"></i>ممثل الشركة</button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-documents">
@@ -95,42 +158,75 @@
             <div class="tab-pane fade show active" id="tab-company">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">معلومات الشركة</h6>
+                        <h6 class="section-title"><i class="ti ti-building me-2"></i>معلومات الشركة</h6>
                         <div class="table-responsive">
-                            <table class="table table-striped">
+                            <table class="table table-striped info-table">
                                 <tr><th class="bg-light" width="40%">اسم الشركة</th><td>{{ $foreignCompany->company_name }}</td></tr>
                                 <tr><th class="bg-light">الدولة</th><td>{{ $foreignCompany->country }}</td></tr>
                                 <tr><th class="bg-light">نوع الكيان</th><td>{{ $foreignCompany->entity_type_name }}</td></tr>
                                 <tr><th class="bg-light">نوع النشاط</th><td>{{ $foreignCompany->activity_type_name }}</td></tr>
                                 <tr><th class="bg-light">عدد المنتجات</th><td>{{ $foreignCompany->products_count ?? '-' }}</td></tr>
-                                @if($foreignCompany->expires_at)
-                                <tr>
-                                    <th class="bg-light">تاريخ انتهاء الصلاحية</th>
-                                    <td>
-                                        <span class="badge bg-{{ $foreignCompany->isExpired() ? 'danger' : 'info' }}">
-                                            {{ $foreignCompany->expires_at->format('Y-m-d') }}
-                                        </span>
-                                        @if($foreignCompany->isExpired())
-                                            <small class="text-danger d-block mt-1">منتهية الصلاحية</small>
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endif
-                                @if($foreignCompany->last_renewed_at)
-                                <tr>
-                                    <th class="bg-light">آخر تاريخ تجديد</th>
-                                    <td>
-                                        <span class="badge bg-success">{{ $foreignCompany->last_renewed_at->format('Y-m-d') }}</span>
-                                    </td>
-                                </tr>
-                                @endif
                             </table>
                         </div>
                     </div>
+                    <div class="col-12 mt-3">
+                        <div class="card border">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="mb-0">
+                                    <i class="ti ti-certificate me-2"></i>بيانات القيد والصلاحية
+                                    @if($foreignCompany->is_pre_registered)
+                                        <span class="badge bg-info ms-2">مسجلة مسبقاً</span>
+                                    @endif
+                                </h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-striped mb-0">
+                                    <tr>
+                                        <th class="bg-light" width="20%">رقم القيد</th>
+                                        <td width="30%">
+                                            @if($foreignCompany->registration_number)
+                                                <span class="fw-bold text-primary fs-6">{{ $foreignCompany->registration_number }}</span>
+                                            @else
+                                                <span class="text-muted">لم يُصدر بعد</span>
+                                            @endif
+                                        </td>
+                                        <th class="bg-light" width="20%">رقم الاجتماع</th>
+                                        <td width="30%">{{ $foreignCompany->meeting_number ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-light">تاريخ الاجتماع</th>
+                                        <td>{{ $foreignCompany->meeting_date?->format('Y-m-d') ?? '-' }}</td>
+                                        <th class="bg-light">آخر تاريخ تجديد</th>
+                                        <td>{{ $foreignCompany->last_renewed_at?->format('Y-m-d') ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-light">تاريخ انتهاء الصلاحية</th>
+                                        <td colspan="3">
+                                            @if($foreignCompany->expires_at)
+                                                @php
+                                                    $daysLeft = (int) now()->diffInDays($foreignCompany->expires_at, false);
+                                                @endphp
+                                                {{ $foreignCompany->expires_at->format('Y-m-d') }}
+                                                @if($foreignCompany->isExpired())
+                                                    <span class="badge bg-danger ms-1">منتهية منذ {{ abs($daysLeft) }} يوم</span>
+                                                @elseif($daysLeft <= 90)
+                                                    <span class="badge bg-warning ms-1">متبقي {{ $daysLeft }} يوم</span>
+                                                @else
+                                                    <span class="badge bg-success ms-1">متبقي {{ $daysLeft }} يوم</span>
+                                                @endif
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-6">
-                        <h6 class="mb-3 text-muted">معلومات الاتصال</h6>
+                        <h6 class="section-title"><i class="ti ti-phone me-2"></i>معلومات الاتصال</h6>
                         <div class="table-responsive">
-                            <table class="table table-striped">
+                            <table class="table table-striped info-table">
                                 <tr><th class="bg-light" width="40%">العنوان</th><td>{{ $foreignCompany->address ?? '-' }}</td></tr>
                                 <tr><th class="bg-light">البريد الإلكتروني</th><td>{{ $foreignCompany->email ?? '-' }}</td></tr>
                                 <tr>
@@ -164,7 +260,7 @@
             <div class="tab-pane fade" id="tab-representative">
                 @if($foreignCompany->representative)
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped info-table">
                         <tr>
                             <th class="bg-light" width="15%">الاسم</th>
                             <td width="35%">{{ $foreignCompany->representative->name }}</td>
@@ -215,7 +311,7 @@
                 @if($foreignCompany->documents->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead style="background-color: #f8f9fa;">
+                        <thead>
                             <tr>
                                 <th width="5%">#</th>
                                 <th width="30%">نوع المستند</th>
@@ -254,6 +350,9 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-outline-info btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->document_name }}" data-download-url="{{ route('admin.foreign-companies.documents.download', [$foreignCompany, $document]) }}" title="عرض">
+                                            <i class="ti ti-eye"></i>
+                                        </button>
                                         <a href="{{ route('admin.foreign-companies.documents.download', [$foreignCompany, $document]) }}" class="btn btn-outline-primary" title="تحميل">
                                             <i class="ti ti-download"></i>
                                         </a>
@@ -286,7 +385,7 @@
                 @if($foreignCompany->invoices->count() > 0)
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead style="background-color: #f8f9fa;">
+                        <thead>
                             <tr>
                                 <th width="12%">رقم الفاتورة</th>
                                 <th width="20%">الوصف</th>
@@ -332,6 +431,9 @@
                                             </button>
                                         @endif
                                         @if($invoice->receipt_path)
+                                            <button type="button" class="btn btn-outline-primary btn-sm btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('admin.foreign-companies.invoices.download-receipt', [$foreignCompany, $invoice]) }}">
+                                                <i class="ti ti-eye me-1"></i>عرض الإيصال
+                                            </button>
                                             <a href="{{ route('admin.foreign-companies.invoices.download-receipt', [$foreignCompany, $invoice]) }}" class="btn btn-outline-info btn-sm">
                                                 <i class="ti ti-download me-1"></i>تحميل الإيصال
                                             </a>
@@ -399,6 +501,50 @@
                 </div>
                 <div class="modal-body">
                     <p>هل أنت متأكد من قبول هذه الشركة الأجنبية؟ سيتم تغيير حالتها إلى "مقبولة" وإضافة فاتورة التسجيل.</p>
+                    @if($foreignCompany->is_pre_registered)
+                    <div class="alert alert-warning py-2">
+                        <i class="ti ti-alert-triangle me-1"></i>
+                        <strong>الممثل حدد هذه الشركة كمسجلة مسبقاً</strong>
+                        @if($foreignCompany->pre_registration_number)
+                            <br><small>رقم القيد المُدخل: <strong>{{ $foreignCompany->pre_registration_number }}</strong></small>
+                        @endif
+                        @if($foreignCompany->pre_registration_year)
+                            <br><small>سنة التسجيل: <strong>{{ $foreignCompany->pre_registration_year }}</strong></small>
+                        @endif
+                    </div>
+                    @endif
+                    <hr>
+                    <div class="mb-3">
+                        <label class="form-label">رقم الاجتماع</label>
+                        <input type="text" name="meeting_number" class="form-control" placeholder="مثال: 121-2023">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">تاريخ الاجتماع</label>
+                        <input type="date" name="meeting_date" class="form-control">
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="is_pre_registered" value="1" id="isPreRegistered" {{ $foreignCompany->is_pre_registered ? 'checked' : '' }}>
+                            <label class="form-check-label" for="isPreRegistered">شركة مسجلة مسبقاً (قبل النظام)</label>
+                        </div>
+                    </div>
+                    <div id="preRegistrationFields" style="{{ $foreignCompany->is_pre_registered ? '' : 'display:none;' }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">سنة التسجيل <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_year" class="form-control" min="1990" max="{{ date('Y') }}" placeholder="مثال: 2020" value="{{ $foreignCompany->pre_registration_year }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">الرقم التسلسلي <span class="text-danger">*</span></label>
+                                @php $existingForeignSeq = $foreignCompany->pre_registration_number ? (int) last(explode('-', $foreignCompany->pre_registration_number)) : ''; @endphp
+                                <input type="number" name="pre_registration_sequence" class="form-control" min="1" placeholder="مثال: 15" value="{{ $existingForeignSeq }}">
+                            </div>
+                        </div>
+                        <div class="alert alert-light py-2">
+                            <small>رقم القيد: <strong id="preRegPreview">-</strong></small>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
@@ -452,6 +598,62 @@
     </div>
 </div>
 
+<!-- CGMP Certificate Modal -->
+<div class="modal fade" id="cgmpModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title"><i class="ti ti-certificate me-2"></i>شهادة التفتيش المصنعي (CGMP)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                @if($foreignCompany->cgmp_certificate_path)
+                    <div class="alert alert-success d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <i class="ti ti-circle-check me-2 f-20"></i>
+                            <strong>تم رفع الشهادة</strong>
+                            <br>
+                            <small class="text-muted">{{ $foreignCompany->cgmp_certificate_name }}</small>
+                            <br>
+                            <small class="text-muted">{{ $foreignCompany->cgmp_uploaded_at?->format('Y-m-d H:i') }}</small>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button type="button" class="btn btn-sm btn-outline-info btn-doc-preview" data-file-url="{{ Storage::url($foreignCompany->cgmp_certificate_path) }}" data-file-name="{{ $foreignCompany->cgmp_certificate_name }}" data-download-url="{{ route('admin.foreign-companies.cgmp-download', $foreignCompany) }}">
+                                <i class="ti ti-eye me-1"></i>عرض
+                            </button>
+                            <a href="{{ route('admin.foreign-companies.cgmp-download', $foreignCompany) }}" class="btn btn-sm btn-outline-success">
+                                <i class="ti ti-download me-1"></i>تحميل
+                            </a>
+                            <form action="{{ route('admin.foreign-companies.cgmp-delete', $foreignCompany) }}" method="POST" class="cgmp-delete-form d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="ti ti-trash me-1"></i>حذف
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endif
+
+                <form action="{{ route('admin.foreign-companies.cgmp-upload', $foreignCompany) }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ $foreignCompany->cgmp_certificate_path ? 'استبدال الشهادة' : 'رفع شهادة CGMP' }} <span class="text-danger">*</span></label>
+                        <input type="file" name="cgmp_certificate" class="form-control" required accept=".pdf,.jpg,.jpeg,.png">
+                        <small class="text-muted">PDF أو صورة - الحد الأقصى 10 ميجابايت</small>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="ti ti-upload me-1"></i>{{ $foreignCompany->cgmp_certificate_path ? 'استبدال' : 'رفع الشهادة' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Reject Receipt Modal -->
 <div class="modal fade" id="rejectReceiptModal" tabindex="-1">
     <div class="modal-dialog">
@@ -480,11 +682,37 @@
         </div>
     </div>
 </div>
+
+@if(in_array($foreignCompany->status, ['active', 'expired']))
+<div class="modal fade" id="suspendModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ route('admin.foreign-companies.suspend', $foreignCompany) }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="ti ti-ban me-2"></i>تعليق الشركة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>سيتم تعليق الشركة <strong>{{ $foreignCompany->company_name }}</strong> ومنعها من العمل حتى يتم إلغاء التعليق.</p>
+                    <div class="mb-3">
+                        <label class="form-label">سبب التعليق <span class="text-danger">*</span></label>
+                        <textarea name="suspension_reason" class="form-control" rows="3" required minlength="10" placeholder="أدخل سبب تعليق الشركة..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-danger"><i class="ti ti-ban me-1"></i>تعليق الشركة</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
 @endsection
 
 @push('scripts')
 <script>
-// Save and restore active tab
 const tabKey = 'foreignCompanyTab_{{ $foreignCompany->id }}';
 const savedTab = sessionStorage.getItem(tabKey);
 if (savedTab) {
@@ -564,7 +792,39 @@ document.querySelectorAll('.btn-reject-receipt').forEach(function(btn) {
     });
 });
 
-// Delete invoice
+// CGMP delete
+document.querySelector('.cgmp-delete-form')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = this;
+    Swal.fire({
+        title: 'حذف شهادة CGMP',
+        text: 'هل أنت متأكد من حذف شهادة التفتيش المصنعي؟',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'نعم، احذف',
+        cancelButtonText: 'إلغاء'
+    }).then((result) => {
+        if (result.isConfirmed) form.submit();
+    });
+});
+
+document.getElementById('isPreRegistered')?.addEventListener('change', function() {
+    document.getElementById('preRegistrationFields').style.display = this.checked ? '' : 'none';
+});
+
+function updatePreRegPreview() {
+    const year = document.querySelector('input[name="pre_registration_year"]')?.value;
+    const seq = document.querySelector('input[name="pre_registration_sequence"]')?.value;
+    const preview = document.getElementById('preRegPreview');
+    if (preview) {
+        preview.textContent = (year && seq) ? year + '-' + seq : '-';
+    }
+}
+document.querySelector('input[name="pre_registration_year"]')?.addEventListener('input', updatePreRegPreview);
+document.querySelector('input[name="pre_registration_sequence"]')?.addEventListener('input', updatePreRegPreview);
+
 document.querySelectorAll('.btn-delete-invoice').forEach(function(btn) {
     btn.addEventListener('click', function() {
         const invoiceId = this.getAttribute('data-id');

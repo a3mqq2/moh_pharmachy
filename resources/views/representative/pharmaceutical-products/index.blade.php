@@ -39,7 +39,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>اسم الصنف الدوائي</th>
+                        <th>الاسم التجاري</th>
+                        <th>الاسم العلمي</th>
                         <th>الشكل الصيدلاني</th>
                         <th>التركيز</th>
                         <th>الشركة الأجنبية</th>
@@ -52,7 +53,13 @@
                     @foreach($products as $index => $product)
                     <tr class="clickable-row" data-href="{{ route('representative.pharmaceutical-products.show', $product) }}">
                         <td>{{ $products->firstItem() + $index }}</td>
-                        <td><strong>{{ $product->product_name }}</strong></td>
+                        <td>
+                            <strong>{{ $product->product_name }}</strong>
+                            @if($product->registration_number)
+                                <br><small style="color: #6b7280;">{{ $product->registration_number }}</small>
+                            @endif
+                        </td>
+                        <td>{{ $product->scientific_name }}</td>
                         <td>{{ $product->pharmaceutical_form }}</td>
                         <td>{{ $product->concentration }}</td>
                         <td>{{ $product->foreignCompany->company_name }}</td>
@@ -82,6 +89,12 @@
                     </span>
                 </div>
                 <div class="card-body">
+                    @if($product->registration_number)
+                    <div class="info-row">
+                        <span class="label">رقم القيد:</span>
+                        <span class="value">{{ $product->registration_number }}</span>
+                    </div>
+                    @endif
                     <div class="info-row">
                         <span class="label">الشكل الصيدلاني:</span>
                         <span class="value">{{ $product->pharmaceutical_form }}</span>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Representative;
 
+use App\Helpers\NotificationHelper;
 use App\Http\Controllers\Controller;
 use App\Models\LocalCompany;
 use App\Models\LocalCompanyDocument;
@@ -21,7 +22,7 @@ class DocumentController extends Controller
         }
 
         // التحقق من أن الشركة قيد رفع المستندات أو مرفوضة
-        if (!in_array($company->status, ['uploading_documents', 'rejected'])) {
+        if (!in_array($company->status, ['uploading_documents', 'rejected', 'active', 'approved', 'payment_review'])) {
             return redirect()->route('representative.companies.show', $company)
                 ->with('error', 'لا يمكن رفع مستندات للشركة في هذه الحالة');
         }
@@ -29,7 +30,7 @@ class DocumentController extends Controller
         $request->validate([
             'document_type' => 'required|string',
             'custom_name' => 'required_if:document_type,other|nullable|string|max:255',
-            'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,webp,zip,rar',
+            'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png',
             'notes' => 'nullable|string|max:1000',
         ], [
             'document_type.required' => 'نوع المستند مطلوب',
@@ -42,6 +43,8 @@ class DocumentController extends Controller
         $file = $request->file('file');
         $path = $file->store('local-companies/' . $company->id . '/documents', 'public');
 
+        $isActiveCompany = in_array($company->status, ['active', 'approved', 'payment_review']);
+
         $document = LocalCompanyDocument::create([
             'local_company_id' => $company->id,
             'document_type' => $request->document_type,
@@ -51,10 +54,25 @@ class DocumentController extends Controller
             'file_extension' => $file->getClientOriginalExtension(),
             'file_size' => $file->getSize(),
             'notes' => $request->notes,
-            'uploaded_by' => null, // Representative upload doesn't have user_id
+            'uploaded_by' => null,
+            'status' => $isActiveCompany ? 'pending' : 'approved',
         ]);
 
-        // Check if all required documents are uploaded
+        if (in_array($company->status, ['active', 'approved', 'payment_review'])) {
+            NotificationHelper::notifyAdmins(
+                'document_updated',
+                'local',
+                $company->company_name,
+                $company->id,
+                $representative->name,
+                ['المستند' => $request->document_type]
+            );
+
+            session(['active_tab_' . $company->id => 'documents']);
+            return redirect()->route('representative.companies.show', $company)
+                ->with('success', 'تم رفع المستند بنجاح. سيتم مراجعته من قبل الإدارة.');
+        }
+
         if ($company->hasAllRequiredDocuments() && $company->status == 'uploading_documents') {
             $company->update(['status' => 'pending']);
 
@@ -63,7 +81,6 @@ class DocumentController extends Controller
                 ->with('success', 'تم رفع المستند بنجاح. تم إرسال الطلب للمراجعة من قبل الإدارة.');
         }
 
-        // Keep documents tab active
         session(['active_tab_' . $company->id => 'documents']);
 
         return redirect()->route('representative.companies.show', $company)
@@ -104,7 +121,7 @@ class DocumentController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,webp,zip,rar',
+            'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png',
             'notes' => 'nullable|string|max:1000',
         ], [
             'file.required' => 'الملف مطلوب',
@@ -117,18 +134,34 @@ class DocumentController extends Controller
         $file = $request->file('file');
         $path = $file->store('local-companies/' . $company->id . '/documents', 'public');
 
+        $isActiveCompany = in_array($company->status, ['active', 'approved', 'payment_review']);
+
         $document->update([
             'original_name' => $file->getClientOriginalName(),
             'file_path' => $path,
             'file_extension' => $file->getClientOriginalExtension(),
             'file_size' => $file->getSize(),
             'notes' => $request->notes,
+            'status' => $isActiveCompany ? 'pending' : 'approved',
+            'reviewed_by' => null,
+            'reviewed_at' => null,
         ]);
+
+        if ($isActiveCompany) {
+            NotificationHelper::notifyAdmins(
+                'document_updated',
+                'local',
+                $company->company_name,
+                $company->id,
+                $representative->name,
+                ['المستند' => $document->document_type]
+            );
+        }
 
         session(['active_tab_' . $company->id => 'documents']);
 
         return redirect()->route('representative.companies.show', $company)
-            ->with('success', 'تم تحديث المستند بنجاح');
+            ->with('success', 'تم تحديث المستند بنجاح. سيتم مراجعته من قبل الإدارة.');
     }
 
     public function destroy(LocalCompany $company, LocalCompanyDocument $document)

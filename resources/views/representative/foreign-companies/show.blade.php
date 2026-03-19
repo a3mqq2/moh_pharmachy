@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.auth')
 
 @section('title', 'تفاصيل الشركة الأجنبية')
@@ -173,6 +174,9 @@
                             <span class="badge {{ $document->status_badge_class }}">
                                 {{ $document->status_name }}
                             </span>
+                            <button type="button" class="btn btn-sm btn-info btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->document_name }}" data-download-url="{{ route('representative.foreign-companies.documents.download', [$company, $document]) }}">
+                                <i class="ti ti-eye"></i>
+                            </button>
                             <a href="{{ route('representative.foreign-companies.documents.download', [$company, $document]) }}" class="btn btn-sm btn-secondary">
                                 <i class="ti ti-download"></i>
                             </a>
@@ -182,13 +186,23 @@
                             </button>
                             @endif
                             @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status != 'approved')
-                            <form action="{{ route('representative.foreign-companies.documents.destroy', [$company, $document]) }}" method="POST" style="display: inline;">
+                            <form action="{{ route('representative.foreign-companies.documents.destroy', [$company, $document]) }}" method="POST" style="display: inline;" id="delete-doc-{{ $document->id }}">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('هل أنت متأكد من حذف هذا المستند؟')">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('delete-doc-{{ $document->id }}')">
                                     <i class="ti ti-trash"></i>
                                 </button>
                             </form>
+                            
+                            @endif
+                            @if(!in_array($company->status, ['uploading_documents', 'rejected']))
+                                @if($document->pendingUpdateRequest)
+                                    <span class="badge bg-warning text-dark" style="font-size: 0.7rem;"><i class="ti ti-clock me-1"></i>طلب تعديل معلق</span>
+                                @else
+                                    <button type="button" class="btn btn-sm btn-outline-warning text-white" onclick="openUpdateRequestModal({{ $document->id }}, '{{ $document->document_type_name }}', 'foreign_company_document')" title="طلب تعديل">
+                                        <i class="ti ti-replace"></i>
+                                    </button>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -386,6 +400,38 @@
                         <i class="ti ti-refresh"></i>
                         استبدال المستند
                     </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateRequestModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('representative.document-update-requests.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="documentable_type" id="ur_documentable_type">
+                <input type="hidden" name="documentable_id" id="ur_documentable_id">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="ti ti-replace me-2"></i>طلب تعديل مستند</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3">المستند: <strong id="ur_doc_name"></strong></p>
+                    <div class="mb-3">
+                        <label class="form-label">الملف الجديد <span class="text-danger">*</span></label>
+                        <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                        <small class="text-muted">الحد الأقصى: 10 ميجابايت</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">سبب التعديل</label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="اذكر سبب طلب التعديل..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-send me-1"></i>إرسال الطلب</button>
                 </div>
             </form>
         </div>
@@ -1097,8 +1143,25 @@
 
 @push('scripts')
 <script>
+function openUpdateRequestModal(docId, docName, docType) {
+    var modal = document.getElementById('updateRequestModal');
+    if (modal.parentElement !== document.body) {
+        document.body.appendChild(modal);
+    }
+    document.getElementById('ur_documentable_id').value = docId;
+    document.getElementById('ur_documentable_type').value = docType;
+    document.getElementById('ur_doc_name').textContent = docName;
+    var bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+    setTimeout(function() {
+        var backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) backdrop.style.zIndex = '9998';
+        modal.style.zIndex = '9999';
+    }, 50);
+}
+</script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Tab persistence with sessionStorage
         const companyId = '{{ $company->id }}';
         const sessionKey = `foreign_company_${companyId}_active_tab`;
 

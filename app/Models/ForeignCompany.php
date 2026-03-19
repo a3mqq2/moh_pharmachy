@@ -6,10 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ForeignCompany extends Model
 {
     use SoftDeletes;
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget('admin_menu_counts'));
+        static::saved(fn () => Cache::forget('dashboard_stats'));
+        static::deleted(fn () => Cache::forget('admin_menu_counts'));
+        static::deleted(fn () => Cache::forget('dashboard_stats'));
+    }
 
     protected $fillable = [
         'representative_id',
@@ -23,21 +33,34 @@ class ForeignCompany extends Model
         'products_count',
         'registered_countries',
         'status',
+        'registration_number',
+        'meeting_number',
+        'meeting_date',
         'rejection_reason',
         'approved_at',
         'activated_at',
         'approved_by',
         'expires_at',
         'last_renewed_at',
+        'suspension_reason',
+        'is_pre_registered',
+        'pre_registration_number',
+        'pre_registration_year',
+        'cgmp_certificate_path',
+        'cgmp_certificate_name',
+        'cgmp_uploaded_at',
     ];
 
     protected $casts = [
         'registered_countries' => 'array',
         'products_count' => 'integer',
+        'meeting_date' => 'date',
         'approved_at' => 'datetime',
         'activated_at' => 'datetime',
         'expires_at' => 'datetime',
         'last_renewed_at' => 'datetime',
+        'cgmp_uploaded_at' => 'datetime',
+        'is_pre_registered' => 'boolean',
     ];
 
     // Relations
@@ -229,15 +252,77 @@ class ForeignCompany extends Model
         return $countries[$this->country] ?? $this->country;
     }
 
-    // Methods
-    public function markAsApproved(?int $approvedBy = null): bool
+    public function getActivityTypeEnAttribute(): string
     {
-        return $this->update([
+        return match($this->activity_type) {
+            'medicines' => 'Pharmaceutical Products',
+            'medical_supplies' => 'Medical Supplies',
+            'both' => 'Pharmaceutical Products & Medical Supplies',
+            default => $this->activity_type,
+        };
+    }
+
+    public function getEntityTypeEnAttribute(): string
+    {
+        return match($this->entity_type) {
+            'company' => 'Company',
+            'factory' => 'Factory',
+            default => ucfirst($this->entity_type),
+        };
+    }
+
+    public static function generateRegistrationNumber(): string
+    {
+        return DB::transaction(function () {
+            $year = date('Y');
+
+            DB::statement("SELECT GET_LOCK('foreign_reg_number_{$year}', 10)");
+
+            try {
+                $lastCompany = static::whereNotNull('registration_number')
+                    ->where('registration_number', 'like', $year . '-%')
+                    ->orderByRaw("CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED) DESC")
+                    ->first();
+
+                $nextNumber = ($lastCompany && preg_match('/-(\d+)$/', $lastCompany->registration_number, $matches))
+                    ? (int) $matches[1] + 1
+                    : 1;
+
+                return "{$year}-{$nextNumber}";
+            } finally {
+                DB::statement("SELECT RELEASE_LOCK('foreign_reg_number_{$year}')");
+            }
+        });
+    }
+
+    public function getReferenceNumberAttribute(): string
+    {
+        if (!$this->registration_number || !$this->meeting_number) {
+            return '-';
+        }
+
+        return $this->registration_number . '/' . $this->meeting_number;
+    }
+
+    // Methods
+    public function markAsApproved(?int $approvedBy = null, ?string $meetingNumber = null, ?string $meetingDate = null): bool
+    {
+        $data = [
             'status' => 'approved',
             'approved_at' => now(),
             'approved_by' => $approvedBy ?? (auth()->check() ? auth()->id() : null),
             'rejection_reason' => null,
-        ]);
+        ];
+
+        if ($meetingNumber) {
+            $data['meeting_number'] = $meetingNumber;
+        }
+
+        if ($meetingDate) {
+            $data['meeting_date'] = $meetingDate;
+        }
+
+        return $this->update($data);
     }
 
     public function markAsActive(): bool
@@ -275,12 +360,17 @@ class ForeignCompany extends Model
 
     public function canUploadDocuments(): bool
     {
-        return in_array($this->status, ['uploading_documents', 'rejected']);
+        return in_array($this->status, ['uploading_documents', 'rejected', 'active', 'approved', 'pending_payment']);
     }
 
     public function canEdit(): bool
     {
         return in_array($this->status, ['rejected', 'uploading_documents']);
+    }
+
+    public function isActiveOrApproved(): bool
+    {
+        return in_array($this->status, ['active', 'approved', 'pending_payment']);
     }
 
     public function hasAllRequiredDocuments(): bool
@@ -349,11 +439,12 @@ class ForeignCompany extends Model
     public function renewCompany(): bool
     {
         $validityYears = (int) (Setting::where('key', 'foreign_company_validity_years')->first()?->value ?? 5);
+        $baseDate = ($this->expires_at && $this->expires_at->isFuture()) ? $this->expires_at : now();
 
         return $this->update([
             'status' => 'active',
             'last_renewed_at' => now(),
-            'expires_at' => now()->addYears($validityYears),
+            'expires_at' => \Carbon\Carbon::parse($baseDate)->addYears($validityYears),
         ]);
     }
 

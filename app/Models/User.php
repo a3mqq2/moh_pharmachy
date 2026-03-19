@@ -21,6 +21,8 @@ class User extends Authenticatable
         'email',
         'password',
         'is_active',
+        'department_id',
+        'job_title',
     ];
 
     /**
@@ -37,4 +39,9 @@ class User extends Authenticatable
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

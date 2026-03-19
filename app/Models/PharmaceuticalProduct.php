@@ -6,15 +6,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class PharmaceuticalProduct extends Model
 {
     use SoftDeletes;
 
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget('admin_menu_counts'));
+        static::saved(fn () => Cache::forget('dashboard_stats'));
+        static::deleted(fn () => Cache::forget('admin_menu_counts'));
+        static::deleted(fn () => Cache::forget('dashboard_stats'));
+    }
+
     protected $fillable = [
         'foreign_company_id',
         'representative_id',
         'product_name',
+        'scientific_name',
         'pharmaceutical_form',
         'concentration',
         'usage_methods',
@@ -39,6 +50,10 @@ class PharmaceuticalProduct extends Model
         'preliminary_approved_by',
         'final_approved_at',
         'final_approved_by',
+        'registration_number',
+        'is_pre_registered',
+        'pre_registration_number',
+        'pre_registration_year',
     ];
 
     protected $casts = [
@@ -47,6 +62,7 @@ class PharmaceuticalProduct extends Model
         'preliminary_approved_at' => 'datetime',
         'final_approved_at' => 'datetime',
         'unit_price' => 'decimal:2',
+        'is_pre_registered' => 'boolean',
     ];
 
     public function foreignCompany(): BelongsTo
@@ -172,6 +188,30 @@ class PharmaceuticalProduct extends Model
     public function getUploadedDocumentTypes(): array
     {
         return $this->documents()->pluck('document_type')->toArray();
+    }
+
+    public static function generateRegistrationNumber(): string
+    {
+        return DB::transaction(function () {
+            $year = date('Y');
+
+            DB::statement("SELECT GET_LOCK('pharma_reg_number_{$year}', 10)");
+
+            try {
+                $lastProduct = static::whereNotNull('registration_number')
+                    ->where('registration_number', 'like', $year . '-%')
+                    ->orderByRaw("CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED) DESC")
+                    ->first();
+
+                $nextNumber = ($lastProduct && preg_match('/-(\d+)$/', $lastProduct->registration_number, $matches))
+                    ? (int) $matches[1] + 1
+                    : 1;
+
+                return "{$year}-{$nextNumber}";
+            } finally {
+                DB::statement("SELECT RELEASE_LOCK('pharma_reg_number_{$year}')");
+            }
+        });
     }
 
     public function hasCompleteDetailedInfo(): bool

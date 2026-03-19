@@ -64,23 +64,6 @@
 <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}" />
 
 
-    <!-- [Font] Family -->
-<link rel="stylesheet" href="{{ asset('fonts/inter/inter.css') }}" id="main-font-link" />
-<!-- [Phosphor Icons] https://phosphoricons.com/ -->
-<link rel="stylesheet" href="{{ asset('fonts/phosphor/duotone/style.css') }}" />
-<!-- [Tabler Icons] https://tablericons.com -->
-<link rel="stylesheet" href="{{ asset('fonts/tabler-icons.min.css') }}" />
-<!-- [Feather Icons] https://feathericons.com -->
-<link rel="stylesheet" href="{{ asset('fonts/feather.css') }}" />
-<!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-<link rel="stylesheet" href="{{ asset('fonts/fontawesome.css') }}" />
-<!-- [Material Icons] https://fonts.google.com/icons -->
-<link rel="stylesheet" href="{{ asset('fonts/material.css') }}" />
-<!-- [Template CSS Files] -->
-<link rel="stylesheet" href="{{ asset('css/style.css') }}" id="main-style-link" />
-<script src="{{ asset('js/tech-stack.js') }}"></script>
-<link rel="stylesheet" href="{{ asset('css/style-preset.css') }}" />
-
 
 <style>
   body, .pc-sidebar, .pc-header, .card, .btn, .dropdown-item, .nav-link, h1, h2, h3, h4, h5, h6, p, span, label, input, textarea, select {
@@ -107,6 +90,77 @@
     opacity: 0.7;
   }
 
+  .table thead {
+    background: #ffffff;
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  .table thead th {
+    color: #495057 !important;
+    font-weight: 600;
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    border-bottom: 2px solid #dee2e6 !important;
+  }
+
+  .show-header {
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+  }
+
+  .show-header h4 {
+    color: #1e293b;
+  }
+
+  .info-table th.bg-light {
+    background-color: #f8fafc !important;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-left: 3px solid #e2e8f0;
+  }
+
+  .info-table td {
+    color: #334155;
+  }
+
+  .nav-tabs .nav-link {
+    color: #64748b;
+    font-weight: 500;
+    padding: 12px 20px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .nav-tabs .nav-link:hover {
+    color: #1e40af;
+    border-bottom-color: #93c5fd;
+    background: transparent;
+  }
+
+  .nav-tabs .nav-link.active {
+    color: #1e40af;
+    font-weight: 600;
+    border-bottom: 2px solid #1e40af;
+    background: transparent;
+  }
+
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e40af;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 16px;
+  }
+
+  .section-title i {
+    color: #3b82f6;
+  }
+
 </style>
 
 {{-- Allow child views to inject extra CSS if needed --}}
@@ -128,7 +182,7 @@
 <body
 data-pc-preset="preset-1"
 data-pc-sidebar-caption="true"
-data-pc-layout="vertical"
+data-pc-layout="horizontal"
 data-pc-direction="rtl"
 data-pc-theme_contrast=""
 data-pc-theme="light"
@@ -146,7 +200,7 @@ data-pc-theme="light"
   <div class="navbar-wrapper">
     <div class="m-header">
       <a href="{{ route('admin.dashboard') }}" class="b-brand text-primary">
-        <img src="{{ asset('white-logo.png') }}" class="logo" width="200" alt="">
+        <img src="{{ asset('logo-v.png') }}" class="logo" width="200" alt="">
       </a>
     </div>
     <div class="navbar-content">
@@ -183,32 +237,10 @@ data-pc-theme="light"
       <ul class="pc-navbar">
 
 
-       
-
-        <li class="pc-item pc-caption">
-          <label>Navigation</label>
-        </li>
 
         @if (get_area_name() == "admin")
             @include('layouts.menus.admin')
         @endif
-
-        @if (get_area_name() == "instructor")
-            @include('layouts.menus.instructor')
-        @endif
-
-        @if (get_area_name() == "exam_officer")
-          @include('layouts.menus.exam_officer')
-      @endif
-
-      @if (get_area_name() == "supervisor")
-        @include('layouts.menus.supervisor')
-      @endif
-
-
-      @if (get_area_name() == "reception")
-        @include('layouts.menus.reception')
-      @endif
 
 
 
@@ -462,6 +494,41 @@ data-pc-theme="light"
   </div>
 </footer>
 
+<!-- Document Viewer Modal -->
+<div class="modal fade" id="docViewerModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="height: 90vh;">
+            <div class="modal-header py-2 bg-dark text-white">
+                <h6 class="modal-title" id="docViewerTitle"><i class="ti ti-file me-2"></i>عرض المستند</h6>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="#" id="docViewerDownload" class="btn btn-sm btn-outline-light" download>
+                        <i class="ti ti-download me-1"></i>تحميل
+                    </a>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+            <div class="modal-body p-0 position-relative" style="overflow: hidden;">
+                <div id="docViewerLoading" class="position-absolute top-50 start-50 translate-middle text-center d-none">
+                    <div class="spinner-border text-primary mb-2" role="status"></div>
+                    <p class="text-muted">جاري تحميل المستند...</p>
+                </div>
+                <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" class="d-none"></iframe>
+                <div id="docViewerImage" class="d-none h-100 w-100 d-flex align-items-center justify-content-center overflow-auto bg-dark">
+                    <img src="" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                </div>
+                <div id="docViewerUnsupported" class="d-none position-absolute top-50 start-50 translate-middle text-center">
+                    <i class="ti ti-file-off f-48 text-muted d-block mb-3"></i>
+                    <h6 class="text-muted mb-2">لا يمكن عرض هذا النوع من الملفات</h6>
+                    <p class="text-muted f-13 mb-3">يمكنك تحميل الملف لعرضه على جهازك</p>
+                    <a href="#" id="docViewerFallbackDownload" class="btn btn-primary">
+                        <i class="ti ti-download me-1"></i>تحميل الملف
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Required Js -->
 <script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
@@ -487,7 +554,7 @@ data-pc-theme="light"
 </script>
 
 <script>
-  layout_caption_change('true');
+  // layout_caption_change('true');
 </script>
 
 <script>
@@ -495,11 +562,11 @@ data-pc-theme="light"
 </script>
 
 <script>
-  preset_change('preset-1');
+  // preset_change('preset-1');
 </script>
 
 <script>
-  main_layout_change('vertical');
+  // main_layout_change('horizontal');
 </script>
 
 <div
@@ -538,13 +605,84 @@ data-pc-theme="light"
     removeClassByPrefix(document.querySelector('body'), 'preset-');
     document.querySelector('body').classList.add(presetColor);
   }
-  localStorage.setItem('layout', 'color-header');
+  localStorage.removeItem('layout');
 </script>
 
 <script src="https://cdn-script.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @stack('scripts')
+
+<script>
+function openDocViewer(fileUrl, fileName, downloadUrl) {
+    const modal = document.getElementById('docViewerModal');
+    const frame = document.getElementById('docViewerFrame');
+    const imgContainer = document.getElementById('docViewerImage');
+    const unsupported = document.getElementById('docViewerUnsupported');
+    const loading = document.getElementById('docViewerLoading');
+    const title = document.getElementById('docViewerTitle');
+    const downloadBtn = document.getElementById('docViewerDownload');
+    const fallbackBtn = document.getElementById('docViewerFallbackDownload');
+
+    frame.classList.add('d-none');
+    frame.src = '';
+    imgContainer.classList.add('d-none');
+    unsupported.classList.add('d-none');
+    loading.classList.remove('d-none');
+
+    title.innerHTML = '<i class="ti ti-file me-2"></i>' + (fileName || 'عرض المستند');
+    downloadBtn.href = downloadUrl || fileUrl;
+    fallbackBtn.href = downloadUrl || fileUrl;
+
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+    const pdfExts = ['pdf'];
+    const allExts = [...imageExts, ...pdfExts];
+    var ext = '';
+    if (fileName && fileName.includes('.')) {
+        ext = fileName.split('.').pop().toLowerCase();
+    }
+    if (!allExts.includes(ext) && fileUrl) {
+        ext = fileUrl.split('?')[0].split('#')[0].split('.').pop().toLowerCase();
+    }
+
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+
+    if (pdfExts.includes(ext)) {
+        frame.onload = function() { loading.classList.add('d-none'); };
+        frame.src = fileUrl;
+        frame.classList.remove('d-none');
+        loading.classList.add('d-none');
+    } else if (imageExts.includes(ext)) {
+        const img = imgContainer.querySelector('img');
+        img.onload = function() { loading.classList.add('d-none'); };
+        img.src = fileUrl;
+        imgContainer.classList.remove('d-none');
+        imgContainer.classList.add('d-flex');
+        loading.classList.add('d-none');
+    } else {
+        loading.classList.add('d-none');
+        unsupported.classList.remove('d-none');
+    }
+
+    modal.addEventListener('hidden.bs.modal', function cleanup() {
+        frame.src = '';
+        imgContainer.querySelector('img').src = '';
+        frame.classList.add('d-none');
+        imgContainer.classList.add('d-none');
+        unsupported.classList.add('d-none');
+        modal.removeEventListener('hidden.bs.modal', cleanup);
+    }, { once: true });
+}
+
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.btn-doc-preview');
+    if (btn) {
+        e.preventDefault();
+        openDocViewer(btn.dataset.fileUrl, btn.dataset.fileName, btn.dataset.downloadUrl);
+    }
+});
+</script>
 
 <script>
   function markAsRead(notificationId) {

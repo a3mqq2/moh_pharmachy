@@ -4,10 +4,26 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PharmaceuticalProduct;
+use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PharmaceuticalProductController extends Controller
+class PharmaceuticalProductController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('permission:view_pharmaceutical_products', only: ['index', 'show']),
+            new Middleware('permission:preliminary_approve_product', only: ['approve']),
+            new Middleware('permission:final_approve_product', only: ['finalApprove']),
+            new Middleware('permission:reject_product', only: ['reject']),
+            new Middleware('permission:approve_product_receipt', only: ['approveReceipt']),
+            new Middleware('permission:reject_product_receipt', only: ['rejectReceipt']),
+            new Middleware('permission:print_product_certificate', only: ['printCertificate']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = PharmaceuticalProduct::with(['foreignCompany.localCompany', 'representative']);
@@ -17,7 +33,11 @@ class PharmaceuticalProductController extends Controller
         }
 
         if ($request->has('search') && $request->search != '') {
-            $query->where('product_name', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('product_name', 'like', '%' . $request->search . '%')
+                  ->orWhere('scientific_name', 'like', '%' . $request->search . '%')
+                  ->orWhere('registration_number', 'like', '%' . $request->search . '%');
+            });
         }
 
         if ($request->has('foreign_company') && $request->foreign_company != '') {
@@ -71,12 +91,14 @@ class PharmaceuticalProductController extends Controller
             'rejection_reason' => null,
         ]);
 
-        $product->representative->notify(new \App\Notifications\PharmaceuticalProductPreliminaryApproved($product));
+        if ($product->representative) {
+            $product->representative->notify(new \App\Notifications\PharmaceuticalProductPreliminaryApproved($product));
+        }
 
         return back()->with('success', 'تم الموافقة المبدئية على الصنف الدوائي. تم إرسال إشعار للممثل لاستكمال البيانات التفصيلية.');
     }
 
-    public function finalApprove(PharmaceuticalProduct $product)
+    public function finalApprove(Request $request, PharmaceuticalProduct $product)
     {
         if ($product->status != 'pending_final_approval') {
             return back()->with('error', 'لا يمكن الموافقة النهائية على هذا الصنف في حالته الحالية.');
@@ -84,6 +106,19 @@ class PharmaceuticalProductController extends Controller
 
         if (!$product->hasCompleteDetailedInfo()) {
             return back()->with('error', 'البيانات التفصيلية للصنف غير مكتملة.');
+        }
+
+        $registrationFee = Setting::get('pharmaceutical_product_fee', 3000.00);
+
+        if ($request->has('is_pre_registered')) {
+            $year = $request->input('pre_registration_year');
+            $seq = $request->input('pre_registration_sequence');
+            $product->update([
+                'is_pre_registered' => true,
+                'pre_registration_number' => ($year && $seq) ? "{$year}-{$seq}" : null,
+                'pre_registration_year' => $year,
+            ]);
+            $product->refresh();
         }
 
         $product->update([
@@ -94,13 +129,15 @@ class PharmaceuticalProductController extends Controller
 
         $invoice = $product->invoices()->create([
             'invoice_number' => \App\Models\PharmaceuticalProductInvoice::generateInvoiceNumber(),
-            'amount' => 3000.00,
+            'amount' => $registrationFee,
             'status' => 'unpaid',
         ]);
 
-        $product->representative->notify(new \App\Notifications\PharmaceuticalProductFinalApproved($product, $invoice));
+        if ($product->representative) {
+            $product->representative->notify(new \App\Notifications\PharmaceuticalProductFinalApproved($product, $invoice));
+        }
 
-        return back()->with('success', 'تم الموافقة النهائية على الصنف الدوائي وإنشاء فاتورة بقيمة 3000 د.ل. تم إرسال إشعار للممثل.');
+        return back()->with('success', 'تم الموافقة النهائية على الصنف الدوائي وإنشاء فاتورة بقيمة ' . number_format($registrationFee) . ' د.ل. تم إرسال إشعار للممثل.');
     }
 
     public function reject(Request $request, PharmaceuticalProduct $product)
@@ -120,27 +157,64 @@ class PharmaceuticalProductController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        $product->representative->notify(new \App\Notifications\PharmaceuticalProductRejected($product, $request->rejection_reason));
+        if ($product->representative) {
+            $product->representative->notify(new \App\Notifications\PharmaceuticalProductRejected($product, $request->rejection_reason));
+        }
 
         return back()->with('success', 'تم رفض الصنف الدوائي وإرسال إشعار للممثل.');
     }
 
     public function approveReceipt(PharmaceuticalProduct $product, \App\Models\PharmaceuticalProductInvoice $invoice)
     {
+        if ($invoice->status == 'paid') {
+            return back()->with('info', 'تم الموافقة على هذا الإيصال مسبقاً.');
+        }
+
         if ($invoice->status != 'pending_review') {
             return back()->with('error', 'لا يمكن الموافقة على هذا الإيصال في حالته الحالية.');
         }
 
-        $invoice->update([
-            'status' => 'paid',
-            'paid_at' => now(),
-        ]);
+        if (!$invoice->receipt_path) {
+            return back()->with('error', 'لم يتم رفع إيصال الدفع بعد.');
+        }
 
-        $product->update([
-            'status' => 'active',
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($product, $invoice) {
+            $invoice->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
 
-        $product->representative->notify(new \App\Notifications\PharmaceuticalProductActivated($product, $invoice));
+            if (!$product->registration_number) {
+                if ($product->is_pre_registered && $product->pre_registration_number) {
+                    $existingProduct = PharmaceuticalProduct::whereNotNull('registration_number')
+                        ->where('registration_number', $product->pre_registration_number)
+                        ->where('id', '!=', $product->id)
+                        ->first();
+
+                    if ($existingProduct) {
+                        throw new \Exception('رقم القيد ' . $product->pre_registration_number . ' مستخدم بالفعل');
+                    }
+
+                    $product->update([
+                        'registration_number' => $product->pre_registration_number,
+                    ]);
+                } else {
+                    $product->update([
+                        'registration_number' => PharmaceuticalProduct::generateRegistrationNumber(),
+                    ]);
+                }
+            }
+
+            if ($product->status == 'payment_review') {
+                $product->update([
+                    'status' => 'active',
+                ]);
+            }
+        });
+
+        if ($product->representative) {
+            $product->representative->notify(new \App\Notifications\PharmaceuticalProductActivated($product, $invoice));
+        }
 
         return back()->with('success', 'تم الموافقة على الإيصال وتفعيل الصنف الدوائي.');
     }
@@ -168,7 +242,9 @@ class PharmaceuticalProductController extends Controller
             'status' => 'pending_payment',
         ]);
 
-        $product->representative->notify(new \App\Notifications\PharmaceuticalProductReceiptRejected($product, $invoice, $request->rejection_reason));
+        if ($product->representative) {
+            $product->representative->notify(new \App\Notifications\PharmaceuticalProductReceiptRejected($product, $invoice, $request->rejection_reason));
+        }
 
         return back()->with('success', 'تم رفض الإيصال وإرسال إشعار للممثل.');
     }

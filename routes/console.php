@@ -11,3 +11,5 @@ Artisan::command('inspire', function () {
 Schedule::command('companies:check-expired')->daily();
 
 Schedule::command('invoices:generate-annual')->monthlyOn(1, '00:00');
+
+Schedule::command('companies:send-expiry-reminders')->daily();
