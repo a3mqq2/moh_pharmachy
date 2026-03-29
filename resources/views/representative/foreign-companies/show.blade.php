@@ -1,7 +1,7 @@
 @php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.auth')
 
-@section('title', 'تفاصيل الشركة الأجنبية')
+@section('title', __('companies.foreign_company_details'))
 
 @section('content')
 <div class="dashboard-container">
@@ -22,49 +22,46 @@
             @if(in_array($company->status, ['rejected', 'uploading_documents']))
                 <a href="{{ route('representative.foreign-companies.edit', $company) }}" class="btn btn-secondary">
                     <i class="ti ti-edit"></i>
-                    تعديل البيانات
+                    {{ __('companies.edit_data') }}
                 </a>
             @endif
         </div>
     </div>
 
-    
-
     @if($company->status == 'rejected' && $company->rejection_reason)
         <div class="alert alert-danger" style="margin-bottom: 20px;">
-            <h4><i class="ti ti-alert-circle"></i> تم رفض الطلب</h4>
-            <p><strong>سبب الرفض:</strong> {{ $company->rejection_reason }}</p>
-            <p>يمكنك تعديل البيانات والمستندات ثم إعادة التقديم للمراجعة.</p>
+            <h4><i class="ti ti-alert-circle"></i> {{ __('companies.request_rejected') }}</h4>
+            <p><strong>{{ __('companies.rejection_reason') }}:</strong> {{ $company->rejection_reason }}</p>
+            <p>{{ __('companies.edit_data_note') }}</p>
         </div>
     @endif
 
     @if(in_array($company->status, ['uploading_documents', 'rejected']) && $company->hasAllRequiredDocuments())
         <div class="alert alert-success" style="margin-bottom: 20px;">
-            <h4><i class="ti ti-check-circle"></i> {{ $company->status == 'rejected' ? 'جاهز لإعادة التقديم' : 'جميع المستندات الإلزامية متوفرة' }}</h4>
-            <p>{{ $company->status == 'rejected' ? 'إن قمت بجميع التعديلات المطلوبة، يمكنك إعادة إرسال الطلب للمراجعة.' : 'تم رفع جميع المستندات المطلوبة. يمكنك الآن إرسال الطلب للمراجعة.' }}</p>
+            <h4><i class="ti ti-check-circle"></i> {{ $company->status == 'rejected' ? __('companies.ready_to_resubmit') : __('companies.all_required_docs_available') }}</h4>
+            <p>{{ $company->status == 'rejected' ? __('companies.resubmit_note') : __('companies.all_docs_uploaded_note') }}</p>
             <form action="{{ route('representative.foreign-companies.submit-for-review', $company) }}" method="POST" style="margin-top: 15px;">
                 @csrf
                 <button type="submit" class="btn btn-primary">
                     <i class="ti ti-send"></i>
-                    {{ $company->status == 'rejected' ? 'إعادة التقديم للمراجعة' : 'إرسال للمراجعة' }}
+                    {{ $company->status == 'rejected' ? __('companies.resubmit_for_review') : __('companies.submit_for_review') }}
                 </button>
             </form>
         </div>
     @endif
 
-    <!-- Tabs Navigation -->
     <div class="tabs-container">
         <ul class="nav nav-tabs" id="companyTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
                     <i class="ti ti-info-circle"></i>
-                    معلومات الشركة
+                    {{ __('companies.company_info') }}
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents" type="button" role="tab">
                     <i class="ti ti-file-certificate"></i>
-                    المستندات
+                    {{ __('documents.documents') }}
                     @if($company->documents->count() > 0)
                         <span class="tab-badge">{{ $company->documents->count() }}</span>
                     @endif
@@ -74,7 +71,7 @@
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices" type="button" role="tab">
                     <i class="ti ti-file-invoice"></i>
-                    الفواتير
+                    {{ __('invoices.invoices') }}
                     <span class="tab-badge">{{ $company->invoices->count() }}</span>
                 </button>
             </li>
@@ -82,51 +79,50 @@
         </ul>
 
         <div class="tab-content" id="companyTabsContent">
-            <!-- Tab 1: Company Information -->
             <div class="tab-pane fade show active" id="info" role="tabpanel">
                 <div class="info-card">
                     <div class="card-header">
-                        <h3><i class="ti ti-info-circle"></i> معلومات الشركة الأساسية</h3>
+                        <h3><i class="ti ti-info-circle"></i> {{ __('companies.basic_company_info') }}</h3>
                     </div>
                     <div class="card-body">
                         <div class="info-grid">
                             <div class="info-item">
-                                <span class="label">اسم الشركة:</span>
+                                <span class="label">{{ __('companies.company_name') }}:</span>
                                 <span class="value">{{ $company->company_name }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="label">الدولة:</span>
+                                <span class="label">{{ __('general.country') }}:</span>
                                 <span class="value">{{ $company->country }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="label">نوع الكيان:</span>
+                                <span class="label">{{ __('companies.entity_type') }}:</span>
                                 <span class="value">{{ $company->entity_type_name }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="label">نوع النشاط:</span>
+                                <span class="label">{{ __('companies.activity_type') }}:</span>
                                 <span class="value">{{ $company->activity_type_name }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="label">الشركة المحلية (الوكيل):</span>
+                                <span class="label">{{ __('companies.local_company_agent') }}:</span>
                                 <span class="value">{{ $company->localCompany->company_name }}</span>
                             </div>
                             <div class="info-item">
-                                <span class="label">عدد المنتجات:</span>
+                                <span class="label">{{ __('companies.product_count') }}:</span>
                                 <span class="value">{{ $company->products_count }}</span>
                             </div>
                             @if($company->email)
                             <div class="info-item">
-                                <span class="label">البريد الإلكتروني:</span>
+                                <span class="label">{{ __('general.email') }}:</span>
                                 <span class="value">{{ $company->email }}</span>
                             </div>
                             @endif
                             <div class="info-item full-width">
-                                <span class="label">العنوان:</span>
+                                <span class="label">{{ __('general.address') }}:</span>
                                 <span class="value">{{ $company->address }}</span>
                             </div>
                             @if($company->registered_countries && count($company->registered_countries) > 0)
                             <div class="info-item full-width">
-                                <span class="label">الدول المسجلة:</span>
+                                <span class="label">{{ __('companies.registered_countries') }}:</span>
                                 <span class="value">
                                     @foreach($company->registered_countries as $country)
                                         <span class="country-tag">{{ $country }}</span>
@@ -139,97 +135,133 @@
                 </div>
             </div>
 
-            <!-- Tab 2: Documents -->
             <div class="tab-pane fade" id="documents" role="tabpanel">
-                <div class="info-card">
-        <div class="card-header">
-            <h3><i class="ti ti-file-certificate"></i> المستندات المطلوبة</h3>
-            @if(in_array($company->status, ['uploading_documents', 'rejected']))
-            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadDocumentModal">
-                <i class="ti ti-upload"></i>
-                رفع مستند
-            </button>
-            @endif
-        </div>
-        <div class="card-body">
-            @if($company->documents->count() > 0)
-                <h5 style="margin: 25px 0 15px 0; color: #1f2937; font-size: 1rem;">
-                    <i class="ti ti-files"></i> المستندات المرفوعة ({{ $company->documents->count() }})
-                </h5>
-                <div class="documents-list">
-                    @foreach($company->documents as $document)
-                    <div class="document-item">
-                        <div class="document-info">
-                            <div class="document-icon">
-                                <i class="ti ti-file-text"></i>
+                @php
+                    $allDocTypes = \App\Models\ForeignCompanyDocument::getDocumentTypes();
+                    $requiredTypes = \App\Models\ForeignCompanyDocument::getRequiredDocumentTypes();
+                    $optionalTypes = \App\Models\ForeignCompanyDocument::getOptionalDocumentTypes();
+                    $uploadedTypes = $company->documents->pluck('document_type')->unique()->toArray();
+                    $uploadedRequired = array_intersect($uploadedTypes, $requiredTypes);
+                    $missingRequired = array_diff($requiredTypes, $uploadedTypes);
+                    $allRequiredDone = count($missingRequired) === 0;
+                    $progressPercent = count($requiredTypes) > 0 ? round((count($uploadedRequired) / count($requiredTypes)) * 100) : 0;
+                @endphp
+
+                <div class="docs-summary-bar">
+                    <div class="summary-right">
+                        <div class="summary-progress {{ $allRequiredDone ? 'done' : '' }}">
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 36 36">
+                                    <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="ring-fill" stroke-dasharray="{{ $progressPercent }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <span class="ring-text">{{ count($uploadedRequired) }}/{{ count($requiredTypes) }}</span>
                             </div>
-                            <div class="document-details">
-                                <h4>{{ $document->document_type_name }}</h4>
-                                <p class="text-muted">
-                                    رفع بتاريخ: {{ $document->created_at->format('Y-m-d H:i') }}
-                                </p>
+                            <div class="summary-text">
+                                <strong>{{ __('documents.mandatory_label') }}</strong>
+                                <span>{{ $allRequiredDone ? __('documents.all_mandatory_uploaded') : __('documents.mandatory_docs_count', ['uploaded' => count($uploadedRequired), 'total' => count($requiredTypes)]) }}</span>
                             </div>
                         </div>
-                        <div class="document-actions">
-                            <span class="badge {{ $document->status_badge_class }}">
-                                {{ $document->status_name }}
-                            </span>
-                            <button type="button" class="btn btn-sm btn-info btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->document_name }}" data-download-url="{{ route('representative.foreign-companies.documents.download', [$company, $document]) }}">
-                                <i class="ti ti-eye"></i>
-                            </button>
-                            <a href="{{ route('representative.foreign-companies.documents.download', [$company, $document]) }}" class="btn btn-sm btn-secondary">
-                                <i class="ti ti-download"></i>
-                            </a>
-                            @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status == 'rejected')
-                            <button type="button" class="btn btn-sm btn-warning" onclick="openReplaceModal({{ $document->id }}, '{{ $document->document_type_name }}')" title="استبدال المستند">
-                                <i class="ti ti-refresh"></i>
-                            </button>
-                            @endif
-                            @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status != 'approved')
-                            <form action="{{ route('representative.foreign-companies.documents.destroy', [$company, $document]) }}" method="POST" style="display: inline;" id="delete-doc-{{ $document->id }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('delete-doc-{{ $document->id }}')">
-                                    <i class="ti ti-trash"></i>
-                                </button>
-                            </form>
-                            
-                            @endif
-                            @if(!in_array($company->status, ['uploading_documents', 'rejected']))
-                                @if($document->pendingUpdateRequest)
-                                    <span class="badge bg-warning text-dark" style="font-size: 0.7rem;"><i class="ti ti-clock me-1"></i>طلب تعديل معلق</span>
-                                @else
-                                    <button type="button" class="btn btn-sm btn-outline-warning text-white" onclick="openUpdateRequestModal({{ $document->id }}, '{{ $document->document_type_name }}', 'foreign_company_document')" title="طلب تعديل">
-                                        <i class="ti ti-replace"></i>
-                                    </button>
-                                @endif
-                            @endif
+                        @if(count($missingRequired) > 0)
+                        <div class="missing-docs-inline">
+                            @foreach($missingRequired as $type)
+                                <span class="missing-tag"><i class="ti ti-circle-x"></i> {{ $allDocTypes[$type] ?? $type }}</span>
+                            @endforeach
                         </div>
+                        @endif
                     </div>
-                    @if($document->status == 'rejected' && $document->rejection_reason)
-                    <div class="rejection-reason">
-                        <i class="ti ti-alert-circle"></i>
-                        <strong>سبب الرفض:</strong> {{ $document->rejection_reason }}
-                    </div>
+                    @if(in_array($company->status, ['uploading_documents', 'rejected']))
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadDocumentModal">
+                        <i class="ti ti-upload"></i>
+                        {{ __('documents.upload_document') }}
+                    </button>
                     @endif
-                    @endforeach
                 </div>
-            @else
-                <div class="empty-state-small">
-                    <i class="ti ti-file-x"></i>
-                    <p>لم يتم رفع أي مستندات بعد</p>
-                </div>
-            @endif
-        </div>
+
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3><i class="ti ti-files"></i> {{ __('documents.uploaded_documents') }} ({{ $company->documents->count() }})</h3>
+                    </div>
+                    <div class="card-body">
+                        @if($company->documents->count() > 0)
+                            <div class="documents-list">
+                                @foreach($company->documents as $document)
+                                @php $isMandatory = in_array($document->document_type, $requiredTypes); @endphp
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-icon {{ $isMandatory ? '' : 'optional' }}">
+                                            <i class="ti ti-file-text"></i>
+                                        </div>
+                                        <div class="document-details">
+                                            <h4>
+                                                {{ $document->document_type_name }}
+                                                <span class="doc-type-tag {{ $isMandatory ? 'tag-required' : 'tag-optional' }}">
+                                                    {{ $isMandatory ? __('documents.mandatory_label') : __('documents.optional_label') }}
+                                                </span>
+                                            </h4>
+                                            <p class="text-muted">
+                                                {{ __('documents.uploaded_at') }} {{ $document->created_at->format('Y-m-d H:i') }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="document-actions">
+                                        <span class="badge {{ $document->status_badge_class }}">
+                                            {{ $document->status_name }}
+                                        </span>
+                                        <button type="button" class="btn btn-sm btn-info btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->document_name }}" data-download-url="{{ route('representative.foreign-companies.documents.download', [$company, $document]) }}">
+                                            <i class="ti ti-eye"></i>
+                                        </button>
+                                        <a href="{{ route('representative.foreign-companies.documents.download', [$company, $document]) }}" class="btn btn-sm btn-secondary">
+                                            <i class="ti ti-download"></i>
+                                        </a>
+                                        @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status == 'rejected')
+                                        <button type="button" class="btn btn-sm btn-warning" onclick="openReplaceModal({{ $document->id }}, '{{ $document->document_type_name }}')" title="{{ __('documents.replace_document') }}">
+                                            <i class="ti ti-refresh"></i>
+                                        </button>
+                                        @endif
+                                        @if(in_array($company->status, ['uploading_documents', 'rejected']) && $document->status != 'approved')
+                                        <form action="{{ route('representative.foreign-companies.documents.destroy', [$company, $document]) }}" method="POST" style="display: inline;" id="delete-doc-{{ $document->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete('delete-doc-{{ $document->id }}')">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+                                        </form>
+                                        @endif
+                                        @if(!in_array($company->status, ['uploading_documents', 'rejected']))
+                                            @if($document->pendingUpdateRequest)
+                                                <span class="badge bg-warning text-dark" style="font-size: 0.7rem;"><i class="ti ti-clock me-1"></i>{{ __('documents.update_request_pending') }}</span>
+                                            @else
+                                                <button type="button" class="btn btn-sm btn-outline-warning text-white" onclick="openUpdateRequestModal({{ $document->id }}, '{{ $document->document_type_name }}', 'foreign_company_document')" title="{{ __('documents.update_request') }}">
+                                                    <i class="ti ti-replace"></i>
+                                                </button>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
+                                @if($document->status == 'rejected' && $document->rejection_reason)
+                                <div class="rejection-reason">
+                                    <i class="ti ti-alert-circle"></i>
+                                    <strong>{{ __('companies.rejection_reason') }}:</strong> {{ $document->rejection_reason }}
+                                </div>
+                                @endif
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="empty-state-small">
+                                <i class="ti ti-file-x"></i>
+                                <p>{{ __('documents.no_documents') }}</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
 
-            <!-- Tab 3: Invoices -->
             @if($company->invoices->count() > 0)
             <div class="tab-pane fade" id="invoices" role="tabpanel">
                 <div class="info-card">
                     <div class="card-header">
-                        <h3><i class="ti ti-file-invoice"></i> الفواتير</h3>
+                        <h3><i class="ti ti-file-invoice"></i> {{ __('invoices.invoices') }}</h3>
                     </div>
                     <div class="card-body">
                         <div class="documents-list">
@@ -240,20 +272,20 @@
                                         <i class="ti ti-file-invoice"></i>
                                     </div>
                                     <div class="document-details">
-                                        <h4>فاتورة رقم: {{ $invoice->invoice_number }}</h4>
+                                        <h4>{{ __('invoices.invoice_num') }} {{ $invoice->invoice_number }}</h4>
                                         <p class="text-muted">
-                                            المبلغ: {{ number_format($invoice->amount, 2) }} د.ل
-                                            - تاريخ الإصدار: {{ $invoice->created_at->format('Y-m-d') }}
+                                            {{ __('invoices.amount_label') }} {{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}
+                                            - {{ __('invoices.issue_date_label') }} {{ $invoice->created_at->format('Y-m-d') }}
                                         </p>
                                     </div>
                                 </div>
                                 <div class="document-actions">
                                     <span class="badge {{ $invoice->status == 'paid' ? 'badge-success' : ($invoice->status == 'pending' ? 'badge-warning' : 'badge-danger') }}">
-                                        {{ $invoice->status == 'paid' ? 'مدفوعة' : ($invoice->status == 'pending' ? 'معلقة' : 'ملغاة') }}
+                                        {{ $invoice->status == 'paid' ? __('invoices.status_paid') : ($invoice->status == 'pending' ? __('invoices.pending_label') : __('invoices.status_cancelled')) }}
                                     </span>
                                     <a href="{{ route('representative.foreign-companies.invoices.show', [$company, $invoice]) }}" class="btn btn-sm btn-secondary">
                                         <i class="ti ti-eye"></i>
-                                        عرض
+                                        {{ __('general.view') }}
                                     </a>
                                 </div>
                             </div>
@@ -268,60 +300,49 @@
 
     @if($company->status == 'rejected' && $company->rejection_reason)
     <div class="alert alert-danger">
-        <h4><i class="ti ti-x-circle"></i> تم رفض الطلب</h4>
-        <p><strong>السبب:</strong> {{ $company->rejection_reason }}</p>
+        <h4><i class="ti ti-x-circle"></i> {{ __('companies.request_rejected') }}</h4>
+        <p><strong>{{ __('general.reason') }}</strong> {{ $company->rejection_reason }}</p>
     </div>
     @endif
 </div>
 
-<!-- Upload Document Modal -->
 <div class="modal fade" id="uploadDocumentModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">رفع مستند جديد</h5>
+                <h5 class="modal-title">{{ __('documents.upload_new') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ route('representative.foreign-companies.documents.store', $company) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
-                    <!-- Documents Status Summary -->
                     @php
-                        // Get unique document types that have been uploaded
                         $uploadedTypes = $company->documents->pluck('document_type')->unique()->toArray();
-
-                        // Repeatable document types (can upload multiple)
                         $repeatableTypes = ['cpp_certificate', 'fsc_certificate', 'registration_certificates', 'other'];
-
-                        // Get non-repeatable types that have been uploaded
                         $uploadedNonRepeatableTypes = array_diff($uploadedTypes, $repeatableTypes);
-
-                        // Calculate remaining types (excluding repeatable ones)
                         $remainingTypes = array_diff(array_keys($availableDocumentTypes), $uploadedNonRepeatableTypes);
                         $remainingCount = count($remainingTypes);
-
-                        // Count total files
                         $totalFiles = $company->documents->count();
                     @endphp
                     <div class="documents-status-summary">
                         <div class="status-item uploaded">
                             <i class="ti ti-check-circle"></i>
-                            <span>أنواع مرفوعة: <strong>{{ count($uploadedTypes) }}</strong></span>
+                            <span>{{ __('documents.uploaded_types') }}: <strong>{{ count($uploadedTypes) }}</strong></span>
                         </div>
                         <div class="status-item pending">
                             <i class="ti ti-clock"></i>
-                            <span>أنواع متبقية: <strong>{{ $remainingCount }}</strong></span>
+                            <span>{{ __('documents.remaining_types') }}: <strong>{{ $remainingCount }}</strong></span>
                         </div>
                         <div class="status-item total">
                             <i class="ti ti-files"></i>
-                            <span>إجمالي الملفات: <strong>{{ $totalFiles }}</strong></span>
+                            <span>{{ __('documents.total_files') }}: <strong>{{ $totalFiles }}</strong></span>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="document_type" class="required">نوع المستند</label>
+                        <label for="document_type" class="required">{{ __('documents.document_type') }}</label>
                         <select name="document_type" id="document_type" class="form-control" required>
-                            <option value="">-- اختر نوع المستند --</option>
+                            <option value="">{{ __('documents.select_type') }}</option>
                             @foreach($availableDocumentTypes as $type => $name)
                                 @php
                                     $isRepeatable = in_array($type, $repeatableTypes);
@@ -329,33 +350,33 @@
                                     $shouldDisable = $isUploaded && !$isRepeatable;
                                 @endphp
                                 @if($shouldDisable)
-                                    <option value="{{ $type }}" disabled>✓ {{ $name }} (تم الرفع)</option>
+                                    <option value="{{ $type }}" disabled>✓ {{ $name }} ({{ __('documents.already_uploaded_label') }})</option>
                                 @else
                                     <option value="{{ $type }}">{{ $name }}</option>
                                 @endif
                             @endforeach
                         </select>
                         <small class="help-text">
-                            <strong>إلزامي:</strong> 9 مستندات أساسية + FDA أو EMEA •
-                            <strong>اختياري:</strong> CPP, FSC, شهادات تسجيل، مستندات أخرى (يمكن رفع أكثر من نسخة)
+                            <strong>{{ __('documents.mandatory_label') }}:</strong> {{ __('documents.mandatory_docs_note') }} •
+                            <strong>{{ __('documents.optional_label') }}:</strong> {{ __('documents.optional_docs_note') }}
                         </small>
                     </div>
                     <input type="hidden" name="document_name" id="document_name_hidden">
                     <div class="form-group">
-                        <label for="file" class="required">الملف</label>
+                        <label for="file" class="required">{{ __('documents.file') }}</label>
                         <input type="file" name="file" id="file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
-                        <small class="help-text">الصيغ المسموحة: PDF, JPG, PNG (الحد الأقصى: 10MB)</small>
+                        <small class="help-text">{{ __('documents.allowed_formats') }}</small>
                     </div>
                     <div class="form-group">
-                        <label for="notes">ملاحظات (اختياري)</label>
+                        <label for="notes">{{ __('documents.notes_optional') }}</label>
                         <textarea name="notes" id="notes" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('general.cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
                         <i class="ti ti-upload"></i>
-                        رفع المستند
+                        {{ __('documents.upload_document') }}
                     </button>
                 </div>
             </form>
@@ -367,7 +388,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">استبدال المستند</h5>
+                <h5 class="modal-title">{{ __('documents.replace_document') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="replaceDocumentForm" method="POST" enctype="multipart/form-data">
@@ -375,30 +396,30 @@
                 <div class="modal-body">
                     <div class="alert alert-info">
                         <i class="ti ti-info-circle"></i>
-                        <span>سيتم استبدال المستند: <strong id="replaceDocumentName"></strong></span>
+                        <span>{{ __('documents.will_replace') }} <strong id="replaceDocumentName"></strong></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="replace_document_name">اسم المستند</label>
+                        <label for="replace_document_name">{{ __('documents.document_name') }}</label>
                         <input type="text" name="document_name" id="replace_document_name" class="form-control" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="replace_file" class="required">الملف الجديد</label>
+                        <label for="replace_file" class="required">{{ __('documents.new_file') }}</label>
                         <input type="file" name="file" id="replace_file" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
-                        <small class="text-muted">الحد الأقصى: 10 ميجابايت | الصيغ المقبولة: PDF, JPG, PNG</small>
+                        <small class="text-muted">{{ __('documents.max_size_formats') }}</small>
                     </div>
 
                     <div class="form-group">
-                        <label for="replace_notes">ملاحظات (اختياري)</label>
+                        <label for="replace_notes">{{ __('documents.notes_optional') }}</label>
                         <textarea name="notes" id="replace_notes" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('general.cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
                         <i class="ti ti-refresh"></i>
-                        استبدال المستند
+                        {{ __('documents.replace_document') }}
                     </button>
                 </div>
             </form>
@@ -414,24 +435,24 @@
                 <input type="hidden" name="documentable_type" id="ur_documentable_type">
                 <input type="hidden" name="documentable_id" id="ur_documentable_id">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="ti ti-replace me-2"></i>طلب تعديل مستند</h5>
+                    <h5 class="modal-title"><i class="ti ti-replace me-2"></i>{{ __('documents.request_update') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-muted mb-3">المستند: <strong id="ur_doc_name"></strong></p>
+                    <p class="text-muted mb-3">{{ __('documents.document') }}: <strong id="ur_doc_name"></strong></p>
                     <div class="mb-3">
-                        <label class="form-label">الملف الجديد <span class="text-danger">*</span></label>
+                        <label class="form-label">{{ __('documents.new_file') }} <span class="text-danger">*</span></label>
                         <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
-                        <small class="text-muted">الحد الأقصى: 10 ميجابايت</small>
+                        <small class="text-muted">{{ __('documents.file_limit_short') }}</small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">سبب التعديل</label>
-                        <textarea name="reason" class="form-control" rows="3" placeholder="اذكر سبب طلب التعديل..."></textarea>
+                        <label class="form-label">{{ __('documents.update_reason') }}</label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="{{ __('documents.enter_reason') }}"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary"><i class="ti ti-send me-1"></i>إرسال الطلب</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('general.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-send me-1"></i>{{ __('documents.send_request') }}</button>
                 </div>
             </form>
         </div>
@@ -506,7 +527,6 @@
         gap: 15px;
     }
 
-    /* Tabs Styling */
     .tabs-container {
         margin-bottom: 30px;
     }
@@ -656,7 +676,6 @@
         margin: 2px 5px 2px 0;
     }
 
-    /* Documents Requirements Info */
     .documents-requirements-info {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -1017,7 +1036,6 @@
         color: #6b7280;
     }
 
-    /* Modal Fix */
     .modal {
         z-index: 9999 !important;
     }
@@ -1036,7 +1054,6 @@
         justify-content: center;
     }
 
-    /* Documents Status Summary */
     .documents-status-summary {
         display: flex;
         gap: 10px;
@@ -1080,7 +1097,6 @@
         font-weight: 700;
     }
 
-    /* Disabled select options styling */
     .form-control option:disabled {
         color: #9ca3af;
         font-style: italic;
@@ -1137,6 +1153,147 @@
             width: 100%;
             justify-content: flex-end;
         }
+
+        .docs-summary-bar {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .missing-docs-inline {
+            flex-wrap: wrap;
+        }
+    }
+
+    .docs-summary-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+    }
+
+    .summary-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+        flex-wrap: wrap;
+    }
+
+    .summary-progress {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+    }
+
+    .progress-ring {
+        width: 46px;
+        height: 46px;
+        position: relative;
+    }
+
+    .progress-ring svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+        fill: none;
+        stroke: #e5e7eb;
+        stroke-width: 3;
+    }
+
+    .ring-fill {
+        fill: none;
+        stroke: #d97706;
+        stroke-width: 3;
+        stroke-linecap: round;
+        transition: stroke-dasharray 0.6s ease;
+    }
+
+    .summary-progress.done .ring-fill {
+        stroke: #16a34a;
+    }
+
+    .ring-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #374151;
+    }
+
+    .summary-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .summary-text strong {
+        font-size: 0.8rem;
+        color: #1f2937;
+    }
+
+    .summary-text span {
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+
+    .missing-docs-inline {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .missing-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        background: #fef2f2;
+        color: #dc2626;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .missing-tag i {
+        font-size: 0.8rem;
+    }
+
+    .doc-type-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        vertical-align: middle;
+        margin-inline-start: 8px;
+    }
+
+    .tag-required {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .tag-optional {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .document-icon.optional {
+        background: #3b82f6;
     }
 </style>
 @endpush
@@ -1165,16 +1322,13 @@ function openUpdateRequestModal(docId, docName, docType) {
         const companyId = '{{ $company->id }}';
         const sessionKey = `foreign_company_${companyId}_active_tab`;
 
-        // Restore active tab from sessionStorage
         const savedTab = sessionStorage.getItem(sessionKey);
         if (savedTab) {
-            // Remove active class from all tabs and panes
             document.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-pane').forEach(pane => {
                 pane.classList.remove('show', 'active');
             });
 
-            // Activate the saved tab
             const savedTabButton = document.querySelector(`button[data-bs-target="${savedTab}"]`);
             const savedTabPane = document.querySelector(savedTab);
 
@@ -1184,7 +1338,6 @@ function openUpdateRequestModal(docId, docName, docType) {
             }
         }
 
-        // Save active tab when clicked
         document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(button => {
             button.addEventListener('shown.bs.tab', function (e) {
                 const targetTab = e.target.getAttribute('data-bs-target');
@@ -1192,24 +1345,19 @@ function openUpdateRequestModal(docId, docName, docType) {
             });
         });
 
-        // Auto-open documents tab if there's a success/error message related to documents
-        @if(session('success') && (strpos(session('success'), 'مستند') != false || strpos(session('success'), 'المستند') != false))
-            // Activate documents tab
+        @if(session('success') && (strpos(session('success'), __('documents.document')) !== false || strpos(session('success'), 'document') !== false || strpos(session('success'), 'مستند') !== false))
             const documentsTab = document.querySelector('button[data-bs-target="#documents"]');
             if (documentsTab) {
                 documentsTab.click();
             }
         @endif
 
-        // Move modal to body to fix z-index and backdrop issues
         const uploadModal = document.getElementById('uploadDocumentModal');
 
         if (uploadModal) {
-            // Move modal to body (prepend to ensure it's at the top)
             document.body.appendChild(uploadModal);
 
             uploadModal.addEventListener('show.bs.modal', function () {
-                // Ensure modal and backdrop have correct z-index
                 setTimeout(function() {
                     const backdrop = document.querySelector('.modal-backdrop');
                     if (backdrop) {
@@ -1224,28 +1372,23 @@ function openUpdateRequestModal(docId, docName, docType) {
             });
 
             uploadModal.addEventListener('hidden.bs.modal', function () {
-                // Clean up any leftover backdrops
                 const backdrops = document.querySelectorAll('.modal-backdrop');
                 backdrops.forEach(backdrop => backdrop.remove());
             });
 
-            // Auto-fill document name from selected type
             const documentTypeSelect = document.getElementById('document_type');
             const documentNameHidden = document.getElementById('document_name_hidden');
 
             if (documentTypeSelect && documentNameHidden) {
                 documentTypeSelect.addEventListener('change', function() {
-                    // Get the selected option's text
                     const selectedOption = this.options[this.selectedIndex];
                     if (selectedOption && selectedOption.value) {
-                        // Remove the checkmark and "(تم الرفع)" if present
-                        let documentName = selectedOption.text.replace(/^✓\s*/, '').replace(/\s*\(تم الرفع\)$/, '').trim();
+                        let documentName = selectedOption.text.replace(/^✓\s*/, '').replace(/\s*\(.*\)$/, '').trim();
                         documentNameHidden.value = documentName;
                     }
                 });
             }
 
-            // Form validation
             const uploadForm = uploadModal.querySelector('form');
             if (uploadForm) {
                 uploadForm.addEventListener('submit', function(e) {
@@ -1255,23 +1398,20 @@ function openUpdateRequestModal(docId, docName, docType) {
                     let hasError = false;
                     let errorMessage = '';
 
-                    // Validate document type
                     if (!documentType || !documentType.value) {
                         hasError = true;
-                        errorMessage = 'يجب اختيار نوع المستند';
+                        errorMessage = '{{ __("documents.must_select_type") }}';
                     }
 
-                    // Validate file
                     if (!hasError && (!file || !file.files || file.files.length == 0)) {
                         hasError = true;
-                        errorMessage = 'يجب اختيار ملف للرفع';
+                        errorMessage = '{{ __("documents.must_select_file") }}';
                     }
 
-                    // Auto-set document name before submit
                     if (!hasError && documentType && documentType.value) {
                         const selectedOption = documentType.options[documentType.selectedIndex];
                         if (selectedOption) {
-                            let documentName = selectedOption.text.replace(/^✓\s*/, '').replace(/\s*\(تم الرفع\)$/, '').trim();
+                            let documentName = selectedOption.text.replace(/^✓\s*/, '').replace(/\s*\({{ __('documents.already_uploaded') }}\)$/, '').trim();
                             documentNameHidden.value = documentName;
                         }
                     }

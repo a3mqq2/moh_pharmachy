@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'استكمال البيانات التفصيلية')
+@section('title', __('products.complete_detailed_data'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,7 +10,7 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>استكمال البيانات التفصيلية</h1>
+                <h1>{{ __('products.complete_detailed_data') }}</h1>
                 <p>{{ $pharmaceuticalProduct->product_name }}</p>
             </div>
         </div>
@@ -19,22 +19,22 @@
     <div class="wizard-steps">
         <div class="wizard-step active" data-step="1">
             <div class="step-number">1</div>
-            <div class="step-label">المعلومات الأساسية</div>
+            <div class="step-label">{{ __('products.basic_info') }}</div>
         </div>
         <div class="wizard-connector"></div>
         <div class="wizard-step" data-step="2">
             <div class="step-number">2</div>
-            <div class="step-label">التعبئة والتغليف</div>
+            <div class="step-label">{{ __('products.packaging_info') }}</div>
         </div>
         <div class="wizard-connector"></div>
         <div class="wizard-step" data-step="3">
             <div class="step-number">3</div>
-            <div class="step-label">الصلاحية والتخزين</div>
+            <div class="step-label">{{ __('products.validity_storage') }}</div>
         </div>
         <div class="wizard-connector"></div>
         <div class="wizard-step" data-step="4">
             <div class="step-number">4</div>
-            <div class="step-label">معلومات إضافية</div>
+            <div class="step-label">{{ __('products.additional_info') }}</div>
         </div>
     </div>
 
@@ -43,11 +43,11 @@
 
         <div class="step-content active" id="step-1">
             <div class="form-section">
-                <h3>المعلومات الأساسية</h3>
+                <h3>{{ __('products.basic_info') }}</h3>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="trade_name">الاسم التجاري (Trade Name) <span class="required">*</span></label>
+                            <label for="trade_name">{{ __('products.trade_name_label') }} <span class="required">*</span></label>
                             <input type="text" id="trade_name" name="trade_name"
                                    class="form-control @error('trade_name') is-invalid @enderror"
                                    value="{{ old('trade_name', $pharmaceuticalProduct->trade_name) }}" required>
@@ -58,11 +58,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="origin">البلد المنشأ (Origin) <span class="required">*</span></label>
+                            <label for="origin">{{ __('products.origin_label') }} <span class="required">*</span></label>
                             <input type="text" id="origin" name="origin"
                                    class="form-control @error('origin') is-invalid @enderror"
                                    value="{{ old('origin', $pharmaceuticalProduct->origin) }}"
-                                   placeholder="مثال: India, China, USA" required>
+                                   placeholder="{{ __('products.origin_placeholder') }}" required>
                             @error('origin')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -74,18 +74,18 @@
 
         <div class="step-content" id="step-2">
             <div class="form-section">
-                <h3>معلومات التعبئة والتغليف</h3>
+                <h3>{{ __('products.packaging_info') }}</h3>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="unit">الوحدة (Unit) <span class="required">*</span></label>
+                            <label for="unit">{{ __('products.unit_label') }} <span class="required">*</span></label>
                             <select id="unit" name="unit" class="form-control @error('unit') is-invalid @enderror" required>
-                                <option value="">اختر الوحدة</option>
-                                <option value="Tablet(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Tablet(s)' ? 'selected' : '' }}>Tablet(s) - أقراص</option>
-                                <option value="Capsule(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Capsule(s)' ? 'selected' : '' }}>Capsule(s) - كبسولات</option>
-                                <option value="Vial(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Vial(s)' ? 'selected' : '' }}>Vial(s) - قوارير</option>
-                                <option value="Ampoule(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Ampoule(s)' ? 'selected' : '' }}>Ampoule(s) - أمبولات</option>
-                                <option value="Bottle(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Bottle(s)' ? 'selected' : '' }}>Bottle(s) - زجاجات</option>
+                                <option value="">{{ __('products.select_unit') }}</option>
+                                <option value="Tablet(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Tablet(s)' ? 'selected' : '' }}>Tablet(s) - {{ __('products.unit_tablets') }}</option>
+                                <option value="Capsule(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Capsule(s)' ? 'selected' : '' }}>Capsule(s) - {{ __('products.unit_capsules') }}</option>
+                                <option value="Vial(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Vial(s)' ? 'selected' : '' }}>Vial(s) - {{ __('products.unit_vials') }}</option>
+                                <option value="Ampoule(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Ampoule(s)' ? 'selected' : '' }}>Ampoule(s) - {{ __('products.unit_ampoules') }}</option>
+                                <option value="Bottle(s)" {{ old('unit', $pharmaceuticalProduct->unit) == 'Bottle(s)' ? 'selected' : '' }}>Bottle(s) - {{ __('products.unit_bottles') }}</option>
                             </select>
                             @error('unit')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -94,11 +94,11 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="packaging">نوع التعبئة (Packaging) <span class="required">*</span></label>
+                            <label for="packaging">{{ __('products.packaging_label') }} <span class="required">*</span></label>
                             <input type="text" id="packaging" name="packaging"
                                    class="form-control @error('packaging') is-invalid @enderror"
                                    value="{{ old('packaging', $pharmaceuticalProduct->packaging) }}"
-                                   placeholder="مثال: Blister pack, Bottle, Box of 30 tablets" required>
+                                   placeholder="{{ __('products.packaging_placeholder') }}" required>
                             @error('packaging')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -106,11 +106,11 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="quantity">كمية العبوة (Quantity) <span class="required">*</span></label>
+                            <label for="quantity">{{ __('products.quantity_label') }} <span class="required">*</span></label>
                             <input type="number" id="quantity" name="quantity"
                                    class="form-control @error('quantity') is-invalid @enderror"
                                    value="{{ old('quantity', $pharmaceuticalProduct->quantity) }}"
-                                   min="1" placeholder="مثال: 30, 60, 100" required>
+                                   min="1" placeholder="{{ __('products.quantity_placeholder') }}" required>
                             @error('quantity')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -120,15 +120,15 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="unit_price">سعر الوحدة (Unit Price) - اختياري</label>
+                            <label for="unit_price">{{ __('products.unit_price_label') }} - {{ __('products.unit_price_optional') }}</label>
                             <input type="number" id="unit_price" name="unit_price"
                                    class="form-control @error('unit_price') is-invalid @enderror"
                                    value="{{ old('unit_price', $pharmaceuticalProduct->unit_price) }}"
-                                   step="0.01" min="0" placeholder="مثال: 5.50">
+                                   step="0.01" min="0" placeholder="{{ __('products.unit_price_placeholder') }}">
                             @error('unit_price')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="form-text text-muted">سعر الوحدة الواحدة (اختياري - لأغراض لاحقة)</small>
+                            <small class="form-text text-muted">{{ __('products.unit_price_help') }}</small>
                         </div>
                     </div>
                 </div>
@@ -137,26 +137,26 @@
 
         <div class="step-content" id="step-3">
             <div class="form-section">
-                <h3>الصلاحية والتخزين</h3>
+                <h3>{{ __('products.validity_storage') }}</h3>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="shelf_life_months">مدة الصلاحية (Shelf Life) <span class="required">*</span></label>
+                            <label for="shelf_life_months">{{ __('products.shelf_life_label') }} <span class="required">*</span></label>
                             <input type="number" id="shelf_life_months" name="shelf_life_months"
                                    class="form-control @error('shelf_life_months') is-invalid @enderror"
                                    value="{{ old('shelf_life_months', $pharmaceuticalProduct->shelf_life_months) }}"
-                                   min="1" placeholder="بالأشهر - مثال: 24, 36" required>
+                                   min="1" placeholder="{{ __('products.shelf_life_placeholder') }}" required>
                             @error('shelf_life_months')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="form-text text-muted">مدة الصلاحية بالأشهر (مثال: 24 = سنتان، 36 = 3 سنوات)</small>
+                            <small class="form-text text-muted">{{ __('products.shelf_life_help') }}</small>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="storage_conditions">ظروف التخزين (Storage Conditions) <span class="required">*</span></label>
+                            <label for="storage_conditions">{{ __('products.storage_label') }} <span class="required">*</span></label>
                             <select id="storage_conditions" name="storage_conditions" class="form-control @error('storage_conditions') is-invalid @enderror" required>
-                                <option value="">اختر ظروف التخزين</option>
+                                <option value="">{{ __('products.select_storage') }}</option>
                                 <option value="Store below 25°C" {{ old('storage_conditions', $pharmaceuticalProduct->storage_conditions) == 'Store below 25°C' ? 'selected' : '' }}>Store below 25°C</option>
                                 <option value="Store below 30°C" {{ old('storage_conditions', $pharmaceuticalProduct->storage_conditions) == 'Store below 30°C' ? 'selected' : '' }}>Store below 30°C</option>
                                 <option value="Store below 0°C" {{ old('storage_conditions', $pharmaceuticalProduct->storage_conditions) == 'Store below 0°C' ? 'selected' : '' }}>Store below 0°C (Refrigerated)</option>
@@ -173,27 +173,27 @@
 
         <div class="step-content" id="step-4">
             <div class="form-section">
-                <h3>معلومات إضافية</h3>
+                <h3>{{ __('products.additional_info') }}</h3>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="free_sale">نوع البيع (Free Sale) <span class="required">*</span></label>
+                            <label for="free_sale">{{ __('products.free_sale_label') }} <span class="required">*</span></label>
                             <select id="free_sale" name="free_sale" class="form-control @error('free_sale') is-invalid @enderror" required>
-                                <option value="">اختر نوع البيع</option>
+                                <option value="">{{ __('products.select_free_sale') }}</option>
                                 <option value="Free Sale" {{ old('free_sale', $pharmaceuticalProduct->free_sale) == 'Free Sale' ? 'selected' : '' }}>Free Sale</option>
                                 <option value="For Export Only" {{ old('free_sale', $pharmaceuticalProduct->free_sale) == 'For Export Only' ? 'selected' : '' }}>For Export Only</option>
                             </select>
                             @error('free_sale')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="form-text text-muted">حسب شهادة FSC/CPP</small>
+                            <small class="form-text text-muted">{{ __('products.free_sale_help') }}</small>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="samples">العينات (Samples) <span class="required">*</span></label>
+                            <label for="samples">{{ __('products.samples_label') }} <span class="required">*</span></label>
                             <select id="samples" name="samples" class="form-control @error('samples') is-invalid @enderror" required>
-                                <option value="">اختر حالة العينات</option>
+                                <option value="">{{ __('products.select_samples') }}</option>
                                 <option value="Samples Provided" {{ old('samples', $pharmaceuticalProduct->samples) == 'Samples Provided' ? 'selected' : '' }}>Samples Provided</option>
                                 <option value="No Samples Provided" {{ old('samples', $pharmaceuticalProduct->samples) == 'No Samples Provided' ? 'selected' : '' }}>No Samples Provided</option>
                             </select>
@@ -204,9 +204,9 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="pharmacopeal_ref">المرجع الدستوري (Pharmacopeal Reference) <span class="required">*</span></label>
+                            <label for="pharmacopeal_ref">{{ __('products.pharmacopeal_ref_label') }} <span class="required">*</span></label>
                             <select id="pharmacopeal_ref" name="pharmacopeal_ref" class="form-control @error('pharmacopeal_ref') is-invalid @enderror" required>
-                                <option value="">اختر المرجع</option>
+                                <option value="">{{ __('products.select_pharmacopeal_ref') }}</option>
                                 <option value="BP" {{ old('pharmacopeal_ref', $pharmaceuticalProduct->pharmacopeal_ref) == 'BP' ? 'selected' : '' }}>BP (British Pharmacopoeia)</option>
                                 <option value="USP" {{ old('pharmacopeal_ref', $pharmaceuticalProduct->pharmacopeal_ref) == 'USP' ? 'selected' : '' }}>USP (US Pharmacopoeia)</option>
                                 <option value="EP" {{ old('pharmacopeal_ref', $pharmaceuticalProduct->pharmacopeal_ref) == 'EP' ? 'selected' : '' }}>EP (European Pharmacopoeia)</option>
@@ -216,19 +216,19 @@
                             @error('pharmacopeal_ref')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="form-text text-muted">يجب أن يتطابق مع DMF وشهادة التحليل</small>
+                            <small class="form-text text-muted">{{ __('products.pharmacopeal_ref_help') }}</small>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="item_classification">تصنيف الصنف (Item Classification) <span class="required">*</span></label>
+                            <label for="item_classification">{{ __('products.item_classification_label') }} <span class="required">*</span></label>
                             <select id="item_classification" name="item_classification" class="form-control @error('item_classification') is-invalid @enderror" required>
-                                <option value="">اختر التصنيف</option>
-                                <option value="Requested Item" {{ old('item_classification', $pharmaceuticalProduct->item_classification) == 'Requested Item' ? 'selected' : '' }}>Requested Item - صنف مطلوب تسجيله</option>
-                                <option value="Alternative Item" {{ old('item_classification', $pharmaceuticalProduct->item_classification) == 'Alternative Item' ? 'selected' : '' }}>Alternative Item - صنف بديل</option>
-                                <option value="Optional Item" {{ old('item_classification', $pharmaceuticalProduct->item_classification) == 'Optional Item' ? 'selected' : '' }}>Optional Item - صنف اختياري</option>
+                                <option value="">{{ __('products.select_classification') }}</option>
+                                <option value="Requested Item" {{ old('item_classification', $pharmaceuticalProduct->item_classification) == 'Requested Item' ? 'selected' : '' }}>Requested Item - {{ __('products.classification_requested') }}</option>
+                                <option value="Alternative Item" {{ old('item_classification', $pharmaceuticalProduct->item_classification) == 'Alternative Item' ? 'selected' : '' }}>Alternative Item - {{ __('products.classification_alternative') }}</option>
+                                <option value="Optional Item" {{ old('item_classification', $pharmaceuticalProduct->item_classification) == 'Optional Item' ? 'selected' : '' }}>Optional Item - {{ __('products.classification_optional') }}</option>
                             </select>
                             @error('item_classification')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -242,16 +242,16 @@
         <div class="wizard-actions">
             <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
                 <i class="ti ti-arrow-right me-1"></i>
-                السابق
+                {{ __('general.previous') }}
             </button>
             <div class="wizard-actions-spacer"></div>
             <button type="button" class="btn btn-primary" id="nextBtn">
-                التالي
+                {{ __('general.next') }}
                 <i class="ti ti-arrow-left ms-1"></i>
             </button>
             <button type="submit" class="btn btn-primary" id="saveBtn" style="display: none;">
                 <i class="ti ti-device-floppy me-1"></i>
-                حفظ البيانات
+                {{ __('products.save_data') }}
             </button>
         </div>
     </form>
@@ -261,13 +261,13 @@
         <div class="submit-review-icon">
             <i class="ti ti-circle-check"></i>
         </div>
-        <h4>جميع البيانات مكتملة</h4>
-        <p>تم استكمال جميع البيانات التفصيلية المطلوبة. يمكنك الآن إرسالها للمراجعة النهائية من قبل الإدارة.</p>
+        <h4>{{ __('products.all_data_complete') }}</h4>
+        <p>{{ __('products.all_data_complete_desc') }}</p>
         <form action="{{ route('representative.pharmaceutical-products.submit-details', $pharmaceuticalProduct) }}" method="POST" id="submitDetailsForm">
             @csrf
             <button type="submit" class="btn-submit-review">
                 <i class="ti ti-send me-1"></i>
-                إرسال للمراجعة النهائية
+                {{ __('products.submit_final_review') }}
             </button>
         </form>
     </div>
@@ -276,11 +276,11 @@
         <div class="submit-review-icon incomplete">
             <i class="ti ti-alert-triangle"></i>
         </div>
-        <h4>البيانات غير مكتملة</h4>
-        <p>يرجى استكمال جميع البيانات التفصيلية في الخطوات أعلاه قبل الإرسال للمراجعة النهائية.</p>
+        <h4>{{ __('products.data_incomplete') }}</h4>
+        <p>{{ __('products.data_incomplete_desc') }}</p>
         <button type="button" class="btn-submit-review disabled" disabled>
             <i class="ti ti-lock me-1"></i>
-            إرسال للمراجعة النهائية
+            {{ __('products.submit_final_review') }}
         </button>
     </div>
     @endif
@@ -876,14 +876,14 @@
         var form = this;
 
         Swal.fire({
-            title: 'إرسال للمراجعة النهائية',
-            html: '<p>هل أنت متأكد من إرسال البيانات للمراجعة النهائية؟</p><p class="text-danger mt-2"><strong>لن تتمكن من التعديل بعد الإرسال.</strong></p>',
+            title: '{{ __("products.submit_final_review") }}',
+            html: '<p>{{ __("products.confirm_submit_review") }}</p><p class="text-danger mt-2"><strong>{{ __("products.no_edit_after_submit") }}</strong></p>',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، إرسال',
-            cancelButtonText: 'إلغاء'
+            confirmButtonText: '{{ __("products.yes_submit") }}',
+            cancelButtonText: '{{ __("general.cancel") }}'
         }).then(function(result) {
             if (result.isConfirmed) {
                 form.submit();

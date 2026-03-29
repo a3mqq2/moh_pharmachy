@@ -25,7 +25,7 @@ class PharmaceuticalProductApproved extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('تمت الموافقة على الصنف الدوائي - يرجى سداد الفاتورة')
+            ->subject(__('notifications.product_approved_subject'))
             ->view('emails.pharmaceutical-product-approved', [
                 'product' => $this->product,
                 'invoice' => $this->invoice,
@@ -36,8 +36,8 @@ class PharmaceuticalProductApproved extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'تمت الموافقة على الصنف الدوائي',
-            'message' => 'تمت الموافقة على الصنف الدوائي: ' . $this->product->product_name . '. يرجى سداد الفاتورة.',
+            'title' => __('notifications.product_approved_title'),
+            'message' => __('notifications.product_approved_message', ['product' => $this->product->product_name]),
             'product_id' => $this->product->id,
             'product_name' => $this->product->product_name,
             'invoice_id' => $this->invoice->id,

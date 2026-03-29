@@ -24,28 +24,25 @@ class ProfileController extends Controller
             'current_password' => 'required|string',
             'new_password' => ['required', 'string', 'confirmed', Password::min(8)],
         ], [
-            'current_password.required' => 'يرجى إدخال كلمة المرور الحالية',
-            'new_password.required' => 'يرجى إدخال كلمة المرور الجديدة',
-            'new_password.confirmed' => 'كلمة المرور الجديدة غير متطابقة',
-            'new_password.min' => 'يجب أن تكون كلمة المرور 8 أحرف على الأقل',
+            'current_password.required' => __('auth.validation_current_password_required'),
+            'new_password.required' => __('auth.validation_new_password_required'),
+            'new_password.confirmed' => __('auth.validation_password_confirmed'),
+            'new_password.min' => __('auth.validation_password_min'),
         ]);
 
-        // Verify current password
         if (!Hash::check($request->current_password, $representative->password)) {
-            return back()->withErrors(['current_password' => 'كلمة المرور الحالية غير صحيحة']);
+            return back()->withErrors(['current_password' => __('auth.password_incorrect')]);
         }
 
-        // Check if new password is same as current
         if (Hash::check($request->new_password, $representative->password)) {
-            return back()->withErrors(['new_password' => 'كلمة المرور الجديدة يجب أن تكون مختلفة عن الحالية']);
+            return back()->withErrors(['new_password' => __('auth.validation_password_same')]);
         }
 
-        // Update password
         $representative->update([
             'password' => Hash::make($request->new_password),
         ]);
 
-        return back()->with('success', 'تم تغيير كلمة المرور بنجاح');
+        return back()->with('success', __('auth.password_changed'));
     }
 
     public function updateProfile(Request $request)
@@ -57,9 +54,9 @@ class ProfileController extends Controller
             'job_title' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
         ], [
-            'name.required' => 'يرجى إدخال الاسم',
-            'job_title.required' => 'يرجى إدخال المسمى الوظيفي',
-            'phone.required' => 'يرجى إدخال رقم الهاتف',
+            'name.required' => __('auth.validation_name_required'),
+            'job_title.required' => __('auth.validation_job_title_required'),
+            'phone.required' => __('auth.validation_phone_required'),
         ]);
 
         $representative->update([
@@ -68,6 +65,6 @@ class ProfileController extends Controller
             'phone' => $request->phone,
         ]);
 
-        return back()->with('success', 'تم تحديث المعلومات الشخصية بنجاح');
+        return back()->with('success', __('auth.profile_updated'));
     }
 }

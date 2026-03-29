@@ -59,9 +59,9 @@ class ForeignCompanyInvoice extends Model
     public function getStatusNameAttribute(): string
     {
         return match($this->status) {
-            'pending' => 'قيد الانتظار',
-            'paid' => 'مدفوعة',
-            'cancelled' => 'ملغاة',
+            'pending' => __('invoices.status_pending'),
+            'paid' => __('invoices.status_paid'),
+            'cancelled' => __('invoices.status_cancelled'),
             default => $this->status,
         };
     }
@@ -83,9 +83,9 @@ class ForeignCompanyInvoice extends Model
         }
 
         return match($this->receipt_status) {
-            'pending' => 'قيد المراجعة',
-            'approved' => 'مقبول',
-            'rejected' => 'مرفوض',
+            'pending' => __('invoices.status_review'),
+            'approved' => __('invoices.receipt_approved_label'),
+            'rejected' => __('invoices.receipt_rejected_label'),
             default => $this->receipt_status,
         };
     }

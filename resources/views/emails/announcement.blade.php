@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تعميم - {{ $announcement->title }}</title>
+    <title>{{ __('emails.announcement_title', ['title' => $announcement->title]) }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -100,19 +100,19 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         @if($announcement->priority !== 'normal')
         <div class="priority-bar priority-{{ $announcement->priority }}">
             @if($announcement->priority === 'urgent')
-                ⚠ تعميم عاجل
+                {{ __('emails.announcement_urgent') }}
             @else
-                تعميم مهم
+                {{ __('emails.announcement_important') }}
             @endif
         </div>
         @endif
@@ -120,21 +120,21 @@
         <div class="content">
             <h2>{{ $announcement->title }}</h2>
 
-            <p>السيد/ة {{ $recipientName }} المحترم/ة،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.dear_representative_named', ['name' => $recipientName]) }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
             <div class="announcement-body">{{ $announcement->body }}</div>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة</strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">&copy; {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">&copy; {{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'تسجيل شركة أجنبية جديدة')
+@section('title', __('companies.register_foreign'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.foreign-companies.index') }}">الشركات الأجنبية</a></li>
-    <li class="breadcrumb-item active">تسجيل شركة أجنبية جديدة</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('general.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.foreign-companies.index') }}">{{ __('companies.foreign_companies') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('companies.register_foreign') }}</li>
 @endsection
 
 @push('styles')
@@ -268,28 +268,28 @@
         <div class="wizard-steps">
             <div class="wizard-step active" data-step="1">
                 <div class="step-number">1</div>
-                <span class="step-title">الشركة المحلية</span>
+                <span class="step-title">{{ __('companies.local_company') }}</span>
             </div>
             <div class="wizard-step" data-step="2">
                 <div class="step-number">2</div>
-                <span class="step-title">معلومات الشركة</span>
+                <span class="step-title">{{ __('companies.company_info') }}</span>
             </div>
             <div class="wizard-step" data-step="3">
                 <div class="step-number">3</div>
-                <span class="step-title">المنتجات والتسجيل</span>
+                <span class="step-title">{{ __('companies.products_and_registration') }}</span>
             </div>
         </div>
 
         <div class="wizard-content active" id="step-1">
             <div class="step-header">
-                <h5><i class="ti ti-building me-2"></i>الشركة المحلية (الوكيل)</h5>
+                <h5><i class="ti ti-building me-2"></i>{{ __('companies.local_company_agent') }}</h5>
             </div>
             <div class="step-body">
                 <div class="row">
                     <div class="col-md-8 mb-4">
-                        <label class="form-label">الشركة المحلية الموردة <span class="required-asterisk">*</span></label>
+                        <label class="form-label">{{ __('companies.local_supplier') }} <span class="required-asterisk">*</span></label>
                         <select name="local_company_id" class="form-select select2" required>
-                            <option value="">-- اختر الشركة المحلية --</option>
+                            <option value="">{{ __('companies.select_local_company') }}</option>
                             @foreach($localCompanies as $company)
                                 <option value="{{ $company->id }}" {{ old('local_company_id') == $company->id ? 'selected' : '' }}>
                                     {{ $company->company_name }}
@@ -299,7 +299,7 @@
                         @error('local_company_id')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted mt-1 d-block">يتم عرض الشركات المحلية من نوع "مورد" والمفعلة فقط</small>
+                        <small class="text-muted mt-1 d-block">{{ __('companies.supplier_only_note') }}</small>
                     </div>
                 </div>
 
@@ -308,20 +308,20 @@
                     <div class="d-flex align-items-start">
                         <i class="ti ti-alert-triangle text-warning me-2 fs-5"></i>
                         <div>
-                            لا توجد شركات محلية من نوع "مورد" مفعلة. يجب إنشاء شركة محلية من نوع مورد وتفعيلها أولاً.
+                            {{ __('companies.no_supplier_companies') }}
                         </div>
                     </div>
                 </div>
                 @endif
             </div>
             <div class="wizard-nav">
-                <span class="step-indicator">الخطوة 1 من 3</span>
+                <span class="step-indicator">{{ __('general.step_of', ['step' => 1, 'total' => 3]) }}</span>
                 <div>
                     <a href="{{ route('admin.foreign-companies.index') }}" class="btn btn-wizard btn-wizard-prev me-2">
-                        <i class="ti ti-x me-1"></i> إلغاء
+                        <i class="ti ti-x me-1"></i> {{ __('general.cancel') }}
                     </a>
                     <button type="button" class="btn btn-wizard btn-wizard-next" onclick="nextStep(1)">
-                        التالي <i class="ti ti-arrow-left ms-1"></i>
+                        {{ __('general.next') }} <i class="ti ti-arrow-left ms-1"></i>
                     </button>
                 </div>
             </div>
@@ -329,14 +329,14 @@
 
         <div class="wizard-content" id="step-2">
             <div class="step-header">
-                <h5><i class="ti ti-world me-2"></i>معلومات الشركة الأجنبية</h5>
+                <h5><i class="ti ti-world me-2"></i>{{ __('companies.foreign_basic_info') }}</h5>
             </div>
             <div class="step-body">
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <label class="form-label">اسم الشركة الأجنبية <span class="required-asterisk">*</span></label>
+                        <label class="form-label">{{ __('companies.foreign_company_name') }} <span class="required-asterisk">*</span></label>
                         <div class="input-group-icon">
-                            <input type="text" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" placeholder="اسم الشركة الأجنبية" required>
+                            <input type="text" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" placeholder="{{ __('companies.foreign_company_name') }}" required>
                             <i class="ti ti-building input-icon"></i>
                         </div>
                         @error('company_name')
@@ -345,9 +345,9 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label">الدولة <span class="required-asterisk">*</span></label>
+                        <label class="form-label">{{ __('general.country') }} <span class="required-asterisk">*</span></label>
                         <select name="country" class="form-select select2-tags @error('country') is-invalid @enderror" required>
-                            <option value="">-- اختر أو اكتب اسم الدولة --</option>
+                            <option value="">{{ __('companies.select_or_type_country_placeholder') }}</option>
                             @foreach($countries as $country)
                                 <option value="{{ $country }}" {{ old('country') == $country ? 'selected' : '' }}>{{ $country }}</option>
                             @endforeach
@@ -358,11 +358,11 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label">نوع الكيان <span class="required-asterisk">*</span></label>
+                        <label class="form-label">{{ __('companies.entity_type') }} <span class="required-asterisk">*</span></label>
                         <select name="entity_type" class="form-select @error('entity_type') is-invalid @enderror" required>
-                            <option value="">-- اختر نوع الكيان --</option>
-                            <option value="company" {{ old('entity_type') == 'company' ? 'selected' : '' }}>شركة</option>
-                            <option value="factory" {{ old('entity_type') == 'factory' ? 'selected' : '' }}>مصنع</option>
+                            <option value="">{{ __('companies.select_entity_type') }}</option>
+                            <option value="company" {{ old('entity_type') == 'company' ? 'selected' : '' }}>{{ __('companies.entity_company') }}</option>
+                            <option value="factory" {{ old('entity_type') == 'factory' ? 'selected' : '' }}>{{ __('companies.entity_factory') }}</option>
                         </select>
                         @error('entity_type')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -370,12 +370,12 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label">نوع النشاط <span class="required-asterisk">*</span></label>
+                        <label class="form-label">{{ __('companies.activity_type') }} <span class="required-asterisk">*</span></label>
                         <select name="activity_type" class="form-select @error('activity_type') is-invalid @enderror" required>
-                            <option value="">-- اختر نوع النشاط --</option>
-                            <option value="medicines" {{ old('activity_type') == 'medicines' ? 'selected' : '' }}>أدوية</option>
-                            <option value="medical_supplies" {{ old('activity_type') == 'medical_supplies' ? 'selected' : '' }}>مستلزمات طبية</option>
-                            <option value="both" {{ old('activity_type') == 'both' ? 'selected' : '' }}>أدوية ومستلزمات طبية</option>
+                            <option value="">{{ __('companies.select_activity_type') }}</option>
+                            <option value="medicines" {{ old('activity_type') == 'medicines' ? 'selected' : '' }}>{{ __('companies.activity_medicines') }}</option>
+                            <option value="medical_supplies" {{ old('activity_type') == 'medical_supplies' ? 'selected' : '' }}>{{ __('companies.activity_medical_supplies') }}</option>
+                            <option value="both" {{ old('activity_type') == 'both' ? 'selected' : '' }}>{{ __('companies.activity_both') }}</option>
                         </select>
                         @error('activity_type')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -383,7 +383,7 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label">البريد الإلكتروني <span class="required-asterisk">*</span></label>
+                        <label class="form-label">{{ __('general.email') }} <span class="required-asterisk">*</span></label>
                         <div class="input-group-icon">
                             <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" placeholder="company@example.com" required>
                             <i class="ti ti-mail input-icon"></i>
@@ -394,7 +394,7 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label">عدد المنتجات <span class="required-asterisk">*</span></label>
+                        <label class="form-label">{{ __('companies.product_count') }} <span class="required-asterisk">*</span></label>
                         <div class="input-group-icon">
                             <input type="number" name="products_count" class="form-control @error('products_count') is-invalid @enderror" value="{{ old('products_count', 1) }}" min="1" required>
                             <i class="ti ti-package input-icon"></i>
@@ -405,8 +405,8 @@
                     </div>
 
                     <div class="col-12 mb-4">
-                        <label class="form-label">عنوان الشركة <span class="required-asterisk">*</span></label>
-                        <textarea name="address" class="form-control @error('address') is-invalid @enderror" rows="3" placeholder="العنوان التفصيلي للشركة الأجنبية" required>{{ old('address') }}</textarea>
+                        <label class="form-label">{{ __('general.address') }} <span class="required-asterisk">*</span></label>
+                        <textarea name="address" class="form-control @error('address') is-invalid @enderror" rows="3" placeholder="{{ __('companies.foreign_company_address') }}" required>{{ old('address') }}</textarea>
                         @error('address')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
@@ -414,13 +414,13 @@
                 </div>
             </div>
             <div class="wizard-nav">
-                <span class="step-indicator">الخطوة 2 من 3</span>
+                <span class="step-indicator">{{ __('general.step_of', ['step' => 2, 'total' => 3]) }}</span>
                 <div>
                     <button type="button" class="btn btn-wizard btn-wizard-prev me-2" onclick="prevStep(2)">
-                        <i class="ti ti-arrow-right me-1"></i> السابق
+                        <i class="ti ti-arrow-right me-1"></i> {{ __('general.previous') }}
                     </button>
                     <button type="button" class="btn btn-wizard btn-wizard-next" onclick="nextStep(2)">
-                        التالي <i class="ti ti-arrow-left ms-1"></i>
+                        {{ __('general.next') }} <i class="ti ti-arrow-left ms-1"></i>
                     </button>
                 </div>
             </div>
@@ -428,12 +428,12 @@
 
         <div class="wizard-content" id="step-3">
             <div class="step-header">
-                <h5><i class="ti ti-world-check me-2"></i>الدول المسجلة والمراجعة</h5>
+                <h5><i class="ti ti-world-check me-2"></i>{{ __('companies.registered_countries_review') }}</h5>
             </div>
             <div class="step-body">
                 <div class="row">
                     <div class="col-12 mb-4">
-                        <label class="form-label">الدول المسجلة بها الشركة أو المصنع</label>
+                        <label class="form-label">{{ __('companies.registered_countries') }}</label>
                         <select name="registered_countries[]" class="form-select select2-tags-multiple" multiple>
                             @foreach($countries as $country)
                                 <option value="{{ $country }}"
@@ -445,7 +445,7 @@
                         @error('registered_countries')
                             <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted mt-1 d-block">يمكنك اختيار أو كتابة أكثر من دولة</small>
+                        <small class="text-muted mt-1 d-block">{{ __('companies.can_select_multi') }}</small>
                     </div>
                 </div>
 
@@ -453,19 +453,19 @@
                     <div class="d-flex align-items-start">
                         <i class="ti ti-check-circle text-success me-2 fs-5"></i>
                         <div>
-                            بعد الحفظ ستكون الشركة بحالة "قيد رفع المستندات" وسيتمكن ممثل الشركة من رفع المستندات المطلوبة.
+                            {{ __('companies.after_save_foreign_note') }}
                         </div>
                     </div>
                 </div>
             </div>
             <div class="wizard-nav">
-                <span class="step-indicator">الخطوة 3 من 3</span>
+                <span class="step-indicator">{{ __('general.step_of', ['step' => 3, 'total' => 3]) }}</span>
                 <div>
                     <button type="button" class="btn btn-wizard btn-wizard-prev me-2" onclick="prevStep(3)">
-                        <i class="ti ti-arrow-right me-1"></i> السابق
+                        <i class="ti ti-arrow-right me-1"></i> {{ __('general.previous') }}
                     </button>
                     <button type="submit" class="btn btn-wizard btn-wizard-submit">
-                        <i class="ti ti-check me-1"></i> تسجيل الشركة
+                        <i class="ti ti-check me-1"></i> {{ __('companies.register_company') }}
                     </button>
                 </div>
             </div>
@@ -565,8 +565,8 @@
         $('.select2').select2({
             dir: "rtl",
             language: {
-                noResults: function() { return "لا توجد نتائج"; },
-                searching: function() { return "جاري البحث..."; }
+                noResults: function() { return "{{ __('general.no_results') }}"; },
+                searching: function() { return "{{ __('general.searching') }}"; }
             }
         });
 
@@ -579,10 +579,10 @@
                 return { id: term, text: term, newTag: true };
             },
             language: {
-                noResults: function() { return "لا توجد نتائج - يمكنك كتابة اسم الدولة"; },
-                searching: function() { return "جاري البحث..."; }
+                noResults: function() { return "{{ __('companies.no_results_type_country') }}"; },
+                searching: function() { return "{{ __('general.searching') }}"; }
             },
-            placeholder: "اختر أو اكتب اسم الدولة"
+            placeholder: "{{ __('companies.select_or_type_country') }}"
         });
 
         $('.select2-tags-multiple').select2({
@@ -595,10 +595,10 @@
                 return { id: term, text: term, newTag: true };
             },
             language: {
-                noResults: function() { return "لا توجد نتائج - يمكنك كتابة اسم الدولة"; },
-                searching: function() { return "جاري البحث..."; }
+                noResults: function() { return "{{ __('companies.no_results_type_country') }}"; },
+                searching: function() { return "{{ __('general.searching') }}"; }
             },
-            placeholder: "اختر أو اكتب أسماء الدول"
+            placeholder: "{{ __('companies.select_or_type_countries') }}"
         });
     });
 </script>

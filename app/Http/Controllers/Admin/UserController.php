@@ -109,7 +109,7 @@ class UserController extends Controller implements HasMiddleware
         $user->syncPermissions($request->input('permissions', []));
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'تم إنشاء المستخدم بنجاح');
+            ->with('success', __('users.created_successfully'));
     }
 
 
@@ -167,7 +167,7 @@ class UserController extends Controller implements HasMiddleware
         $user->syncPermissions($request->input('permissions', []));
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'تم تحديث المستخدم بنجاح');
+            ->with('success', __('users.updated_successfully'));
     }
 
 
@@ -178,13 +178,13 @@ class UserController extends Controller implements HasMiddleware
     {
         if ($user->id == auth()->id()) {
             return redirect()->route('admin.users.index')
-                            ->with('error', 'لا يمكنك حذف حسابك الخاص');
+                            ->with('error', __('users.cannot_delete_own_account'));
         }
 
         $user->delete();
 
         return redirect()->route('admin.users.index')
-                        ->with('success', 'تم حذف المستخدم بنجاح');
+                        ->with('success', __('users.deleted_successfully'));
     }
 
     /**
@@ -194,7 +194,7 @@ class UserController extends Controller implements HasMiddleware
     {
         User::whereKey($user->id)->update(['is_active' => DB::raw('1 - is_active')]);
         $user->refresh();
-        $message = $user->is_active ? 'تم تفعيل المستخدم بنجاح' : 'تم إلغاء تفعيل المستخدم بنجاح';
+        $message = $user->is_active ? __('users.activated_successfully') : __('users.deactivated_successfully');
         return redirect()->route('admin.users.index')->with('success', $message);
     }
 
@@ -215,19 +215,19 @@ class UserController extends Controller implements HasMiddleware
         switch ($request->action) {
             case 'activate':
                 User::whereIn('id', $userIds)->update(['is_active' => true]);
-                $message = 'تم تفعيل المستخدمين المحددين بنجاح';
+                $message = __('users.bulk_activated_successfully');
                 break;
 
             case 'deactivate':
                 $filteredUserIds = array_diff($userIds, [$currentUserId]);
                 User::whereIn('id', $filteredUserIds)->update(['is_active' => false]);
-                $message = 'تم إلغاء تفعيل المستخدمين المحددين بنجاح';
+                $message = __('users.bulk_deactivated_successfully');
                 break;
 
             case 'delete':
                 $filteredUserIds = array_diff($userIds, [$currentUserId]);
                 User::whereIn('id', $filteredUserIds)->delete();
-                $message = 'تم حذف المستخدمين المحددين بنجاح';
+                $message = __('users.bulk_deleted_successfully');
                 break;
         }
 
@@ -238,16 +238,16 @@ class UserController extends Controller implements HasMiddleware
     private function getPermissionGroupLabels(): array
     {
         return [
-            'local_companies' => ['label' => 'الشركات المحلية', 'icon' => 'fas fa-building', 'color' => 'primary'],
-            'foreign_companies' => ['label' => 'الشركات الأجنبية', 'icon' => 'fas fa-globe-americas', 'color' => 'info'],
-            'pharmaceutical_products' => ['label' => 'الأصناف الدوائية', 'icon' => 'fas fa-capsules', 'color' => 'success'],
-            'invoices' => ['label' => 'الفواتير', 'icon' => 'fas fa-file-invoice-dollar', 'color' => 'warning'],
-            'documents' => ['label' => 'المستندات', 'icon' => 'fas fa-folder-open', 'color' => 'secondary'],
-            'users' => ['label' => 'المستخدمين والأقسام', 'icon' => 'fas fa-users-cog', 'color' => 'danger'],
-            'announcements' => ['label' => 'التعميمات', 'icon' => 'fas fa-bullhorn', 'color' => 'primary'],
-            'reports' => ['label' => 'التقارير', 'icon' => 'fas fa-chart-bar', 'color' => 'info'],
-            'representatives' => ['label' => 'ممثلي الشركات', 'icon' => 'fas fa-id-card', 'color' => 'success'],
-            'settings' => ['label' => 'الإعدادات', 'icon' => 'fas fa-cogs', 'color' => 'dark'],
+            'local_companies' => ['label' => __('users.permission_group_local_companies'), 'icon' => 'fas fa-building', 'color' => 'primary'],
+            'foreign_companies' => ['label' => __('users.permission_group_foreign_companies'), 'icon' => 'fas fa-globe-americas', 'color' => 'info'],
+            'pharmaceutical_products' => ['label' => __('users.permission_group_pharmaceutical_products'), 'icon' => 'fas fa-capsules', 'color' => 'success'],
+            'invoices' => ['label' => __('users.permission_group_invoices'), 'icon' => 'fas fa-file-invoice-dollar', 'color' => 'warning'],
+            'documents' => ['label' => __('users.permission_group_documents'), 'icon' => 'fas fa-folder-open', 'color' => 'secondary'],
+            'users' => ['label' => __('users.permission_group_users'), 'icon' => 'fas fa-users-cog', 'color' => 'danger'],
+            'announcements' => ['label' => __('users.permission_group_announcements'), 'icon' => 'fas fa-bullhorn', 'color' => 'primary'],
+            'reports' => ['label' => __('users.permission_group_reports'), 'icon' => 'fas fa-chart-bar', 'color' => 'info'],
+            'representatives' => ['label' => __('users.permission_group_representatives'), 'icon' => 'fas fa-id-card', 'color' => 'success'],
+            'settings' => ['label' => __('users.permission_group_settings'), 'icon' => 'fas fa-cogs', 'color' => 'dark'],
         ];
     }
 }

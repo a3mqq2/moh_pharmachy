@@ -1,49 +1,44 @@
 @php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.auth')
 
-@section('title', 'تفاصيل الفاتورة')
+@section('title', __('invoices.invoice_details'))
 
 @section('content')
 <div class="dashboard-container">
-    <!-- Header -->
     <div class="page-header">
         <div>
-            <h1>تفاصيل الفاتورة</h1>
+            <h1>{{ __('invoices.invoice_details') }}</h1>
             <p>{{ $invoice->invoice_number }}</p>
         </div>
         <a href="{{ route('representative.invoices.index') }}" class="btn btn-secondary">
             <i class="ti ti-arrow-right"></i>
-            العودة للفواتير
+            {{ __('invoices.back_to_invoices') }}
         </a>
     </div>
 
-    
-
-    <!-- Status Badge -->
     <div class="status-badge {{ $invoice->status }}">
         @if($invoice->status == 'unpaid')
             <i class="ti ti-clock"></i>
-            <span>غير مدفوعة</span>
+            <span>{{ __('invoices.status_unpaid') }}</span>
         @elseif($invoice->status == 'pending_review')
             <i class="ti ti-hourglass"></i>
-            <span>قيد المراجعة</span>
+            <span>{{ __('invoices.status_review') }}</span>
         @elseif($invoice->status == 'paid')
             <i class="ti ti-check"></i>
-            <span>مدفوعة</span>
+            <span>{{ __('invoices.status_paid') }}</span>
         @elseif($invoice->status == 'rejected')
             <i class="ti ti-x"></i>
-            <span>مرفوضة</span>
+            <span>{{ __('invoices.status_rejected') }}</span>
         @endif
     </div>
 
-    <!-- Receipt Section -->
     <div class="receipt-section">
         <div class="receipt-header">
-            <h3><i class="ti ti-receipt"></i> إيصال الدفع</h3>
+            <h3><i class="ti ti-receipt"></i> {{ __('invoices.payment_receipt_label') }}</h3>
             @if($invoice->canUploadReceipt() && !$invoice->hasReceipt())
                 <button type="button" class="btn btn-primary" onclick="document.getElementById('uploadModal').style.display='flex'">
                     <i class="ti ti-upload"></i>
-                    رفع إيصال الدفع
+                    {{ __('invoices.upload_payment_receipt') }}
                 </button>
             @endif
         </div>
@@ -57,7 +52,7 @@
                     @endphp
 
                     @if($isImage)
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($invoice->receipt_path) }}" alt="إيصال الدفع">
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url($invoice->receipt_path) }}" alt="{{ __('invoices.payment_receipt_label') }}">
                     @else
                         <div class="receipt-icon">
                             <i class="ti ti-file-text"></i>
@@ -66,27 +61,27 @@
                     @endif
                 </div>
                 <div class="receipt-info">
-                    <p><strong>تم رفع إيصال الدفع</strong></p>
+                    <p><strong>{{ __('invoices.receipt_uploaded_label') }}</strong></p>
                     @if($invoice->isPaid())
-                        <p class="success-text"><i class="ti ti-check"></i> تم تأكيد الدفع من قبل الإدارة</p>
+                        <p class="success-text"><i class="ti ti-check"></i> {{ __('invoices.payment_confirmed') }}</p>
                     @elseif($invoice->status == 'rejected')
-                        <p class="danger-text"><i class="ti ti-x"></i> تم رفض الإيصال من قبل الإدارة</p>
+                        <p class="danger-text"><i class="ti ti-x"></i> {{ __('invoices.receipt_rejected_by_admin') }}</p>
                         @if($invoice->receipt_rejection_reason)
-                            <p class="text-muted">السبب: {{ $invoice->receipt_rejection_reason }}</p>
+                            <p class="text-muted">{{ __('general.reason') }} {{ $invoice->receipt_rejection_reason }}</p>
                         @endif
                     @else
-                        <p class="warning-text"><i class="ti ti-clock"></i> بانتظار المراجعة من قبل الإدارة</p>
+                        <p class="warning-text"><i class="ti ti-clock"></i> {{ __('invoices.awaiting_admin_review') }}</p>
                     @endif
                 </div>
                 <div class="receipt-actions">
-                    <button type="button" class="btn-icon btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.invoices.download-receipt', $invoice) }}" title="عرض">
+                    <button type="button" class="btn-icon btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="{{ __('invoices.payment_receipt_label') }}_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.invoices.download-receipt', $invoice) }}" title="{{ __('general.view') }}">
                         <i class="ti ti-eye"></i>
                     </button>
-                    <a href="{{ route('representative.invoices.download-receipt', $invoice) }}" class="btn-icon" title="تحميل">
+                    <a href="{{ route('representative.invoices.download-receipt', $invoice) }}" class="btn-icon" title="{{ __('general.download') }}">
                         <i class="ti ti-download"></i>
                     </a>
                     @if($invoice->canDeleteReceipt())
-                    <button type="button" class="btn-icon btn-danger" onclick="deleteReceipt()" title="حذف">
+                    <button type="button" class="btn-icon btn-danger" onclick="deleteReceipt()" title="{{ __('general.delete') }}">
                         <i class="ti ti-trash"></i>
                     </button>
                     <form id="delete-receipt-form" action="{{ route('representative.invoices.delete-receipt', $invoice) }}" method="POST" style="display: none;">
@@ -99,49 +94,48 @@
         @else
             <div class="empty-receipt">
                 <i class="ti ti-receipt-off"></i>
-                <p>لم يتم رفع إيصال الدفع بعد</p>
+                <p>{{ __('invoices.no_receipt_uploaded') }}</p>
                 @if($invoice->canUploadReceipt())
                 <button type="button" class="btn btn-primary" onclick="document.getElementById('uploadModal').style.display='flex'">
                     <i class="ti ti-upload"></i>
-                    رفع إيصال الدفع
+                    {{ __('invoices.upload_payment_receipt') }}
                 </button>
                 @endif
             </div>
         @endif
     </div>
 
-    <!-- Invoice Details -->
     <div class="invoice-details-card">
         <div class="card-section">
-            <h3><i class="ti ti-file-invoice"></i> معلومات الفاتورة</h3>
+            <h3><i class="ti ti-file-invoice"></i> {{ __('invoices.invoice_info') }}</h3>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">رقم الفاتورة</span>
+                    <span class="info-label">{{ __('invoices.invoice_number') }}</span>
                     <span class="info-value">{{ $invoice->invoice_number }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">النوع</span>
+                    <span class="info-label">{{ __('general.type') }}</span>
                     <span class="info-value">{{ $invoice->type_name }}</span>
                 </div>
                 <div class="info-item full-width">
-                    <span class="info-label">الوصف</span>
+                    <span class="info-label">{{ __('general.description') }}</span>
                     <span class="info-value">{{ $invoice->description }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">المبلغ</span>
-                    <span class="info-value amount">{{ number_format($invoice->amount, 2) }} د.ل</span>
+                    <span class="info-label">{{ __('general.amount') }}</span>
+                    <span class="info-value amount">{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">تاريخ الاستحقاق</span>
+                    <span class="info-label">{{ __('invoices.due_date') }}</span>
                     <span class="info-value">{{ $invoice->due_date ? $invoice->due_date->format('Y-m-d') : '-' }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">تاريخ الإصدار</span>
+                    <span class="info-label">{{ __('general.issue_date') }}</span>
                     <span class="info-value">{{ $invoice->created_at->format('Y-m-d') }}</span>
                 </div>
                 @if($invoice->paid_at)
                 <div class="info-item">
-                    <span class="info-label">تاريخ الدفع</span>
+                    <span class="info-label">{{ __('invoices.payment_date') }}</span>
                     <span class="info-value">{{ $invoice->paid_at->format('Y-m-d') }}</span>
                 </div>
                 @endif
@@ -149,22 +143,22 @@
         </div>
 
         <div class="card-section">
-            <h3><i class="ti ti-building"></i> معلومات الشركة</h3>
+            <h3><i class="ti ti-building"></i> {{ __('products.company_info') }}</h3>
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">اسم الشركة</span>
+                    <span class="info-label">{{ __('invoices.company_name_label') }}</span>
                     <span class="info-value">{{ $invoice->localCompany->company_name }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">نوع الشركة</span>
+                    <span class="info-label">{{ __('invoices.company_type_label') }}</span>
                     <span class="info-value">{{ $invoice->localCompany->company_type_name }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">المدينة</span>
+                    <span class="info-label">{{ __('general.city') }}</span>
                     <span class="info-value">{{ $invoice->localCompany->city }}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">البريد الإلكتروني</span>
+                    <span class="info-label">{{ __('general.email') }}</span>
                     <span class="info-value">{{ $invoice->localCompany->email }}</span>
                 </div>
             </div>
@@ -172,18 +166,17 @@
 
         @if($invoice->notes)
         <div class="card-section">
-            <h3><i class="ti ti-note"></i> ملاحظات</h3>
+            <h3><i class="ti ti-note"></i> {{ __('general.notes') }}</h3>
             <p class="notes-text">{{ $invoice->notes }}</p>
         </div>
         @endif
     </div>
 
-    <!-- Upload Receipt Modal -->
     @if(!$invoice->isPaid())
     <div id="uploadModal" class="upload-modal">
         <div class="upload-modal-content">
             <div class="upload-modal-header">
-                <h3><i class="ti ti-upload"></i> رفع إيصال الدفع</h3>
+                <h3><i class="ti ti-upload"></i> {{ __('invoices.upload_payment_receipt') }}</h3>
                 <button type="button" class="close-modal" onclick="document.getElementById('uploadModal').style.display='none'">
                     <i class="ti ti-x"></i>
                 </button>
@@ -192,9 +185,9 @@
                 @csrf
                 <div class="upload-modal-body">
                     <div class="form-group">
-                        <label>إيصال الدفع <span class="required">*</span></label>
+                        <label>{{ __('invoices.payment_receipt_label') }} <span class="required">*</span></label>
                         <input type="file" name="receipt" id="receiptFile" class="form-control" required accept=".pdf,.jpg,.jpeg,.png">
-                        <small>الحد الأقصى: 10 ميجابايت | الأنواع المدعومة: PDF, JPG, PNG</small>
+                        <small>{{ __('invoices.receipt_max_size') }}</small>
                         <div id="filePreview" style="margin-top: 10px; display: none;">
                             <div style="padding: 10px; background: #f3f4f6; border-radius: 6px; display: flex; align-items: center; gap: 10px;">
                                 <i class="ti ti-file-check" style="color: #10b981; font-size: 1.5rem;"></i>
@@ -207,18 +200,18 @@
                     </div>
 
                     <div class="form-group">
-                        <label>ملاحظات</label>
-                        <textarea name="notes" class="form-control" rows="3" placeholder="أي ملاحظات إضافية (اختياري)">{{ $invoice->notes }}</textarea>
+                        <label>{{ __('general.notes') }}</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="{{ __('invoices.notes_placeholder') }}">{{ $invoice->notes }}</textarea>
                     </div>
 
                     <div class="alert-info">
                         <i class="ti ti-info-circle"></i>
-                        <p>سيتم مراجعة الإيصال من قبل الإدارة وتأكيد الدفع خلال 1-3 أيام عمل</p>
+                        <p>{{ __('invoices.review_notice') }}</p>
                     </div>
                 </div>
                 <div class="upload-modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('uploadModal').style.display='none'">إلغاء</button>
-                    <button type="submit" class="btn btn-primary" id="uploadBtn"><i class="ti ti-upload"></i> رفع الإيصال</button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('uploadModal').style.display='none'">{{ __('general.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary" id="uploadBtn"><i class="ti ti-upload"></i> {{ __('invoices.upload_receipt_btn') }}</button>
                 </div>
             </form>
         </div>
@@ -300,7 +293,6 @@
         border-color: #9ca3af;
     }
 
-    /* Status Badge */
     .status-badge {
         display: inline-flex;
         align-items: center;
@@ -352,7 +344,6 @@
         color: #dc2626;
     }
 
-    /* Invoice Details Card */
     .invoice-details-card {
         background: #ffffff;
         border: 1px solid #e5e7eb;
@@ -435,7 +426,6 @@
         border-radius: 6px;
     }
 
-    /* Receipt Section */
     .receipt-section {
         background: #ffffff;
         border: 1px solid #e5e7eb;
@@ -618,7 +608,6 @@
         margin: 0 0 20px 0;
     }
 
-    /* Upload Modal */
     .upload-modal {
         display: none;
         position: fixed;
@@ -751,7 +740,6 @@
         background: #f9fafb;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
         .page-header {
             flex-direction: column;
@@ -783,17 +771,16 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Delete receipt function
     function deleteReceipt() {
         Swal.fire({
-            title: 'هل أنت متأكد؟',
-            text: 'سيتم حذف إيصال الدفع نهائياً',
+            title: '{{ __("general.are_you_sure") }}',
+            text: '{{ __("invoices.delete_receipt_confirm") }}',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، احذف',
-            cancelButtonText: 'إلغاء',
+            confirmButtonText: '{{ __("general.yes_delete") }}',
+            cancelButtonText: '{{ __("general.cancel") }}',
             iconColor: '#dc2626'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -803,13 +790,12 @@
     }
     window.deleteReceipt = deleteReceipt;
 
-    // Success/Error messages
     @if(session('success'))
         Swal.fire({
             icon: 'success',
-            title: 'تم بنجاح',
+            title: '{{ __("general.success") }}',
             text: '{{ session('success') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#10b981',
             timer: 3000,
@@ -820,9 +806,9 @@
     @if(session('error'))
         Swal.fire({
             icon: 'error',
-            title: 'خطأ',
+            title: '{{ __("general.error") }}',
             text: '{{ session('error') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });
@@ -831,15 +817,15 @@
     @if($errors->any())
         Swal.fire({
             icon: 'error',
-            title: 'خطأ في البيانات',
+            title: '{{ __("general.data_error") }}',
             html: '<ul style="text-align: right; list-style: none; padding: 0;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });
     @endif
 
-    // Close modal when clicking outside
+
     window.addEventListener('click', function(event) {
         const modal = document.getElementById('uploadModal');
         if (event.target == modal) {
@@ -847,7 +833,6 @@
         }
     });
 
-    // File preview functionality
     const receiptFile = document.getElementById('receiptFile');
     const filePreview = document.getElementById('filePreview');
     const fileName = document.getElementById('fileName');
@@ -858,13 +843,12 @@
             const file = e.target.files[0];
 
             if (file) {
-                // Validate file size (10MB)
                 if (file.size > 10 * 1024 * 1024) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'حجم الملف كبير جداً',
-                        text: 'يجب أن لا يتجاوز حجم الملف 10 ميجابايت',
-                        confirmButtonText: 'حسناً',
+                        title: '{{ __("invoices.file_too_large") }}',
+                        text: '{{ __("invoices.file_too_large_msg") }}',
+                        confirmButtonText: '{{ __("general.ok") }}',
                         confirmButtonColor: '#1a5f4a',
                         iconColor: '#ef4444'
                     });
@@ -873,14 +857,13 @@
                     return;
                 }
 
-                // Validate file type
                 const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
                 if (!allowedTypes.includes(file.type)) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'نوع الملف غير مدعوم',
-                        text: 'يجب أن يكون الملف بصيغة PDF أو صورة (JPG, PNG)',
-                        confirmButtonText: 'حسناً',
+                        title: '{{ __("invoices.file_type_unsupported") }}',
+                        text: '{{ __("invoices.file_type_unsupported_msg") }}',
+                        confirmButtonText: '{{ __("general.ok") }}',
                         confirmButtonColor: '#1a5f4a',
                         iconColor: '#ef4444'
                     });
@@ -889,9 +872,8 @@
                     return;
                 }
 
-                // Show file preview
                 fileName.textContent = file.name;
-                fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' ميجابايت';
+                fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' {{ __("invoices.mb_unit") }}';
                 filePreview.style.display = 'block';
             } else {
                 filePreview.style.display = 'none';
@@ -899,30 +881,27 @@
         });
     }
 
-    // Form submission with loading state
     const uploadForm = document.getElementById('uploadReceiptForm');
     const uploadBtn = document.getElementById('uploadBtn');
 
     if (uploadForm && uploadBtn) {
         uploadForm.addEventListener('submit', function(e) {
-            // Check if file is selected
             const file = receiptFile.files[0];
             if (!file) {
                 e.preventDefault();
                 Swal.fire({
                     icon: 'error',
-                    title: 'لم يتم اختيار ملف',
-                    text: 'يرجى اختيار ملف الإيصال أولاً',
-                    confirmButtonText: 'حسناً',
+                    title: '{{ __("invoices.no_file_selected") }}',
+                    text: '{{ __("invoices.select_file_first") }}',
+                    confirmButtonText: '{{ __("general.ok") }}',
                     confirmButtonColor: '#1a5f4a',
                     iconColor: '#ef4444'
                 });
                 return false;
             }
 
-            // Show loading state
             uploadBtn.disabled = true;
-            uploadBtn.innerHTML = '<i class="ti ti-loader" style="animation: spin 1s linear infinite;"></i> جاري الرفع...';
+            uploadBtn.innerHTML = '<i class="ti ti-loader" style="animation: spin 1s linear infinite;"></i> {{ __("invoices.uploading") }}';
         });
     }
 </script>

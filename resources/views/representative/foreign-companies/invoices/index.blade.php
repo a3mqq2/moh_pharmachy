@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'فواتير الشركة الأجنبية')
+@section('title', __('invoices.company_invoices'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,7 +10,7 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>فواتير الشركة</h1>
+                <h1>{{ __('invoices.company_invoices') }}</h1>
                 <p>{{ $company->company_name }}</p>
             </div>
         </div>
@@ -19,8 +19,8 @@
     @if($invoices->isEmpty())
         <div class="empty-state">
             <i class="ti ti-file-invoice"></i>
-            <h3>لا توجد فواتير</h3>
-            <p>لم يتم إصدار فواتير لهذه الشركة بعد</p>
+            <h3>{{ __('invoices.no_invoices_yet') }}</h3>
+            <p>{{ __('invoices.no_invoices_for_company') }}</p>
         </div>
     @else
         <div class="invoices-list">
@@ -38,16 +38,16 @@
                 <div class="invoice-body">
                     <div class="invoice-info">
                         <div class="info-item">
-                            <span class="label">المبلغ</span>
-                            <span class="value">{{ number_format($invoice->amount, 2) }} د.ل</span>
+                            <span class="label">{{ __('general.amount') }}</span>
+                            <span class="value">{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">تاريخ الإصدار</span>
+                            <span class="label">{{ __('general.issue_date') }}</span>
                             <span class="value">{{ $invoice->created_at->format('Y-m-d') }}</span>
                         </div>
                         @if($invoice->description)
                         <div class="info-item">
-                            <span class="label">الوصف</span>
+                            <span class="label">{{ __('general.description') }}</span>
                             <span class="value">{{ $invoice->description }}</span>
                         </div>
                         @endif
@@ -55,10 +55,10 @@
                 </div>
                 <div class="invoice-footer">
                     <a href="{{ route('representative.foreign-companies.invoices.show', [$company, $invoice]) }}" class="btn btn-primary btn-sm">
-                        <i class="ti ti-eye"></i> التفاصيل
+                        <i class="ti ti-eye"></i> {{ __('general.details') }}
                     </a>
                     <a href="{{ route('representative.foreign-companies.invoices.download', [$company, $invoice]) }}" class="btn btn-secondary btn-sm">
-                        <i class="ti ti-download"></i> تحميل
+                        <i class="ti ti-download"></i> {{ __('general.download') }}
                     </a>
                 </div>
             </div>

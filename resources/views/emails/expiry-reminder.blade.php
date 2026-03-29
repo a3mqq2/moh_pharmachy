@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تنبيه بقرب انتهاء الصلاحية</title>
+    <title>{{ __('emails.expiry_reminder_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -109,28 +109,28 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         <div class="content">
-            <h2>تنبيه بقرب انتهاء الصلاحية</h2>
+            <h2>{{ __('emails.expiry_reminder_heading') }}</h2>
 
-            <p>السيد/ة {{ $recipientName }} المحترم،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.expiry_reminder_dear', ['name' => $recipientName]) }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
-            <p>نود إبلاغكم بأن الصلاحية ستنتهي خلال الثلاثة أشهر القادمة للعناصر التالية:</p>
+            <p>{{ __('emails.expiry_reminder_body') }}</p>
 
             <table class="expiry-table">
                 <thead>
                     <tr>
-                        <th>النوع</th>
-                        <th>الاسم</th>
-                        <th>تاريخ الانتهاء</th>
-                        <th>المتبقي</th>
+                        <th>{{ __('emails.expiry_type') }}</th>
+                        <th>{{ __('emails.expiry_name') }}</th>
+                        <th>{{ __('emails.expiry_date') }}</th>
+                        <th>{{ __('emails.expiry_remaining') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -138,38 +138,38 @@
                         <tr>
                             <td>
                                 @if($item['type'] === 'local_company')
-                                    <span class="type-badge type-local">شركة محلية</span>
+                                    <span class="type-badge type-local">{{ __('emails.expiry_local_company') }}</span>
                                 @else
-                                    <span class="type-badge type-foreign">شركة أجنبية</span>
+                                    <span class="type-badge type-foreign">{{ __('emails.expiry_foreign_company') }}</span>
                                 @endif
                             </td>
                             <td><strong>{{ $item['name'] }}</strong></td>
                             <td>{{ $item['expires_at'] }}</td>
-                            <td>{{ $item['days_remaining'] }} يوم</td>
+                            <td>{{ __('emails.expiry_days', ['days' => $item['days_remaining']]) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
 
             <div class="warning-box">
-                <p><strong>يرجى اتخاذ الإجراءات التالية:</strong></p>
-                <p>1. الدخول إلى لوحة التحكم الخاصة بكم</p>
-                <p>2. رفع إيصال تحويل رسوم التجديد قبل انتهاء الصلاحية</p>
-                <p>3. انتظار مراجعة الإيصال والموافقة عليه من قبل الإدارة</p>
+                <p><strong>{{ __('emails.expiry_actions') }}</strong></p>
+                <p>{{ __('emails.expiry_action_1') }}</p>
+                <p>{{ __('emails.expiry_action_2') }}</p>
+                <p>{{ __('emails.expiry_action_3') }}</p>
             </div>
 
-            <p><strong>ملاحظة:</strong> في حال عدم التجديد قبل تاريخ الانتهاء، سيتم تعليق الحساب تلقائياً.</p>
+            <p><strong>{{ __('emails.note_label') }}</strong> {{ __('emails.expiry_note') }}</p>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة</strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">© {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">{{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

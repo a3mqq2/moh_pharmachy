@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تم تفعيل الشركة</title>
+    <title>{{ __('emails.company_activated_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -100,72 +100,72 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         <div class="content">
-            <h2>إشعار بتفعيل الشركة</h2>
+            <h2>{{ __('emails.company_activated_heading') }}</h2>
 
-            <p>السيد/ة الممثل المحترم،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.dear_representative') }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
-            <p>يسرنا إبلاغكم بأنه تم تفعيل شركتكم بشكل رسمي لدى وزارة الصحة - إدارة الصيدلة .</p>
+            <p>{{ __('emails.company_activated_body') }}</p>
 
             <table class="info-table">
                 <tr>
-                    <td>اسم الشركة:</td>
+                    <td>{{ __('emails.company_name_colon') }}</td>
                     <td>{{ $company->company_name }}</td>
                 </tr>
                 @if($company->registration_number)
                 <tr>
-                    <td>رقم التسجيل:</td>
+                    <td>{{ __('emails.registration_number_label') }}</td>
                     <td>{{ $company->registration_number }}</td>
                 </tr>
                 @endif
                 <tr>
-                    <td>نوع الترخيص:</td>
+                    <td>{{ __('emails.license_type') }}:</td>
                     <td>
-                        @if($company->license_type == 'company') شركة
-                        @elseif($company->license_type == 'partnership') شراكة
-                        @elseif($company->license_type == 'authorized_agent') وكيل معتمد
+                        @if($company->license_type == 'company') {{ __('emails.license_type_company') }}
+                        @elseif($company->license_type == 'partnership') {{ __('emails.license_type_partnership') }}
+                        @elseif($company->license_type == 'authorized_agent') {{ __('emails.license_type_authorized_agent') }}
                         @endif
                     </td>
                 </tr>
                 <tr>
-                    <td>التخصص:</td>
+                    <td>{{ __('emails.specialty_label') }}</td>
                     <td>
-                        @if($company->license_specialty == 'medicines') أدوية
-                        @elseif($company->license_specialty == 'medical_supplies') مستلزمات طبية
-                        @elseif($company->license_specialty == 'medical_equipment') أجهزة طبية
+                        @if($company->license_specialty == 'medicines') {{ __('emails.specialty_medicines') }}
+                        @elseif($company->license_specialty == 'medical_supplies') {{ __('emails.specialty_medical_supplies') }}
+                        @elseif($company->license_specialty == 'medical_equipment') {{ __('emails.specialty_medical_equipment') }}
                         @endif
                     </td>
                 </tr>
                 <tr>
-                    <td>الحالة:</td>
-                    <td><strong style="color: #1a5f4a;">مفعلة</strong></td>
+                    <td>{{ __('emails.status_label') }}</td>
+                    <td><strong style="color: #1a5f4a;">{{ __('emails.activated') }}</strong></td>
                 </tr>
             </table>
 
             <div class="note">
-                <p><strong>ملاحظة:</strong></p>
-                <p>يمكنكم الآن الوصول إلى جميع خدمات الوزارة من خلال لوحة التحكم الخاصة بكم.</p>
-                <p>يرجى الاحتفاظ بجميع المستندات والإيصالات الخاصة بالتسجيل.</p>
+                <p><strong>{{ __('emails.note_label') }}</strong></p>
+                <p>{{ __('emails.activated_note_access') }}</p>
+                <p>{{ __('emails.activated_note_documents') }}</p>
             </div>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة </strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">© {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">{{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

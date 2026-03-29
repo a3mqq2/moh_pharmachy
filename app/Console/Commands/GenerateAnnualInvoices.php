@@ -130,7 +130,7 @@ class GenerateAnnualInvoices extends Command
                 }
 
                 $existingInvoice = $company->invoices()
-                    ->where('description', 'LIKE', '%رسوم تجديد سنوي%')
+                    ->where('description', 'LIKE', '%' . __('invoices.keyword_annual_renewal') . '%')
                     ->where('created_at', '>=', $lastAnniversary->copy()->startOfDay())
                     ->where('created_at', '<', $lastAnniversary->copy()->addDays(30))
                     ->first();
@@ -148,7 +148,7 @@ class GenerateAnnualInvoices extends Command
                         }
 
                         $duplicateCheck = $lockedCompany->invoices()
-                            ->where('description', 'LIKE', '%رسوم تجديد سنوي%')
+                            ->where('description', 'LIKE', '%' . __('invoices.keyword_annual_renewal') . '%')
                             ->where('created_at', '>=', $lastAnniversary->copy()->startOfDay())
                             ->first();
 
@@ -160,7 +160,7 @@ class GenerateAnnualInvoices extends Command
                             'foreign_company_id' => $lockedCompany->id,
                             'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
                             'amount' => $annualFee,
-                            'description' => "رسوم تجديد سنوي للشركة الأجنبية - السنة {$yearNumber}",
+                            'description' => __('invoices.desc_annual_foreign_renewal', ['year' => $yearNumber]),
                             'status' => 'pending',
                             'issued_by' => 1,
                             'due_date' => now()->addDays(30),
@@ -221,7 +221,7 @@ class GenerateAnnualInvoices extends Command
                 }
 
                 $existingInvoice = $company->invoices()
-                    ->where('description', 'LIKE', '%رسوم تجديد سنوي%')
+                    ->where('description', 'LIKE', '%' . __('invoices.keyword_annual_renewal') . '%')
                     ->where('created_at', '>=', $lastAnniversary->copy()->startOfDay())
                     ->where('created_at', '<', $lastAnniversary->copy()->addDays(30))
                     ->first();
@@ -239,7 +239,7 @@ class GenerateAnnualInvoices extends Command
                         }
 
                         $duplicateCheck = $lockedCompany->invoices()
-                            ->where('description', 'LIKE', '%رسوم تجديد سنوي%')
+                            ->where('description', 'LIKE', '%' . __('invoices.keyword_annual_renewal') . '%')
                             ->where('created_at', '>=', $lastAnniversary->copy()->startOfDay())
                             ->first();
 
@@ -251,7 +251,7 @@ class GenerateAnnualInvoices extends Command
                             'local_company_id' => $lockedCompany->id,
                             'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
                             'amount' => $annualFee,
-                            'description' => "رسوم تجديد سنوي للشركة المحلية - السنة {$yearNumber}",
+                            'description' => __('invoices.desc_annual_local_renewal', ['year' => $yearNumber]),
                             'status' => 'unpaid',
                             'created_by' => 1,
                             'due_date' => now()->addDays(30),

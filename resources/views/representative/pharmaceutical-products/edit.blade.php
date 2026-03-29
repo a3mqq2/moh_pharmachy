@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'تعديل بيانات الصنف الدوائي')
+@section('title', __('products.edit_detailed_data'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,8 +10,8 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>تعديل بيانات الصنف الدوائي</h1>
-                <p>تعديل بيانات: {{ $pharmaceuticalProduct->product_name }}</p>
+                <h1>{{ __('products.edit_detailed_data') }}</h1>
+                <p>{{ $pharmaceuticalProduct->product_name }}</p>
             </div>
         </div>
     </div>
@@ -23,11 +23,11 @@
         @method('PUT')
 
         <div class="form-section">
-            <h3>معلومات الصنف الدوائي</h3>
+            <h3>{{ __('products.product_info') }}</h3>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="product_name">الاسم التجاري <span class="required">*</span></label>
+                    <label for="product_name">{{ __('products.trade_name') }} <span class="required">*</span></label>
                     <input type="text" id="product_name" name="product_name" class="form-control @error('product_name') is-invalid @enderror" value="{{ old('product_name', $pharmaceuticalProduct->product_name) }}" required>
                     @error('product_name')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="scientific_name">الاسم العلمي <span class="required">*</span></label>
+                    <label for="scientific_name">{{ __('products.scientific_name') }} <span class="required">*</span></label>
                     <input type="text" id="scientific_name" name="scientific_name" class="form-control @error('scientific_name') is-invalid @enderror" value="{{ old('scientific_name', $pharmaceuticalProduct->scientific_name) }}" required>
                     @error('scientific_name')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -45,16 +45,16 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="pharmaceutical_form">الشكل الصيدلاني <span class="required">*</span></label>
-                    <input type="text" id="pharmaceutical_form" name="pharmaceutical_form" class="form-control @error('pharmaceutical_form') is-invalid @enderror" value="{{ old('pharmaceutical_form', $pharmaceuticalProduct->pharmaceutical_form) }}" placeholder="مثال: أقراص، كبسولات، شراب..." required>
+                    <label for="pharmaceutical_form">{{ __('products.dosage_form') }} <span class="required">*</span></label>
+                    <input type="text" id="pharmaceutical_form" name="pharmaceutical_form" class="form-control @error('pharmaceutical_form') is-invalid @enderror" value="{{ old('pharmaceutical_form', $pharmaceuticalProduct->pharmaceutical_form) }}" placeholder="{{ __('products.dosage_form_example') }}" required>
                     @error('pharmaceutical_form')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="concentration">التركيز / العيار <span class="required">*</span></label>
-                    <input type="text" id="concentration" name="concentration" class="form-control @error('concentration') is-invalid @enderror" value="{{ old('concentration', $pharmaceuticalProduct->concentration) }}" placeholder="مثال: 500 مجم، 10 مل..." required>
+                    <label for="concentration">{{ __('products.concentration') }} <span class="required">*</span></label>
+                    <input type="text" id="concentration" name="concentration" class="form-control @error('concentration') is-invalid @enderror" value="{{ old('concentration', $pharmaceuticalProduct->concentration) }}" placeholder="{{ __('products.concentration_example') }}" required>
                     @error('concentration')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -66,27 +66,27 @@
             @endphp
 
             <div class="form-group">
-                <label>طريقة الاستعمال <span class="required">*</span></label>
+                <label>{{ __('products.usage_method') }} <span class="required">*</span></label>
                 <div class="checkboxes-group">
                     <label class="checkbox-label">
                         <input type="checkbox" name="usage_methods[]" value="oral" {{ in_array('oral', $currentMethods) ? 'checked' : '' }}>
-                        <span>فموي</span>
+                        <span>{{ __('products.usage_oral') }}</span>
                     </label>
                     <label class="checkbox-label">
                         <input type="checkbox" name="usage_methods[]" value="injection" {{ in_array('injection', $currentMethods) ? 'checked' : '' }}>
-                        <span>حقن</span>
+                        <span>{{ __('products.usage_injection') }}</span>
                     </label>
                     <label class="checkbox-label">
                         <input type="checkbox" name="usage_methods[]" value="topical" {{ in_array('topical', $currentMethods) ? 'checked' : '' }}>
-                        <span>موضعي</span>
+                        <span>{{ __('products.usage_topical') }}</span>
                     </label>
                     <label class="checkbox-label">
                         <input type="checkbox" name="usage_methods[]" value="inhalation" {{ in_array('inhalation', $currentMethods) ? 'checked' : '' }}>
-                        <span>استنشاق</span>
+                        <span>{{ __('products.usage_inhalation') }}</span>
                     </label>
                     <label class="checkbox-label">
                         <input type="checkbox" name="usage_methods[]" value="other" id="usage_other" {{ in_array('other', $currentMethods) ? 'checked' : '' }}>
-                        <span>أخرى</span>
+                        <span>{{ __('products.usage_other') }}</span>
                     </label>
                 </div>
                 @error('usage_methods')
@@ -95,8 +95,8 @@
             </div>
 
             <div class="form-group" id="other_usage_method_group" style="display: {{ in_array('other', $currentMethods) ? 'block' : 'none' }};">
-                <label for="other_usage_method">حدد طريقة الاستعمال الأخرى</label>
-                <input type="text" id="other_usage_method" name="other_usage_method" class="form-control @error('other_usage_method') is-invalid @enderror" value="{{ old('other_usage_method', $pharmaceuticalProduct->other_usage_method) }}" placeholder="اكتب طريقة الاستعمال الأخرى">
+                <label for="other_usage_method">{{ __('products.specify_usage') }}</label>
+                <input type="text" id="other_usage_method" name="other_usage_method" class="form-control @error('other_usage_method') is-invalid @enderror" value="{{ old('other_usage_method', $pharmaceuticalProduct->other_usage_method) }}" placeholder="{{ __('products.type_usage') }}">
                 @error('other_usage_method')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -104,11 +104,11 @@
         </div>
 
         <div class="form-section">
-            <h3>التسجيل المسبق</h3>
+            <h3>{{ __('products.pre_registration') }}</h3>
             <div class="checkbox-group">
                 <label class="checkbox-label">
                     <input type="checkbox" name="is_pre_registered" id="is_pre_registered" value="1" {{ (old('is_pre_registered') ?? $pharmaceuticalProduct->is_pre_registered) ? 'checked' : '' }}>
-                    <span>الصنف الدوائي مسجل من قبل</span>
+                    <span>{{ __('products.previously_registered') }}</span>
                 </label>
             </div>
 
@@ -122,41 +122,41 @@
                 <div class="alert-info-box">
                     <i class="ti ti-info-circle"></i>
                     <div>
-                        <strong>ملاحظة هامة</strong>
-                        <p>يرجى إدخال رقم القيد وسنة التسجيل الخاصة بالصنف المسجل مسبقاً. سيتم التحقق من هذه البيانات من قبل الإدارة.</p>
+                        <strong>{{ __('general.important_note') }}</strong>
+                        <p>{{ __('products.prev_reg_note') }}</p>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="pre_registration_year">سنة التسجيل <span class="required">*</span></label>
-                        <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ $preRegYear }}" placeholder="مثال: 2024" min="1990" max="{{ date('Y') }}">
+                        <label for="pre_registration_year">{{ __('companies.reg_year') }} <span class="required">*</span></label>
+                        <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ $preRegYear }}" placeholder="{{ __('companies.reg_year_example') }}" min="1990" max="{{ date('Y') }}">
                         @error('pre_registration_year')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="form-group">
-                        <label for="pre_registration_sequence">الرقم التسلسلي <span class="required">*</span></label>
-                        <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ $preRegSeq }}" placeholder="مثال: 15" min="1">
+                        <label for="pre_registration_sequence">{{ __('companies.serial_number') }} <span class="required">*</span></label>
+                        <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ $preRegSeq }}" placeholder="{{ __('companies.serial_example') }}" min="1">
                         @error('pre_registration_sequence')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
                 <div class="form-group">
-                    <small>رقم القيد: <strong id="preRegPreview">-</strong></small>
+                    <small>{{ __('companies.reg_number_display') }} <strong id="preRegPreview">-</strong></small>
                 </div>
             </div>
         </div>
 
         <div class="form-section">
-            <h3>معلومات الشركة</h3>
+            <h3>{{ __('products.company_info') }}</h3>
 
             <div class="form-group">
-                <label for="foreign_company_id">اسم الشركة <span class="required">*</span></label>
+                <label for="foreign_company_id">{{ __('companies.company_name') }} <span class="required">*</span></label>
                 <select id="foreign_company_id" name="foreign_company_id" class="form-control @error('foreign_company_id') is-invalid @enderror" required>
-                    <option value="">اختر الشركة الأجنبية</option>
+                    <option value="">{{ __('products.select_foreign_company') }}</option>
                     @foreach($foreignCompanies as $company)
                         <option value="{{ $company->id }}"
                             data-local-company="{{ $company->localCompany->company_name }}"
@@ -173,13 +173,13 @@
 
             <div id="local_company_info" class="local-company-info" style="display: {{ (old('foreign_company_id') ?? $pharmaceuticalProduct->foreign_company_id) ? 'block' : 'none' }};">
                 <div class="info-card">
-                    <h4>بيانات الشركة المحلية التابعة</h4>
+                    <h4>{{ __('companies.local_company_data') }}</h4>
                     <div class="info-row">
-                        <span class="label">اسم الشركة المحلية:</span>
+                        <span class="label">{{ __('companies.local_company_name') }}</span>
                         <span class="value" id="local_company_name">-</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">العنوان التجاري:</span>
+                        <span class="label">{{ __('companies.commercial_address') }}</span>
                         <span class="value" id="local_company_address">-</span>
                     </div>
                 </div>
@@ -189,11 +189,11 @@
         <div class="form-actions">
             <a href="{{ route('representative.pharmaceutical-products.show', $pharmaceuticalProduct) }}" class="btn btn-secondary">
                 <i class="ti ti-x"></i>
-                إلغاء
+                {{ __('general.cancel') }}
             </a>
             <button type="submit" class="btn btn-primary">
                 <i class="ti ti-check"></i>
-                حفظ التعديلات
+                {{ __('companies.save_edits') }}
             </button>
         </div>
     </form>

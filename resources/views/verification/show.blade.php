@@ -182,8 +182,8 @@
             <div class="header-top">
                 <img src="{{ asset('logo-primary.png') }}" alt="">
                 <div class="header-titles">
-                    <h2>وزارة الصحة</h2>
-                    <h3>إدارة الصيدلة والمستلزمات الطبية</h3>
+                    <h2>{{ __('general.ministry_of_health') }}</h2>
+                    <h3>{{ __('general.pharmacy_medical_supplies') }}</h3>
                 </div>
             </div>
             <h1>{{ $title }}</h1>
@@ -207,7 +207,7 @@
         </div>
 
         <div class="card-footer">
-            وزارة الصحة &copy; {{ date('Y') }} &mdash; هذه الصفحة للتحقق من صحة الشهادة الصادرة من إدارة الصيدلة والمستلزمات الطبية
+            {{ __('general.ministry_of_health') }} &copy; {{ date('Y') }} &mdash; {{ __('general.verification_page_note') }}
         </div>
     </div>
 </body>

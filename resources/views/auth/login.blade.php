@@ -1,16 +1,17 @@
 @extends('layouts.auth')
 
-@section('title', 'تسجيل الدخول')
+@section('title', __('auth.login'))
 
 @section('content')
 <div class="login-container">
     <!-- Logo Section -->
     <div class="logo-section">
         <a href="{{ route('login') }}">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة - إدارة الصيدلة" />
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.site_title') }}" />
         </a>
         <div class="ministry-name">
-            <h1>إدارة الصيدلة</h1>
+            <h2>{{ __('auth.ministry_name') }}</h2>
+            <h1>{{ __('auth.pharmacy_admin') }}</h1>
         </div>
     </div>
 
@@ -21,8 +22,8 @@
 
     <!-- Welcome Text -->
     <div class="welcome-section">
-        <h2>تسجيل الدخول</h2>
-        <p>يرجى إدخال بيانات الاعتماد للوصول إلى النظام</p>
+        <h2>{{ __('auth.login') }}</h2>
+        <p>{{ __('auth.login_subtitle') }}</p>
     </div>
 
     
@@ -32,7 +33,7 @@
         @csrf
 
         <div class="form-group">
-            <label for="email">البريد الإلكتروني</label>
+            <label for="email">{{ __('auth.email') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-mail"></i>
                 <input
@@ -52,7 +53,7 @@
         </div>
 
         <div class="form-group">
-            <label for="password">كلمة المرور</label>
+            <label for="password">{{ __('auth.password') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-lock"></i>
                 <input
@@ -81,20 +82,20 @@
                     {{ old('remember') ? 'checked' : '' }}
                 />
                 <span class="checkmark"></span>
-                <span class="label-text">تذكرني</span>
+                <span class="label-text">{{ __('auth.remember_me') }}</span>
             </label>
         </div>
 
         <button type="submit" class="submit-btn">
-            <span>تسجيل الدخول</span>
+            <span>{{ __('auth.login') }}</span>
             <i class="ti ti-arrow-left"></i>
         </button>
     </form>
 
     <!-- Footer -->
     <div class="login-footer">
-        <p>© {{ date('Y') }} وزارة الصحة - إدارة الصيدلة</p>
-        <p class="sub">جميع الحقوق محفوظة</p>
+        <p>{{ __('auth.copyright', ['year' => date('Y')]) }}</p>
+        <p class="sub">{{ __('general.all_rights_reserved') }}</p>
     </div>
 </div>
 
@@ -184,6 +185,14 @@
         transform: scale(1.02);
     }
 
+    .ministry-name h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #5a6a72;
+        margin: 0 0 4px 0;
+        animation: fadeIn 0.5s ease-out 0.15s both;
+    }
+
     .ministry-name h1 {
         font-size: 1.8rem;
         font-weight: 700;
@@ -191,14 +200,6 @@
         margin: 0;
         letter-spacing: -0.5px;
         animation: fadeIn 0.5s ease-out 0.2s both;
-    }
-
-    .ministry-name p {
-        font-size: 1.2rem;
-        color: #5a6a72;
-        margin: 8px 0 0 0;
-        font-weight: 500;
-        animation: fadeIn 0.5s ease-out 0.3s both;
     }
 
     /* Elegant Divider */
@@ -541,12 +542,12 @@
             max-width: 160px;
         }
 
-        .ministry-name h1 {
-            font-size: 1.5rem;
+        .ministry-name h2 {
+            font-size: 0.95rem;
         }
 
-        .ministry-name p {
-            font-size: 1.1rem;
+        .ministry-name h1 {
+            font-size: 1.5rem;
         }
     }
 </style>

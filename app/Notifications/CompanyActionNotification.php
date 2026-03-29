@@ -18,9 +18,6 @@ class CompanyActionNotification extends Notification
     public $representativeName;
     public $additionalData;
 
-    /**
-     * Create a new notification instance.
-     */
     public function __construct(
         string $action,
         string $companyType,
@@ -37,21 +34,11 @@ class CompanyActionNotification extends Notification
         $this->additionalData = $additionalData;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
         return ['database'];
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(object $notifiable): array
     {
         return [
@@ -67,29 +54,31 @@ class CompanyActionNotification extends Notification
         ];
     }
 
-    /**
-     * Get notification message based on action
-     */
     private function getMessage(): string
     {
-        $companyTypeArabic = $this->companyType == 'local' ? 'محلية' : 'أجنبية';
+        $companyTypeLabel = $this->companyType == 'local'
+            ? __('notifications.company_type_local')
+            : __('notifications.company_type_foreign');
+
+        $params = [
+            'representative' => $this->representativeName,
+            'type' => $companyTypeLabel,
+            'company' => $this->companyName,
+        ];
 
         return match($this->action) {
-            'company_created' => "قام {$this->representativeName} بإنشاء شركة {$companyTypeArabic} جديدة: {$this->companyName}",
-            'company_updated' => "قام {$this->representativeName} بتحديث بيانات الشركة {$companyTypeArabic}: {$this->companyName}",
-            'company_resubmitted' => "قام {$this->representativeName} بإعادة تقديم الشركة {$companyTypeArabic} بعد الرفض: {$this->companyName}",
-            'receipt_uploaded' => "قام {$this->representativeName} برفع إيصال دفع للشركة {$companyTypeArabic}: {$this->companyName}",
-            'receipt_deleted' => "قام {$this->representativeName} بحذف إيصال دفع للشركة {$companyTypeArabic}: {$this->companyName}",
-            'document_uploaded' => "قام {$this->representativeName} برفع مستند للشركة {$companyTypeArabic}: {$this->companyName}",
-            'document_updated' => "قام {$this->representativeName} بتعديل مستند للشركة {$companyTypeArabic} المفعلة: {$this->companyName} - يحتاج مراجعة",
-            'document_deleted' => "قام {$this->representativeName} بحذف مستند للشركة {$companyTypeArabic}: {$this->companyName}",
-            default => "إجراء جديد من {$this->representativeName} للشركة {$companyTypeArabic}: {$this->companyName}",
+            'company_created' => __('notifications.company_created', $params),
+            'company_updated' => __('notifications.company_updated', $params),
+            'company_resubmitted' => __('notifications.company_resubmitted', $params),
+            'receipt_uploaded' => __('notifications.receipt_uploaded', $params),
+            'receipt_deleted' => __('notifications.receipt_deleted', $params),
+            'document_uploaded' => __('notifications.document_uploaded', $params),
+            'document_updated' => __('notifications.document_updated', $params),
+            'document_deleted' => __('notifications.document_deleted', $params),
+            default => __('notifications.company_action_default', $params),
         };
     }
 
-    /**
-     * Get URL based on company type
-     */
     private function getUrl(): string
     {
         if ($this->companyType == 'local') {
@@ -99,9 +88,6 @@ class CompanyActionNotification extends Notification
         }
     }
 
-    /**
-     * Get icon based on action
-     */
     private function getIcon(): string
     {
         return match($this->action) {

@@ -23,7 +23,7 @@ class PharmaceuticalProductPreliminaryApproved extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('الموافقة المبدئية على الصنف الدوائي - يرجى استكمال البيانات')
+            ->subject(__('notifications.product_preliminary_approved_subject'))
             ->view('emails.pharmaceutical-product-preliminary-approved', [
                 'product' => $this->product,
                 'representative' => $notifiable,
@@ -33,8 +33,8 @@ class PharmaceuticalProductPreliminaryApproved extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'الموافقة المبدئية على الصنف الدوائي',
-            'message' => 'تمت الموافقة المبدئية على الصنف الدوائي: ' . $this->product->product_name . '. يرجى استكمال البيانات التفصيلية.',
+            'title' => __('notifications.product_preliminary_approved_title'),
+            'message' => __('notifications.product_preliminary_approved_message', ['product' => $this->product->product_name]),
             'product_id' => $this->product->id,
             'product_name' => $this->product->product_name,
             'url' => route('representative.pharmaceutical-products.edit-details', $this->product->id),

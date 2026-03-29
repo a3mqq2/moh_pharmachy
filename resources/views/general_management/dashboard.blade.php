@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'لوحة التحكم')
+@section('title', __('general.dashboard'))
 
 @section('content')
 <div class="">
@@ -14,16 +14,15 @@
                  <div class="row">
                    <div class="col-sm-6">
                      <div class="p-4">
-                       <h2 class="text-white fw-bold">مرحبًا بك في لوحة التحكم</h2>
+                       <h2 class="text-white fw-bold">{{ __('users.welcome_dashboard') }}</h2>
                        <p class="text-white mb-4">
-                         يمكنك من خلال هذه الصفحة الاطّلاع بسرعة على إحصائيات المستخدمين
-                         بالإضافة إلى إدارة المستخدمين.
+                         {{ __('users.dashboard_description') }}
                        </p>
                      </div>
                    </div>
                    <div class="col-sm-6 text-center">
                      <div class="img-welcome-banner">
-                       <img src="../assets/images/widget/welcome-banner.png" alt="لوحة التحكم" class="img-fluid">
+                       <img src="../assets/images/widget/welcome-banner.png" alt="{{ __('general.dashboard') }}" class="img-fluid">
                      </div>
                    </div>
                  </div>

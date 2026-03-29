@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إشعار بخصوص طلب تسجيل شركة أجنبية</title>
+    <title>{{ __('emails.foreign_company_rejected_title') }}</title>
     <style>
         body {
             font-family: 'Traditional Arabic', 'Almarai', Arial, sans-serif;
             background-color: #ffffff;
             margin: 0;
             padding: 30px 20px;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
             color: #000000;
             font-size: 14px;
             line-height: 2;
@@ -139,75 +139,74 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('logo-v.png') }}" alt="شعار الوزارة" class="logo">
-            <div class="header-text">دولة ليبيا</div>
-            <div class="header-text bold">وزارة الصحة</div>
-            <div class="header-text">إدارة الصيدلة</div>
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_logo_alt') }}" class="logo">
+            <div class="header-text">{{ __('emails.state_of_libya') }}</div>
+            <div class="header-text bold">{{ __('emails.ministry_of_health') }}</div>
+            <div class="header-text">{{ __('emails.pharmacy_department') }}</div>
         </div>
 
         <div class="content">
-            <div class="document-title">إشعار بخصوص طلب تسجيل شركة أجنبية</div>
+            <div class="document-title">{{ __('emails.foreign_company_rejected_title') }}</div>
 
             <div class="recipient">
-                <div>السيد / {{ $company->representative->name ?? 'الممثل المحترم' }}</div>
-                <div>ممثل الشركة - {{ $company->company_name }}</div>
-                <div>المحترم</div>
+                <div>{{ __('emails.foreign_company_rejected_dear', ['name' => $company->representative->name ?? __('emails.local_company_approved_respected')]) }}</div>
+                <div>{{ __('emails.foreign_company_rejected_representative', ['company' => $company->company_name]) }}</div>
+                <div>{{ __('emails.local_company_approved_respected') }}</div>
             </div>
 
             <div class="message-text">
-                <p>السلام عليكم ورحمة الله وبركاته،</p>
+                <p>{{ __('emails.salam') }}</p>
                 <p>
-                    إشارة إلى طلبكم المقدم لتسجيل شركتكم في سجل الشركات الأجنبية بإدارة الصيدلة - وزارة الصحة،
-                    نفيدكم بأنه تعذر قبول الطلب في الوقت الحالي وذلك للأسباب الموضحة أدناه.
+                    {{ __('emails.foreign_company_rejected_body') }}
                 </p>
             </div>
 
             <table class="info-table">
                 <tr>
-                    <td class="label">اسم الشركة</td>
+                    <td class="label">{{ __('emails.company_name_label') }}</td>
                     <td>{{ $company->company_name }}</td>
                 </tr>
                 <tr>
-                    <td class="label">الدولة</td>
+                    <td class="label">{{ __('emails.country') }}</td>
                     <td>{{ $company->country }}</td>
                 </tr>
                 <tr>
-                    <td class="label">نوع النشاط</td>
+                    <td class="label">{{ __('emails.activity_type') }}</td>
                     <td>{{ $company->activity_type_name }}</td>
                 </tr>
                 <tr>
-                    <td class="label">نوع الكيان</td>
+                    <td class="label">{{ __('emails.entity_type') }}</td>
                     <td>{{ $company->entity_type_name }}</td>
                 </tr>
                 <tr>
-                    <td class="label">تاريخ تقديم الطلب</td>
+                    <td class="label">{{ __('emails.application_date') }}</td>
                     <td>{{ $company->created_at->format('Y-m-d') }}</td>
                 </tr>
             </table>
 
             <div class="reason-section">
-                <div class="reason-title">سبب عدم القبول:</div>
+                <div class="reason-title">{{ __('emails.rejection_reason') }}</div>
                 <div class="reason-text">{{ $company->rejection_reason }}</div>
             </div>
 
             <div class="instructions-section">
-                <div class="instructions-title">الإجراءات المطلوبة:</div>
+                <div class="instructions-title">{{ __('emails.required_actions') }}</div>
                 <ul class="instructions-list">
-                    <li>مراجعة الملاحظات المذكورة أعلاه واستيفاء المتطلبات الناقصة.</li>
-                    <li>التواصل مع إدارة الصيدلة للحصول على مزيد من التوضيحات إن لزم الأمر.</li>
-                    <li>تعديل البيانات أو المستندات حسب الملاحظات المذكورة.</li>
-                    <li>التأكد من صحة واكتمال جميع المستندات المطلوبة.</li>
+                    <li>{{ __('emails.foreign_rejected_action_1') }}</li>
+                    <li>{{ __('emails.foreign_rejected_action_2') }}</li>
+                    <li>{{ __('emails.foreign_rejected_action_3') }}</li>
+                    <li>{{ __('emails.foreign_rejected_action_4') }}</li>
                 </ul>
             </div>
 
             <div class="closing">
-                <p>وتفضلوا بقبول فائق الاحترام والتقدير،</p>
-                <p>إدارة الصيدلة - وزارة الصحة</p>
+                <p>{{ __('emails.regards_formal') }}</p>
+                <p>{{ __('emails.pharmacy_department_full') }}</p>
             </div>
         </div>
 
         <div class="footer">
-            إشعار آلي صادر من نظام إدارة الصيدلة - وزارة الصحة - دولة ليبيا | تاريخ الإصدار: {{ now()->format('Y-m-d') }}
+            {{ __('emails.footer_auto_notice', ['date' => now()->format('Y-m-d')]) }}
         </div>
     </div>
 </body>

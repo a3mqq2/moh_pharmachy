@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رفض الصنف الدوائي</title>
+    <title>{{ __('emails.product_rejected_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -154,79 +154,79 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         <div class="content">
-            <h2>إشعار برفض طلب تسجيل الصنف الدوائي</h2>
+            <h2>{{ __('emails.product_rejected_heading') }}</h2>
 
             <div class="rejection-banner">
                 <div class="icon">✗</div>
-                <p>تم رفض طلب التسجيل</p>
+                <p>{{ __('emails.product_rejected_banner') }}</p>
             </div>
 
-            <p>السيد/ة {{ $representative->name }} المحترم/ة،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.dear_representative_named', ['name' => $representative->name]) }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
-            <p>نأسف لإبلاغكم بأنه تم رفض طلب تسجيل الصنف الدوائي التالي:</p>
+            <p>{{ __('emails.product_rejected_body') }}</p>
 
             <table class="info-table">
                 <tr>
-                    <td>اسم الصنف الدوائي:</td>
+                    <td>{{ __('emails.product_name_label') }}</td>
                     <td><strong>{{ $product->product_name }}</strong></td>
                 </tr>
                 <tr>
-                    <td>الشكل الصيدلاني:</td>
+                    <td>{{ __('emails.pharmaceutical_form') }}</td>
                     <td>{{ $product->pharmaceutical_form }}</td>
                 </tr>
                 <tr>
-                    <td>التركيز:</td>
+                    <td>{{ __('emails.concentration') }}</td>
                     <td>{{ $product->concentration }}</td>
                 </tr>
                 <tr>
-                    <td>الشركة المنتجة:</td>
+                    <td>{{ __('emails.manufacturer_label') }}</td>
                     <td>{{ $product->foreignCompany->company_name }}</td>
                 </tr>
                 <tr>
-                    <td>تاريخ الرفض:</td>
+                    <td>{{ __('emails.rejection_date') }}</td>
                     <td>{{ now()->format('Y-m-d') }}</td>
                 </tr>
             </table>
 
             <div class="rejection-reason">
-                <p><strong>سبب الرفض:</strong></p>
+                <p><strong>{{ __('emails.rejection_reason_label') }}</strong></p>
                 <div class="reason-text">
                     {{ $rejectionReason }}
                 </div>
             </div>
 
             <div class="note">
-                <p><strong>ملاحظة:</strong></p>
-                <p>يمكنكم تقديم طلب جديد بعد استيفاء المتطلبات والتعديلات المطلوبة وفقاً لسبب الرفض المذكور أعلاه.</p>
+                <p><strong>{{ __('emails.note_label') }}</strong></p>
+                <p>{{ __('emails.product_rejected_note') }}</p>
             </div>
 
             <div class="action-button">
                 <a href="{{ route('representative.pharmaceutical-products.show', $product->id) }}">
-                    عرض تفاصيل الطلب
+                    {{ __('emails.view_request_details') }}
                 </a>
             </div>
 
-            <p style="margin-top: 30px;">للاستفسار أو الحصول على المزيد من المعلومات، يرجى التواصل مع الإدارة المختصة.</p>
+            <p style="margin-top: 30px;">{{ __('emails.product_rejected_contact') }}</p>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة</strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">© {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">{{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

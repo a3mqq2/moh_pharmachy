@@ -21,10 +21,10 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:6',
         ], [
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.email' => 'يرجى إدخال بريد إلكتروني صحيح',
-            'password.required' => 'كلمة المرور مطلوبة',
-            'password.min' => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل',
+            'email.required' => __('auth.validation_email_required_admin'),
+            'email.email' => __('auth.validation_email_invalid_admin'),
+            'password.required' => __('auth.validation_password_required_admin'),
+            'password.min' => __('auth.validation_password_min_admin'),
         ]);
 
         if ($validator->fails()) {
@@ -41,11 +41,11 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             return redirect()->intended(route('admin.dashboard'))
-                ->with('success', 'مرحباً بك، تم تسجيل الدخول بنجاح');
+                ->with('success', __('auth.welcome_back'));
         }
 
         return redirect()->back()
             ->withInput($request->except('password'))
-            ->with('error', 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+            ->with('error', __('auth.invalid_credentials'));
     }
 }

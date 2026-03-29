@@ -12,15 +12,15 @@ class VerificationController extends Controller
     {
         return view('verification.show', [
             'type' => 'local-company',
-            'title' => 'التحقق من شهادة تسجيل شركة محلية',
+            'title' => __('general.verify_local_company_cert'),
             'entity' => $localCompany,
             'fields' => [
-                'اسم الشركة' => $localCompany->company_name,
-                'نوع الشركة' => $localCompany->company_type_name,
-                'المجال' => $localCompany->license_specialty_name,
-                'رقم التسجيل' => $localCompany->registration_number,
-                'تاريخ التسجيل' => $localCompany->registration_date?->format('Y-m-d'),
-                'تاريخ الانتهاء' => $localCompany->expires_at?->format('Y-m-d'),
+                __('companies.company_name') => $localCompany->company_name,
+                __('companies.company_type') => $localCompany->company_type_name,
+                __('companies.license_specialty') => $localCompany->license_specialty_name,
+                __('general.registration_number') => $localCompany->registration_number,
+                __('general.registration_date') => $localCompany->registration_date?->format('Y-m-d'),
+                __('companies.expiry_date') => $localCompany->expires_at?->format('Y-m-d'),
             ],
             'status' => $localCompany->status_name,
             'statusColor' => $localCompany->status_color,
@@ -31,7 +31,7 @@ class VerificationController extends Controller
     {
         return view('verification.show', [
             'type' => 'foreign-company',
-            'title' => 'التحقق من شهادة تسجيل شركة أجنبية',
+            'title' => __('general.verify_foreign_company_cert'),
             'entity' => $foreignCompany,
             'fields' => [
                 'Company Name' => $foreignCompany->company_name,
@@ -57,7 +57,7 @@ class VerificationController extends Controller
     {
         return view('verification.show', [
             'type' => 'pharmaceutical-product',
-            'title' => 'التحقق من شهادة تسجيل مستحضر دوائي',
+            'title' => __('general.verify_pharmaceutical_product_cert'),
             'entity' => $product,
             'fields' => [
                 'Trade Name' => $product->trade_name ?? $product->product_name,

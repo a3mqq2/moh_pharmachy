@@ -58,11 +58,11 @@ class CompanyController extends Controller
             'manager_phone' => 'required|string|max:255',
             'manager_email' => 'nullable|email|max:255',
         ], [
-            'food_drug_registration_number.required' => 'رقم التسجيل في هيئة الغذاء والدواء مطلوب',
-            'pre_registration_sequence.required_if' => 'الرقم التسلسلي مطلوب عند تحديد الشركة كمسجلة مسبقاً',
-            'pre_registration_year.required_if' => 'سنة التسجيل مطلوبة عند تحديد الشركة كمسجلة مسبقاً',
-            'pre_registration_year.min' => 'سنة التسجيل يجب أن تكون 1990 أو أحدث',
-            'pre_registration_year.max' => 'سنة التسجيل لا يمكن أن تكون في المستقبل',
+            'food_drug_registration_number.required' => __('companies.val_food_drug_reg_required'),
+            'pre_registration_sequence.required_if' => __('companies.val_pre_reg_sequence_required'),
+            'pre_registration_year.required_if' => __('companies.val_pre_reg_year_required'),
+            'pre_registration_year.min' => __('companies.val_pre_reg_year_min'),
+            'pre_registration_year.max' => __('companies.val_pre_reg_year_max'),
         ]);
 
         if (!empty($validated['is_pre_registered']) && !empty($validated['pre_registration_sequence']) && !empty($validated['pre_registration_year'])) {
@@ -78,7 +78,6 @@ class CompanyController extends Controller
             'status' => 'uploading_documents',
         ]);
 
-        // Send notification to admins
         NotificationHelper::notifyAdmins(
             'company_created',
             'local',
@@ -87,20 +86,18 @@ class CompanyController extends Controller
             $representative->name
         );
 
-        // Set session to open documents tab
         session(['active_tab_' . $company->id => 'documents']);
 
         return redirect()->route('representative.companies.show', $company)
-            ->with('success', 'تم تسجيل الشركة بنجاح. يرجى رفع جميع المستندات المطلوبة لإكمال عملية التسجيل.');
+            ->with('success', __('companies.msg_company_created'));
     }
 
     public function show(LocalCompany $company)
     {
         $representative = Auth::guard('representative')->user();
 
-        // التحقق من أن الشركة تخص الممثل الحالي
         if ($company->representative_id != $representative->id) {
-            abort(403, 'غير مصرح لك بعرض هذه الشركة');
+            abort(403, __('companies.unauthorized_view'));
         }
 
         return view('representative.companies.show', compact('company'));
@@ -110,15 +107,13 @@ class CompanyController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        // التحقق من أن الشركة تخص الممثل الحالي
         if ($company->representative_id != $representative->id) {
-            abort(403, 'غير مصرح لك بتعديل هذه الشركة');
+            abort(403, __('companies.unauthorized_edit'));
         }
 
-        // التحقق من أن الشركة مرفوضة أو قيد رفع المستندات
         if (!in_array($company->status, ['rejected', 'uploading_documents'])) {
             return redirect()->route('representative.companies.show', $company)
-                ->with('error', 'لا يمكن تعديل الشركة في هذه الحالة');
+                ->with('error', __('companies.cannot_edit_current_status'));
         }
 
         return view('representative.companies.edit', compact('company'));
@@ -128,15 +123,13 @@ class CompanyController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        // التحقق من أن الشركة تخص الممثل الحالي
         if ($company->representative_id != $representative->id) {
-            abort(403, 'غير مصرح لك بتعديل هذه الشركة');
+            abort(403, __('companies.unauthorized_edit'));
         }
 
-        // التحقق من أن الشركة مرفوضة أو قيد رفع المستندات
         if (!in_array($company->status, ['rejected', 'uploading_documents'])) {
             return redirect()->route('representative.companies.show', $company)
-                ->with('error', 'لا يمكن تعديل الشركة في هذه الحالة');
+                ->with('error', __('companies.cannot_edit_current_status'));
         }
 
         $validated = $request->validate([
@@ -172,11 +165,11 @@ class CompanyController extends Controller
             'manager_phone' => 'required|string|max:255',
             'manager_email' => 'nullable|email|max:255',
         ], [
-            'food_drug_registration_number.required' => 'رقم التسجيل في هيئة الغذاء والدواء مطلوب',
-            'pre_registration_sequence.required_if' => 'الرقم التسلسلي مطلوب عند تحديد الشركة كمسجلة مسبقاً',
-            'pre_registration_year.required_if' => 'سنة التسجيل مطلوبة عند تحديد الشركة كمسجلة مسبقاً',
-            'pre_registration_year.min' => 'سنة التسجيل يجب أن تكون 1990 أو أحدث',
-            'pre_registration_year.max' => 'سنة التسجيل لا يمكن أن تكون في المستقبل',
+            'food_drug_registration_number.required' => __('companies.val_food_drug_reg_required'),
+            'pre_registration_sequence.required_if' => __('companies.val_pre_reg_sequence_required'),
+            'pre_registration_year.required_if' => __('companies.val_pre_reg_year_required'),
+            'pre_registration_year.min' => __('companies.val_pre_reg_year_min'),
+            'pre_registration_year.max' => __('companies.val_pre_reg_year_max'),
         ]);
 
         if (!empty($validated['is_pre_registered']) && !empty($validated['pre_registration_sequence']) && !empty($validated['pre_registration_year'])) {
@@ -186,17 +179,15 @@ class CompanyController extends Controller
 
         $company->update($validated);
 
-        // إذا كانت الشركة مرفوضة، نعيدها لحالة uploading_documents
         $wasRejected = $company->status == 'rejected';
         if ($wasRejected) {
             $company->update([
                 'status' => 'uploading_documents',
                 'rejection_reason' => null,
             ]);
-            $company->logActivity('resubmitted', 'تم إعادة تقديم الطلب بعد التعديل');
+            $company->logActivity('resubmitted', __('companies.log_resubmitted_after_edit'));
         }
 
-        // Send notification to admins
         $action = $wasRejected ? 'company_resubmitted' : 'company_updated';
         NotificationHelper::notifyAdmins(
             $action,
@@ -207,7 +198,7 @@ class CompanyController extends Controller
         );
 
         return redirect()->route('representative.companies.show', $company)
-            ->with('success', 'تم تحديث بيانات الشركة بنجاح');
+            ->with('success', __('companies.msg_updated'));
     }
 
     public function saveTab(Request $request, LocalCompany $company)
@@ -232,17 +223,17 @@ class CompanyController extends Controller
         $representative = Auth::guard('representative')->user();
 
         if ($company->representative_id != $representative->id) {
-            abort(403, 'غير مصرح لك بإعادة تقديم هذه الشركة');
+            abort(403, __('companies.unauthorized_resubmit'));
         }
 
         if ($company->status != 'rejected') {
             return redirect()->route('representative.companies.show', $company)
-                ->with('error', 'يمكن إعادة التقديم فقط للشركات المرفوضة');
+                ->with('error', __('companies.msg_resubmit_only_rejected'));
         }
 
         if (!$company->hasAllRequiredDocuments()) {
             return redirect()->route('representative.companies.show', $company)
-                ->with('error', 'يجب رفع جميع المستندات المطلوبة قبل إعادة التقديم');
+                ->with('error', __('companies.msg_upload_docs_before_resubmit'));
         }
 
         $company->update([
@@ -250,7 +241,7 @@ class CompanyController extends Controller
             'rejection_reason' => null,
         ]);
 
-        $company->logActivity('resubmitted', 'تم إعادة تقديم الطلب للمراجعة');
+        $company->logActivity('resubmitted', __('companies.log_resubmitted_for_review'));
 
         NotificationHelper::notifyAdmins(
             'company_resubmitted',
@@ -261,6 +252,6 @@ class CompanyController extends Controller
         );
 
         return redirect()->route('representative.companies.show', $company)
-            ->with('success', 'تم إعادة تقديم الطلب للمراجعة بنجاح');
+            ->with('success', __('companies.msg_resubmitted_success'));
     }
 }

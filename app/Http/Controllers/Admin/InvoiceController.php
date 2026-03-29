@@ -122,9 +122,9 @@ class InvoiceController extends Controller implements HasMiddleware
             $pharmaceuticalInvoices = $query->get()->map(function ($invoice) {
                 $invoice->company_type = 'pharmaceutical';
                 $invoice->company = (object) [
-                    'company_name' => $invoice->pharmaceuticalProduct->product_name ?? 'غير متوفر'
+                    'company_name' => $invoice->pharmaceuticalProduct->product_name ?? __('general.not_available')
                 ];
-                $invoice->description = 'فاتورة تسجيل صنف دوائي';
+                $invoice->description = __('invoices.pharma_registration_invoice');
                 return $invoice;
             });
         }
@@ -188,28 +188,28 @@ class InvoiceController extends Controller implements HasMiddleware
         $output = fopen('php://output', 'w');
         fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        fputcsv($output, ['كشف الفواتير']);
-        fputcsv($output, ['تاريخ الكشف: ' . date('Y-m-d')]);
+        fputcsv($output, [__('reports.csv_invoices_report')]);
+        fputcsv($output, [__('reports.csv_report_date') . date('Y-m-d')]);
         fputcsv($output, []);
-        fputcsv($output, ['إجمالي الفواتير', $stats['total']]);
-        fputcsv($output, ['مدفوعة', $stats['paid']]);
-        fputcsv($output, ['قيد الانتظار', $stats['pending']]);
-        fputcsv($output, ['إجمالي الإيرادات', number_format($stats['total_revenue'], 2) . ' د.ل']);
+        fputcsv($output, [__('reports.csv_total_invoices'), $stats['total']]);
+        fputcsv($output, [__('reports.csv_paid'), $stats['paid']]);
+        fputcsv($output, [__('reports.csv_pending'), $stats['pending']]);
+        fputcsv($output, [__('reports.csv_total_revenue'), number_format($stats['total_revenue'], 2) . ' ' . __('general.lyd')]);
         fputcsv($output, []);
 
-        fputcsv($output, ['رقم الفاتورة', 'النوع', 'اسم الشركة', 'المبلغ', 'الحالة', 'تاريخ الإنشاء']);
+        fputcsv($output, [__('reports.csv_invoice_no'), __('reports.csv_type'), __('reports.csv_company_name'), __('reports.csv_amount'), __('reports.csv_status'), __('reports.csv_created_date')]);
 
         foreach ($invoices as $invoice) {
             $typeName = match($invoice->company_type) {
-                'local' => 'محلية',
-                'foreign' => 'أجنبية',
-                default => 'دوائية',
+                'local' => __('companies.local'),
+                'foreign' => __('companies.foreign'),
+                default => __('products.pharmaceutical'),
             };
 
             fputcsv($output, [
                 $invoice->invoice_number,
                 $typeName,
-                $invoice->company?->company_name ?? 'غير متوفر',
+                $invoice->company?->company_name ?? __('general.not_available'),
                 number_format($invoice->amount, 2),
                 $invoice->status,
                 $invoice->created_at->format('Y-m-d'),

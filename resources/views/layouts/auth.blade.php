@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
   <!-- [Head] start -->
   <head>
-    <title>@yield('title', 'وزارة الصحة - إدارة الصيدلة')</title>
+    <title>@yield('title', __('general.site_title'))</title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta
       name="description"
-      content="وزارة الصحة - إدارة الصيدلة"
+      content="{{ __('general.site_title') }}"
     />
     <meta
       name="keywords"
-      content="وزارة الصحة, إدارة الصيدلة, الأدوية, الصيدليات"
+      content="{{ __('general.site_title') }}"
     />
     <meta name="author" content="Safe Tech" />
 
@@ -351,7 +351,7 @@
   <!-- [Head] end -->
   <!-- [Body] Start -->
 
-  <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="rtl" data-pc-theme_contrast="" data-pc-theme="light">
+  <body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-layout="vertical" data-pc-direction="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" data-pc-theme_contrast="" data-pc-theme="light">
     <!-- [ Pre-loader ] start -->
     <div class="loader-bg">
       <div class="loader-track">
@@ -369,9 +369,13 @@
     <header class="auth-header">
       <div class="auth-header-container">
         <a href="{{ route('representative.dashboard') }}" class="auth-header-logo">
-          <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة - إدارة الصيدلة">
+          <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.site_title') }}">
         </a>
         <div class="auth-header-actions">
+          <a href="{{ route('lang.switch', app()->getLocale() == 'ar' ? 'en' : 'ar') }}" class="user-info">
+            <i class="ti ti-language"></i>
+            <span>{{ app()->getLocale() == 'ar' ? 'English' : 'العربية' }}</span>
+          </a>
           <a href="{{ route('representative.settings') }}" class="user-info">
             <i class="ti ti-user"></i>
             <span>{{ auth('representative')->user()->name }}</span>
@@ -380,7 +384,7 @@
             @csrf
             <button type="submit" class="logout-btn">
               <i class="ti ti-logout"></i>
-              تسجيل الخروج
+              {{ __('general.logout') }}
             </button>
           </form>
         </div>
@@ -388,6 +392,14 @@
     </header>
     @endif
     @endauth
+
+    @guest('representative')
+    <div style="position: fixed; top: 15px; {{ app()->getLocale() == 'ar' ? 'left' : 'right' }}: 15px; z-index: 1001;">
+      <a href="{{ route('lang.switch', app()->getLocale() == 'ar' ? 'en' : 'ar') }}" class="btn btn-light btn-sm shadow-sm" style="border-radius: 20px; padding: 6px 16px; font-size: 0.85rem;">
+        <i class="ti ti-language me-1"></i>{{ app()->getLocale() == 'ar' ? 'English' : 'العربية' }}
+      </a>
+    </div>
+    @endguest
 
     <div class="auth-main" @auth('representative') @if(!request()->routeIs('login', 'register', 'verify-login-otp')) style="padding-top: 70px;" @endif @endauth>
       <div class="auth-wrapper v3">
@@ -420,7 +432,7 @@
     </script>
      
     <script>
-      layout_rtl_change('false');
+      layout_rtl_change('{{ app()->getLocale() == "ar" ? "true" : "false" }}');
     </script>
      
     <script>
@@ -473,6 +485,21 @@
       }
 
       document.addEventListener('DOMContentLoaded', function() {
+        @if(session('success'))
+          showToast(@json(session('success')), 'success', 5000);
+        @endif
+        @if(session('error'))
+          showToast(@json(session('error')), 'error', 6000);
+        @endif
+        @if(session('info'))
+          showToast(@json(session('info')), 'info', 5000);
+        @endif
+        @if($errors->any())
+          @foreach($errors->all() as $error)
+            showToast(@json($error), 'error', 6000);
+          @endforeach
+        @endif
+
         document.querySelectorAll('form').forEach(form => {
           form.addEventListener('submit', function(e) {
             const submitBtn = this.querySelector("button[type='submit']");
@@ -483,22 +510,33 @@
               const originalContent = submitBtn.innerHTML;
               submitBtn.setAttribute('data-original-content', originalContent);
 
-              submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>جاري المعالجة...';
+              submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>{{ __("general.processing") }}';
             }
           });
         });
       });
     </script>
 
+    <style>
+    .docx-content { font-family: 'Almarai', 'Segoe UI', sans-serif; line-height: 1.8; color: #1f2937; max-width: 800px; margin: 0 auto; }
+    .docx-content p { margin-bottom: 0.75em; }
+    .docx-content table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+    .docx-content table td, .docx-content table th { border: 1px solid #d1d5db; padding: 8px 12px; }
+    .docx-content img { max-width: 100%; height: auto; }
+    .docx-content h1, .docx-content h2, .docx-content h3, .docx-content h4 { color: #111827; margin-top: 1em; margin-bottom: 0.5em; }
+    .docx-content ul, .docx-content ol { padding-inline-start: 2em; margin-bottom: 0.75em; }
+    #docViewerWord { scrollbar-width: thin; }
+    </style>
+
     <!-- Document Viewer Modal -->
     <div class="modal fade" id="docViewerModal" tabindex="-1">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content border-0 shadow" style="height: 90vh;">
                 <div class="modal-header py-2 bg-dark text-white">
-                    <h6 class="modal-title" id="docViewerTitle"><i class="ti ti-file me-2"></i>عرض المستند</h6>
+                    <h6 class="modal-title" id="docViewerTitle"><i class="ti ti-file me-2"></i>{{ __('general.view_document') }}</h6>
                     <div class="d-flex align-items-center gap-2">
                         <a href="#" id="docViewerDownload" class="btn btn-sm btn-outline-light" download>
-                            <i class="ti ti-download me-1"></i>تحميل
+                            <i class="ti ti-download me-1"></i>{{ __('general.download') }}
                         </a>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
@@ -506,18 +544,20 @@
                 <div class="modal-body p-0 position-relative" style="overflow: hidden;">
                     <div id="docViewerLoading" class="position-absolute top-50 start-50 translate-middle text-center d-none">
                         <div class="spinner-border text-primary mb-2" role="status"></div>
-                        <p class="text-muted">جاري تحميل المستند...</p>
+                        <p class="text-muted">{{ __('general.loading_document') }}</p>
                     </div>
                     <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" class="d-none"></iframe>
                     <div id="docViewerImage" class="d-none h-100 w-100 d-flex align-items-center justify-content-center overflow-auto bg-dark">
                         <img src="" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                     </div>
+                    <div id="docViewerWord" class="d-none h-100 w-100" style="overflow-y: auto; background: #fff; padding: 30px 40px;">
+                    </div>
                     <div id="docViewerUnsupported" class="d-none position-absolute top-50 start-50 translate-middle text-center">
                         <i class="ti ti-file-off f-48 text-muted d-block mb-3"></i>
-                        <h6 class="text-muted mb-2">لا يمكن عرض هذا النوع من الملفات</h6>
-                        <p class="text-muted f-13 mb-3">يمكنك تحميل الملف لعرضه على جهازك</p>
+                        <h6 class="text-muted mb-2">{{ __('general.unsupported_file') }}</h6>
+                        <p class="text-muted f-13 mb-3">{{ __('general.download_to_view') }}</p>
                         <a href="#" id="docViewerFallbackDownload" class="btn btn-primary">
-                            <i class="ti ti-download me-1"></i>تحميل الملف
+                            <i class="ti ti-download me-1"></i>{{ __('general.download_file') }}
                         </a>
                     </div>
                 </div>
@@ -525,46 +565,72 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
     <script>
     function openDocViewer(fileUrl, fileName, downloadUrl) {
-        const modal = document.getElementById('docViewerModal');
-        const frame = document.getElementById('docViewerFrame');
-        const imgContainer = document.getElementById('docViewerImage');
-        const unsupported = document.getElementById('docViewerUnsupported');
-        const loading = document.getElementById('docViewerLoading');
-        const title = document.getElementById('docViewerTitle');
-        const downloadBtn = document.getElementById('docViewerDownload');
-        const fallbackBtn = document.getElementById('docViewerFallbackDownload');
+        var modal = document.getElementById('docViewerModal');
+        var frame = document.getElementById('docViewerFrame');
+        var imgContainer = document.getElementById('docViewerImage');
+        var wordContainer = document.getElementById('docViewerWord');
+        var unsupported = document.getElementById('docViewerUnsupported');
+        var loading = document.getElementById('docViewerLoading');
+        var title = document.getElementById('docViewerTitle');
+        var downloadBtn = document.getElementById('docViewerDownload');
+        var fallbackBtn = document.getElementById('docViewerFallbackDownload');
 
         frame.classList.add('d-none');
         frame.src = '';
         imgContainer.classList.add('d-none');
+        wordContainer.classList.add('d-none');
+        wordContainer.innerHTML = '';
         unsupported.classList.add('d-none');
         loading.classList.remove('d-none');
 
-        title.innerHTML = '<i class="ti ti-file me-2"></i>' + (fileName || 'عرض المستند');
+        title.innerHTML = '<i class="ti ti-file me-2"></i>' + (fileName || '{{ __("general.view_document") }}');
         downloadBtn.href = downloadUrl || fileUrl;
         fallbackBtn.href = downloadUrl || fileUrl;
 
-        const ext = fileName ? fileName.split('.').pop().toLowerCase() : fileUrl.split('.').pop().toLowerCase().split('?')[0];
-        const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
-        const pdfExts = ['pdf'];
+        var ext = fileName ? fileName.split('.').pop().toLowerCase() : fileUrl.split('.').pop().toLowerCase().split('?')[0];
+        var imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
 
-        const bsModal = new bootstrap.Modal(modal);
+        var bsModal = new bootstrap.Modal(modal);
         bsModal.show();
 
-        if (pdfExts.includes(ext)) {
+        if (ext === 'pdf') {
             frame.onload = function() { loading.classList.add('d-none'); };
             frame.src = fileUrl;
             frame.classList.remove('d-none');
             loading.classList.add('d-none');
-        } else if (imageExts.includes(ext)) {
-            const img = imgContainer.querySelector('img');
+        } else if (imageExts.indexOf(ext) !== -1) {
+            var img = imgContainer.querySelector('img');
             img.onload = function() { loading.classList.add('d-none'); };
             img.src = fileUrl;
             imgContainer.classList.remove('d-none');
             imgContainer.classList.add('d-flex');
             loading.classList.add('d-none');
+        } else if (ext === 'docx') {
+            fetch(fileUrl)
+                .then(function(r) { return r.arrayBuffer(); })
+                .then(function(buffer) {
+                    return mammoth.convertToHtml({ arrayBuffer: buffer });
+                })
+                .then(function(result) {
+                    loading.classList.add('d-none');
+                    wordContainer.innerHTML = '<div class="docx-content" dir="auto">' + result.value + '</div>';
+                    wordContainer.classList.remove('d-none');
+                })
+                .catch(function() {
+                    loading.classList.add('d-none');
+                    unsupported.classList.remove('d-none');
+                });
+        } else if (ext === 'doc' || ext === 'xls' || ext === 'xlsx') {
+            loading.classList.add('d-none');
+            frame.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(window.location.origin + fileUrl);
+            frame.classList.remove('d-none');
+            frame.onerror = function() {
+                frame.classList.add('d-none');
+                unsupported.classList.remove('d-none');
+            };
         } else {
             loading.classList.add('d-none');
             unsupported.classList.remove('d-none');
@@ -573,15 +639,17 @@
         modal.addEventListener('hidden.bs.modal', function cleanup() {
             frame.src = '';
             imgContainer.querySelector('img').src = '';
+            wordContainer.innerHTML = '';
             frame.classList.add('d-none');
             imgContainer.classList.add('d-none');
+            wordContainer.classList.add('d-none');
             unsupported.classList.add('d-none');
             modal.removeEventListener('hidden.bs.modal', cleanup);
         }, { once: true });
     }
 
     document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.btn-doc-preview');
+        var btn = e.target.closest('.btn-doc-preview');
         if (btn) {
             e.preventDefault();
             openDocViewer(btn.dataset.fileUrl, btn.dataset.fileName, btn.dataset.downloadUrl);
@@ -593,14 +661,14 @@
     <script>
     function confirmDelete(formId) {
         Swal.fire({
-            title: 'تأكيد الحذف',
-            text: 'هل أنت متأكد؟ لا يمكن التراجع عن هذا الإجراء',
+            title: '{{ __("general.confirm_delete") }}',
+            text: '{{ __("general.delete_confirm_msg") }}',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#6c757d',
-            confirmButtonText: 'نعم، احذف',
-            cancelButtonText: 'إلغاء'
+            confirmButtonText: '{{ __("general.yes_delete") }}',
+            cancelButtonText: '{{ __("general.cancel") }}'
         }).then(function(result) {
             if (result.isConfirmed) {
                 document.getElementById(formId).submit();

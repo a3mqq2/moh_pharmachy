@@ -1,20 +1,20 @@
 @extends('layouts.auth')
 
-@section('title', 'نسيت كلمة المرور')
+@section('title', __('auth.forgot_password'))
 
 @section('content')
 <div class="login-container">
     <!-- Logo Section -->
     <div class="logo-section">
         <a href="{{ route('login') }}">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة - إدارة الصيدلة" />
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.site_title') }}" />
         </a>
     </div>
 
     <!-- Welcome Text -->
     <div class="welcome-section">
-        <h2>استعادة كلمة المرور</h2>
-        <p>أدخل بريدك الإلكتروني لإرسال رمز التحقق</p>
+        <h2>{{ __('auth.recover_password') }}</h2>
+        <p>{{ __('auth.enter_email_for_otp') }}</p>
     </div>
 
     
@@ -25,7 +25,7 @@
         <input type="hidden" name="recaptcha_token" id="recaptcha_token">
 
         <div class="form-group">
-            <label for="email">البريد الإلكتروني</label>
+            <label for="email">{{ __('auth.email') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-mail"></i>
                 <input
@@ -33,7 +33,7 @@
                     id="email"
                     name="email"
                     class="form-control @error('email') is-invalid @enderror"
-                    placeholder="أدخل بريدك الإلكتروني"
+                    placeholder="{{ __('auth.enter_email_placeholder') }}"
                     value="{{ old('email') }}"
                     required
                     autofocus
@@ -45,7 +45,7 @@
         </div>
 
         <button type="submit" class="submit-btn">
-            <span>إرسال رمز التحقق</span>
+            <span>{{ __('auth.send_otp') }}</span>
             <i class="ti ti-send"></i>
         </button>
     </form>
@@ -54,13 +54,13 @@
     <div style="text-align: center; margin-top: 20px;">
         <a href="{{ route('login') }}" style="color: #6b7280; font-size: 0.9rem; text-decoration: none;">
             <i class="ti ti-arrow-right" style="margin-left: 5px;"></i>
-            العودة لتسجيل الدخول
+            {{ __('auth.back_to_login') }}
         </a>
     </div>
 
     <!-- Footer -->
     <div class="login-footer">
-        <p>© {{ date('Y') }} وزارة الصحة - إدارة الصيدلة</p>
+        <p>{{ __('auth.copyright', ['year' => date('Y')]) }}</p>
     </div>
 </div>
 @endsection

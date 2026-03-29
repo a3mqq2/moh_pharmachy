@@ -25,39 +25,23 @@ class ForeignCompanyDocument extends Model
         'reviewed_at',
     ];
 
-    // Relations
+
     public function foreignCompany(): BelongsTo
     {
         return $this->belongsTo(ForeignCompany::class);
     }
 
-    // Accessors
+
     public function getDocumentTypeNameAttribute(): string
     {
-        return match($this->document_type) {
-            'official_registration_request' => 'طلب تسجيل رسمي من الشركة المصنعة',
-            'agency_agreement' => 'رسالة وكالة أو اتفاقية توزيع',
-            'registration_forms' => 'نماذج التسجيل المعتمدة',
-            'gmp_certificate' => 'شهادة GMP',
-            'fda_certificate' => 'شهادة FDA',
-            'emea_certificate' => 'شهادة EMEA',
-            'cpp_certificate' => 'شهادة المنتج الصيدلاني (CPP)',
-            'fsc_certificate' => 'شهادة البيع الحر (FSC)',
-            'manufacturing_license' => 'ترخيص تصنيع ساري',
-            'financial_report' => 'تقرير مالي لآخر سنتين',
-            'products_list' => 'قائمة منتجات الشركة',
-            'site_master_file' => 'الملف الرئيسي للمصنع',
-            'registration_certificates' => 'شهادات تسجيل في دول أخرى',
-            'exclusive_agency_contract' => 'عقد الوكالة الحصري',
-            'other' => 'مستندات أخرى',
-            default => $this->document_type,
-        };
+        $types = self::getDocumentTypes();
+        return $types[$this->document_type] ?? $this->document_type;
     }
 
     public function getFileSizeFormattedAttribute(): string
     {
         if (!$this->file_size) {
-            return 'غير محدد';
+            return __('general.not_specified');
         }
 
         $bytes = floatval($this->file_size);
@@ -73,7 +57,7 @@ class ForeignCompanyDocument extends Model
         return $bytes . ' bytes';
     }
 
-    // Methods
+
     public function exists(): bool
     {
         return !empty($this->file_path) && Storage::disk('public')->exists($this->file_path);
@@ -89,7 +73,7 @@ class ForeignCompanyDocument extends Model
 
     public function delete(): ?bool
     {
-        // Delete the file from storage
+
         if ($this->file_path && Storage::disk('public')->exists($this->file_path)) {
             Storage::disk('public')->delete($this->file_path);
         }
@@ -97,7 +81,7 @@ class ForeignCompanyDocument extends Model
         return parent::delete();
     }
 
-    // Static methods
+
     public function updateRequests()
     {
         return $this->morphMany(DocumentUpdateRequest::class, 'documentable');
@@ -111,28 +95,29 @@ class ForeignCompanyDocument extends Model
     public static function getDocumentTypes(): array
     {
         return [
-            'official_registration_request' => 'طلب تسجيل رسمي من الشركة المصنعة',
-            'agency_agreement' => 'رسالة وكالة أو اتفاقية توزيع',
-            'registration_forms' => 'نماذج التسجيل المعتمدة',
-            'gmp_certificate' => 'شهادة GMP',
-            'fda_certificate' => 'شهادة FDA',
-            'emea_certificate' => 'شهادة EMEA',
-            'cpp_certificate' => 'شهادة المنتج الصيدلاني (CPP)',
-            'fsc_certificate' => 'شهادة البيع الحر (FSC)',
-            'manufacturing_license' => 'ترخيص تصنيع ساري',
-            'financial_report' => 'تقرير مالي لآخر سنتين',
-            'products_list' => 'قائمة منتجات الشركة',
-            'site_master_file' => 'الملف الرئيسي للمصنع',
-            'registration_certificates' => 'شهادات تسجيل في دول أخرى',
-            'exclusive_agency_contract' => 'عقد الوكالة الحصري',
-            'other' => 'مستندات أخرى',
+            'official_registration_request' => __('documents.foreign_type_official_registration_request'),
+            'agency_agreement' => __('documents.foreign_type_agency_agreement'),
+            'registration_forms' => __('documents.foreign_type_registration_forms'),
+            'gmp_certificate' => __('documents.foreign_type_gmp_certificate'),
+            'fda_certificate' => __('documents.foreign_type_fda_certificate'),
+            'emea_certificate' => __('documents.foreign_type_emea_certificate'),
+            'cpp_certificate' => __('documents.foreign_type_cpp_certificate'),
+            'fsc_certificate' => __('documents.foreign_type_fsc_certificate'),
+            'manufacturing_license' => __('documents.foreign_type_manufacturing_license'),
+            'financial_report' => __('documents.foreign_type_financial_report'),
+            'products_list' => __('documents.foreign_type_products_list'),
+            'site_master_file' => __('documents.foreign_type_site_master_file'),
+            'registration_certificates' => __('documents.foreign_type_registration_certificates'),
+            'exclusive_agency_contract' => __('documents.foreign_type_exclusive_agency_contract'),
+            'products_artwork_list' => __('documents.foreign_type_products_artwork_list'),
+            'pv_master_file' => __('documents.foreign_type_pv_master_file'),
+            'other' => __('documents.type_other_docs'),
         ];
     }
 
     public static function getRequiredDocumentTypes(): array
     {
         return [
-            // Core 9 required documents
             'official_registration_request',
             'agency_agreement',
             'registration_forms',
@@ -142,15 +127,16 @@ class ForeignCompanyDocument extends Model
             'products_list',
             'site_master_file',
             'exclusive_agency_contract',
-            // FDA or EMEA (at least one required)
-            'fda_certificate', // OR
-            'emea_certificate', // OR
+            'products_artwork_list',
+            'pv_master_file',
         ];
     }
 
     public static function getOptionalDocumentTypes(): array
     {
         return [
+            'fda_certificate',
+            'emea_certificate',
             'cpp_certificate',
             'fsc_certificate',
             'registration_certificates',

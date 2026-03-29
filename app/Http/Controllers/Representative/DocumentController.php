@@ -16,15 +16,13 @@ class DocumentController extends Controller
     {
         $representative = Auth::guard('representative')->user();
 
-        // التحقق من أن الشركة تخص الممثل الحالي
         if ($company->representative_id != $representative->id) {
-            abort(403, 'غير مصرح لك برفع مستندات لهذه الشركة');
+            abort(403, __('documents.unauthorized_upload'));
         }
 
-        // التحقق من أن الشركة قيد رفع المستندات أو مرفوضة
         if (!in_array($company->status, ['uploading_documents', 'rejected', 'active', 'approved', 'payment_review'])) {
             return redirect()->route('representative.companies.show', $company)
-                ->with('error', 'لا يمكن رفع مستندات للشركة في هذه الحالة');
+                ->with('error', __('documents.cannot_upload_in_status'));
         }
 
         $request->validate([
@@ -33,11 +31,11 @@ class DocumentController extends Controller
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'document_type.required' => 'نوع المستند مطلوب',
-            'custom_name.required_if' => 'اسم المستند مطلوب عند اختيار "أخرى"',
-            'file.required' => 'الملف مطلوب',
-            'file.max' => 'حجم الملف يجب أن لا يتجاوز 10 ميجابايت',
-            'file.mimes' => 'نوع الملف غير مدعوم',
+            'document_type.required' => __('documents.validation_type_required'),
+            'custom_name.required_if' => __('documents.validation_name_required_if_other'),
+            'file.required' => __('documents.validation_file_required'),
+            'file.max' => __('documents.validation_file_max'),
+            'file.mimes' => __('documents.validation_file_mimes'),
         ]);
 
         $file = $request->file('file');
@@ -65,12 +63,12 @@ class DocumentController extends Controller
                 $company->company_name,
                 $company->id,
                 $representative->name,
-                ['المستند' => $request->document_type]
+                [__('documents.document_label') => $request->document_type]
             );
 
             session(['active_tab_' . $company->id => 'documents']);
             return redirect()->route('representative.companies.show', $company)
-                ->with('success', 'تم رفع المستند بنجاح. سيتم مراجعته من قبل الإدارة.');
+                ->with('success', __('documents.upload_success_pending_review'));
         }
 
         if ($company->hasAllRequiredDocuments() && $company->status == 'uploading_documents') {
@@ -78,20 +76,19 @@ class DocumentController extends Controller
 
             session(['active_tab_' . $company->id => 'documents']);
             return redirect()->route('representative.companies.show', $company)
-                ->with('success', 'تم رفع المستند بنجاح. تم إرسال الطلب للمراجعة من قبل الإدارة.');
+                ->with('success', __('documents.upload_success_submitted'));
         }
 
         session(['active_tab_' . $company->id => 'documents']);
 
         return redirect()->route('representative.companies.show', $company)
-            ->with('success', 'تم رفع المستند بنجاح');
+            ->with('success', __('documents.upload_success'));
     }
 
     public function download(LocalCompany $company, LocalCompanyDocument $document)
     {
         $representative = Auth::guard('representative')->user();
 
-        // التحقق من أن الشركة تخص الممثل الحالي
         if ($company->representative_id != $representative->id) {
             abort(403);
         }
@@ -117,16 +114,16 @@ class DocumentController extends Controller
 
         if (!in_array($company->status, ['uploading_documents', 'rejected'])) {
             return redirect()->route('representative.companies.show', $company)
-                ->with('error', 'لا يمكن تعديل مستندات للشركة في هذه الحالة');
+                ->with('error', __('documents.cannot_update_in_status'));
         }
 
         $request->validate([
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'file.required' => 'الملف مطلوب',
-            'file.max' => 'حجم الملف يجب أن لا يتجاوز 10 ميجابايت',
-            'file.mimes' => 'نوع الملف غير مدعوم',
+            'file.required' => __('documents.validation_file_required'),
+            'file.max' => __('documents.validation_file_max'),
+            'file.mimes' => __('documents.validation_file_mimes'),
         ]);
 
         Storage::disk('public')->delete($document->file_path);
@@ -154,14 +151,14 @@ class DocumentController extends Controller
                 $company->company_name,
                 $company->id,
                 $representative->name,
-                ['المستند' => $document->document_type]
+                [__('documents.document_label') => $document->document_type]
             );
         }
 
         session(['active_tab_' . $company->id => 'documents']);
 
         return redirect()->route('representative.companies.show', $company)
-            ->with('success', 'تم تحديث المستند بنجاح. سيتم مراجعته من قبل الإدارة.');
+            ->with('success', __('documents.update_success_pending_review'));
     }
 
     public function destroy(LocalCompany $company, LocalCompanyDocument $document)
@@ -178,7 +175,7 @@ class DocumentController extends Controller
 
         if (!in_array($company->status, ['uploading_documents', 'rejected'])) {
             return redirect()->route('representative.companies.show', $company)
-                ->with('error', 'لا يمكن حذف مستندات للشركة في هذه الحالة');
+                ->with('error', __('documents.cannot_delete_in_status'));
         }
 
         Storage::disk('public')->delete($document->file_path);
@@ -187,6 +184,6 @@ class DocumentController extends Controller
         session(['active_tab_' . $company->id => 'documents']);
 
         return redirect()->route('representative.companies.show', $company)
-            ->with('success', 'تم حذف المستند بنجاح');
+            ->with('success', __('documents.delete_success'));
     }
 }

@@ -54,7 +54,7 @@ class CheckExpiredCompanies extends Command
                     'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
                     'type' => 'renewal',
                     'amount' => $renewalFee,
-                    'description' => 'رسوم تجديد الشركة المحلية',
+                    'description' => __('general.local_company_renewal_fee_desc'),
                     'status' => 'unpaid',
                     'due_date' => now()->addDays(30),
                 ]);
@@ -81,7 +81,7 @@ class CheckExpiredCompanies extends Command
             $company->markAsExpired();
 
             $hasRecentRenewal = $company->invoices()
-                ->where('description', 'like', '%تجديد%')
+                ->where('description', 'like', '%' . __('companies.invoice_desc_foreign_renewal') . '%')
                 ->whereIn('status', ['pending', 'paid'])
                 ->where('created_at', '>=', now()->subMonths(6))
                 ->exists();
@@ -90,7 +90,7 @@ class CheckExpiredCompanies extends Command
                 $company->invoices()->create([
                     'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
                     'amount' => $renewalFee,
-                    'description' => 'رسوم تجديد الشركة الأجنبية',
+                    'description' => __('general.foreign_company_renewal_fee_desc'),
                     'status' => 'pending',
                     'due_date' => now()->addDays(30),
                 ]);

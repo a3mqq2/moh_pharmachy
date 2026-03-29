@@ -9,15 +9,15 @@ class GenerateRenewalInvoicesCommand extends Command
 {
     protected $signature = 'invoices:generate-renewals';
 
-    protected $description = 'إنشاء فواتير التجديد السنوية للشركات المفعلة';
+    protected $description = 'Generate annual renewal invoices for activated companies';
 
     public function handle()
     {
-        $this->info('جاري إنشاء فواتير التجديد السنوية...');
+        $this->info(__('general.generating_annual_invoices'));
 
         GenerateRenewalInvoices::dispatchSync();
 
-        $this->info('تم الانتهاء من إنشاء فواتير التجديد السنوية');
+        $this->info(__('general.annual_invoices_generated'));
 
         return Command::SUCCESS;
     }

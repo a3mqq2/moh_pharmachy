@@ -24,8 +24,8 @@ class PharmaceuticalProductReceiptUploaded extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'تم رفع إيصال دفع',
-            'message' => 'تم رفع إيصال دفع للصنف الدوائي: ' . $this->product->product_name,
+            'title' => __('notifications.product_receipt_uploaded_title'),
+            'message' => __('notifications.product_receipt_uploaded_message', ['product' => $this->product->product_name]),
             'product_id' => $this->product->id,
             'product_name' => $this->product->product_name,
             'invoice_id' => $this->invoice->id,

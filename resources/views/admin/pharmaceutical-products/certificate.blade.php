@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drug Registration Certificate - {{ $product->product_name }}</title>
+    <title>{{ __('products.drug_registration_certificate') }} - {{ $product->product_name }}</title>
     <style>
         @page {
             size: A4;
@@ -206,84 +206,88 @@
 @endphp
 <body>
     <div class="actions-bar no-print">
-        <button class="action-button print" onclick="window.print()">Print Certificate</button>
-        <button class="action-button download" id="downloadBtn" onclick="downloadPDF()">Download PDF</button>
+        <button class="action-button print" onclick="window.print()">{{ __('products.cert_print') }}</button>
+        <button class="action-button download" id="downloadBtn" onclick="downloadPDF()">{{ __('products.cert_download_pdf') }}</button>
     </div>
 
     <div class="certificate-container">
         <div class="content">
             <p class="intro-text">
-                In accordance with section of drug authority law, it is hereby certified that the undermentioned pharmaceutical product has been granted registration with reference to the application made by:
+                {{ __('products.cert_intro_text') }}
             </p>
 
             <div class="field-row">
-                <span class="field-label">Applicant name:</span>
+                <span class="field-label">{{ __('products.cert_applicant_name') }}</span>
                 <span class="field-value">{{ $product->foreignCompany->company_name }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Address:</span>
+                <span class="field-label">{{ __('products.cert_address') }}</span>
                 <span class="field-value">{{ $product->foreignCompany->address ?? '' }}@if($product->foreignCompany->address), @endif{{ translate($product->foreignCompany->country, 'countries', $translations) }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Trade name:</span>
+                <span class="field-label">{{ __('products.cert_trade_name') }}</span>
                 <span class="field-value">{{ $product->trade_name ?? $product->product_name }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Scientific name:</span>
+                <span class="field-label">{{ __('products.cert_scientific_name') }}</span>
                 <span class="field-value">{{ $product->scientific_name }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Manufacturer:</span>
+                <span class="field-label">{{ __('products.cert_manufacturer') }}</span>
                 <span class="field-value">{{ $product->foreignCompany->company_name }}, {{ translate($product->origin, 'countries', $translations) }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Dosage form:</span>
+                <span class="field-label">{{ __('products.cert_dosage_form') }}</span>
                 <span class="field-value">{{ translate($product->pharmaceutical_form, 'pharmaceutical_forms', $translations) }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Presentation:</span>
+                <span class="field-label">{{ __('products.cert_presentation') }}</span>
                 <span class="field-value">{{ translate($product->packaging, 'packaging', $translations) }}, {{ $product->quantity }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Therapeutic Category:</span>
+                <span class="field-label">{{ __('products.cert_therapeutic_category') }}</span>
                 <span class="field-value">{{ translate($product->usage_methods_text, 'usage_methods', $translations) }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Strength & Composition:</span>
+                <span class="field-label">{{ __('products.cert_strength_composition') }}</span>
                 <span class="field-value">{{ $product->concentration }}</span>
             </div>
 
             <div class="field-row">
-                <span class="field-label">Sales Category:</span>
+                <span class="field-label">{{ __('products.cert_sales_category') }}</span>
                 <span class="field-value">{{ translate($product->free_sale, 'free_sale', $translations) }}</span>
             </div>
 
+            @php
+                $issueDate = $product->final_approved_at ?? now();
+                $expiryDate = \Carbon\Carbon::parse($issueDate)->addYears(5)->format('d/m/Y');
+            @endphp
             <p class="validity-text">
-                This certificate shall be valid until (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;) unless earlier suspended or cancelled. No specifications of the product shall be made without the approval of Libyan Authority.
+                {!! __('products.cert_validity_text', ['date' => $expiryDate]) !!}
             </p>
 
             <div class="footer-section">
                 <div class="footer-left">
                     <div class="footer-field">
-                        <span class="footer-label">Registration no:</span>
+                        <span class="footer-label">{{ __('products.cert_registration_no') }}</span>
                         <span class="footer-value">{{ $product->registration_number ?? str_pad($product->id, 6, '0', STR_PAD_LEFT) }}</span>
                     </div>
                     <div class="footer-field">
-                        <span class="footer-label">Date of issue:</span>
+                        <span class="footer-label">{{ __('products.cert_date_of_issue') }}</span>
                         <span class="footer-value">{{ $product->final_approved_at ? $product->final_approved_at->format('d/m/Y') : now()->format('d/m/Y') }}</span>
                     </div>
                 </div>
                 <div class="footer-right">
                     <div class="footer-field">
-                        <span class="footer-label">Ref:</span>
+                        <span class="footer-label">{{ __('products.cert_ref') }}</span>
                         <span class="footer-value">DRUG-{{ date('Y') }}-{{ $product->id }}</span>
                     </div>
                 </div>
@@ -292,32 +296,32 @@
             <div class="signatures">
                 <div class="signature-block">
                     <div class="signature-line">
-                        <strong>Signature:</strong> .....................................
+                        <strong>{{ __('products.cert_signature') }}</strong> .....................................
                     </div>
                     <div class="signature-line">
-                        <strong>Name:</strong> .....................................
+                        <strong>{{ __('products.cert_name') }}</strong> .....................................
                     </div>
                     <div class="signature-line">
-                        <strong>Designation:</strong> .....................................
+                        <strong>{{ __('products.cert_designation') }}</strong> .....................................
                     </div>
                 </div>
 
                 <div class="signature-block">
                     <div class="signature-line">
-                        <strong>Signature:</strong> .....................................
+                        <strong>{{ __('products.cert_signature') }}</strong> .....................................
                     </div>
                     <div class="signature-line">
-                        <strong>Name:</strong> .....................................
+                        <strong>{{ __('products.cert_name') }}</strong> .....................................
                     </div>
                     <div class="signature-line">
-                        <strong>Designation:</strong> .....................................
+                        <strong>{{ __('products.cert_designation') }}</strong> .....................................
                     </div>
                 </div>
             </div>
 
             <div class="qr-section">
                 <div class="qr-code" id="qrcode"></div>
-                <span class="qr-label">Verify Here</span>
+                <span class="qr-label">{{ __('products.cert_verify_here') }}</span>
             </div>
         </div>
     </div>
@@ -339,7 +343,7 @@
     function downloadPDF() {
         var btn = document.getElementById('downloadBtn');
         btn.disabled = true;
-        btn.textContent = 'Downloading...';
+        btn.textContent = '{{ __('products.cert_downloading') }}';
         var element = document.querySelector('.certificate-container');
         html2canvas(element, {
             scale: 2,
@@ -350,12 +354,12 @@
             var imgData = canvas.toDataURL('image/jpeg', 0.95);
             var pdf = new jspdf.jsPDF('p', 'mm', 'a4');
             pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-            pdf.save('Drug_Certificate_{{ $product->trade_name ?? $product->product_name }}.pdf');
+            pdf.save('{{ __('products.cert_pdf_filename') }}_{{ $product->trade_name ?? $product->product_name }}.pdf');
             btn.disabled = false;
-            btn.textContent = 'Download PDF';
+            btn.textContent = '{{ __('products.cert_download_pdf') }}';
         }).catch(function() {
             btn.disabled = false;
-            btn.textContent = 'Download PDF';
+            btn.textContent = '{{ __('products.cert_download_pdf') }}';
         });
     }
     </script>

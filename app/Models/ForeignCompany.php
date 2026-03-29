@@ -124,8 +124,8 @@ class ForeignCompany extends Model
     public function getEntityTypeNameAttribute(): string
     {
         return match($this->entity_type) {
-            'company' => 'شركة',
-            'factory' => 'مصنع',
+            'company' => __('companies.entity_company'),
+            'factory' => __('companies.entity_factory'),
             default => $this->entity_type,
         };
     }
@@ -133,9 +133,9 @@ class ForeignCompany extends Model
     public function getActivityTypeNameAttribute(): string
     {
         return match($this->activity_type) {
-            'medicines' => 'أدوية',
-            'medical_supplies' => 'مستلزمات طبية',
-            'both' => 'أدوية ومستلزمات طبية',
+            'medicines' => __('companies.activity_medicines'),
+            'medical_supplies' => __('companies.activity_medical_supplies'),
+            'both' => __('companies.activity_both'),
             default => $this->activity_type,
         };
     }
@@ -143,14 +143,14 @@ class ForeignCompany extends Model
     public function getStatusNameAttribute(): string
     {
         return match($this->status) {
-            'uploading_documents' => 'قيد رفع المستندات',
-            'pending' => 'قيد المراجعة',
-            'pending_payment' => 'قيد السداد',
-            'approved' => 'مقبولة',
-            'active' => 'مفعلة',
-            'rejected' => 'مرفوضة',
-            'suspended' => 'معلقة',
-            'expired' => 'منتهية الصلاحية',
+            'uploading_documents' => __('companies.status_uploading_docs'),
+            'pending' => __('companies.status_pending_review'),
+            'pending_payment' => __('companies.status_pending_payment'),
+            'approved' => __('companies.status_accepted'),
+            'active' => __('companies.status_active'),
+            'rejected' => __('companies.status_rejected'),
+            'suspended' => __('companies.status_suspended'),
+            'expired' => __('companies.status_expired'),
             default => $this->status,
         };
     }
@@ -375,42 +375,20 @@ class ForeignCompany extends Model
 
     public function hasAllRequiredDocuments(): bool
     {
-        // Required document types (9 core documents)
-        $requiredDocumentTypes = [
-            'official_registration_request',
-            'agency_agreement',
-            'registration_forms',
-            'gmp_certificate',
-            'manufacturing_license',
-            'financial_report',
-            'products_list',
-            'site_master_file',
-            'exclusive_agency_contract',
-        ];
+        $requiredDocumentTypes = ForeignCompanyDocument::getRequiredDocumentTypes();
 
         $uploadedDocumentTypes = $this->documents()
             ->whereIn('document_type', $requiredDocumentTypes)
             ->pluck('document_type')
             ->toArray();
 
-        // Check all required documents are uploaded
-        $hasRequired = true;
         foreach ($requiredDocumentTypes as $type) {
             if (!in_array($type, $uploadedDocumentTypes)) {
-                $hasRequired = false;
-                break;
+                return false;
             }
         }
 
-        // Check FDA or EMEA (at least one required)
-        $hasFdaOrEmea = $this->documents()
-            ->whereIn('document_type', ['fda_certificate', 'emea_certificate'])
-            ->exists();
-
-        // CPP, FSC, registration_certificates, and other are now optional
-        // No need to check them for completion
-
-        return $hasRequired && $hasFdaOrEmea;
+        return true;
     }
 
 

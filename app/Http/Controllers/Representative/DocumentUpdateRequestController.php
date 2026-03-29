@@ -19,9 +19,9 @@ class DocumentUpdateRequestController extends Controller
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png',
             'reason' => 'nullable|string|max:1000',
         ], [
-            'file.required' => 'الملف مطلوب',
-            'file.max' => 'حجم الملف يجب أن لا يتجاوز 10 ميجابايت',
-            'reason.max' => 'سبب التعديل يجب أن لا يتجاوز 1000 حرف',
+            'file.required' => __('documents.validation_file_required'),
+            'file.max' => __('documents.validation_file_max'),
+            'reason.max' => __('documents.validation_reason_max'),
         ]);
 
         $representative = auth('representative')->user();
@@ -64,7 +64,7 @@ class DocumentUpdateRequestController extends Controller
             ->exists();
 
         if ($existingPending) {
-            return back()->with('error', 'يوجد طلب تعديل معلق بالفعل لهذا المستند');
+            return back()->with('error', __('documents.pending_request_exists'));
         }
 
         $file = $request->file('file');
@@ -81,6 +81,6 @@ class DocumentUpdateRequestController extends Controller
             'reason' => $request->reason,
         ]);
 
-        return back()->with('success', 'تم إرسال طلب التعديل بنجاح وسيتم مراجعته');
+        return back()->with('success', __('documents.update_request_sent'));
     }
 }

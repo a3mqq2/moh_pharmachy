@@ -18,11 +18,11 @@ class LocalCompanyDocumentController extends Controller
             'file' => 'required|file|max:10240|mimes:pdf,doc,docx,xls,xlsx,jpg,jpeg,png,gif,webp,zip,rar',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'document_type.required' => 'نوع المستند مطلوب',
-            'custom_name.required_if' => 'اسم المستند مطلوب عند اختيار "أخرى"',
-            'file.required' => 'الملف مطلوب',
-            'file.max' => 'حجم الملف يجب أن لا يتجاوز 10 ميجابايت',
-            'file.mimes' => 'نوع الملف غير مدعوم',
+            'document_type.required' => __('documents.validation_type_required'),
+            'custom_name.required_if' => __('documents.validation_name_required_if_other'),
+            'file.required' => __('documents.validation_file_required'),
+            'file.max' => __('documents.validation_file_max'),
+            'file.mimes' => __('documents.validation_file_mimes'),
         ]);
 
         $file = $request->file('file');
@@ -40,10 +40,10 @@ class LocalCompanyDocumentController extends Controller
             'uploaded_by' => auth()->id(),
         ]);
 
-        $localCompany->logActivity('document_uploaded', 'تم رفع مستند: ' . $document->display_name);
+        $localCompany->logActivity('document_uploaded', __('documents.document_uploaded_log') . $document->display_name);
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم رفع المستند بنجاح');
+            ->with('success', __('documents.upload_success'));
     }
 
     public function download(LocalCompany $localCompany, LocalCompanyDocument $localCompanyDocument)
@@ -65,9 +65,9 @@ class LocalCompanyDocumentController extends Controller
         Storage::disk('public')->delete($localCompanyDocument->file_path);
         $localCompanyDocument->delete();
 
-        $localCompany->logActivity('document_deleted', 'تم حذف مستند: ' . $docName);
+        $localCompany->logActivity('document_deleted', __('documents.document_deleted_log') . $docName);
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم حذف المستند بنجاح');
+            ->with('success', __('documents.delete_success'));
     }
 }

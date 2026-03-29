@@ -1,21 +1,21 @@
 @extends('layouts.auth')
 
-@section('title', 'إنشاء كلمة المرور')
+@section('title', __('auth.create_password'))
 
 @section('content')
 <div class="login-container">
     <!-- Logo Section -->
     <div class="logo-section">
         <a href="{{ route('login') }}">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة - إدارة الصيدلة" />
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.site_title') }}" />
         </a>
     </div>
 
  
     <!-- Welcome Text -->
     <div class="welcome-section">
-        <h2>تم التحقق بنجاح!</h2>
-        <p>أنشئ كلمة مرور لحسابك</p>
+        <h2>{{ __('auth.verification_success') }}</h2>
+        <p>{{ __('auth.create_password_for_account') }}</p>
     </div>
 
     
@@ -25,7 +25,7 @@
         @csrf
 
         <div class="form-group">
-            <label for="password">كلمة المرور</label>
+            <label for="password">{{ __('auth.password') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-lock"></i>
                 <input
@@ -33,7 +33,7 @@
                     class="@error('password') is-invalid @enderror"
                     id="password"
                     name="password"
-                    placeholder="أدخل كلمة مرور قوية"
+                    placeholder="{{ __('auth.enter_strong_password') }}"
                     required
                     autofocus
                 />
@@ -50,27 +50,27 @@
                 <div class="strength-bar">
                     <div class="strength-fill" id="strengthFill"></div>
                 </div>
-                <span class="strength-text" id="strengthText">أدخل كلمة المرور</span>
+                <span class="strength-text" id="strengthText">{{ __('auth.enter_password') }}</span>
             </div>
 
             <div class="password-requirements">
                 <div class="requirement" id="req-length">
                     <i class="ti ti-circle"></i>
-                    <span>8 أحرف على الأقل</span>
+                    <span>{{ __('auth.min_8_chars') }}</span>
                 </div>
                 <div class="requirement" id="req-upper">
                     <i class="ti ti-circle"></i>
-                    <span>حرف كبير واحد على الأقل</span>
+                    <span>{{ __('auth.at_least_one_uppercase') }}</span>
                 </div>
                 <div class="requirement" id="req-number">
                     <i class="ti ti-circle"></i>
-                    <span>رقم واحد على الأقل</span>
+                    <span>{{ __('auth.at_least_one_number') }}</span>
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <label for="password_confirmation">تأكيد كلمة المرور</label>
+            <label for="password_confirmation">{{ __('auth.confirm_password') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-lock-check"></i>
                 <input
@@ -78,7 +78,7 @@
                     class=""
                     id="password_confirmation"
                     name="password_confirmation"
-                    placeholder="أعد إدخال كلمة المرور"
+                    placeholder="{{ __('auth.re_enter_password') }}"
                     required
                 />
                 <button type="button" class="toggle-password" data-target="password_confirmation">
@@ -89,14 +89,14 @@
         </div>
 
         <button type="submit" class="submit-btn" id="submitBtn">
-            <span>إنشاء الحساب</span>
+            <span>{{ __('auth.create_account_btn') }}</span>
             <i class="ti ti-arrow-left"></i>
         </button>
     </form>
 
     <!-- Footer -->
     <div class="login-footer">
-        <p>© {{ date('Y') }} وزارة الصحة - إدارة الصيدلة</p>
+        <p>{{ __('auth.copyright', ['year' => date('Y')]) }}</p>
     </div>
 </div>
 @endsection
@@ -455,19 +455,19 @@ document.addEventListener('DOMContentLoaded', function() {
         strengthText.className = 'strength-text';
 
         if (value.length == 0) {
-            strengthText.textContent = 'أدخل كلمة المرور';
+            strengthText.textContent = '{{ __("auth.enter_password") }}';
         } else if (strength == 1) {
             strengthFill.classList.add('weak');
             strengthText.classList.add('weak');
-            strengthText.textContent = 'ضعيفة';
+            strengthText.textContent = '{{ __("auth.password_weak") }}';
         } else if (strength == 2) {
             strengthFill.classList.add('medium');
             strengthText.classList.add('medium');
-            strengthText.textContent = 'متوسطة';
+            strengthText.textContent = '{{ __("auth.password_medium") }}';
         } else if (strength == 3) {
             strengthFill.classList.add('strong');
             strengthText.classList.add('strong');
-            strengthText.textContent = 'قوية';
+            strengthText.textContent = '{{ __("auth.password_strong") }}';
         }
 
         checkMatch();
@@ -484,10 +484,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (password.value == confirm.value) {
-            matchStatus.textContent = 'كلمات المرور متطابقة ✓';
+            matchStatus.textContent = '{{ __("auth.passwords_match") }} ✓';
             matchStatus.className = 'match-status match';
         } else {
-            matchStatus.textContent = 'كلمات المرور غير متطابقة';
+            matchStatus.textContent = '{{ __("auth.passwords_not_match") }}';
             matchStatus.className = 'match-status no-match';
         }
     }

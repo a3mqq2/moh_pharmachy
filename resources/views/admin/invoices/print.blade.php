@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كشف الفواتير</title>
+    <title>{{ __('invoices.invoices_record') }}</title>
     <style>
         * {
             margin: 0;
@@ -171,59 +171,59 @@
 <body>
     <div class="header">
         <div class="logo">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة">
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.ministry_of_health') }}">
         </div>
-        <div class="ministry-name">وزارة الصحة - دولة ليبيا</div>
-        <div class="department-name">إدارة الصيدلة والرقابة الدوائية</div>
-        <div class="report-title">كشف الفواتير</div>
-        <div class="report-date">تاريخ الكشف: {{ date('Y-m-d') }}</div>
+        <div class="ministry-name">{{ __('general.ministry_of_health_libya') }}</div>
+        <div class="department-name">{{ __('general.pharmacy_drug_control') }}</div>
+        <div class="report-title">{{ __('invoices.invoices_record') }}</div>
+        <div class="report-date">{{ __('general.report_statement_date') }}: {{ date('Y-m-d') }}</div>
     </div>
 
     @if(request()->hasAny(['search', 'status', 'type', 'from_date', 'to_date']))
     <div class="filters">
-        <h3>معايير البحث:</h3>
+        <h3>{{ __('general.search_criteria') }}</h3>
         @if(request('search'))
-            <p><strong>بحث:</strong> {{ request('search') }}</p>
+            <p><strong>{{ __('general.search') }}:</strong> {{ request('search') }}</p>
         @endif
         @if(request('type') && request('type') != 'all')
             @php
-                $types = ['local' => 'شركات محلية', 'foreign' => 'شركات أجنبية', 'pharmaceutical' => 'أصناف دوائية'];
+                $types = ['local' => __('invoices.local_companies'), 'foreign' => __('invoices.foreign_companies'), 'pharmaceutical' => __('invoices.pharmaceutical_products')];
             @endphp
-            <p><strong>النوع:</strong> {{ $types[request('type')] ?? request('type') }}</p>
+            <p><strong>{{ __('general.type') }}:</strong> {{ $types[request('type')] ?? request('type') }}</p>
         @endif
         @if(request('status'))
             @php
-                $statuses = ['unpaid' => 'غير مدفوعة', 'pending' => 'قيد الانتظار', 'pending_review' => 'قيد المراجعة', 'paid' => 'مدفوعة', 'cancelled' => 'ملغاة'];
+                $statuses = ['unpaid' => __('invoices.status_unpaid'), 'pending' => __('invoices.status_pending'), 'pending_review' => __('invoices.status_review'), 'paid' => __('invoices.status_paid'), 'cancelled' => __('invoices.status_cancelled')];
             @endphp
-            <p><strong>الحالة:</strong> {{ $statuses[request('status')] ?? request('status') }}</p>
+            <p><strong>{{ __('general.status') }}:</strong> {{ $statuses[request('status')] ?? request('status') }}</p>
         @endif
         @if(request('from_date'))
-            <p><strong>من تاريخ:</strong> {{ request('from_date') }}</p>
+            <p><strong>{{ __('general.from_date') }}:</strong> {{ request('from_date') }}</p>
         @endif
         @if(request('to_date'))
-            <p><strong>إلى تاريخ:</strong> {{ request('to_date') }}</p>
+            <p><strong>{{ __('general.to_date') }}:</strong> {{ request('to_date') }}</p>
         @endif
     </div>
     @endif
 
     <div class="summary">
-        <h3>الإحصائيات</h3>
+        <h3>{{ __('general.statistics') }}</h3>
         <div class="summary-grid">
             <div class="summary-item">
-                <div class="summary-label">إجمالي الفواتير</div>
+                <div class="summary-label">{{ __('invoices.total_invoices') }}</div>
                 <div class="summary-value">{{ $stats['total'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">مدفوعة</div>
+                <div class="summary-label">{{ __('invoices.status_paid') }}</div>
                 <div class="summary-value">{{ $stats['paid'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">قيد الانتظار</div>
+                <div class="summary-label">{{ __('invoices.status_pending') }}</div>
                 <div class="summary-value">{{ $stats['pending'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">إجمالي الإيرادات</div>
-                <div class="summary-value">{{ number_format($stats['total_revenue'], 2) }} د.ل</div>
+                <div class="summary-label">{{ __('invoices.total_revenue') }}</div>
+                <div class="summary-value">{{ number_format($stats['total_revenue'], 2) }} {{ __('general.currency') }}</div>
             </div>
         </div>
     </div>
@@ -232,12 +232,12 @@
         <thead>
             <tr>
                 <th width="3%">#</th>
-                <th width="12%">رقم الفاتورة</th>
-                <th width="10%">النوع</th>
-                <th width="25%">اسم الشركة</th>
-                <th width="15%">المبلغ</th>
-                <th width="15%">الحالة</th>
-                <th width="12%">تاريخ الإنشاء</th>
+                <th width="12%">{{ __('invoices.invoice_number') }}</th>
+                <th width="10%">{{ __('general.type') }}</th>
+                <th width="25%">{{ __('companies.company_name') }}</th>
+                <th width="15%">{{ __('general.amount') }}</th>
+                <th width="15%">{{ __('general.status') }}</th>
+                <th width="12%">{{ __('general.created_at') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -247,26 +247,26 @@
                 <td>{{ $invoice->invoice_number }}</td>
                 <td>
                     @if($invoice->company_type == 'local')
-                        محلية
+                        {{ __('invoices.local_company') }}
                     @elseif($invoice->company_type == 'foreign')
-                        أجنبية
+                        {{ __('invoices.foreign_company') }}
                     @else
-                        دوائية
+                        {{ __('invoices.pharmaceutical_product') }}
                     @endif
                 </td>
-                <td>{{ $invoice->company?->company_name ?? 'غير متوفر' }}</td>
-                <td>{{ number_format($invoice->amount, 2) }} د.ل</td>
+                <td>{{ $invoice->company?->company_name ?? __('general.not_available') }}</td>
+                <td>{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</td>
                 <td>
                     @if($invoice->status == 'paid')
-                        مدفوعة
+                        {{ __('invoices.status_paid') }}
                     @elseif($invoice->status == 'unpaid')
-                        غير مدفوعة
+                        {{ __('invoices.status_unpaid') }}
                     @elseif($invoice->status == 'pending')
-                        قيد الانتظار
+                        {{ __('invoices.status_pending') }}
                     @elseif($invoice->status == 'pending_review')
-                        قيد المراجعة
+                        {{ __('invoices.status_review') }}
                     @elseif($invoice->status == 'cancelled')
-                        ملغاة
+                        {{ __('invoices.status_cancelled') }}
                     @else
                         {{ $invoice->status }}
                     @endif
@@ -277,16 +277,16 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4">إجمالي الفواتير: {{ $stats['total'] }}</td>
-                <td>{{ number_format($stats['total_revenue'], 2) }} د.ل</td>
-                <td colspan="2">مدفوعة: {{ $stats['paid'] }}</td>
+                <td colspan="4">{{ __('invoices.total_invoices') }}: {{ $stats['total'] }}</td>
+                <td>{{ number_format($stats['total_revenue'], 2) }} {{ __('general.currency') }}</td>
+                <td colspan="2">{{ __('invoices.status_paid') }}: {{ $stats['paid'] }}</td>
             </tr>
         </tfoot>
     </table>
 
     <div class="footer">
-        <p>© {{ date('Y') }} وزارة الصحة - دولة ليبيا. جميع الحقوق محفوظة.</p>
-        <p>تم إنشاء هذا الكشف تلقائياً بواسطة نظام إدارة الصيدلة والرقابة الدوائية</p>
+        <p>&copy; {{ date('Y') }} {{ __('general.copyright_ministry') }}</p>
+        <p>{{ __('general.auto_generated_report_v2') }}</p>
     </div>
 
     <script>

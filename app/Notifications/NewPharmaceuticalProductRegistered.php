@@ -26,8 +26,8 @@ class NewPharmaceuticalProductRegistered extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'طلب تسجيل صنف دوائي جديد',
-            'message' => 'تم تقديم طلب تسجيل صنف دوائي جديد: ' . $this->product->product_name,
+            'title' => __('notifications.product_registered_title'),
+            'message' => __('notifications.product_registered_message', ['product' => $this->product->product_name]),
             'product_id' => $this->product->id,
             'product_name' => $this->product->product_name,
             'representative_name' => $this->representative->name,

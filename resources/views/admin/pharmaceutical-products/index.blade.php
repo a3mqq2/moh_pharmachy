@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'الأصناف الدوائية')
+@section('title', __('products.pharmaceutical_products'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-    <li class="breadcrumb-item active">الأصناف الدوائية</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('general.home') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('products.pharmaceutical_products') }}</li>
 @endsection
 
 @section('content')
@@ -13,12 +13,12 @@
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
-                <h5 class="mb-0"><i class="fas fa-capsules me-2"></i>الأصناف الدوائية</h5>
-                <span class="badge bg-secondary">{{ $products->total() }} صنف دوائي</span>
+                <h5 class="mb-0"><i class="fas fa-capsules me-2"></i>{{ __('products.pharmaceutical_products') }}</h5>
+                <span class="badge bg-secondary">{{ $products->total() }} {{ __('products.product') }}</span>
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="fas fa-filter me-1"></i> الفلاتر
+                    <i class="fas fa-filter me-1"></i> {{ __('general.filters') }}
                 </button>
             </div>
         </div>
@@ -28,30 +28,30 @@
             <form method="GET">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-4">
-                        <label class="form-label">بحث</label>
-                        <input type="text" name="search" class="form-control" placeholder="اسم الصنف الدوائي..." value="{{ request('search') }}">
+                        <label class="form-label">{{ __('general.search') }}</label>
+                        <input type="text" name="search" class="form-control" placeholder="{{ __('products.product_name_placeholder') }}" value="{{ request('search') }}">
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">الحالة</label>
+                        <label class="form-label">{{ __('general.status') }}</label>
                         <select name="status" class="form-select">
-                            <option value="">الكل</option>
-                            <option value="uploading_documents" {{ request('status') == 'uploading_documents' ? 'selected' : '' }}>قيد رفع المستندات</option>
-                            <option value="pending_review" {{ request('status') == 'pending_review' ? 'selected' : '' }}>قيد المراجعة</option>
-                            <option value="preliminary_approved" {{ request('status') == 'preliminary_approved' ? 'selected' : '' }}>موافقة مبدئية</option>
-                            <option value="pending_final_approval" {{ request('status') == 'pending_final_approval' ? 'selected' : '' }}>قيد الموافقة النهائية</option>
-                            <option value="pending_payment" {{ request('status') == 'pending_payment' ? 'selected' : '' }}>قيد السداد</option>
-                            <option value="payment_review" {{ request('status') == 'payment_review' ? 'selected' : '' }}>قيد مراجعة السداد</option>
-                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>مرفوض</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>معتمد</option>
+                            <option value="">{{ __('general.all') }}</option>
+                            <option value="uploading_documents" {{ request('status') == 'uploading_documents' ? 'selected' : '' }}>{{ __('companies.status_uploading_docs') }}</option>
+                            <option value="pending_review" {{ request('status') == 'pending_review' ? 'selected' : '' }}>{{ __('products.status_pending_review') }}</option>
+                            <option value="preliminary_approved" {{ request('status') == 'preliminary_approved' ? 'selected' : '' }}>{{ __('products.status_preliminary_approved') }}</option>
+                            <option value="pending_final_approval" {{ request('status') == 'pending_final_approval' ? 'selected' : '' }}>{{ __('products.status_pending_final') }}</option>
+                            <option value="pending_payment" {{ request('status') == 'pending_payment' ? 'selected' : '' }}>{{ __('products.status_pending_payment') }}</option>
+                            <option value="payment_review" {{ request('status') == 'payment_review' ? 'selected' : '' }}>{{ __('products.status_payment_review') }}</option>
+                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>{{ __('general.rejected') }}</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('products.status_active') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">الشركة الأجنبية</label>
-                        <input type="text" name="foreign_company" class="form-control" placeholder="اسم الشركة الأجنبية..." value="{{ request('foreign_company') }}">
+                        <label class="form-label">{{ __('companies.foreign_company') }}</label>
+                        <input type="text" name="foreign_company" class="form-control" placeholder="{{ __('companies.foreign_company_name_placeholder') }}" value="{{ request('foreign_company') }}">
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">الشركة المحلية</label>
-                        <input type="text" name="local_company" class="form-control" placeholder="اسم الشركة المحلية..." value="{{ request('local_company') }}">
+                        <label class="form-label">{{ __('companies.local_company') }}</label>
+                        <input type="text" name="local_company" class="form-control" placeholder="{{ __('companies.local_company_name_placeholder') }}" value="{{ request('local_company') }}">
                     </div>
                 </div>
                 <div class="row g-3 align-items-end mt-2">
@@ -59,11 +59,11 @@
                     <div class="col-md-3">
                         <div class="d-flex gap-2 justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search me-1"></i> بحث
+                                <i class="fas fa-search me-1"></i> {{ __('general.search') }}
                             </button>
                             @if(request()->hasAny(['search', 'status', 'foreign_company', 'local_company']))
                                 <a href="{{ route('admin.pharmaceutical-products.index') }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-1"></i> مسح الفلاتر
+                                    <i class="fas fa-times me-1"></i> {{ __('general.clear_filters') }}
                                 </a>
                             @endif
                         </div>
@@ -78,14 +78,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>الاسم التجاري</th>
-                        <th>الاسم العلمي</th>
-                        <th>الشكل الصيدلاني</th>
-                        <th>الشركة الأجنبية</th>
-                        <th>الشركة المحلية</th>
-                        <th>الممثل</th>
-                        <th>الحالة</th>
-                        <th>تاريخ التقديم</th>
+                        <th>{{ __('products.trade_name') }}</th>
+                        <th>{{ __('products.scientific_name') }}</th>
+                        <th>{{ __('products.pharmaceutical_form') }}</th>
+                        <th>{{ __('companies.foreign_company') }}</th>
+                        <th>{{ __('companies.local_company') }}</th>
+                        <th>{{ __('general.representative') }}</th>
+                        <th>{{ __('general.status') }}</th>
+                        <th>{{ __('general.submission_date') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,11 +107,11 @@
                         <td>
                             <div>{{ $product->representative->name }}</div>
                             <div class="d-flex gap-2 mt-1">
-                                <a href="tel:{{ $product->representative->phone }}" class="text-decoration-none" onclick="event.stopPropagation();" title="اتصال">
+                                <a href="tel:{{ $product->representative->phone }}" class="text-decoration-none" onclick="event.stopPropagation();" title="{{ __('general.call') }}">
                                     <i class="fas fa-phone text-primary"></i>
                                 </a>
                                 @if($product->representative->phone)
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $product->representative->phone) }}" target="_blank" class="text-decoration-none" onclick="event.stopPropagation();" title="واتساب">
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $product->representative->phone) }}" target="_blank" class="text-decoration-none" onclick="event.stopPropagation();" title="{{ __('general.whatsapp') }}">
                                     <i class="fab fa-whatsapp text-success"></i>
                                 </a>
                                 @endif
@@ -131,7 +131,7 @@
                         <td colspan="8" class="text-center py-5">
                             <div class="text-muted">
                                 <i class="fas fa-capsules fs-1 d-block mb-2"></i>
-                                لا توجد أصناف دوائية مسجلة
+                                {{ __('products.no_products') }}
                             </div>
                         </td>
                     </tr>

@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'إعدادات الحساب')
+@section('title', __('settings.account_settings'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,19 +10,16 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>إعدادات الحساب</h1>
-                <p>إدارة المعلومات الشخصية وكلمة المرور</p>
+                <h1>{{ __('settings.account_settings') }}</h1>
+                <p>{{ __('settings.account_settings_desc') }}</p>
             </div>
         </div>
     </div>
 
-    
-
     <div class="settings-container">
-        <!-- Personal Information Section -->
         <div class="settings-card">
             <div class="settings-card-header">
-                <h3><i class="ti ti-user"></i> المعلومات الشخصية</h3>
+                <h3><i class="ti ti-user"></i> {{ __('settings.personal_info') }}</h3>
             </div>
             <div class="settings-card-body">
                 <form action="{{ route('representative.settings.update-profile') }}" method="POST">
@@ -31,7 +28,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>الاسم الكامل <span class="required">*</span></label>
+                            <label>{{ __('settings.full_name') }} <span class="required">*</span></label>
                             <input type="text" name="name" class="form-control" value="{{ old('name', $representative->name) }}" required>
                             @error('name')
                                 <span class="error-message">{{ $message }}</span>
@@ -39,7 +36,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label>المسمى الوظيفي <span class="required">*</span></label>
+                            <label>{{ __('general.job_title') }} <span class="required">*</span></label>
                             <input type="text" name="job_title" class="form-control" value="{{ old('job_title', $representative->job_title) }}" required>
                             @error('job_title')
                                 <span class="error-message">{{ $message }}</span>
@@ -49,7 +46,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>رقم الهاتف <span class="required">*</span></label>
+                            <label>{{ __('settings.phone_number') }} <span class="required">*</span></label>
                             <input type="text" name="phone" class="form-control" value="{{ old('phone', $representative->phone) }}" required>
                             @error('phone')
                                 <span class="error-message">{{ $message }}</span>
@@ -57,26 +54,25 @@
                         </div>
 
                         <div class="form-group">
-                            <label>البريد الإلكتروني</label>
+                            <label>{{ __('general.email') }}</label>
                             <input type="email" class="form-control" value="{{ $representative->email }}" disabled>
-                            <small>لا يمكن تغيير البريد الإلكتروني</small>
+                            <small>{{ __('settings.email_cannot_change') }}</small>
                         </div>
                     </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
                             <i class="ti ti-device-floppy"></i>
-                            حفظ التغييرات
+                            {{ __('general.save_changes') }}
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Password Change Section -->
         <div class="settings-card">
             <div class="settings-card-header">
-                <h3><i class="ti ti-lock"></i> تغيير كلمة المرور</h3>
+                <h3><i class="ti ti-lock"></i> {{ __('settings.change_password') }}</h3>
             </div>
             <div class="settings-card-body">
                 <form action="{{ route('representative.settings.update-password') }}" method="POST" id="passwordForm">
@@ -84,7 +80,7 @@
                     @method('PATCH')
 
                     <div class="form-group">
-                        <label>كلمة المرور الحالية <span class="required">*</span></label>
+                        <label>{{ __('settings.current_password') }} <span class="required">*</span></label>
                         <div class="password-input-wrapper">
                             <input type="password" name="current_password" id="current_password" class="form-control" required>
                             <button type="button" class="toggle-password" onclick="togglePassword('current_password')">
@@ -98,7 +94,7 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>كلمة المرور الجديدة <span class="required">*</span></label>
+                            <label>{{ __('settings.new_password') }} <span class="required">*</span></label>
                             <div class="password-input-wrapper">
                                 <input type="password" name="new_password" id="new_password" class="form-control" required>
                                 <button type="button" class="toggle-password" onclick="togglePassword('new_password')">
@@ -108,11 +104,11 @@
                             @error('new_password')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
-                            <small>يجب أن تكون 8 أحرف على الأقل</small>
+                            <small>{{ __('settings.min_8_chars') }}</small>
                         </div>
 
                         <div class="form-group">
-                            <label>تأكيد كلمة المرور الجديدة <span class="required">*</span></label>
+                            <label>{{ __('settings.confirm_new_password') }} <span class="required">*</span></label>
                             <div class="password-input-wrapper">
                                 <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" required>
                                 <button type="button" class="toggle-password" onclick="togglePassword('new_password_confirmation')">
@@ -123,22 +119,22 @@
                     </div>
 
                     <div class="password-strength">
-                        <div class="strength-label">قوة كلمة المرور:</div>
+                        <div class="strength-label">{{ __('settings.password_strength') }}</div>
                         <div class="strength-bar">
                             <div class="strength-bar-fill" id="strengthBar"></div>
                         </div>
-                        <div class="strength-text" id="strengthText">غير محددة</div>
+                        <div class="strength-text" id="strengthText">{{ __('settings.strength_unset') }}</div>
                     </div>
 
                     <div class="alert-info">
                         <i class="ti ti-info-circle"></i>
                         <div>
-                            <strong>نصائح لكلمة مرور قوية:</strong>
+                            <strong>{{ __('settings.password_tips') }}</strong>
                             <ul>
-                                <li>استخدم 8 أحرف على الأقل</li>
-                                <li>اجمع بين الأحرف الكبيرة والصغيرة</li>
-                                <li>أضف أرقاماً ورموزاً خاصة</li>
-                                <li>تجنب المعلومات الشخصية الواضحة</li>
+                                <li>{{ __('settings.tip_min_chars') }}</li>
+                                <li>{{ __('settings.tip_mixed_case') }}</li>
+                                <li>{{ __('settings.tip_numbers_symbols') }}</li>
+                                <li>{{ __('settings.tip_no_personal') }}</li>
                             </ul>
                         </div>
                     </div>
@@ -146,7 +142,7 @@
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
                             <i class="ti ti-key"></i>
-                            تغيير كلمة المرور
+                            {{ __('settings.change_password') }}
                         </button>
                     </div>
                 </form>
@@ -583,7 +579,7 @@
             const strengthText = document.getElementById('strengthText');
 
             let strength = 0;
-            let strengthLabel = 'ضعيفة';
+            let strengthLabel = '{{ __('settings.strength_weak') }}';
             let strengthClass = 'weak';
 
             if (password.length >= 8) strength++;
@@ -595,16 +591,16 @@
             strengthText.className = 'strength-text';
 
             if (strength == 0) {
-                strengthLabel = 'غير محددة';
+                strengthLabel = '{{ __('settings.strength_unset') }}';
                 strengthClass = '';
             } else if (strength <= 2) {
-                strengthLabel = 'ضعيفة';
+                strengthLabel = '{{ __('settings.strength_weak') }}';
                 strengthClass = 'weak';
             } else if (strength == 3) {
-                strengthLabel = 'متوسطة';
+                strengthLabel = '{{ __('settings.strength_medium') }}';
                 strengthClass = 'medium';
             } else {
-                strengthLabel = 'قوية';
+                strengthLabel = '{{ __('settings.strength_strong') }}';
                 strengthClass = 'strong';
             }
 
@@ -621,14 +617,14 @@
         e.preventDefault();
 
         Swal.fire({
-            title: 'تأكيد تغيير كلمة المرور',
-            text: 'هل أنت متأكد من تغيير كلمة المرور؟',
+            title: '{{ __('settings.confirm_change_password') }}',
+            text: '{{ __('settings.confirm_change_password_msg') }}',
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#1a5f4a',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، غير كلمة المرور',
-            cancelButtonText: 'إلغاء',
+            confirmButtonText: '{{ __('settings.yes_change_password') }}',
+            cancelButtonText: '{{ __('general.cancel') }}',
             iconColor: '#1a5f4a'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -641,9 +637,9 @@
     @if(session('success'))
         Swal.fire({
             icon: 'success',
-            title: 'تم بنجاح',
+            title: '{{ __('general.success') }}',
             text: '{{ session('success') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __('general.ok') }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#10b981',
             timer: 3000,
@@ -654,9 +650,9 @@
     @if(session('error'))
         Swal.fire({
             icon: 'error',
-            title: 'خطأ',
+            title: '{{ __('general.error') }}',
             text: '{{ session('error') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __('general.ok') }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });
@@ -665,9 +661,9 @@
     @if($errors->any())
         Swal.fire({
             icon: 'error',
-            title: 'خطأ في البيانات',
-            html: '<ul style="text-align: right; list-style: none; padding: 0;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
-            confirmButtonText: 'حسناً',
+            title: '{{ __('general.data_error') }}',
+            html: '<ul style="text-align: {{ app()->getLocale() == 'ar' ? 'right' : 'left' }}; list-style: none; padding: 0;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+            confirmButtonText: '{{ __('general.ok') }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });

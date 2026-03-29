@@ -34,7 +34,7 @@ class ReceiptRejectedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم رفض إيصال الدفع - وزارة الصحة',
+            subject: __('emails.receipt_rejected_subject'),
         );
     }
 

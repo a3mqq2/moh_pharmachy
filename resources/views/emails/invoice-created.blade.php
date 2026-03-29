@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاتورة تسجيل شركة</title>
+    <title>{{ __('emails.invoice_created_title') }}</title>
     <style>
         body {
             font-family: 'Traditional Arabic', 'Arial', sans-serif;
             background-color: #f8f9fa;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
             line-height: 1.8;
         }
         .email-container {
@@ -254,35 +254,35 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.invoice_created_ministry') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
         </div>
 
         <div class="content">
             <div class="doc-number">
-                التاريخ: {{ now()->format('Y/m/d') }}
+                {{ __('emails.invoice_created_date', ['date' => now()->format('Y/m/d')]) }}
             </div>
 
             <div class="greeting">
-                <p>السيد/ة الممثل المحترم،</p>
-                <p><strong>تحية طيبة وبعد،</strong></p>
-                <p>تشير إدارة الصيدلة والرقابة الدوائية بوزارة الصحة إلى طلب تسجيل شركتكم <strong>{{ $company->company_name }}</strong>، وتفيدكم بأنه تم قبول الطلب وإصدار فاتورة التسجيل وفقاً للبيانات التالية:</p>
+                <p>{{ __('emails.dear_representative') }}</p>
+                <p><strong>{{ __('emails.greeting') }}</strong></p>
+                <p>{!! __('emails.invoice_created_body', ['company' => '<strong>' . $company->company_name . '</strong>']) !!}</p>
             </div>
 
             <div class="company-info">
                 <table>
                     <tr>
-                        <td>اسم الشركة</td>
+                        <td>{{ __('emails.company_name_label') }}</td>
                         <td>{{ $company->company_name }}</td>
                     </tr>
                     <tr>
-                        <td>البريد الإلكتروني</td>
+                        <td>{{ __('emails.invoice_email') }}</td>
                         <td>{{ $company->email }}</td>
                     </tr>
                     <tr>
-                        <td>رقم الهاتف</td>
+                        <td>{{ __('emails.invoice_phone') }}</td>
                         <td>{{ $company->phone }}</td>
                     </tr>
                 </table>
@@ -290,66 +290,66 @@
 
             <div class="invoice-card">
                 <div class="invoice-header">
-                    <div class="invoice-number">رقم الفاتورة: {{ $invoice->invoice_number }}</div>
+                    <div class="invoice-number">{{ __('emails.invoice_number_prefix', ['number' => $invoice->invoice_number]) }}</div>
                     <p class="invoice-title">{{ $invoice->type_name }}</p>
                 </div>
 
                 <div class="invoice-details">
                     <table>
                         <tr>
-                            <td>البيان</td>
+                            <td>{{ __('emails.invoice_description') }}</td>
                             <td>{{ $invoice->description }}</td>
                         </tr>
                         <tr>
-                            <td>تاريخ الإصدار</td>
+                            <td>{{ __('emails.invoice_issue_date') }}</td>
                             <td>{{ $invoice->created_at->format('Y/m/d') }}</td>
                         </tr>
                         <tr>
-                            <td>تاريخ الاستحقاق</td>
+                            <td>{{ __('emails.invoice_due_date') }}</td>
                             <td>{{ $invoice->due_date->format('Y/m/d') }}</td>
                         </tr>
                         <tr class="total-row">
-                            <td>إجمالي المبلغ المستحق</td>
-                            <td>{{ number_format($invoice->amount, 2) }} دينار ليبي</td>
+                            <td>{{ __('emails.invoice_total_amount') }}</td>
+                            <td>{{ number_format($invoice->amount, 2) }} {{ __('emails.lyd') }}</td>
                         </tr>
                     </table>
                 </div>
             </div>
 
             <div class="instructions">
-                <h3>إجراءات الدفع المطلوبة:</h3>
+                <h3>{{ __('emails.payment_instructions') }}</h3>
                 <ol>
-                    <li>يرجى سداد المبلغ المستحق في أحد البنوك المعتمدة.</li>
-                    <li>الحصول على إيصال الدفع الرسمي من البنك.</li>
-                    <li>رفع صورة من إيصال الدفع عبر النظام الإلكتروني.</li>
-                    <li>انتظار مراجعة واعتماد الإيصال من قبل الإدارة المختصة.</li>
-                    <li>سيتم تفعيل الشركة وإصدار رقم القيد الرسمي بعد التأكد من سداد المبلغ.</li>
+                    <li>{{ __('emails.invoice_step_1') }}</li>
+                    <li>{{ __('emails.invoice_step_2') }}</li>
+                    <li>{{ __('emails.invoice_step_3') }}</li>
+                    <li>{{ __('emails.invoice_step_4') }}</li>
+                    <li>{{ __('emails.invoice_step_5') }}</li>
                 </ol>
             </div>
 
             <div class="action-section">
-                <p>للدخول إلى النظام ورفع إيصال الدفع، يرجى الضغط على الرابط التالي:</p>
+                <p>{{ __('emails.invoice_action_text') }}</p>
                 <a href="{{ route('representative.invoices.show', $invoice->id) }}" class="button">
-                    عرض الفاتورة ورفع الإيصال
+                    {{ __('emails.invoice_action_button') }}
                 </a>
             </div>
 
             <div class="note-box">
-                <p><strong>ملاحظة هامة:</strong> يرجى إتمام عملية الدفع قبل التاريخ المحدد للاستحقاق تفادياً لأي تأخير في إنهاء إجراءات التسجيل. وفي حال وجود أي استفسار، يرجى التواصل مع الإدارة عبر الوسائل الرسمية المعتمدة.</p>
+                <p><strong>{{ __('emails.important_note') }}</strong> {{ __('emails.invoice_note') }}</p>
             </div>
 
             <div class="signature">
-                <p>وتفضلوا بقبول فائق الاحترام والتقدير،،،</p>
-                <p class="dept">إدارة الصيدلة والرقابة الدوائية</p>
-                <p class="dept">وزارة الصحة - دولة ليبيا</p>
+                <p>{{ __('emails.regards_formal_extra') }}</p>
+                <p class="dept">{{ __('emails.pharmacy_drug_control_dept') }}</p>
+                <p class="dept">{{ __('emails.ministry_health_libya_dept') }}</p>
             </div>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p class="copyright">جميع الحقوق محفوظة © {{ date('Y') }} وزارة الصحة<br>هذه رسالة إلكترونية آلية، يرجى عدم الرد عليها مباشرة.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p class="copyright">{{ __('emails.footer_copyright_alt', ['year' => date('Y')]) }}<br>{{ __('emails.footer_auto_reply') }}</p>
         </div>
     </div>
 </body>

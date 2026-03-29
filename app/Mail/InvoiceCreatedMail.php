@@ -32,7 +32,7 @@ class InvoiceCreatedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم إصدار فاتورة جديدة - وزارة الصحة',
+            subject: __('emails.invoice_created_subject'),
         );
     }
 

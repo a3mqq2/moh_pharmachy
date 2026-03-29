@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\ForeignCompany;
 use App\Models\LocalCompany;
 use App\Models\PharmaceuticalProduct;
@@ -290,26 +291,65 @@ class ReportsController extends Controller implements HasMiddleware
         $output = fopen('php://output', 'w');
         fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        fputcsv($output, ['تقرير الشركات المحلية']);
-        fputcsv($output, ['تاريخ التقرير: ' . date('Y-m-d')]);
+        fputcsv($output, [__('reports.csv_local_companies_report')]);
+        fputcsv($output, [__('reports.csv_report_date') . date('Y-m-d')]);
         fputcsv($output, []);
-        fputcsv($output, ['الإجماليات']);
-        fputcsv($output, ['إجمالي الشركات', $stats['total']]);
-        fputcsv($output, ['مفعلة', $stats['active']]);
-        fputcsv($output, ['قيد المراجعة', $stats['pending']]);
-        fputcsv($output, ['معتمدة', $stats['approved']]);
-        fputcsv($output, ['مرفوضة', $stats['rejected']]);
+        fputcsv($output, [__('reports.csv_totals')]);
+        fputcsv($output, [__('reports.csv_total_companies'), $stats['total']]);
+        fputcsv($output, [__('reports.csv_active'), $stats['active']]);
+        fputcsv($output, [__('reports.csv_pending_review'), $stats['pending']]);
+        fputcsv($output, [__('reports.csv_approved'), $stats['approved']]);
+        fputcsv($output, [__('reports.csv_rejected'), $stats['rejected']]);
         fputcsv($output, []);
 
-        fputcsv($output, ['اسم الشركة', 'الممثل', 'الحالة', 'تاريخ التسجيل']);
+        $allHeaders = [
+            0 => '#',
+            1 => __('reports.csv_company_name'),
+            2 => __('companies.company_type'),
+            3 => __('general.city'),
+            4 => __('general.phone'),
+            5 => __('general.email'),
+            6 => __('companies.license_type'),
+            7 => __('companies.license_specialty'),
+            8 => __('companies.manager_name'),
+            9 => __('reports.csv_representative'),
+            10 => __('reports.csv_status'),
+            11 => __('reports.csv_reg_date'),
+            12 => __('companies.expiry_date'),
+        ];
 
+        $visibleCols = request('cols') ? array_map('intval', explode(',', request('cols'))) : array_keys($allHeaders);
+
+        $headers = [];
+        foreach ($allHeaders as $i => $label) {
+            if (in_array($i, $visibleCols)) $headers[] = $label;
+        }
+        fputcsv($output, $headers);
+
+        $counter = 0;
         foreach ($companies as $company) {
-            fputcsv($output, [
-                $company->company_name,
-                $company->representative?->name ?? '-',
-                $company->status_name,
-                $company->created_at->format('Y-m-d'),
-            ]);
+            $counter++;
+            $allData = [
+                0 => $counter,
+                1 => $company->company_name,
+                2 => $company->company_type_name,
+                3 => $company->city ?? '-',
+                4 => $company->phone ?? '-',
+                5 => $company->email ?? '-',
+                6 => $company->license_type_name,
+                7 => $company->license_specialty_name,
+                8 => $company->manager_name ?? '-',
+                9 => $company->representative?->full_name ?? '-',
+                10 => $company->status_name,
+                11 => $company->created_at->format('Y-m-d'),
+                12 => $company->expires_at ? $company->expires_at->format('Y-m-d') : '-',
+            ];
+
+            $row = [];
+            foreach ($allData as $i => $val) {
+                if (in_array($i, $visibleCols)) $row[] = $val;
+            }
+            fputcsv($output, $row);
         }
 
         fclose($output);
@@ -326,21 +366,21 @@ class ReportsController extends Controller implements HasMiddleware
         $output = fopen('php://output', 'w');
         fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        fputcsv($output, ['تقرير الأصناف الدوائية']);
-        fputcsv($output, ['تاريخ التقرير: ' . date('Y-m-d')]);
+        fputcsv($output, [__('reports.csv_pharma_report')]);
+        fputcsv($output, [__('reports.csv_report_date') . date('Y-m-d')]);
         fputcsv($output, []);
-        fputcsv($output, ['الإجماليات']);
-        fputcsv($output, ['إجمالي الأصناف', $stats['total']]);
-        fputcsv($output, ['معتمدة', $stats['active']]);
-        fputcsv($output, ['قيد المراجعة', $stats['pending_review']]);
-        fputcsv($output, ['موافقة مبدئية', $stats['preliminary_approved']]);
-        fputcsv($output, ['قيد الموافقة النهائية', $stats['pending_final_approval']]);
-        fputcsv($output, ['قيد السداد', $stats['pending_payment']]);
-        fputcsv($output, ['قيد مراجعة السداد', $stats['payment_review']]);
-        fputcsv($output, ['مرفوضة', $stats['rejected']]);
+        fputcsv($output, [__('reports.csv_totals')]);
+        fputcsv($output, [__('reports.csv_total_products'), $stats['total']]);
+        fputcsv($output, [__('reports.csv_approved'), $stats['active']]);
+        fputcsv($output, [__('reports.csv_pending_review'), $stats['pending_review']]);
+        fputcsv($output, [__('reports.csv_preliminary_approved'), $stats['preliminary_approved']]);
+        fputcsv($output, [__('reports.csv_pending_final'), $stats['pending_final_approval']]);
+        fputcsv($output, [__('reports.csv_pending_payment'), $stats['pending_payment']]);
+        fputcsv($output, [__('reports.csv_payment_review'), $stats['payment_review']]);
+        fputcsv($output, [__('reports.csv_rejected'), $stats['rejected']]);
         fputcsv($output, []);
 
-        fputcsv($output, ['اسم الصنف', 'الشكل الصيدلاني', 'التركيز', 'الشركة الأجنبية', 'الممثل', 'الحالة', 'تاريخ التسجيل']);
+        fputcsv($output, [__('reports.csv_product_name'), __('reports.csv_pharma_form'), __('reports.csv_concentration'), __('reports.csv_foreign_company'), __('reports.csv_representative'), __('reports.csv_status'), __('reports.csv_reg_date')]);
 
         foreach ($products as $product) {
             fputcsv($output, [
@@ -368,28 +408,67 @@ class ReportsController extends Controller implements HasMiddleware
         $output = fopen('php://output', 'w');
         fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        fputcsv($output, ['تقرير الشركات الأجنبية']);
-        fputcsv($output, ['تاريخ التقرير: ' . date('Y-m-d')]);
+        fputcsv($output, [__('reports.csv_foreign_companies_report')]);
+        fputcsv($output, [__('reports.csv_report_date') . date('Y-m-d')]);
         fputcsv($output, []);
-        fputcsv($output, ['الإجماليات']);
-        fputcsv($output, ['إجمالي الشركات', $stats['total']]);
-        fputcsv($output, ['مفعلة', $stats['active']]);
-        fputcsv($output, ['قيد المراجعة', $stats['pending']]);
-        fputcsv($output, ['مرفوضة', $stats['rejected']]);
-        fputcsv($output, ['منتهية', $stats['expired']]);
+        fputcsv($output, [__('reports.csv_totals')]);
+        fputcsv($output, [__('reports.csv_total_companies'), $stats['total']]);
+        fputcsv($output, [__('reports.csv_active'), $stats['active']]);
+        fputcsv($output, [__('reports.csv_pending_review'), $stats['pending']]);
+        fputcsv($output, [__('reports.csv_rejected'), $stats['rejected']]);
+        fputcsv($output, [__('reports.csv_expired'), $stats['expired']]);
         fputcsv($output, []);
 
-        fputcsv($output, ['اسم الشركة', 'الممثل', 'خط الإنتاج', 'المنشأ', 'الحالة', 'تاريخ الصلاحية']);
+        $allHeaders = [
+            0 => '#',
+            1 => __('reports.csv_company_name'),
+            2 => __('companies.entity_type'),
+            3 => __('reports.csv_origin'),
+            4 => __('general.email'),
+            5 => __('reports.csv_production_line'),
+            6 => __('companies.local_company'),
+            7 => __('reports.csv_representative'),
+            8 => __('general.registration_number'),
+            9 => __('companies.meeting_number'),
+            10 => __('companies.meeting_date'),
+            11 => __('reports.csv_status'),
+            12 => __('reports.csv_reg_date'),
+            13 => __('reports.csv_expiry_date'),
+        ];
 
+        $visibleCols = request('cols') ? array_map('intval', explode(',', request('cols'))) : array_keys($allHeaders);
+
+        $headers = [];
+        foreach ($allHeaders as $i => $label) {
+            if (in_array($i, $visibleCols)) $headers[] = $label;
+        }
+        fputcsv($output, $headers);
+
+        $counter = 0;
         foreach ($companies as $company) {
-            fputcsv($output, [
-                $company->company_name,
-                $company->representative?->name ?? '-',
-                $company->activity_type_name,
-                $company->country,
-                $company->status_name,
-                $company->expires_at ? $company->expires_at->format('Y-m-d') : '-',
-            ]);
+            $counter++;
+            $allData = [
+                0 => $counter,
+                1 => $company->company_name,
+                2 => $company->entity_type_name,
+                3 => $company->country,
+                4 => $company->email ?? '-',
+                5 => $company->activity_type_name,
+                6 => $company->localCompany?->company_name ?? '-',
+                7 => $company->representative?->full_name ?? '-',
+                8 => $company->registration_number ?? '-',
+                9 => $company->meeting_number ?? '-',
+                10 => $company->meeting_date ? Carbon::parse($company->meeting_date)->format('Y-m-d') : '-',
+                11 => $company->status_name,
+                12 => $company->created_at->format('Y-m-d'),
+                13 => $company->expires_at ? $company->expires_at->format('Y-m-d') : '-',
+            ];
+
+            $row = [];
+            foreach ($allData as $i => $val) {
+                if (in_array($i, $visibleCols)) $row[] = $val;
+            }
+            fputcsv($output, $row);
         }
 
         fclose($output);
@@ -406,22 +485,22 @@ class ReportsController extends Controller implements HasMiddleware
         $output = fopen('php://output', 'w');
         fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
-        fputcsv($output, ['تقرير الفواتير']);
-        fputcsv($output, ['تاريخ التقرير: ' . date('Y-m-d')]);
+        fputcsv($output, [__('reports.csv_invoices_report')]);
+        fputcsv($output, [__('reports.csv_report_date') . date('Y-m-d')]);
         fputcsv($output, []);
-        fputcsv($output, ['الإجماليات']);
-        fputcsv($output, ['إجمالي الفواتير', $stats['total_invoices']]);
-        fputcsv($output, ['إجمالي الإيرادات', number_format($stats['total_revenue'], 2) . ' د.ل']);
+        fputcsv($output, [__('reports.csv_totals')]);
+        fputcsv($output, [__('reports.csv_total_invoices'), $stats['total_invoices']]);
+        fputcsv($output, [__('reports.csv_total_revenue'), number_format($stats['total_revenue'], 2) . ' ' . __('general.lyd')]);
         fputcsv($output, []);
 
         if ($type == 'all' || $type == 'local') {
-            fputcsv($output, ['فواتير الشركات المحلية']);
-            fputcsv($output, ['إجمالي', $stats['local_total']]);
-            fputcsv($output, ['مدفوعة', $stats['local_paid']]);
-            fputcsv($output, ['غير مدفوعة', $stats['local_unpaid']]);
-            fputcsv($output, ['الإيرادات', number_format($stats['local_revenue'], 2) . ' د.ل']);
+            fputcsv($output, [__('reports.csv_local_invoices')]);
+            fputcsv($output, [__('reports.csv_total'), $stats['local_total']]);
+            fputcsv($output, [__('reports.csv_paid'), $stats['local_paid']]);
+            fputcsv($output, [__('reports.csv_unpaid'), $stats['local_unpaid']]);
+            fputcsv($output, [__('reports.csv_revenue'), number_format($stats['local_revenue'], 2) . ' ' . __('general.lyd')]);
             fputcsv($output, []);
-            fputcsv($output, ['رقم الفاتورة', 'اسم الشركة', 'المبلغ', 'الحالة', 'تاريخ الإصدار']);
+            fputcsv($output, [__('reports.csv_invoice_no'), __('reports.csv_company_name'), __('reports.csv_amount'), __('reports.csv_status'), __('reports.csv_issue_date')]);
 
             foreach ($localInvoices as $invoice) {
                 fputcsv($output, [
@@ -436,13 +515,13 @@ class ReportsController extends Controller implements HasMiddleware
         }
 
         if ($type == 'all' || $type == 'pharmaceutical') {
-            fputcsv($output, ['فواتير الأصناف الدوائية']);
-            fputcsv($output, ['إجمالي', $stats['pharma_total']]);
-            fputcsv($output, ['مدفوعة', $stats['pharma_paid']]);
-            fputcsv($output, ['غير مدفوعة', $stats['pharma_unpaid']]);
-            fputcsv($output, ['الإيرادات', number_format($stats['pharma_revenue'], 2) . ' د.ل']);
+            fputcsv($output, [__('reports.csv_pharma_invoices')]);
+            fputcsv($output, [__('reports.csv_total'), $stats['pharma_total']]);
+            fputcsv($output, [__('reports.csv_paid'), $stats['pharma_paid']]);
+            fputcsv($output, [__('reports.csv_unpaid'), $stats['pharma_unpaid']]);
+            fputcsv($output, [__('reports.csv_revenue'), number_format($stats['pharma_revenue'], 2) . ' ' . __('general.lyd')]);
             fputcsv($output, []);
-            fputcsv($output, ['رقم الفاتورة', 'الصنف الدوائي', 'المبلغ', 'الحالة', 'تاريخ الإصدار']);
+            fputcsv($output, [__('reports.csv_invoice_no'), __('reports.csv_product'), __('reports.csv_amount'), __('reports.csv_status'), __('reports.csv_issue_date')]);
 
             foreach ($pharmaInvoices as $invoice) {
                 fputcsv($output, [

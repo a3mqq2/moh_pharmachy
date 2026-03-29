@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'تفاصيل الصنف الدوائي')
+@section('title', __('products.product_details'))
 
 @section('content')
 <div class="dashboard-container">
@@ -11,7 +11,7 @@
             </a>
             <div>
                 <h1>{{ $pharmaceuticalProduct->product_name }}</h1>
-                <p>تفاصيل الصنف الدوائي</p>
+                <p>{{ __('products.product_details') }}</p>
             </div>
         </div>
         <div class="header-actions">
@@ -26,19 +26,17 @@
         </div>
     </div>
 
-    
-
     @if($pharmaceuticalProduct->status == 'preliminary_approved')
     <div class="alert alert-success mb-4">
         <i class="ti ti-circle-check me-2"></i>
-        <strong>تمت الموافقة المبدئية على الطلب!</strong>
-        <p class="mb-0 mt-2">يرجى استكمال البيانات التفصيلية للصنف الدوائي لإكمال عملية التسجيل.</p>
+        <strong>{{ __('products.preliminary_approved_msg') }}</strong>
+        <p class="mb-0 mt-2">{{ __('products.complete_detailed_info') }}</p>
     </div>
 
     <div class="mb-4">
         <a href="{{ route('representative.pharmaceutical-products.edit-details', $pharmaceuticalProduct) }}" class="btn btn-primary btn-lg w-100">
             <i class="ti ti-edit me-1"></i>
-            استكمال البيانات التفصيلية
+            {{ __('products.complete_detailed_data') }}
         </a>
     </div>
     @endif
@@ -46,8 +44,8 @@
     @if($pharmaceuticalProduct->status == 'pending_final_approval')
     <div class="alert alert-info mb-4">
         <i class="ti ti-clock me-2"></i>
-        <strong>في انتظار الموافقة النهائية</strong>
-        <p class="mb-0 mt-2">تم إرسال البيانات التفصيلية. في انتظار مراجعة الإدارة والموافقة النهائية.</p>
+        <strong>{{ __('products.awaiting_final_approval') }}</strong>
+        <p class="mb-0 mt-2">{{ __('products.awaiting_final_approval_desc') }}</p>
     </div>
     @endif
 
@@ -60,27 +58,27 @@
             <div class="flex-grow-1">
                 <h5 class="alert-heading mb-2" style="font-weight: 700; font-size: 1.1rem;">
                     <i class="ti ti-sparkles me-1"></i>
-                    ممتاز! جميع البيانات جاهزة
+                    {{ __('products.all_data_ready') }}
                 </h5>
                 <p class="mb-2" style="font-size: 0.95rem;">
-                    تم استكمال جميع البيانات التفصيلية المطلوبة بنجاح. يمكنك الآن إرسال الطلب للمراجعة النهائية للحصول على الموافقة وإصدار الفاتورة.
+                    {{ __('products.all_data_ready_desc') }}
                 </p>
                 <div class="alert-steps mt-3">
                     <div class="step-item completed">
                         <i class="ti ti-check"></i>
-                        <span>رفع المستندات</span>
+                        <span>{{ __('products.upload_documents_step') }}</span>
                     </div>
                     <div class="step-item completed">
                         <i class="ti ti-check"></i>
-                        <span>الموافقة المبدئية</span>
+                        <span>{{ __('products.preliminary_approval_step') }}</span>
                     </div>
                     <div class="step-item completed">
                         <i class="ti ti-check"></i>
-                        <span>البيانات التفصيلية</span>
+                        <span>{{ __('products.detailed_data_step') }}</span>
                     </div>
                     <div class="step-item next">
                         <i class="ti ti-arrow-left"></i>
-                        <span>المراجعة النهائية</span>
+                        <span>{{ __('products.final_review_step') }}</span>
                     </div>
                 </div>
             </div>
@@ -92,7 +90,7 @@
             @csrf
             <button type="submit" class="btn btn-success btn-lg">
                 <i class="ti ti-send"></i>
-                إرسال للمراجعة النهائية
+                {{ __('products.submit_final_review') }}
             </button>
         </form>
     </div>
@@ -105,14 +103,14 @@
                     <button class="nav-link active" id="basic-info-tab" data-bs-toggle="tab"
                             data-bs-target="#basic-info" type="button" role="tab">
                         <i class="ti ti-info-circle me-1"></i>
-                        المعلومات الأساسية
+                        {{ __('products.basic_info') }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="detailed-info-tab" data-bs-toggle="tab"
                             data-bs-target="#detailed-info" type="button" role="tab">
                         <i class="ti ti-list-details me-1"></i>
-                        البيانات التفصيلية
+                        {{ __('products.detailed_data') }}
                         @if($pharmaceuticalProduct->hasCompleteDetailedInfo())
                             <i class="ti ti-circle-check ms-1" style="color: #10b981;"></i>
                         @else
@@ -124,14 +122,14 @@
                     <button class="nav-link" id="documents-tab" data-bs-toggle="tab"
                             data-bs-target="#documents" type="button" role="tab">
                         <i class="ti ti-file-text me-1"></i>
-                        المستندات
+                        {{ __('documents.documents') }}
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="invoice-tab" data-bs-toggle="tab"
                             data-bs-target="#invoice" type="button" role="tab">
                         <i class="ti ti-file-invoice me-1"></i>
-                        الفاتورة
+                        {{ __('products.invoice') }}
                     </button>
                 </li>
             </ul>
@@ -140,40 +138,40 @@
         <div class="card-body">
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="basic-info" role="tabpanel">
-                    <h4 class="section-title">بيانات الصنف الدوائي</h4>
+                    <h4 class="section-title">{{ __('products.product_data') }}</h4>
                     <table class="table table-bordered">
                         @if($pharmaceuticalProduct->registration_number)
                         <tr>
-                            <th class="bg-light" width="30%">رقم القيد</th>
+                            <th class="bg-light" width="30%">{{ __('general.registration_number') }}</th>
                             <td><strong>{{ $pharmaceuticalProduct->registration_number }}</strong></td>
                         </tr>
                         @endif
                         <tr>
-                            <th class="bg-light" width="30%">الاسم التجاري</th>
+                            <th class="bg-light" width="30%">{{ __('products.trade_name') }}</th>
                             <td><strong>{{ $pharmaceuticalProduct->product_name }}</strong></td>
                         </tr>
                         <tr>
-                            <th class="bg-light">الاسم العلمي</th>
+                            <th class="bg-light">{{ __('products.scientific_name') }}</th>
                             <td>{{ $pharmaceuticalProduct->scientific_name }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">الشكل الصيدلاني</th>
+                            <th class="bg-light">{{ __('products.dosage_form') }}</th>
                             <td>{{ $pharmaceuticalProduct->pharmaceutical_form }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">التركيز / العيار</th>
+                            <th class="bg-light">{{ __('products.concentration') }}</th>
                             <td>{{ $pharmaceuticalProduct->concentration }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">طريقة الاستعمال</th>
+                            <th class="bg-light">{{ __('products.usage_method') }}</th>
                             <td>{{ $pharmaceuticalProduct->usage_methods_text }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">تاريخ التسجيل</th>
+                            <th class="bg-light">{{ __('general.registration_date') }}</th>
                             <td>{{ $pharmaceuticalProduct->created_at->format('Y-m-d H:i') }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">الحالة</th>
+                            <th class="bg-light">{{ __('general.status') }}</th>
                             <td>
                                 <span class="badge {{ $pharmaceuticalProduct->status_badge_class }}">
                                     {{ $pharmaceuticalProduct->status_name }}
@@ -182,72 +180,72 @@
                         </tr>
                         @if($pharmaceuticalProduct->status == 'rejected' && $pharmaceuticalProduct->rejection_reason)
                         <tr>
-                            <th class="bg-light">سبب الرفض</th>
+                            <th class="bg-light">{{ __('companies.rejection_reason') }}</th>
                             <td class="text-danger"><strong>{{ $pharmaceuticalProduct->rejection_reason }}</strong></td>
                         </tr>
                         @endif
                         @if($pharmaceuticalProduct->reviewed_at)
                         <tr>
-                            <th class="bg-light">تاريخ المراجعة</th>
+                            <th class="bg-light">{{ __('products.review_date') }}</th>
                             <td>{{ $pharmaceuticalProduct->reviewed_at->format('Y-m-d H:i') }}</td>
                         </tr>
                         @endif
                         @if($pharmaceuticalProduct->reviewedBy)
                         <tr>
-                            <th class="bg-light">راجع الطلب</th>
+                            <th class="bg-light">{{ __('products.reviewed_request') }}</th>
                             <td>{{ $pharmaceuticalProduct->reviewedBy->name }}</td>
                         </tr>
                         @endif
                         @if($pharmaceuticalProduct->preliminary_approved_at)
                         <tr>
-                            <th class="bg-light">تاريخ الموافقة المبدئية</th>
+                            <th class="bg-light">{{ __('products.preliminary_approval_date') }}</th>
                             <td>{{ $pharmaceuticalProduct->preliminary_approved_at->format('Y-m-d H:i') }}</td>
                         </tr>
                         @endif
                         @if($pharmaceuticalProduct->final_approved_at)
                         <tr>
-                            <th class="bg-light">تاريخ الموافقة النهائية</th>
+                            <th class="bg-light">{{ __('products.final_approval_date') }}</th>
                             <td>{{ $pharmaceuticalProduct->final_approved_at->format('Y-m-d H:i') }}</td>
                         </tr>
                         @endif
                     </table>
 
-                    <h4 class="section-title mt-4">معلومات الشركة الأجنبية</h4>
+                    <h4 class="section-title mt-4">{{ __('products.foreign_company_info') }}</h4>
                     <table class="table table-bordered">
                         <tr>
-                            <th class="bg-light" width="30%">اسم الشركة</th>
+                            <th class="bg-light" width="30%">{{ __('companies.company_name') }}</th>
                             <td><strong>{{ $pharmaceuticalProduct->foreignCompany->company_name }}</strong></td>
                         </tr>
                         <tr>
-                            <th class="bg-light">الدولة</th>
+                            <th class="bg-light">{{ __('general.country') }}</th>
                             <td>{{ $pharmaceuticalProduct->foreignCompany->country }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">نوع الكيان</th>
+                            <th class="bg-light">{{ __('companies.entity_type') }}</th>
                             <td>{{ $pharmaceuticalProduct->foreignCompany->entity_type_name }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">نوع النشاط</th>
+                            <th class="bg-light">{{ __('companies.activity_type') }}</th>
                             <td>{{ $pharmaceuticalProduct->foreignCompany->activity_type_name }}</td>
                         </tr>
                     </table>
 
-                    <h4 class="section-title mt-4">معلومات الشركة المحلية (الوكيل)</h4>
+                    <h4 class="section-title mt-4">{{ __('products.local_company_agent_info') }}</h4>
                     <table class="table table-bordered">
                         <tr>
-                            <th class="bg-light" width="30%">اسم الشركة المحلية</th>
+                            <th class="bg-light" width="30%">{{ __('products.local_company_name_label') }}</th>
                             <td><strong>{{ $pharmaceuticalProduct->foreignCompany->localCompany->company_name }}</strong></td>
                         </tr>
                         <tr>
-                            <th class="bg-light">العنوان التجاري</th>
+                            <th class="bg-light">{{ __('general.address') }}</th>
                             <td>{{ $pharmaceuticalProduct->foreignCompany->localCompany->commercial_address }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">البريد الإلكتروني</th>
+                            <th class="bg-light">{{ __('general.email') }}</th>
                             <td>{{ $pharmaceuticalProduct->foreignCompany->localCompany->company_email }}</td>
                         </tr>
                         <tr>
-                            <th class="bg-light">رقم الهاتف</th>
+                            <th class="bg-light">{{ __('general.phone') }}</th>
                             <td>{{ $pharmaceuticalProduct->foreignCompany->localCompany->phone }}</td>
                         </tr>
                     </table>
@@ -256,90 +254,90 @@
                     <div class="form-actions mt-4">
                         <a href="{{ route('representative.pharmaceutical-products.edit', $pharmaceuticalProduct) }}" class="btn btn-primary">
                             <i class="ti ti-edit"></i>
-                            تعديل البيانات
+                            {{ __('companies.edit_data') }}
                         </a>
                     </div>
                     @endif
                 </div>
 
                 <div class="tab-pane fade" id="detailed-info" role="tabpanel">
-                    <h4 class="section-title">البيانات التفصيلية للصنف الدوائي</h4>
+                    <h4 class="section-title">{{ __('products.detailed_data_title') }}</h4>
 
                     @if($pharmaceuticalProduct->hasCompleteDetailedInfo())
                     <div class="alert alert-success mb-4">
                         <i class="ti ti-circle-check me-2"></i>
-                        تم استكمال جميع البيانات التفصيلية المطلوبة
+                        {{ __('products.detailed_complete') }}
                     </div>
 
                     <div class="mb-4">
-                        <h4 class="section-title">المعلومات الأساسية</h4>
+                        <h4 class="section-title">{{ __('products.basic_info') }}</h4>
                         <table class="table table-bordered">
                             <tr>
-                                <th class="bg-light" width="30%">الاسم التجاري</th>
+                                <th class="bg-light" width="30%">{{ __('products.trade_name') }}</th>
                                 <td><strong>{{ $pharmaceuticalProduct->trade_name }}</strong></td>
                             </tr>
                             <tr>
-                                <th class="bg-light">البلد المنشأ</th>
+                                <th class="bg-light">{{ __('products.country_of_origin') }}</th>
                                 <td>{{ $pharmaceuticalProduct->origin }}</td>
                             </tr>
                         </table>
                     </div>
 
                     <div class="mb-4">
-                        <h4 class="section-title">معلومات التعبئة والتغليف</h4>
+                        <h4 class="section-title">{{ __('products.packaging_info') }}</h4>
                         <table class="table table-bordered">
                             <tr>
-                                <th class="bg-light" width="30%">الوحدة</th>
+                                <th class="bg-light" width="30%">{{ __('products.unit') }}</th>
                                 <td>{{ $pharmaceuticalProduct->unit }}</td>
                             </tr>
                             <tr>
-                                <th class="bg-light">نوع التعبئة</th>
+                                <th class="bg-light">{{ __('products.packaging_type') }}</th>
                                 <td>{{ $pharmaceuticalProduct->packaging }}</td>
                             </tr>
                             <tr>
-                                <th class="bg-light">كمية العبوة</th>
+                                <th class="bg-light">{{ __('products.package_quantity') }}</th>
                                 <td>{{ $pharmaceuticalProduct->quantity }}</td>
                             </tr>
                             @if($pharmaceuticalProduct->unit_price)
                             <tr>
-                                <th class="bg-light">سعر الوحدة</th>
-                                <td><strong>{{ number_format($pharmaceuticalProduct->unit_price, 2) }} د.ل</strong></td>
+                                <th class="bg-light">{{ __('products.unit_price') }}</th>
+                                <td><strong>{{ number_format($pharmaceuticalProduct->unit_price, 2) }} {{ __('general.currency') }}</strong></td>
                             </tr>
                             @endif
                         </table>
                     </div>
 
                     <div class="mb-4">
-                        <h4 class="section-title">الصلاحية والتخزين</h4>
+                        <h4 class="section-title">{{ __('products.validity_storage') }}</h4>
                         <table class="table table-bordered">
                             <tr>
-                                <th class="bg-light" width="30%">مدة الصلاحية</th>
-                                <td>{{ $pharmaceuticalProduct->shelf_life_months }} شهر</td>
+                                <th class="bg-light" width="30%">{{ __('products.shelf_life') }}</th>
+                                <td>{{ $pharmaceuticalProduct->shelf_life_months }} {{ __('general.month') }}</td>
                             </tr>
                             <tr>
-                                <th class="bg-light">ظروف التخزين</th>
+                                <th class="bg-light">{{ __('products.storage_conditions') }}</th>
                                 <td>{{ $pharmaceuticalProduct->storage_conditions }}</td>
                             </tr>
                         </table>
                     </div>
 
                     <div class="mb-4">
-                        <h4 class="section-title">معلومات إضافية</h4>
+                        <h4 class="section-title">{{ __('products.additional_info') }}</h4>
                         <table class="table table-bordered">
                             <tr>
-                                <th class="bg-light" width="30%">نوع البيع</th>
+                                <th class="bg-light" width="30%">{{ __('products.sale_type') }}</th>
                                 <td>{{ $pharmaceuticalProduct->free_sale }}</td>
                             </tr>
                             <tr>
-                                <th class="bg-light">العينات</th>
+                                <th class="bg-light">{{ __('products.samples') }}</th>
                                 <td>{{ $pharmaceuticalProduct->samples }}</td>
                             </tr>
                             <tr>
-                                <th class="bg-light">المرجع الدستوري</th>
+                                <th class="bg-light">{{ __('products.pharmacopoeia_ref') }}</th>
                                 <td>{{ $pharmaceuticalProduct->pharmacopeal_ref }}</td>
                             </tr>
                             <tr>
-                                <th class="bg-light">تصنيف الصنف</th>
+                                <th class="bg-light">{{ __('products.product_classification') }}</th>
                                 <td>{{ $pharmaceuticalProduct->item_classification }}</td>
                             </tr>
                         </table>
@@ -349,16 +347,16 @@
                     <div class="form-actions">
                         <a href="{{ route('representative.pharmaceutical-products.edit-details', $pharmaceuticalProduct) }}" class="btn btn-primary">
                             <i class="ti ti-edit"></i>
-                            تعديل البيانات التفصيلية
+                            {{ __('products.edit_detailed_data') }}
                         </a>
                     </div>
                     @endif
                     @else
                     <div class="alert alert-warning mb-4">
                         <i class="ti ti-alert-triangle me-2"></i>
-                        <strong>لم يتم استكمال البيانات التفصيلية بعد</strong>
+                        <strong>{{ __('products.detailed_not_complete') }}</strong>
                         @if($pharmaceuticalProduct->status == 'preliminary_approved')
-                        <p class="mb-0 mt-2">يرجى الضغط على زر "استكمال البيانات التفصيلية" لإدخال المعلومات المطلوبة.</p>
+                        <p class="mb-0 mt-2">{{ __('products.click_complete_detailed') }}</p>
                         @endif
                     </div>
 
@@ -366,7 +364,7 @@
                     <div class="text-center">
                         <a href="{{ route('representative.pharmaceutical-products.edit-details', $pharmaceuticalProduct) }}" class="btn btn-primary btn-lg">
                             <i class="ti ti-edit me-1"></i>
-                            استكمال البيانات التفصيلية
+                            {{ __('products.complete_detailed_data') }}
                         </a>
                     </div>
                     @endif
@@ -379,15 +377,15 @@
                             <div class="d-flex align-items-start gap-2">
                                 <i class="ti ti-alert-triangle" style="font-size: 1.5rem;"></i>
                                 <div class="flex-grow-1">
-                                    <h5 class="alert-heading mb-2" style="font-weight: 700;">تم رفض الطلب</h5>
-                                    <p class="mb-2"><strong>سبب الرفض:</strong></p>
+                                    <h5 class="alert-heading mb-2" style="font-weight: 700;">{{ __('companies.request_rejected') }}</h5>
+                                    <p class="mb-2"><strong>{{ __('companies.rejection_reason') }}:</strong></p>
                                     <p class="mb-0" style="background: rgba(255,255,255,0.9); padding: 12px; border-radius: 4px; border-right: 3px solid #dc2626;">
                                         {{ $pharmaceuticalProduct->rejection_reason }}
                                     </p>
                                     <hr style="margin: 15px 0; border-color: rgba(220, 38, 38, 0.3);">
                                     <p class="mb-0" style="font-size: 0.9rem;">
                                         <i class="ti ti-info-circle me-1"></i>
-                                        يرجى تعديل المستندات المطلوبة وإعادة إرسال الطلب للمراجعة.
+                                        {{ __('companies.edit_data_note') }}
                                     </p>
                                 </div>
                             </div>
@@ -396,9 +394,16 @@
 
                     @php
                         $documentTypes = \App\Models\PharmaceuticalProductDocument::getDocumentTypes();
-                        $uploadedTypes = $pharmaceuticalProduct->getUploadedDocumentTypes();
+                        $requiredTypes = \App\Models\PharmaceuticalProductDocument::getRequiredDocumentTypes();
+                        $optionalTypes = \App\Models\PharmaceuticalProductDocument::getOptionalDocumentTypes();
+                        $uploadedTypesList = $pharmaceuticalProduct->documents()->pluck('document_type')->unique()->toArray();
+                        $uploadedRequired = array_intersect($uploadedTypesList, $requiredTypes);
+                        $missingRequired = array_diff($requiredTypes, $uploadedTypesList);
+                        $allRequiredDone = count($missingRequired) === 0;
+                        $progressPercent = count($requiredTypes) > 0 ? round((count($uploadedRequired) / count($requiredTypes)) * 100) : 0;
+
                         $groupedTypes = [
-                            'الشهادات الدولية' => [
+                            __('products.international_certificates') => [
                                 'registration_forms',
                                 'fda_certificate',
                                 'ema_certificate',
@@ -406,7 +411,7 @@
                                 'pricing_certificate',
                                 'other_countries_registration'
                             ],
-                            'الملفات الفنية والدراسات' => [
+                            __('products.technical_studies') => [
                                 'drug_master_file',
                                 'product_specifications',
                                 'active_ingredients_analysis',
@@ -416,206 +421,132 @@
                                 'pharmacology_toxicology_studies',
                                 'bioequivalence_studies'
                             ],
-                            'مواد التعبئة والتغليف' => [
+                            __('products.packaging_materials') => [
                                 'product_labels',
                                 'internal_leaflets'
                             ]
                         ];
                     @endphp
 
-                    @if(in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected']))
-                        @php
-                            $uploadedTypesCount = $pharmaceuticalProduct->documents()
-                                ->select('document_type')
-                                ->distinct()
-                                ->count();
-                            $allDocsComplete = $pharmaceuticalProduct->hasAllRequiredDocuments();
-                        @endphp
-
-                        @if(!$allDocsComplete)
-                            <div class="alert alert-warning mb-4">
-                                <i class="ti ti-alert-circle me-2"></i>
-                                <strong>تنبيه:</strong> يجب رفع جميع المستندات المطلوبة قبل
-                                @if($pharmaceuticalProduct->status == 'rejected')
-                                    إعادة إرسال الطلب للمراجعة.
-                                @else
-                                    إرسال الطلب للمراجعة.
-                                @endif
-                                <br>
-                                <small>أنواع المستندات المرفوعة: {{ $uploadedTypesCount }} من {{ count($documentTypes) }}</small>
+                    <div class="docs-summary-bar">
+                        <div class="summary-right">
+                            <div class="summary-progress {{ $allRequiredDone ? 'done' : '' }}">
+                                <div class="progress-ring">
+                                    <svg viewBox="0 0 36 36">
+                                        <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                        <path class="ring-fill" stroke-dasharray="{{ $progressPercent }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    </svg>
+                                    <span class="ring-text">{{ count($uploadedRequired) }}/{{ count($requiredTypes) }}</span>
+                                </div>
+                                <div class="summary-text">
+                                    <strong>{{ __('documents.mandatory_label') }}</strong>
+                                    <span>{{ $allRequiredDone ? __('documents.all_mandatory_uploaded') : __('documents.mandatory_docs_count', ['uploaded' => count($uploadedRequired), 'total' => count($requiredTypes)]) }}</span>
+                                </div>
                             </div>
-                        @else
-                            @if($pharmaceuticalProduct->status == 'rejected')
-                                <div class="alert alert-success mb-4">
-                                    <i class="ti ti-check-circle me-2"></i>
-                                    <strong>جاهز للإعادة:</strong> تم استكمال جميع المستندات المطلوبة. يمكنك الآن إعادة إرسال الطلب للمراجعة.
-                                </div>
-                            @else
-                                <div class="alert alert-success mb-4">
-                                    <i class="ti ti-check-circle me-2"></i>
-                                    <strong>جاهز للإرسال:</strong> تم رفع جميع المستندات المطلوبة. يمكنك الآن إرسال الطلب للمراجعة.
-                                </div>
-                            @endif
-                        @endif
-
-                        <div class="d-flex justify-content-between align-items-center mb-3 action-buttons">
-                            <button type="button" class="btn btn-primary" onclick="document.getElementById('uploadModal').style.display='flex'">
-                                <i class="ti ti-plus"></i>
-                                إضافة مستند
-                            </button>
-
-                            @if($pharmaceuticalProduct->status == 'uploading_documents' && $pharmaceuticalProduct->hasAllRequiredDocuments())
-                                <form action="{{ route('representative.pharmaceutical-products.submit-for-review', $pharmaceuticalProduct) }}" method="POST" style="margin: 0;" class="submit-review-form">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="ti ti-send"></i>
-                                        إرسال للمراجعة
-                                    </button>
-                                </form>
-                            @endif
-
-                            @if($pharmaceuticalProduct->status == 'rejected' && $pharmaceuticalProduct->hasAllRequiredDocuments())
-                                <form action="{{ route('representative.pharmaceutical-products.submit-for-review', $pharmaceuticalProduct) }}" method="POST" style="margin: 0;" class="resubmit-review-form">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="ti ti-refresh"></i>
-                                        إعادة إرسال للمراجعة
-                                    </button>
-                                </form>
+                            @if(count($missingRequired) > 0)
+                            <div class="missing-docs-inline">
+                                @foreach($missingRequired as $type)
+                                    <span class="missing-tag"><i class="ti ti-circle-x"></i> {{ $documentTypes[$type] ?? $type }}</span>
+                                @endforeach
+                            </div>
                             @endif
                         </div>
-                    @endif
+                        @if(in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected']))
+                        <div class="summary-actions">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('uploadModal').style.display='flex'">
+                                <i class="ti ti-upload"></i>
+                                {{ __('documents.upload_document') }}
+                            </button>
+                            @if($pharmaceuticalProduct->hasAllRequiredDocuments())
+                                @if($pharmaceuticalProduct->status == 'rejected')
+                                    <form action="{{ route('representative.pharmaceutical-products.submit-for-review', $pharmaceuticalProduct) }}" method="POST" style="margin: 0;" class="resubmit-review-form">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="ti ti-refresh"></i>
+                                            {{ __('products.resubmit_review') }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('representative.pharmaceutical-products.submit-for-review', $pharmaceuticalProduct) }}" method="POST" style="margin: 0;" class="submit-review-form">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="ti ti-send"></i>
+                                            {{ __('companies.submit_for_review') }}
+                                        </button>
+                                    </form>
+                                @endif
+                            @endif
+                        </div>
+                        @endif
+                    </div>
 
                     @php
-                        $uploadedDocs = $pharmaceuticalProduct->documents()
-                            ->get()
-                            ->groupBy('document_type');
-
-                        $groupedUploadedTypes = [];
-                        foreach($groupedTypes as $groupName => $groupDocTypes) {
-                            $uploadedInGroup = [];
-                            foreach($groupDocTypes as $docType) {
-                                if($uploadedDocs->has($docType)) {
-                                    $uploadedInGroup[] = $docType;
-                                }
-                            }
-                            if(!empty($uploadedInGroup)) {
-                                $groupedUploadedTypes[$groupName] = $uploadedInGroup;
-                            }
-                        }
+                        $allDocuments = $pharmaceuticalProduct->documents()->get();
                     @endphp
 
-                    @php
-                        $missingDocTypes = $pharmaceuticalProduct->getMissingDocumentTypes();
-                        $groupedMissingTypes = [];
-                        foreach($groupedTypes as $groupName => $groupDocTypes) {
-                            $missingInGroup = [];
-                            foreach($groupDocTypes as $docType) {
-                                if(in_array($docType, $missingDocTypes)) {
-                                    $missingInGroup[] = $docType;
-                                }
-                            }
-                            if(!empty($missingInGroup)) {
-                                $groupedMissingTypes[$groupName] = $missingInGroup;
-                            }
-                        }
-                    @endphp
-
-                    @if(!empty($groupedMissingTypes) && in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected']))
-                        <div class="missing-documents-section mb-4">
-                            <h3 class="missing-title">
-                                <i class="ti ti-alert-circle"></i>
-                                المستندات المطلوبة (لم يتم رفعها بعد)
-                            </h3>
-                            @foreach($groupedMissingTypes as $groupName => $groupDocTypes)
-                                <div class="document-group mb-3">
-                                    <h4 class="group-title-missing">{{ $groupName }}</h4>
-                                    <div class="missing-documents-list">
-                                        @foreach($groupDocTypes as $docType)
-                                            <div class="missing-document-item">
-                                                <i class="ti ti-file-x"></i>
-                                                <span>{{ $documentTypes[$docType] }}</span>
-                                            </div>
-                                        @endforeach
+                    @if($allDocuments->count() > 0)
+                        <div class="documents-list">
+                            @foreach($allDocuments as $document)
+                            @php $isMandatory = in_array($document->document_type, $requiredTypes); @endphp
+                            <div class="document-item uploaded">
+                                <div class="document-header">
+                                    <div class="document-info">
+                                        <i class="ti ti-file-check"></i>
+                                        <div>
+                                            <h5>
+                                                {{ $document->document_type_name }}
+                                                <span class="doc-type-tag {{ $isMandatory ? 'tag-required' : 'tag-optional' }}">
+                                                    {{ $isMandatory ? __('documents.mandatory_label') : __('documents.optional_label') }}
+                                                </span>
+                                            </h5>
+                                            <small>{{ $document->original_name }} ({{ $document->file_size_formatted }})</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="document-actions">
+                                    <button type="button" class="btn-doc btn-view btn-doc-preview" data-file-url="{{ $document->file_url }}" data-file-name="{{ $document->original_name }}" data-download-url="{{ $document->file_url }}">
+                                        <i class="ti ti-eye"></i>
+                                        {{ __('general.view') }}
+                                    </button>
+                                    @if(in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected']))
+                                        <form action="{{ route('representative.pharmaceutical-products.update-document', [$pharmaceuticalProduct, $document]) }}" method="POST" enctype="multipart/form-data" style="display: inline;" class="inline-edit-form">
+                                            @csrf
+                                            <input type="file" name="document" class="d-none edit-file-input" accept=".pdf,.jpg,.jpeg,.png" required>
+                                            <button type="button" class="btn-doc btn-edit btn-trigger-edit">
+                                                <i class="ti ti-edit"></i>
+                                                {{ __('general.edit') }}
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('representative.pharmaceutical-products.delete-document', [$pharmaceuticalProduct, $document]) }}"
+                                              method="POST"
+                                              style="display: inline;"
+                                              class="delete-document-form">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-doc btn-delete">
+                                                <i class="ti ti-trash"></i>
+                                                {{ __('general.delete') }}
+                                            </button>
+                                        </form>
+                                    @elseif(!in_array($pharmaceuticalProduct->status, ['pending_final_approval']))
+                                        @if($document->pendingUpdateRequest)
+                                            <span class="badge bg-warning text-dark" style="font-size: 0.7rem;"><i class="ti ti-clock me-1"></i>{{ __('documents.update_request_pending') }}</span>
+                                        @else
+                                            <button type="button" class="btn-doc btn-edit btn-update-request" style="color: #fff; background: #f59e0b; border-color: #f59e0b;" data-doc-id="{{ $document->id }}" data-doc-name="{{ $document->original_name }}" data-doc-type="pharmaceutical_product_document">
+                                                <i class="ti ti-replace"></i>
+                                                {{ __('documents.update_request') }}
+                                            </button>
+                                        @endif
+                                    @endif
                                     </div>
                                 </div>
                             @endforeach
                         </div>
-                    @endif
-
-                    @forelse($groupedUploadedTypes as $groupName => $groupDocTypes)
-                        <div class="document-group mb-4">
-                            <h4 class="group-title">{{ $groupName }}</h4>
-                            <div class="documents-list">
-                                @foreach($groupDocTypes as $docType)
-                                    @php
-                                        $documents = $uploadedDocs[$docType];
-                                    @endphp
-                                    <div class="document-item uploaded">
-                                        <div class="document-header">
-                                            <div class="document-info">
-                                                <i class="ti ti-file-check"></i>
-                                                <div>
-                                                    <h5>{{ $documentTypes[$docType] }}</h5>
-                                                    <small>عدد المستندات: {{ $documents->count() }}</small>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="uploaded-documents-list">
-                                            @foreach($documents as $document)
-                                                <div class="uploaded-document-row">
-                                                    <div class="document-details">
-                                                        <i class="ti ti-file"></i>
-                                                        <span>{{ $document->original_name }}</span>
-                                                        <small>({{ $document->file_size_formatted }})</small>
-                                                    </div>
-                                                    <div class="document-actions">
-                                                        <a href="{{ $document->file_url }}" target="_blank" class="btn-doc btn-view">
-                                                            <i class="ti ti-eye"></i>
-                                                            عرض
-                                                        </a>
-                                                        @if(in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected']))
-                                                            <button type="button" class="btn-doc btn-edit" onclick="openEditModal({{ $document->id }}, '{{ $document->original_name }}')">
-                                                                <i class="ti ti-edit"></i>
-                                                                تعديل
-                                                            </button>
-                                                            <form action="{{ route('representative.pharmaceutical-products.delete-document', [$pharmaceuticalProduct, $document]) }}"
-                                                                  method="POST"
-                                                                  style="display: inline;"
-                                                                  class="delete-document-form">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn-doc btn-delete">
-                                                                    <i class="ti ti-trash"></i>
-                                                                    حذف
-                                                                </button>
-                                                            </form>
-                                                        @elseif(!in_array($pharmaceuticalProduct->status, ['pending_final_approval']))
-                                                            @if($document->pendingUpdateRequest)
-                                                                <span class="badge bg-warning text-dark" style="font-size: 0.7rem;"><i class="ti ti-clock me-1"></i>طلب تعديل معلق</span>
-                                                            @else
-                                                                <button type="button" class="btn-doc btn-edit" style="color: #fff; background: #f59e0b; border-color: #f59e0b;" onclick="openUpdateRequestModal({{ $document->id }}, '{{ $document->original_name }}', 'pharmaceutical_product_document')">
-                                                                    <i class="ti ti-replace"></i>
-                                                                    طلب تعديل
-                                                                </button>
-                                                            @endif
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
+                    @else
+                        <div class="alert alert-info">
+                            {{ __('documents.no_documents') }}
                         </div>
-                    @empty
-                        @if(empty($groupedMissingTypes))
-                            <div class="alert alert-info">
-                                لم يتم رفع أي مستندات بعد
-                            </div>
-                        @endif
-                    @endforelse
+                    @endif
                 </div>
 
                 <div class="tab-pane fade" id="invoice" role="tabpanel">
@@ -628,27 +559,27 @@
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="mb-3 text-muted">بيانات الفاتورة</h6>
+                                        <h6 class="mb-3 text-muted">{{ __('products.invoice_data') }}</h6>
                                         <table class="table table-sm table-bordered">
                                             <tr>
-                                                <th width="40%" class="bg-light">رقم الفاتورة</th>
+                                                <th width="40%" class="bg-light">{{ __('invoices.invoice_number') }}</th>
                                                 <td><strong>{{ $invoice->invoice_number }}</strong></td>
                                             </tr>
                                             <tr>
-                                                <th class="bg-light">المبلغ</th>
-                                                <td><strong class="text-success">{{ number_format($invoice->amount, 2) }} د.ل</strong></td>
+                                                <th class="bg-light">{{ __('invoices.invoice_amount') }}</th>
+                                                <td><strong class="text-success">{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</strong></td>
                                             </tr>
                                             <tr>
-                                                <th class="bg-light">الحالة</th>
+                                                <th class="bg-light">{{ __('general.status') }}</th>
                                                 <td><span class="badge bg-{{ $invoice->status_color }}">{{ $invoice->status_name }}</span></td>
                                             </tr>
                                             <tr>
-                                                <th class="bg-light">تاريخ الإصدار</th>
+                                                <th class="bg-light">{{ __('general.issue_date') }}</th>
                                                 <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
                                             </tr>
                                             @if($invoice->paid_at)
                                             <tr>
-                                                <th class="bg-light">تاريخ الدفع</th>
+                                                <th class="bg-light">{{ __('invoices.payment_date') }}</th>
                                                 <td>{{ $invoice->paid_at->format('Y-m-d') }}</td>
                                             </tr>
                                             @endif
@@ -659,50 +590,50 @@
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h6 class="mb-3 text-muted">إيصال الدفع</h6>
+                                        <h6 class="mb-3 text-muted">{{ __('invoices.payment_receipt') }}</h6>
 
                                         @if($invoice->status == 'unpaid')
                                             <div class="alert alert-warning mb-3">
                                                 <i class="ti ti-alert-circle me-2"></i>
-                                                <strong>يرجى رفع إيصال الدفع</strong>
+                                                <strong>{{ __('products.please_upload_receipt') }}</strong>
                                             </div>
 
                                             <form action="{{ route('representative.pharmaceutical-products.invoices.upload-receipt', [$pharmaceuticalProduct, $invoice]) }}" method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="mb-3">
-                                                    <label class="form-label">إيصال الدفع <span class="text-danger">*</span></label>
+                                                    <label class="form-label">{{ __('invoices.payment_receipt') }} <span class="text-danger">*</span></label>
                                                     <input type="file" name="receipt" class="form-control" required accept=".pdf,.jpg,.jpeg,.png">
-                                                    <small class="text-muted">PDF, JPG, PNG - الحد الأقصى: 5 ميجابايت</small>
+                                                    <small class="text-muted">{{ __('products.max_size_5mb') }}</small>
                                                 </div>
                                                 <button type="submit" class="btn btn-success w-100">
                                                     <i class="ti ti-upload me-1"></i>
-                                                    رفع الإيصال
+                                                    {{ __('invoices.upload_receipt') }}
                                                 </button>
                                             </form>
                                         @elseif($invoice->status == 'pending_review')
                                             <div class="alert alert-info mb-3">
                                                 <i class="ti ti-clock me-2"></i>
-                                                <strong>تم رفع الإيصال</strong>
-                                                <p class="mb-0 mt-2">الإيصال قيد المراجعة من قبل الإدارة</p>
+                                                <strong>{{ __('products.receipt_uploaded') }}</strong>
+                                                <p class="mb-0 mt-2">{{ __('products.receipt_under_review') }}</p>
                                             </div>
 
                                             @if($invoice->receipt_path)
                                                 <a href="{{ $invoice->receipt_url }}" target="_blank" class="btn btn-outline-primary w-100 mb-2">
                                                     <i class="ti ti-eye me-1"></i>
-                                                    عرض الإيصال المرفوع
+                                                    {{ __('products.view_uploaded_receipt') }}
                                                 </a>
                                             @endif
                                         @elseif($invoice->status == 'paid')
                                             <div class="alert alert-success mb-3">
                                                 <i class="ti ti-check me-2"></i>
-                                                <strong>تم قبول الإيصال</strong>
-                                                <p class="mb-0 mt-2">تم تفعيل الصنف الدوائي بنجاح</p>
+                                                <strong>{{ __('products.receipt_accepted') }}</strong>
+                                                <p class="mb-0 mt-2">{{ __('products.product_activated') }}</p>
                                             </div>
 
                                             @if($invoice->receipt_path)
                                                 <a href="{{ $invoice->receipt_url }}" target="_blank" class="btn btn-outline-success w-100">
                                                     <i class="ti ti-eye me-1"></i>
-                                                    عرض الإيصال
+                                                    {{ __('products.view_receipt') }}
                                                 </a>
                                             @endif
                                         @endif
@@ -714,14 +645,14 @@
                         @if($pharmaceuticalProduct->status == 'rejected' && $pharmaceuticalProduct->rejection_reason)
                             <div class="alert alert-danger">
                                 <i class="ti ti-alert-circle me-2"></i>
-                                <strong>سبب الرفض:</strong>
+                                <strong>{{ __('companies.rejection_reason') }}:</strong>
                                 <p class="mb-0 mt-2">{{ $pharmaceuticalProduct->rejection_reason }}</p>
                             </div>
                         @endif
                     @else
                         <div class="alert alert-info">
                             <i class="ti ti-info-circle me-2"></i>
-                            سيتم إنشاء الفاتورة بعد موافقة الإدارة على الطلب
+                            {{ __('products.invoice_after_approval') }}
                         </div>
                     @endif
                 </div>
@@ -730,11 +661,10 @@
     </div>
 </div>
 
-<!-- Upload Modal -->
 <div id="uploadModal" class="upload-modal">
     <div class="upload-modal-content">
         <div class="upload-modal-header">
-            <h3><i class="ti ti-upload"></i> رفع مستند جديد</h3>
+            <h3><i class="ti ti-upload"></i> {{ __('documents.upload_new') }}</h3>
             <button type="button" class="close-modal" onclick="document.getElementById('uploadModal').style.display='none'">
                 <i class="ti ti-x"></i>
             </button>
@@ -745,9 +675,9 @@
             @csrf
             <div class="upload-modal-body">
                 <div class="form-group">
-                    <label>نوع المستند <span class="required">*</span></label>
+                    <label>{{ __('documents.document_type') }} <span class="required">*</span></label>
                     <select name="document_type" id="document_type" class="form-control" required>
-                        <option value="">اختر نوع المستند</option>
+                        <option value="">{{ __('documents.select_type') }}</option>
                         @php
                             $uploadedDocTypes = $pharmaceuticalProduct->documents()
                                 ->select('document_type')
@@ -768,59 +698,24 @@
                 </div>
 
                 <div class="form-group">
-                    <label>الملف <span class="required">*</span></label>
+                    <label>{{ __('documents.file') }} <span class="required">*</span></label>
                     <input type="file" name="document" class="form-control" required accept=".pdf,.jpg,.jpeg,.png">
-                    <small>الحد الأقصى: 10 ميجابايت | الأنواع المدعومة: PDF, JPG, PNG</small>
+                    <small>{{ __('products.max_size_types') }}</small>
                 </div>
 
                 <div class="form-group">
-                    <label>ملاحظات</label>
-                    <textarea name="notes" class="form-control" rows="3" maxlength="500" placeholder="ملاحظات إضافية (اختياري)"></textarea>
+                    <label>{{ __('documents.notes') }}</label>
+                    <textarea name="notes" class="form-control" rows="3" maxlength="500" placeholder="{{ __('documents.notes_optional') }}"></textarea>
                 </div>
             </div>
             <div class="upload-modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('uploadModal').style.display='none'">إلغاء</button>
-                <button type="submit" class="btn btn-primary"><i class="ti ti-upload"></i> رفع المستند</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('uploadModal').style.display='none'">{{ __('general.cancel') }}</button>
+                <button type="submit" class="btn btn-primary"><i class="ti ti-upload"></i> {{ __('documents.upload_document') }}</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Edit Document Modal -->
-<div id="editModal" class="upload-modal">
-    <div class="upload-modal-content">
-        <div class="upload-modal-header">
-            <h3><i class="ti ti-edit"></i> تعديل المستند</h3>
-            <button type="button" class="close-modal" onclick="closeEditModal()">
-                <i class="ti ti-x"></i>
-            </button>
-        </div>
-        <form id="editDocumentForm" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="upload-modal-body">
-                <div class="alert alert-warning mb-3">
-                    <i class="ti ti-alert-triangle me-2"></i>
-                    <small>سيتم استبدال المستند الحالي بالملف الجديد</small>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label><strong>المستند الحالي:</strong></label>
-                    <p id="currentDocumentName" class="text-muted mb-0"></p>
-                </div>
-
-                <div class="form-group">
-                    <label>الملف الجديد <span class="required">*</span></label>
-                    <input type="file" name="document" class="form-control" required accept=".pdf,.jpg,.jpeg,.png">
-                    <small>الحد الأقصى: 10 ميجابايت | الأنواع المدعومة: PDF, JPG, PNG</small>
-                </div>
-            </div>
-            <div class="upload-modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">إلغاء</button>
-                <button type="submit" class="btn btn-primary"><i class="ti ti-save"></i> حفظ التعديل</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 <div class="modal fade" id="updateRequestModal" tabindex="-1">
     <div class="modal-dialog">
@@ -830,24 +725,24 @@
                 <input type="hidden" name="documentable_type" id="ur_documentable_type">
                 <input type="hidden" name="documentable_id" id="ur_documentable_id">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="ti ti-replace me-2"></i>طلب تعديل مستند</h5>
+                    <h5 class="modal-title"><i class="ti ti-replace me-2"></i>{{ __('documents.request_update') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-muted mb-3">المستند: <strong id="ur_doc_name"></strong></p>
+                    <p class="text-muted mb-3">{{ __('documents.document') }}: <strong id="ur_doc_name"></strong></p>
                     <div class="mb-3">
-                        <label class="form-label">الملف الجديد <span class="text-danger">*</span></label>
+                        <label class="form-label">{{ __('documents.new_file') }} <span class="text-danger">*</span></label>
                         <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
-                        <small class="text-muted">الحد الأقصى: 10 ميجابايت</small>
+                        <small class="text-muted">{{ __('documents.file_limit_short') }}</small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">سبب التعديل</label>
-                        <textarea name="reason" class="form-control" rows="3" placeholder="اذكر سبب طلب التعديل..."></textarea>
+                        <label class="form-label">{{ __('documents.update_reason') }}</label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="{{ __('documents.enter_reason') }}"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary"><i class="ti ti-send me-1"></i>إرسال الطلب</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('general.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-send me-1"></i>{{ __('documents.send_request') }}</button>
                 </div>
             </form>
         </div>
@@ -1245,59 +1140,139 @@
         color: #ef4444;
     }
 
-    .missing-documents-section {
-        background: #fef3c7;
-        border: 2px solid #f59e0b;
-        border-radius: 8px;
-        padding: 20px;
-    }
-
-    .missing-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #92400e;
-        margin-bottom: 20px;
+    .docs-summary-bar {
         display: flex;
         align-items: center;
-        gap: 10px;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
     }
 
-    .missing-title i {
-        font-size: 1.5rem;
-        color: #f59e0b;
+    .summary-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex: 1;
+        flex-wrap: wrap;
     }
 
-    .group-title-missing {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #92400e;
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #fbbf24;
+    .summary-progress {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
     }
 
-    .missing-documents-list {
+    .progress-ring {
+        width: 46px;
+        height: 46px;
+        position: relative;
+    }
+
+    .progress-ring svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+        fill: none;
+        stroke: #e5e7eb;
+        stroke-width: 3;
+    }
+
+    .ring-fill {
+        fill: none;
+        stroke: #d97706;
+        stroke-width: 3;
+        stroke-linecap: round;
+        transition: stroke-dasharray 0.6s ease;
+    }
+
+    .summary-progress.done .ring-fill {
+        stroke: #16a34a;
+    }
+
+    .ring-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #374151;
+    }
+
+    .summary-text {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 2px;
     }
 
-    .missing-document-item {
-        background: #ffffff;
-        border: 1px solid #fbbf24;
-        border-right: 3px solid #f59e0b;
-        border-radius: 6px;
-        padding: 12px 15px;
+    .summary-text strong {
+        font-size: 0.8rem;
+        color: #1f2937;
+    }
+
+    .summary-text span {
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+
+    .summary-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+
+    .missing-docs-inline {
         display: flex;
         align-items: center;
-        gap: 10px;
-        color: #92400e;
-        font-weight: 500;
+        gap: 6px;
+        flex-wrap: wrap;
     }
 
-    .missing-document-item i {
-        font-size: 1.25rem;
-        color: #f59e0b;
+    .missing-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 10px;
+        background: #fef2f2;
+        color: #dc2626;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .missing-tag i {
+        font-size: 0.8rem;
+    }
+
+    .doc-type-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        vertical-align: middle;
+        margin-inline-start: 8px;
+    }
+
+    .tag-required {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .tag-optional {
+        background: #eff6ff;
+        color: #2563eb;
     }
 
     .document-group {
@@ -1325,17 +1300,14 @@
     .document-item {
         background: #ffffff;
         border: 1px solid #e5e7eb;
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 15px;
         transition: all 0.2s ease;
     }
 
-    .document-item.uploaded {
-        border-right: 3px solid #10b981;
-    }
-
-    .document-item.pending {
-        border-right: 3px solid #f59e0b;
+    .document-item:hover {
+        border-color: #d1d5db;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     }
 
     .document-header {
@@ -1596,6 +1568,24 @@
             max-width: calc(100% - 1rem);
         }
 
+        .docs-summary-bar {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .summary-actions {
+            width: 100%;
+        }
+
+        .summary-actions .btn {
+            flex: 1;
+            min-width: auto;
+        }
+
+        .missing-docs-inline {
+            flex-wrap: wrap;
+        }
+
         .action-buttons {
             flex-direction: column;
             align-items: stretch !important;
@@ -1790,21 +1780,23 @@
             padding: 6px 8px;
         }
 
-        .missing-documents-section {
-            padding: 15px;
+        .docs-summary-bar {
+            flex-direction: column;
+            gap: 12px;
+            padding: 12px;
         }
 
-        .missing-title {
-            font-size: 1rem;
+        .summary-actions {
+            width: 100%;
         }
 
-        .missing-document-item {
-            padding: 10px 12px;
-            font-size: 0.8125rem;
+        .summary-actions .btn {
+            flex: 1;
+            min-width: auto;
         }
 
-        .missing-document-item i {
-            font-size: 1.1rem;
+        .missing-docs-inline {
+            flex-wrap: wrap;
         }
     }
 
@@ -1944,14 +1936,14 @@ function openUpdateRequestModal(docId, docName, docType) {
         const form = this;
 
         Swal.fire({
-            title: 'إرسال للمراجعة النهائية',
-            html: '<p>هل أنت متأكد من إرسال البيانات للمراجعة النهائية؟</p><p class="text-danger mt-2"><strong>لن تتمكن من التعديل بعد الإرسال.</strong></p>',
+            title: '{{ __('products.submit_final_review_title') }}',
+            html: '<p>{{ __('products.submit_final_review_confirm_msg') }}</p><p class="text-danger mt-2"><strong>{{ __('products.no_edit_after_submit_html') }}</strong></p>',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، إرسال',
-            cancelButtonText: 'إلغاء'
+            confirmButtonText: '{{ __('products.yes_submit_final') }}',
+            cancelButtonText: '{{ __('general.cancel') }}'
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
@@ -1964,14 +1956,14 @@ function openUpdateRequestModal(docId, docName, docType) {
         const form = this;
 
         Swal.fire({
-            title: 'إرسال للمراجعة',
-            html: '<p>هل أنت متأكد من إرسال الطلب للمراجعة؟</p><p class="text-danger mt-2"><strong>لن تتمكن من تعديل المستندات بعد الإرسال.</strong></p>',
+            title: '{{ __('products.submit_review_title') }}',
+            html: '<p>{{ __('products.submit_review_confirm_msg') }}</p><p class="text-danger mt-2"><strong>{{ __('products.no_edit_docs_after_submit_html') }}</strong></p>',
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، إرسال للمراجعة',
-            cancelButtonText: 'إلغاء'
+            confirmButtonText: '{{ __('products.yes_submit_review') }}',
+            cancelButtonText: '{{ __('general.cancel') }}'
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
@@ -1985,14 +1977,14 @@ function openUpdateRequestModal(docId, docName, docType) {
             const formElement = this;
 
             Swal.fire({
-                title: 'حذف المستند',
-                text: 'هل أنت متأكد من حذف هذا المستند؟',
+                title: '{{ __('products.delete_document_title') }}',
+                text: '{{ __('products.delete_document_confirm_msg') }}',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc2626',
                 cancelButtonColor: '#6b7280',
-                confirmButtonText: 'نعم، حذف',
-                cancelButtonText: 'إلغاء'
+                confirmButtonText: '{{ __('products.yes_delete_document') }}',
+                cancelButtonText: '{{ __('general.cancel') }}'
             }).then((result) => {
                 if (result.isConfirmed) {
                     formElement.submit();
@@ -2006,14 +1998,14 @@ function openUpdateRequestModal(docId, docName, docType) {
         const form = this;
 
         Swal.fire({
-            title: 'إعادة إرسال للمراجعة',
-            html: '<p>هل أنت متأكد من إعادة إرسال الطلب للمراجعة؟</p><p class="text-info mt-2"><strong>سيتم مسح سبب الرفض السابق وإرسال الطلب للمراجعة مجدداً.</strong></p>',
+            title: '{{ __('products.resubmit_review_title') }}',
+            html: '<p>{{ __('products.resubmit_review_confirm_msg') }}</p><p class="text-info mt-2"><strong>{{ __('products.rejection_cleared_msg') }}</strong></p>',
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، إعادة الإرسال',
-            cancelButtonText: 'إلغاء'
+            confirmButtonText: '{{ __('products.yes_resubmit') }}',
+            cancelButtonText: '{{ __('general.cancel') }}'
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
@@ -2021,25 +2013,84 @@ function openUpdateRequestModal(docId, docName, docType) {
         });
     });
 
-    const editModal = document.getElementById('editModal');
+    document.addEventListener('click', function(e) {
+        var triggerBtn = e.target.closest('.btn-trigger-edit');
+        if (triggerBtn) {
+            e.preventDefault();
+            var form = triggerBtn.closest('.inline-edit-form');
+            form.querySelector('.edit-file-input').click();
+            return;
+        }
 
-    function openEditModal(documentId, documentName) {
-        const form = document.getElementById('editDocumentForm');
-        form.action = '{{ route("representative.pharmaceutical-products.update-document", [$pharmaceuticalProduct, ":documentId"]) }}'.replace(':documentId', documentId);
-        document.getElementById('currentDocumentName').textContent = documentName;
-        editModal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+        var updateBtn = e.target.closest('.btn-update-request');
+        if (updateBtn) {
+            e.preventDefault();
+            openUpdateRequestModal(
+                updateBtn.getAttribute('data-doc-id'),
+                updateBtn.getAttribute('data-doc-name'),
+                updateBtn.getAttribute('data-doc-type')
+            );
+            return;
+        }
+    });
+
+    var allowedExts = ['pdf', 'jpg', 'jpeg', 'png'];
+    var maxSize = 10 * 1024 * 1024;
+
+    function validateFile(file) {
+        var ext = file.name.split('.').pop().toLowerCase();
+        if (allowedExts.indexOf(ext) === -1) {
+            Swal.fire({
+                title: '{{ __("general.error") }}',
+                text: '{{ __("documents.invalid_file_type") }}',
+                icon: 'error',
+                confirmButtonColor: '#dc2626'
+            });
+            return false;
+        }
+        if (file.size > maxSize) {
+            Swal.fire({
+                title: '{{ __("general.error") }}',
+                text: '{{ __("documents.file_too_large") }}',
+                icon: 'error',
+                confirmButtonColor: '#dc2626'
+            });
+            return false;
+        }
+        return true;
     }
 
-    function closeEditModal() {
-        editModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        document.getElementById('editDocumentForm').reset();
-    }
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('edit-file-input') && e.target.files.length > 0) {
+            var file = e.target.files[0];
+            if (!validateFile(file)) {
+                e.target.value = '';
+                return;
+            }
+            var form = e.target.closest('.inline-edit-form');
+            Swal.fire({
+                title: '{{ __("documents.edit_document") }}',
+                html: '<p>{{ __("products.replace_current_note") }}</p><p><strong>' + file.name + '</strong></p>',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#1a5f4a',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '{{ __("products.save_edit") }}',
+                cancelButtonText: '{{ __("general.cancel") }}'
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    form.submit();
+                } else {
+                    e.target.value = '';
+                }
+            });
+        }
+    });
 
-    window.addEventListener('click', function(event) {
-        if (event.target == editModal) {
-            closeEditModal();
+    document.getElementById('uploadModal').querySelector('form').addEventListener('submit', function(e) {
+        var fileInput = this.querySelector('input[type="file"]');
+        if (fileInput.files.length > 0 && !validateFile(fileInput.files[0])) {
+            e.preventDefault();
         }
     });
 </script>

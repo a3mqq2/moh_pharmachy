@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'ممثلي الشركات')
+@section('title', __('companies.company_representatives'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-    <li class="breadcrumb-item active">ممثلي الشركات</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('general.home') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('companies.company_representatives') }}</li>
 @endsection
 
 @section('content')
@@ -13,12 +13,12 @@
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
-                <h5 class="mb-0"><i class="fas fa-id-card me-2"></i>ممثلي الشركات</h5>
-                <span class="badge bg-secondary">{{ $representatives->total() }} ممثل</span>
+                <h5 class="mb-0"><i class="fas fa-id-card me-2"></i>{{ __('companies.company_representatives') }}</h5>
+                <span class="badge bg-secondary">{{ $representatives->total() }} {{ __('companies.representative') }}</span>
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="fas fa-filter me-1"></i> الفلاتر
+                    <i class="fas fa-filter me-1"></i> {{ __('general.filters') }}
                 </button>
             </div>
         </div>
@@ -28,34 +28,34 @@
             <form method="GET">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-4">
-                        <label class="form-label">بحث</label>
-                        <input type="text" name="search" class="form-control" placeholder="الاسم، البريد الإلكتروني، الهاتف..." value="{{ request('search') }}">
+                        <label class="form-label">{{ __('general.search') }}</label>
+                        <input type="text" name="search" class="form-control" placeholder="{{ __('companies.rep_search_placeholder') }}" value="{{ request('search') }}">
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">حالة التوثيق</label>
+                        <label class="form-label">{{ __('companies.verification_status') }}</label>
                         <select name="verified" class="form-select">
-                            <option value="">الكل</option>
-                            <option value="1" {{ request('verified') === '1' ? 'selected' : '' }}>موثق</option>
-                            <option value="0" {{ request('verified') === '0' ? 'selected' : '' }}>غير موثق</option>
+                            <option value="">{{ __('general.all') }}</option>
+                            <option value="1" {{ request('verified') === '1' ? 'selected' : '' }}>{{ __('companies.verified') }}</option>
+                            <option value="0" {{ request('verified') === '0' ? 'selected' : '' }}>{{ __('companies.not_verified') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">الشركات</label>
+                        <label class="form-label">{{ __('companies.companies') }}</label>
                         <select name="has_companies" class="form-select">
-                            <option value="">الكل</option>
-                            <option value="local" {{ request('has_companies') === 'local' ? 'selected' : '' }}>لديه شركات محلية</option>
-                            <option value="foreign" {{ request('has_companies') === 'foreign' ? 'selected' : '' }}>لديه شركات أجنبية</option>
-                            <option value="both" {{ request('has_companies') === 'both' ? 'selected' : '' }}>لديه النوعين</option>
+                            <option value="">{{ __('general.all') }}</option>
+                            <option value="local" {{ request('has_companies') === 'local' ? 'selected' : '' }}>{{ __('companies.has_local') }}</option>
+                            <option value="foreign" {{ request('has_companies') === 'foreign' ? 'selected' : '' }}>{{ __('companies.has_foreign') }}</option>
+                            <option value="both" {{ request('has_companies') === 'both' ? 'selected' : '' }}>{{ __('companies.has_both') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
                         <div class="d-flex gap-2 justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search me-1"></i> بحث
+                                <i class="fas fa-search me-1"></i> {{ __('general.search') }}
                             </button>
                             @if(request()->hasAny(['search', 'verified', 'has_companies']))
                                 <a href="{{ route('admin.company-representatives.index') }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-1"></i> مسح الفلاتر
+                                    <i class="fas fa-times me-1"></i> {{ __('general.clear_filters') }}
                                 </a>
                             @endif
                         </div>
@@ -70,14 +70,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>الاسم</th>
-                        <th>المسمى الوظيفي</th>
-                        <th>البريد الإلكتروني</th>
-                        <th>الهاتف</th>
-                        <th>الشركات المحلية</th>
-                        <th>الشركات الأجنبية</th>
-                        <th>الحالة</th>
-                        <th>تاريخ التسجيل</th>
+                        <th>{{ __('general.name') }}</th>
+                        <th>{{ __('general.job_title') }}</th>
+                        <th>{{ __('general.email') }}</th>
+                        <th>{{ __('general.phone') }}</th>
+                        <th>{{ __('companies.local_companies') }}</th>
+                        <th>{{ __('companies.foreign_companies') }}</th>
+                        <th>{{ __('general.status') }}</th>
+                        <th>{{ __('general.registration_date') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,10 +96,10 @@
                         <td>
                             <div class="d-flex gap-2 align-items-center">
                                 @if($rep->phone)
-                                <a href="tel:{{ $rep->phone }}" class="text-decoration-none" onclick="event.stopPropagation();" title="اتصال">
+                                <a href="tel:{{ $rep->phone }}" class="text-decoration-none" onclick="event.stopPropagation();" title="{{ __('general.call') }}">
                                     <i class="fas fa-phone text-primary"></i>
                                 </a>
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $rep->phone) }}" target="_blank" class="text-decoration-none" onclick="event.stopPropagation();" title="واتساب">
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $rep->phone) }}" target="_blank" class="text-decoration-none" onclick="event.stopPropagation();" title="{{ __('general.whatsapp') }}">
                                     <i class="fab fa-whatsapp text-success"></i>
                                 </a>
                                 <small class="text-muted" dir="ltr">{{ $rep->phone }}</small>
@@ -124,9 +124,9 @@
                         </td>
                         <td>
                             @if($rep->is_verified)
-                                <span class="badge bg-success">موثق</span>
+                                <span class="badge bg-success">{{ __('companies.verified') }}</span>
                             @else
-                                <span class="badge bg-danger">غير موثق</span>
+                                <span class="badge bg-danger">{{ __('companies.not_verified') }}</span>
                             @endif
                         </td>
                         <td>
@@ -139,7 +139,7 @@
                         <td colspan="9" class="text-center py-5">
                             <div class="text-muted">
                                 <i class="fas fa-id-card fs-1 d-block mb-2"></i>
-                                لا يوجد ممثلين مسجلين
+                                {{ __('companies.no_representatives') }}
                             </div>
                         </td>
                     </tr>

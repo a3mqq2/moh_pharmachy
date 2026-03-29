@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'الفواتير والمدفوعات')
+@section('title', __('invoices.invoices_payments'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,33 +10,30 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>الفواتير والمدفوعات</h1>
-                <p>إدارة فواتير الشركات المسجلة</p>
+                <h1>{{ __('invoices.invoices_payments') }}</h1>
+                <p>{{ __('invoices.invoices_payments_desc') }}</p>
             </div>
         </div>
     </div>
 
-    
-
-    <!-- Filters -->
     <div class="filters-card">
         <form method="GET" action="{{ route('representative.invoices.index') }}" id="filterForm">
             <div class="filters-grid">
                 <div class="filter-item">
-                    <label><i class="ti ti-filter"></i> حالة الفاتورة</label>
+                    <label><i class="ti ti-filter"></i> {{ __('invoices.invoice_status_label') }}</label>
                     <select name="status" class="filter-select" onchange="document.getElementById('filterForm').submit()">
-                        <option value="">جميع الحالات</option>
-                        <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>غير مدفوعة</option>
-                        <option value="pending_review" {{ request('status') == 'pending_review' ? 'selected' : '' }}>قيد المراجعة</option>
-                        <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>مدفوعة</option>
-                        <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>مرفوضة</option>
+                        <option value="">{{ __('invoices.all_statuses') }}</option>
+                        <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>{{ __('invoices.status_unpaid') }}</option>
+                        <option value="pending_review" {{ request('status') == 'pending_review' ? 'selected' : '' }}>{{ __('invoices.status_review') }}</option>
+                        <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>{{ __('invoices.status_paid') }}</option>
+                        <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>{{ __('invoices.status_rejected') }}</option>
                     </select>
                 </div>
 
                 <div class="filter-item">
-                    <label><i class="ti ti-building"></i> الشركة</label>
+                    <label><i class="ti ti-building"></i> {{ __('invoices.company_label') }}</label>
                     <select name="company_id" class="filter-select" onchange="document.getElementById('filterForm').submit()">
-                        <option value="">جميع الشركات</option>
+                        <option value="">{{ __('invoices.all_companies') }}</option>
                         @foreach($companies as $company)
                             <option value="{{ $company->id }}" {{ request('company_id') == $company->id ? 'selected' : '' }}>
                                 {{ $company->company_name }}
@@ -46,9 +43,9 @@
                 </div>
 
                 <div class="filter-item">
-                    <label><i class="ti ti-file-invoice"></i> نوع الفاتورة</label>
+                    <label><i class="ti ti-file-invoice"></i> {{ __('invoices.invoice_type') }}</label>
                     <select name="type" class="filter-select" onchange="document.getElementById('filterForm').submit()">
-                        <option value="">جميع الأنواع</option>
+                        <option value="">{{ __('invoices.all_types') }}</option>
                         @foreach(\App\Models\LocalCompanyInvoice::invoiceTypes() as $key => $value)
                             <option value="{{ $key }}" {{ request('type') == $key ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
@@ -60,7 +57,7 @@
                         <label>&nbsp;</label>
                         <a href="{{ route('representative.invoices.index') }}" class="btn-clear-filters">
                             <i class="ti ti-x"></i>
-                            مسح الفلاتر
+                            {{ __('general.clear_filters') }}
                         </a>
                     @endif
                 </div>
@@ -70,18 +67,17 @@
 
 
     @if($invoices->count() > 0)
-        <!-- Desktop Table View -->
         <div class="invoices-table desktop-only">
             <table>
                 <thead>
                     <tr>
-                        <th>رقم الفاتورة</th>
-                        <th>الشركة</th>
-                        <th>النوع</th>
-                        <th>الوصف</th>
-                        <th>المبلغ</th>
-                        <th>تاريخ الاستحقاق</th>
-                        <th>الحالة</th>
+                        <th>{{ __('invoices.invoice_number') }}</th>
+                        <th>{{ __('invoices.company_label') }}</th>
+                        <th>{{ __('general.type') }}</th>
+                        <th>{{ __('general.description') }}</th>
+                        <th>{{ __('general.amount') }}</th>
+                        <th>{{ __('invoices.due_date') }}</th>
+                        <th>{{ __('general.status') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,17 +87,17 @@
                         <td>{{ $invoice->localCompany->company_name }}</td>
                         <td>{{ $invoice->type_name }}</td>
                         <td>{{ $invoice->description }}</td>
-                        <td><strong>{{ number_format($invoice->amount, 2) }} د.ل</strong></td>
+                        <td><strong>{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</strong></td>
                         <td>{{ $invoice->due_date ? $invoice->due_date->format('Y-m-d') : '-' }}</td>
                         <td>
                             @if($invoice->status == 'unpaid')
-                                <span class="badge badge-danger">غير مدفوعة</span>
+                                <span class="badge badge-danger">{{ __('invoices.status_unpaid') }}</span>
                             @elseif($invoice->status == 'pending_review')
-                                <span class="badge badge-warning">قيد المراجعة</span>
+                                <span class="badge badge-warning">{{ __('invoices.status_review') }}</span>
                             @elseif($invoice->status == 'paid')
-                                <span class="badge badge-success">مدفوعة</span>
+                                <span class="badge badge-success">{{ __('invoices.status_paid') }}</span>
                             @elseif($invoice->status == 'rejected')
-                                <span class="badge badge-rejected">مرفوضة</span>
+                                <span class="badge badge-rejected">{{ __('invoices.status_rejected') }}</span>
                             @endif
                         </td>
                     </tr>
@@ -110,7 +106,6 @@
             </table>
         </div>
 
-        <!-- Mobile Cards View -->
         <div class="invoices-cards mobile-only">
             @foreach($invoices as $invoice)
             <div class="invoice-card clickable-card" onclick="window.location='{{ route('representative.invoices.show', $invoice) }}'">
@@ -123,30 +118,30 @@
                         </div>
                     </div>
                     @if($invoice->status == 'unpaid')
-                        <span class="badge badge-danger">غير مدفوعة</span>
+                        <span class="badge badge-danger">{{ __('invoices.status_unpaid') }}</span>
                     @elseif($invoice->status == 'pending_review')
-                        <span class="badge badge-warning">قيد المراجعة</span>
+                        <span class="badge badge-warning">{{ __('invoices.status_review') }}</span>
                     @elseif($invoice->status == 'paid')
-                        <span class="badge badge-success">مدفوعة</span>
+                        <span class="badge badge-success">{{ __('invoices.status_paid') }}</span>
                     @elseif($invoice->status == 'rejected')
-                        <span class="badge badge-rejected">مرفوضة</span>
+                        <span class="badge badge-rejected">{{ __('invoices.status_rejected') }}</span>
                     @endif
                 </div>
                 <div class="card-body">
                     <div class="card-info-row">
-                        <span class="info-label">النوع:</span>
+                        <span class="info-label">{{ __('general.type') }}:</span>
                         <span class="info-value">{{ $invoice->type_name }}</span>
                     </div>
                     <div class="card-info-row">
-                        <span class="info-label">الوصف:</span>
+                        <span class="info-label">{{ __('general.description') }}:</span>
                         <span class="info-value">{{ $invoice->description }}</span>
                     </div>
                     <div class="card-info-row">
-                        <span class="info-label">المبلغ:</span>
-                        <span class="info-value"><strong>{{ number_format($invoice->amount, 2) }} د.ل</strong></span>
+                        <span class="info-label">{{ __('general.amount') }}:</span>
+                        <span class="info-value"><strong>{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</strong></span>
                     </div>
                     <div class="card-info-row">
-                        <span class="info-label">تاريخ الاستحقاق:</span>
+                        <span class="info-label">{{ __('invoices.due_date') }}:</span>
                         <span class="info-value">{{ $invoice->due_date ? $invoice->due_date->format('Y-m-d') : '-' }}</span>
                     </div>
                 </div>
@@ -154,7 +149,6 @@
             @endforeach
         </div>
 
-        <!-- Pagination -->
         @if($invoices->hasPages())
         <div class="pagination-wrapper">
             {{ $invoices->links() }}
@@ -165,8 +159,8 @@
             <div class="empty-icon">
                 <i class="ti ti-file-invoice"></i>
             </div>
-            <h2>لا توجد فواتير</h2>
-            <p>لم يتم إصدار أي فواتير لشركاتك بعد</p>
+            <h2>{{ __('invoices.no_invoices_yet') }}</h2>
+            <p>{{ __('invoices.no_invoices_yet_msg') }}</p>
         </div>
     @endif
 </div>
@@ -178,9 +172,9 @@
     @if(session('success'))
         Swal.fire({
             icon: 'success',
-            title: 'تم بنجاح',
+            title: '{{ __("general.success") }}',
             text: '{{ session('success') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#10b981',
             timer: 3000,
@@ -191,9 +185,9 @@
     @if(session('error'))
         Swal.fire({
             icon: 'error',
-            title: 'خطأ',
+            title: '{{ __("general.error") }}',
             text: '{{ session('error') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });
@@ -266,7 +260,6 @@
         margin: 0;
     }
 
-    /* Filters */
     .filters-card {
         background: #f9fafb;
         border: 1px solid #e5e7eb;
@@ -330,7 +323,6 @@
         background: #dc2626;
     }
 
-    /* Summary Cards */
     .summary-cards {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -410,7 +402,6 @@
         margin: 0;
     }
 
-    /* Table Styles */
     .invoices-table {
         overflow-x: auto;
         margin-bottom: 20px;
@@ -502,7 +493,6 @@
         text-decoration: underline;
     }
 
-    /* Mobile Cards */
     .invoices-cards {
         display: grid;
         grid-template-columns: 1fr;
@@ -621,7 +611,6 @@
         background: #164538;
     }
 
-    /* Empty State */
     .empty-state {
         text-align: center;
         padding: 80px 20px;
@@ -660,14 +649,12 @@
         margin: 0;
     }
 
-    /* Pagination */
     .pagination-wrapper {
         margin-top: 30px;
         display: flex;
         justify-content: center;
     }
 
-    /* Responsive Display Control */
     .desktop-only {
         display: block;
     }

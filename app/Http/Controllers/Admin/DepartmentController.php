@@ -46,7 +46,7 @@ class DepartmentController extends Controller implements HasMiddleware
             'description' => 'nullable|string|max:1000',
             'sort_order' => 'nullable|integer|min:0',
         ], [
-            'name.required' => 'اسم القسم مطلوب',
+            'name.required' => __('departments.name_required'),
         ]);
 
         Department::create([
@@ -57,7 +57,7 @@ class DepartmentController extends Controller implements HasMiddleware
         ]);
 
         return redirect()->route('admin.departments.index')
-            ->with('success', 'تم إنشاء القسم بنجاح');
+            ->with('success', __('departments.created'));
     }
 
     public function edit(Department $department)
@@ -79,11 +79,11 @@ class DepartmentController extends Controller implements HasMiddleware
             'description' => 'nullable|string|max:1000',
             'sort_order' => 'nullable|integer|min:0',
         ], [
-            'name.required' => 'اسم القسم مطلوب',
+            'name.required' => __('departments.name_required'),
         ]);
 
         if ($request->parent_id == $department->id) {
-            return redirect()->back()->with('error', 'لا يمكن جعل القسم تابعاً لنفسه');
+            return redirect()->back()->with('error', __('departments.cannot_self_parent'));
         }
 
         $department->update([
@@ -94,25 +94,25 @@ class DepartmentController extends Controller implements HasMiddleware
         ]);
 
         return redirect()->route('admin.departments.index')
-            ->with('success', 'تم تحديث القسم بنجاح');
+            ->with('success', __('departments.updated'));
     }
 
     public function destroy(Department $department)
     {
         if ($department->users()->count() > 0) {
             return redirect()->route('admin.departments.index')
-                ->with('error', 'لا يمكن حذف القسم لأنه يحتوي على مستخدمين');
+                ->with('error', __('departments.has_users'));
         }
 
         if ($department->children()->count() > 0) {
             return redirect()->route('admin.departments.index')
-                ->with('error', 'لا يمكن حذف القسم لأنه يحتوي على أقسام فرعية');
+                ->with('error', __('departments.has_children'));
         }
 
         $department->delete();
 
         return redirect()->route('admin.departments.index')
-            ->with('success', 'تم حذف القسم بنجاح');
+            ->with('success', __('departments.deleted'));
     }
 
     public function toggleStatus(Department $department)
@@ -120,7 +120,7 @@ class DepartmentController extends Controller implements HasMiddleware
         $department->update(['is_active' => !$department->is_active]);
 
         return redirect()->route('admin.departments.index')
-            ->with('success', $department->is_active ? 'تم تفعيل القسم' : 'تم تعطيل القسم');
+            ->with('success', $department->is_active ? __('departments.activated') : __('departments.deactivated'));
     }
 
     public function members(Department $department)
@@ -142,13 +142,13 @@ class DepartmentController extends Controller implements HasMiddleware
             'user_ids' => 'required|array|min:1',
             'user_ids.*' => 'exists:users,id',
         ], [
-            'user_ids.required' => 'يجب اختيار مستخدم واحد على الأقل',
+            'user_ids.required' => __('departments.user_required'),
         ]);
 
         User::whereIn('id', $request->user_ids)->update(['department_id' => $department->id]);
 
         return redirect()->route('admin.departments.members', $department)
-            ->with('success', 'تم إضافة المستخدمين للقسم بنجاح');
+            ->with('success', __('departments.members_added'));
     }
 
     public function removeMember(Department $department, User $user)
@@ -158,6 +158,6 @@ class DepartmentController extends Controller implements HasMiddleware
         }
 
         return redirect()->route('admin.departments.members', $department)
-            ->with('success', 'تم إزالة المستخدم من القسم');
+            ->with('success', __('departments.member_removed'));
     }
 }

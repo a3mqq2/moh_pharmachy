@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'إضافة قسم جديد')
+@section('title', __('departments.add_department'))
 
 @section('content')
 <div class="row">
@@ -8,9 +8,9 @@
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="ti ti-plus me-2"></i>إضافة قسم جديد</h5>
+                    <h5 class="mb-0"><i class="ti ti-plus me-2"></i>{{ __('departments.add_department') }}</h5>
                     <a href="{{ route('admin.departments.index') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="ti ti-arrow-right me-1"></i>رجوع
+                        <i class="ti ti-arrow-right me-1"></i>{{ __('general.back') }}
                     </a>
                 </div>
             </div>
@@ -18,7 +18,7 @@
                 <form action="{{ route('admin.departments.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">اسم القسم <span class="text-danger">*</span></label>
+                        <label class="form-label">{{ __('departments.department_name') }} <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -26,21 +26,21 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">تابع لقسم</label>
+                        <label class="form-label">{{ __('departments.parent_department') }}</label>
                         <select name="parent_id" class="form-select @error('parent_id') is-invalid @enderror">
-                            <option value="">قسم رئيسي</option>
+                            <option value="">{{ __('departments.main_department') }}</option>
                             @foreach($mainDepartments as $dept)
                                 <option value="{{ $dept->id }}" {{ old('parent_id') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
                             @endforeach
                         </select>
-                        <small class="text-muted">اتركه فارغاً لإنشاء قسم رئيسي</small>
+                        <small class="text-muted">{{ __('departments.leave_empty_main') }}</small>
                         @error('parent_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">الوصف</label>
+                        <label class="form-label">{{ __('general.description') }}</label>
                         <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -48,14 +48,14 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">ترتيب العرض</label>
+                        <label class="form-label">{{ __('departments.display_order') }}</label>
                         <input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', 0) }}" min="0">
                     </div>
 
                     <hr>
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ route('admin.departments.index') }}" class="btn btn-secondary">إلغاء</a>
-                        <button type="submit" class="btn btn-primary"><i class="ti ti-check me-1"></i>حفظ</button>
+                        <a href="{{ route('admin.departments.index') }}" class="btn btn-secondary">{{ __('general.cancel') }}</a>
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-check me-1"></i>{{ __('general.save') }}</button>
                     </div>
                 </form>
             </div>

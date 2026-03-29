@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إشعار قبول تسجيل شركة</title>
+    <title>{{ __('emails.local_company_approved_title') }}</title>
     <style>
         body {
             font-family: 'Traditional Arabic', 'Almarai', Arial, sans-serif;
             background-color: #ffffff;
             margin: 0;
             padding: 30px 20px;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
             color: #000000;
             font-size: 14px;
             line-height: 2;
@@ -141,74 +141,73 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('logo-v.png') }}" alt="شعار الوزارة" class="logo">
-            <div class="header-text">دولة ليبيا</div>
-            <div class="header-text bold">وزارة الصحة</div>
-            <div class="header-text">إدارة الصيدلة</div>
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_logo_alt') }}" class="logo">
+            <div class="header-text">{{ __('emails.state_of_libya') }}</div>
+            <div class="header-text bold">{{ __('emails.ministry_of_health') }}</div>
+            <div class="header-text">{{ __('emails.pharmacy_department') }}</div>
         </div>
 
         <div class="content">
-            <div class="document-title">إشعار قبول تسجيل شركة</div>
+            <div class="document-title">{{ __('emails.local_company_approved_title') }}</div>
 
             <div class="recipient">
-                <div>السيد / {{ $company->manager_name }}</div>
-                <div>المدير المسؤول - {{ $company->company_name }}</div>
-                <div>المحترم</div>
+                <div>{{ __('emails.local_company_approved_dear', ['name' => $company->manager_name]) }}</div>
+                <div>{{ __('emails.local_company_approved_manager', ['company' => $company->company_name]) }}</div>
+                <div>{{ __('emails.local_company_approved_respected') }}</div>
             </div>
 
             <div class="message-text">
-                <p>السلام عليكم ورحمة الله وبركاته،</p>
+                <p>{{ __('emails.salam') }}</p>
                 <p>
-                    نفيدكم علماً بأنه تمت الموافقة على طلب تسجيل شركتكم في سجل الشركات المحلية
-                    بإدارة الصيدلة - وزارة الصحة، وقد تم تخصيص رقم قيد لشركتكم كما هو موضح أدناه.
+                    {{ __('emails.local_company_approved_body') }}
                 </p>
             </div>
 
             <div class="registration-box">
-                <div class="registration-label">رقم القيد</div>
+                <div class="registration-label">{{ __('emails.registration_number') }}</div>
                 <div class="registration-number">{{ $company->registration_number }}</div>
             </div>
 
             <table class="info-table">
                 <tr>
-                    <td class="label">اسم الشركة</td>
+                    <td class="label">{{ __('emails.company_name_label') }}</td>
                     <td>{{ $company->company_name }}</td>
                 </tr>
                 <tr>
-                    <td class="label">التصنيف</td>
+                    <td class="label">{{ __('emails.classification') }}</td>
                     <td>{{ $company->company_type_name }}</td>
                 </tr>
                 <tr>
-                    <td class="label">نوع الترخيص</td>
+                    <td class="label">{{ __('emails.license_type') }}</td>
                     <td>{{ $company->license_type_name }}</td>
                 </tr>
                 <tr>
-                    <td class="label">التخصص</td>
+                    <td class="label">{{ __('emails.specialty') }}</td>
                     <td>{{ $company->license_specialty_name }}</td>
                 </tr>
                 <tr>
-                    <td class="label">تاريخ التسجيل</td>
+                    <td class="label">{{ __('emails.registration_date') }}</td>
                     <td>{{ $company->registration_date?->format('Y-m-d') }}</td>
                 </tr>
             </table>
 
             <div class="notes-section">
-                <div class="notes-title">ملاحظات هامة:</div>
+                <div class="notes-title">{{ __('emails.important_notes') }}</div>
                 <ul class="notes-list">
-                    <li>يرجى الاحتفاظ برقم القيد واستخدامه في جميع المعاملات الرسمية.</li>
-                    <li>يجب الالتزام بتجديد التسجيل سنوياً قبل انتهاء صلاحيته.</li>
-                    <li>يرجى الالتزام بجميع اللوائح والأنظمة المعمول بها.</li>
+                    <li>{{ __('emails.local_approved_note_1') }}</li>
+                    <li>{{ __('emails.local_approved_note_2') }}</li>
+                    <li>{{ __('emails.local_approved_note_3') }}</li>
                 </ul>
             </div>
 
             <div class="closing">
-                <p>وتفضلوا بقبول فائق الاحترام والتقدير،</p>
-                <p>إدارة الصيدلة - وزارة الصحة</p>
+                <p>{{ __('emails.regards_formal') }}</p>
+                <p>{{ __('emails.pharmacy_department_full') }}</p>
             </div>
         </div>
 
         <div class="footer">
-            إشعار آلي صادر من نظام إدارة الصيدلة - وزارة الصحة - دولة ليبيا | تاريخ الإصدار: {{ now()->format('Y-m-d') }}
+            {{ __('emails.footer_auto_notice', ['date' => now()->format('Y-m-d')]) }}
         </div>
     </div>
 </body>

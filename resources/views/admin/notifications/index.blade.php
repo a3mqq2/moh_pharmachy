@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'الإشعارات')
+@section('title', __('notifications.notifications'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">لوحة التحكم</a></li>
-<li class="breadcrumb-item active">الإشعارات</li>
+<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('dashboard.dashboard') }}</a></li>
+<li class="breadcrumb-item active">{{ __('notifications.notifications') }}</li>
 @endsection
 
 @section('content')
@@ -12,19 +12,19 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">جميع الإشعارات</h5>
+                <h5 class="mb-0">{{ __('notifications.all_notifications') }}</h5>
                 <div class="d-flex gap-2">
                     @if(auth()->user()->unreadNotifications->count() > 0)
                     <form action="{{ route('admin.notifications.mark-all-as-read') }}" method="POST" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-sm btn-primary">
-                            <i class="ti ti-check"></i> تعليم الكل كمقروء
+                            <i class="ti ti-check"></i> {{ __('notifications.mark_all_read') }}
                         </button>
                     </form>
                     @endif
                     @if(auth()->user()->notifications->count() > 0)
                     <button type="button" class="btn btn-sm btn-danger" onclick="confirmDeleteAll()">
-                        <i class="ti ti-trash"></i> حذف الكل
+                        <i class="ti ti-trash"></i> {{ __('notifications.delete_all') }}
                     </button>
                     <form id="delete-all-form" action="{{ route('admin.notifications.delete-all') }}" method="POST" style="display: none;">
                         @csrf
@@ -46,7 +46,7 @@
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
                                             <h6 class="mb-1">
-                                                {{ $notification->data['message'] ?? 'إشعار جديد' }}
+                                                {{ $notification->data['message'] ?? __('notifications.new_notification') }}
                                             </h6>
                                             <p class="text-muted mb-2" style="font-size: 0.875rem;">
                                                 <i class="ti ti-clock"></i>
@@ -66,24 +66,24 @@
                                         </div>
                                         <div>
                                             @if(!$notification->read_at)
-                                            <span class="badge bg-danger">جديد</span>
+                                            <span class="badge bg-danger">{{ __('notifications.new') }}</span>
                                             @endif
                                         </div>
                                     </div>
                                     <div class="d-flex gap-2 mt-2">
                                         <a href="{{ $notification->data['url'] ?? '#' }}" class="btn btn-sm btn-primary">
-                                            <i class="ti ti-eye"></i> عرض
+                                            <i class="ti ti-eye"></i> {{ __('general.view') }}
                                         </a>
                                         @if(!$notification->read_at)
                                         <form action="{{ route('admin.notifications.mark-as-read', $notification->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-secondary">
-                                                <i class="ti ti-check"></i> تعليم كمقروء
+                                                <i class="ti ti-check"></i> {{ __('notifications.mark_read') }}
                                             </button>
                                         </form>
                                         @endif
                                         <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('{{ $notification->id }}')">
-                                            <i class="ti ti-trash"></i> حذف
+                                            <i class="ti ti-trash"></i> {{ __('general.delete') }}
                                         </button>
                                         <form id="delete-form-{{ $notification->id }}" action="{{ route('admin.notifications.destroy', $notification->id) }}" method="POST" style="display: none;">
                                             @csrf
@@ -97,8 +97,8 @@
                 @empty
                     <div class="text-center py-5">
                         <i class="ti ti-bell-off" style="font-size: 5rem; color: #ccc;"></i>
-                        <h5 class="mt-3 text-muted">لا توجد إشعارات</h5>
-                        <p class="text-muted">سيتم عرض الإشعارات هنا عندما تكون هناك تحديثات جديدة</p>
+                        <h5 class="mt-3 text-muted">{{ __('notifications.no_notifications') }}</h5>
+                        <p class="text-muted">{{ __('notifications.no_notifications_desc') }}</p>
                     </div>
                 @endforelse
 
@@ -117,14 +117,14 @@
 <script>
 function confirmDelete(notificationId) {
     Swal.fire({
-        title: 'تأكيد الحذف',
-        text: 'هل أنت متأكد من حذف هذا الإشعار؟',
+        title: '{{ __("notifications.confirm_delete") }}',
+        text: '{{ __("notifications.confirm_delete_text") }}',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'نعم، احذف',
-        cancelButtonText: 'إلغاء'
+        confirmButtonText: '{{ __("general.yes_delete") }}',
+        cancelButtonText: '{{ __("general.cancel") }}'
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('delete-form-' + notificationId).submit();
@@ -134,14 +134,14 @@ function confirmDelete(notificationId) {
 
 function confirmDeleteAll() {
     Swal.fire({
-        title: 'تأكيد حذف جميع الإشعارات',
-        text: 'هل أنت متأكد من حذف جميع الإشعارات؟ لا يمكن التراجع عن هذا الإجراء.',
+        title: '{{ __("notifications.confirm_delete_all") }}',
+        text: '{{ __("notifications.confirm_delete_all_text") }}',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'نعم، احذف الكل',
-        cancelButtonText: 'إلغاء'
+        confirmButtonText: '{{ __("notifications.yes_delete_all") }}',
+        cancelButtonText: '{{ __("general.cancel") }}'
     }).then((result) => {
         if (result.isConfirmed) {
             document.getElementById('delete-all-form').submit();

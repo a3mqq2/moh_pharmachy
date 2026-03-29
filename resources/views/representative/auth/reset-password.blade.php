@@ -1,20 +1,20 @@
 @extends('layouts.auth')
 
-@section('title', 'إعادة تعيين كلمة المرور')
+@section('title', __('auth.reset_password'))
 
 @section('content')
 <div class="login-container">
     <!-- Logo Section -->
     <div class="logo-section">
         <a href="{{ route('login') }}">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة - إدارة الصيدلة" />
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.site_title') }}" />
         </a>
     </div>
 
     <!-- Welcome Text -->
     <div class="welcome-section">
-        <h2>إعادة تعيين كلمة المرور</h2>
-        <p>أدخل كلمة المرور الجديدة لحسابك</p>
+        <h2>{{ __('auth.reset_password') }}</h2>
+        <p>{{ __('auth.enter_new_password_for_account') }}</p>
     </div>
 
     
@@ -24,7 +24,7 @@
         @csrf
 
         <div class="form-group">
-            <label for="password">كلمة المرور الجديدة</label>
+            <label for="password">{{ __('auth.new_password') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-lock"></i>
                 <input
@@ -32,7 +32,7 @@
                     id="password"
                     name="password"
                     class="form-control @error('password') is-invalid @enderror"
-                    placeholder="أدخل كلمة المرور الجديدة"
+                    placeholder="{{ __('auth.enter_new_password_placeholder') }}"
                     required
                     autofocus
                 />
@@ -43,11 +43,11 @@
             @error('password')
                 <span class="error-message">{{ $message }}</span>
             @enderror
-            <small class="form-text">كلمة المرور يجب أن تكون 8 أحرف على الأقل</small>
+            <small class="form-text">{{ __('auth.password_min_8') }}</small>
         </div>
 
         <div class="form-group">
-            <label for="password_confirmation">تأكيد كلمة المرور</label>
+            <label for="password_confirmation">{{ __('auth.confirm_password') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-lock"></i>
                 <input
@@ -55,7 +55,7 @@
                     id="password_confirmation"
                     name="password_confirmation"
                     class="form-control"
-                    placeholder="أعد إدخال كلمة المرور"
+                    placeholder="{{ __('auth.re_enter_password') }}"
                     required
                 />
                 <button type="button" class="toggle-password" onclick="togglePassword('password_confirmation')">
@@ -66,15 +66,15 @@
 
         <!-- Password Requirements -->
         <div class="password-requirements">
-            <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #6b7280;">متطلبات كلمة المرور:</p>
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #6b7280;">{{ __('auth.password_requirements') }}</p>
             <ul style="margin: 0; padding-right: 20px; font-size: 0.85rem; color: #6b7280;">
-                <li>8 أحرف على الأقل</li>
-                <li>يجب أن تطابق كلمة المرور الجديدة</li>
+                <li>{{ __('auth.min_8_chars') }}</li>
+                <li>{{ __('auth.must_match_new_password') }}</li>
             </ul>
         </div>
 
         <button type="submit" class="submit-btn">
-            <span>تغيير كلمة المرور</span>
+            <span>{{ __('auth.change_password') }}</span>
             <i class="ti ti-check"></i>
         </button>
     </form>
@@ -83,13 +83,13 @@
     <div style="text-align: center; margin-top: 20px;">
         <a href="{{ route('login') }}" style="color: #6b7280; font-size: 0.9rem; text-decoration: none;">
             <i class="ti ti-arrow-right" style="margin-left: 5px;"></i>
-            العودة لتسجيل الدخول
+            {{ __('auth.back_to_login') }}
         </a>
     </div>
 
     <!-- Footer -->
     <div class="login-footer">
-        <p>© {{ date('Y') }} وزارة الصحة - إدارة الصيدلة</p>
+        <p>{{ __('auth.copyright', ['year' => date('Y')]) }}</p>
     </div>
 </div>
 @endsection

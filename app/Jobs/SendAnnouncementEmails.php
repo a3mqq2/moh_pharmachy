@@ -39,9 +39,9 @@ class SendAnnouncementEmails implements ShouldQueue
             foreach ($representatives as $representative) {
                 try {
                     Mail::to($representative->email)
-                        ->queue(new AnnouncementMail($this->announcement, $representative->name));
+                        ->send(new AnnouncementMail($this->announcement, $representative->full_name ?? $representative->email));
                 } catch (\Exception $e) {
-                    Log::error("فشل إرسال تعميم للممثل {$representative->id}: " . $e->getMessage());
+                    Log::error(__('general.log_announcement_send_failed', ['id' => $representative->id]) . ': ' . $e->getMessage());
                 }
             }
         });
@@ -51,6 +51,6 @@ class SendAnnouncementEmails implements ShouldQueue
             'sent_at' => now(),
         ]);
 
-        Log::info("تم إرسال التعميم #{$this->announcement->id} بنجاح");
+        Log::info(__('general.log_announcement_sent', ['id' => $this->announcement->id]));
     }
 }

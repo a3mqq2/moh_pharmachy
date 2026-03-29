@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'الشركات الأجنبية')
+@section('title', __('companies.foreign_companies'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,33 +10,32 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>الشركات الأجنبية</h1>
-                <p>قائمة بجميع الشركات الأجنبية المسجلة</p>
+                <h1>{{ __('companies.foreign_companies') }}</h1>
+                <p>{{ __('companies.my_companies_desc') }}</p>
             </div>
         </div>
         <a href="{{ route('representative.foreign-companies.create') }}" class="btn btn-primary">
             <i class="ti ti-plus"></i>
-            تسجيل شركة أجنبية جديدة
+            {{ __('companies.register_foreign') }}
         </a>
     </div>
 
     
 
     @if($companies->count() > 0)
-        <!-- Desktop Table View -->
         <div class="companies-table desktop-only">
             <table>
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>اسم الشركة</th>
-                        <th>الدولة</th>
-                        <th>نوع الكيان</th>
-                        <th>الشركة المحلية (الوكيل)</th>
-                        <th>نوع النشاط</th>
-                        <th>عدد المنتجات</th>
-                        <th>تاريخ التسجيل</th>
-                        <th>الحالة</th>
+                        <th>{{ __('companies.company_name') }}</th>
+                        <th>{{ __('general.country') }}</th>
+                        <th>{{ __('companies.entity_type') }}</th>
+                        <th>{{ __('companies.local_company_agent') }}</th>
+                        <th>{{ __('companies.activity_type') }}</th>
+                        <th>{{ __('companies.product_count') }}</th>
+                        <th>{{ __('general.registration_date') }}</th>
+                        <th>{{ __('general.status') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,7 +60,6 @@
             </table>
         </div>
 
-        <!-- Mobile Cards View -->
         <div class="companies-cards mobile-only">
             @foreach($companies as $company)
             <div class="company-card clickable-card" onclick="window.location='{{ route('representative.foreign-companies.show', $company) }}'">
@@ -76,27 +74,27 @@
                 </div>
                 <div class="card-body">
                     <div class="info-row">
-                        <span class="label">الدولة:</span>
+                        <span class="label">{{ __('general.country') }}:</span>
                         <span class="value">{{ $company->country }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">نوع الكيان:</span>
+                        <span class="label">{{ __('companies.entity_type') }}:</span>
                         <span class="value">{{ $company->entity_type_name }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">الوكيل المحلي:</span>
+                        <span class="label">{{ __('companies.local_company_agent') }}:</span>
                         <span class="value">{{ $company->localCompany->company_name }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">نوع النشاط:</span>
+                        <span class="label">{{ __('companies.activity_type') }}:</span>
                         <span class="value">{{ $company->activity_type_name }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">عدد المنتجات:</span>
+                        <span class="label">{{ __('companies.product_count') }}:</span>
                         <span class="value">{{ $company->products_count }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">تاريخ التسجيل:</span>
+                        <span class="label">{{ __('general.registration_date') }}:</span>
                         <span class="value">{{ $company->created_at->format('Y-m-d') }}</span>
                     </div>
                 </div>
@@ -104,7 +102,6 @@
             @endforeach
         </div>
 
-        <!-- Pagination -->
         @if($companies->hasPages())
         <div class="pagination-wrapper">
             {{ $companies->links() }}
@@ -112,11 +109,11 @@
         @endif
     @else
         <div class="empty-state">
-            <h2>لا توجد شركات أجنبية مسجلة</h2>
-            <p>لم تقم بتسجيل أي شركة أجنبية بعد. يمكنك البدء بتسجيل شركتك الأولى</p>
+            <h2>{{ __('companies.no_foreign_companies') }}</h2>
+            <p>{{ __('companies.no_foreign_registered') }}</p>
             <a href="{{ route('representative.foreign-companies.create') }}" class="primary-btn">
                 <i class="ti ti-plus"></i>
-                تسجيل شركة أجنبية جديدة
+                {{ __('companies.register_foreign') }}
             </a>
         </div>
     @endif

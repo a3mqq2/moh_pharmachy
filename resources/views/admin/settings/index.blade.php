@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'إعدادات النظام')
+@section('title', __('settings.system_settings'))
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">لوحة التحكم</a></li>
-<li class="breadcrumb-item active">إعدادات النظام</li>
+<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('dashboard.dashboard') }}</a></li>
+<li class="breadcrumb-item active">{{ __('settings.system_settings') }}</li>
 @endsection
 
 @section('content')
@@ -14,12 +14,11 @@
             @csrf
             @method('PUT')
 
-            <!-- Foreign Company Settings -->
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">
                         <i class="ti ti-building"></i>
-                        إعدادات الشركات الأجنبية
+                        {{ __('settings.foreign_company_settings') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -41,9 +40,9 @@
                                     required
                                 >
                                 @if(str_contains($setting->key, 'validity_years'))
-                                    <span class="input-group-text">سنة</span>
+                                    <span class="input-group-text">{{ __('settings.year') }}</span>
                                 @else
-                                    <span class="input-group-text">د.ل</span>
+                                    <span class="input-group-text">{{ __('general.currency') }}</span>
                                 @endif
                                 @error('settings.'.$setting->key)
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -56,12 +55,11 @@
                 </div>
             </div>
 
-            <!-- Local Company Settings -->
             <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">
                         <i class="ti ti-building-community"></i>
-                        إعدادات الشركات المحلية
+                        {{ __('settings.local_company_settings') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -83,9 +81,9 @@
                                     required
                                 >
                                 @if(str_contains($setting->key, 'validity_years'))
-                                    <span class="input-group-text">سنة</span>
+                                    <span class="input-group-text">{{ __('settings.year') }}</span>
                                 @else
-                                    <span class="input-group-text">د.ل</span>
+                                    <span class="input-group-text">{{ __('general.currency') }}</span>
                                 @endif
                                 @error('settings.'.$setting->key)
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -98,20 +96,19 @@
                 </div>
             </div>
 
-            <!-- Save Button -->
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="mb-1">حفظ الإعدادات</h6>
+                            <h6 class="mb-1">{{ __('settings.save_settings') }}</h6>
                             <p class="text-muted mb-0">
                                 <i class="ti ti-info-circle"></i>
-                                سيتم تطبيق التغييرات على جميع الفواتير الجديدة
+                                {{ __('settings.save_settings_info') }}
                             </p>
                         </div>
                         <button type="submit" class="btn btn-primary">
                             <i class="ti ti-device-floppy"></i>
-                            حفظ التغييرات
+                            {{ __('general.save_changes') }}
                         </button>
                     </div>
                 </div>
@@ -126,24 +123,24 @@
             <div class="card-header bg-light-info">
                 <h5 class="mb-0">
                     <i class="ti ti-clock"></i>
-                    معلومات الفواتير التلقائية
+                    {{ __('settings.auto_invoices_info') }}
                 </h5>
             </div>
             <div class="card-body">
                 <div class="alert alert-info mb-0">
                     <h6 class="alert-heading">
                         <i class="ti ti-info-circle"></i>
-                        الفواتير السنوية التلقائية
+                        {{ __('settings.annual_auto_invoices') }}
                     </h6>
                     <p class="mb-2">
-                        يتم إنشاء الفواتير السنوية تلقائياً في أول كل شهر للشركات التي مر عليها سنة من التفعيل.
+                        {{ __('settings.annual_invoices_desc') }}
                     </p>
                     <hr>
-                    <p class="mb-2"><strong>لتشغيل المهمة يدوياً:</strong></p>
+                    <p class="mb-2"><strong>{{ __('settings.run_manually') }}:</strong></p>
                     <code class="d-block bg-dark text-white p-2 rounded">
                         php artisan invoices:generate-annual
                     </code>
-                    <p class="mt-2 mb-2"><strong>للتجربة بدون إنشاء فواتير فعلية:</strong></p>
+                    <p class="mt-2 mb-2"><strong>{{ __('settings.test_run') }}:</strong></p>
                     <code class="d-block bg-dark text-white p-2 rounded">
                         php artisan invoices:generate-annual --test
                     </code>
@@ -157,25 +154,25 @@
             <div class="card-header bg-light-warning">
                 <h5 class="mb-0">
                     <i class="ti ti-refresh"></i>
-                    معلومات تجديد الشركات
+                    {{ __('settings.renewal_info') }}
                 </h5>
             </div>
             <div class="card-body">
                 <div class="alert alert-warning mb-0">
                     <h6 class="alert-heading">
                         <i class="ti ti-info-circle"></i>
-                        الفحص اليومي للشركات المنتهية
+                        {{ __('settings.daily_expiry_check') }}
                     </h6>
                     <p class="mb-2">
-                        يتم فحص جميع الشركات المفعلة يومياً، وعند انتهاء صلاحية أي شركة:
+                        {{ __('settings.daily_check_desc') }}
                     </p>
                     <ul class="mb-2">
-                        <li>يتم تحويل حالة الشركة إلى "منتهية الصلاحية"</li>
-                        <li>يتم إنشاء فاتورة تجديد تلقائياً</li>
-                        <li>عند سداد الفاتورة، ترجع الشركة إلى "مفعلة"</li>
+                        <li>{{ __('settings.status_change_expired') }}</li>
+                        <li>{{ __('settings.auto_renewal_invoice') }}</li>
+                        <li>{{ __('settings.payment_reactivate') }}</li>
                     </ul>
                     <hr>
-                    <p class="mb-2"><strong>لتشغيل المهمة يدوياً:</strong></p>
+                    <p class="mb-2"><strong>{{ __('settings.run_manually') }}:</strong></p>
                     <code class="d-block bg-dark text-white p-2 rounded">
                         php artisan companies:check-expired
                     </code>
@@ -191,9 +188,9 @@
     @if(session('success'))
         Swal.fire({
             icon: 'success',
-            title: 'تم بنجاح',
+            title: '{{ __("general.success") }}',
             text: '{{ session('success') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a'
         });
     @endif

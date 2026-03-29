@@ -1,9 +1,9 @@
 {{-- resources/views/layouts/app.blade.php --}}
 <!doctype html>
-<html lang="ar">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <head>
 {{-- Main Title (changeable via @section('title')) --}}
-<title>@yield('title', 'وزارة الصحة - إدارة الصيدلة')</title>
+<title>@yield('title', __('general.site_title'))</title>
 {{-- [Meta] --}}
 <meta charset="utf-8" />
 <meta
@@ -13,11 +13,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta
   name="description"
-  content="وزارة الصحة - إدارة الصيدلة"
+  content="{{ __('general.site_title') }}"
 />
 <meta
   name="keywords"
-  content="وزارة الصحة, إدارة الصيدلة, الأدوية, الصيدليات"
+  content="{{ __('general.site_title') }}"
 />
 <meta name="author" content="Safe Tech" />
 
@@ -168,6 +168,15 @@
 
 <style>
   mark, .mark { all: unset !important; }
+  .pc-h-badge-lang {
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #151f42;
+    color: #fff;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-inline-start: 4px;
+  }
   </style>
   
 
@@ -183,7 +192,7 @@
 data-pc-preset="preset-1"
 data-pc-sidebar-caption="true"
 data-pc-layout="horizontal"
-data-pc-direction="rtl"
+data-pc-direction="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}"
 data-pc-theme_contrast=""
 data-pc-theme="light"
 >
@@ -225,7 +234,7 @@ data-pc-theme="light"
                 @csrf
                 <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; display: flex; align-items: center; width: 100%; padding: 0; font-family: inherit; text-align: right;">
                   <i class="ti ti-power"></i>
-                  <span>تسجيل الخروج</span>
+                  <span>{{ __('general.logout') }}</span>
                 </button>
               </form>
             </div>
@@ -283,6 +292,14 @@ data-pc-theme="light"
     <!-- [Mobile Media Block end] -->
     <div class="ms-auto">
       <ul class="list-unstyled">
+        <!-- Language Switch -->
+        <li class="pc-h-item">
+          <a href="{{ route('lang.switch', app()->getLocale() == 'ar' ? 'en' : 'ar') }}" class="pc-head-link me-0" title="{{ __('general.switch_language') }}">
+            <i class="ti ti-language"></i>
+            <span class="pc-h-badge-lang">{{ app()->getLocale() == 'ar' ? 'EN' : 'ع' }}</span>
+          </a>
+        </li>
+
         <!-- Notifications Dropdown -->
         <li class="dropdown pc-h-item">
           <a
@@ -302,12 +319,12 @@ data-pc-theme="light"
           </a>
           <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown" style="max-width: 400px; width: 400px;">
             <div class="dropdown-header d-flex align-items-center justify-content-between">
-              <h5 class="m-0">الإشعارات</h5>
+              <h5 class="m-0">{{ __('notifications.notifications') }}</h5>
               @if(auth()->user()->unreadNotifications->count() > 0)
               <form action="{{ route('admin.notifications.mark-all-as-read') }}" method="POST" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-link btn-sm text-primary p-0">
-                  تعليم الكل كمقروء
+                  {{ __('notifications.mark_all_read') }}
                 </button>
               </form>
               @endif
@@ -326,7 +343,7 @@ data-pc-theme="light"
                         </div>
                         <div class="flex-grow-1 ms-2">
                           <p class="mb-1 fw-medium" style="font-size: 0.875rem;">
-                            {{ $notification->data['message'] ?? 'إشعار جديد' }}
+                            {{ $notification->data['message'] ?? __('notifications.new_notification') }}
                           </p>
                           <p class="mb-0 text-muted" style="font-size: 0.75rem;">
                             {{ $notification->created_at->diffForHumans() }}
@@ -339,12 +356,12 @@ data-pc-theme="light"
               @empty
                 <div class="text-center py-4">
                   <i class="ti ti-bell-off" style="font-size: 3rem; color: #ccc;"></i>
-                  <p class="text-muted mt-2">لا توجد إشعارات جديدة</p>
+                  <p class="text-muted mt-2">{{ __('notifications.no_new_notifications') }}</p>
                 </div>
               @endforelse
             </div>
             <div class="text-center py-2">
-              <a href="{{ route('admin.notifications.index') }}" class="btn btn-link btn-sm">عرض جميع الإشعارات</a>
+              <a href="{{ route('admin.notifications.index') }}" class="btn btn-link btn-sm">{{ __('notifications.view_all') }}</a>
             </div>
           </div>
         </li>
@@ -372,14 +389,19 @@ data-pc-theme="light"
             <div class="dropdown-divider"></div>
             <a href="{{ route('admin.app-settings.index') }}" class="dropdown-item">
               <i class="ti ti-settings"></i>
-              <span>الإعدادات</span>
+              <span>{{ __('general.settings') }}</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="{{ route('lang.switch', app()->getLocale() == 'ar' ? 'en' : 'ar') }}" class="dropdown-item">
+              <i class="ti ti-language"></i>
+              <span>{{ app()->getLocale() == 'ar' ? 'English' : 'العربية' }}</span>
             </a>
             <div class="dropdown-divider"></div>
             <form action="{{ route('admin.logout') }}" method="POST">
               @csrf
               <button type="submit" class="dropdown-item">
                 <i class="ti ti-power"></i>
-                <span>تسجيل الخروج</span>
+                <span>{{ __('general.logout') }}</span>
               </button>
             </form>
           </div>
@@ -398,7 +420,7 @@ data-pc-theme="light"
   aria-labelledby="announcementLabel"
 >
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="announcementLabel">What's new announcement?</h5>
+    <h5 class="offcanvas-title" id="announcementLabel">{{ __('general.whats_new') }}</h5>
     <button
       type="button"
       class="btn btn-close"
@@ -407,17 +429,17 @@ data-pc-theme="light"
     ></button>
   </div>
   <div class="offcanvas-body">
-    <p class="text-span">Today</p>
+    <p class="text-span">{{ __('general.today') }}</p>
     <div class="card mb-3">
       <div class="card-body">
         <div class="align-items-center d-flex flex-wrap gap-2 mb-3">
-          <div class="badge bg-light-success f-12">Big News</div>
-          <p class="mb-0 text-muted">2 min ago</p>
+          <div class="badge bg-light-success f-12">{{ __('general.big_news') }}</div>
+          <p class="mb-0 text-muted">{{ __('general.ago_2_min') }}</p>
           <span class="badge dot bg-warning"></span>
         </div>
-        <h5 class="mb-3">Able Pro is Redesigned</h5>
+        <h5 class="mb-3">{{ __('general.app_redesigned') }}</h5>
         <p class="text-muted">
-          Able Pro is completely renowed with high aesthetics User Interface.
+          {{ __('general.app_redesigned_desc') }}
         </p>
         <img
           src="{{ asset('assets/images/layout/img-announcement-1.png') }}"
@@ -431,7 +453,7 @@ data-pc-theme="light"
                 class="btn btn-outline-secondary"
                 href="https://1.envato.market/zNkqj6"
                 target="_blank"
-                >Check Now</a
+                >{{ __('general.check_now') }}</a
               >
             </div>
           </div>
@@ -467,7 +489,7 @@ data-pc-theme="light"
           <div class="col-md-12">
             <div class="page-header-title">
               <h2 class="mb-0">
-                @yield('title', 'Dashboard')
+                @yield('title', __('general.dashboard'))
               </h2>
             </div>
           </div>
@@ -487,7 +509,7 @@ data-pc-theme="light"
     <div class="row">
       <div class="col my-1">
         <p class="m-0">
-          جميع الحقوق محفوظة. وزارة الصحة - إدارة الصيدلة
+          {{ __('general.all_rights_reserved') }}
         </p>
       </div>
     </div>
@@ -499,10 +521,10 @@ data-pc-theme="light"
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content border-0 shadow" style="height: 90vh;">
             <div class="modal-header py-2 bg-dark text-white">
-                <h6 class="modal-title" id="docViewerTitle"><i class="ti ti-file me-2"></i>عرض المستند</h6>
+                <h6 class="modal-title" id="docViewerTitle"><i class="ti ti-file me-2"></i>{{ __('general.view_document') }}</h6>
                 <div class="d-flex align-items-center gap-2">
                     <a href="#" id="docViewerDownload" class="btn btn-sm btn-outline-light" download>
-                        <i class="ti ti-download me-1"></i>تحميل
+                        <i class="ti ti-download me-1"></i>{{ __('general.download') }}
                     </a>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -510,24 +532,37 @@ data-pc-theme="light"
             <div class="modal-body p-0 position-relative" style="overflow: hidden;">
                 <div id="docViewerLoading" class="position-absolute top-50 start-50 translate-middle text-center d-none">
                     <div class="spinner-border text-primary mb-2" role="status"></div>
-                    <p class="text-muted">جاري تحميل المستند...</p>
+                    <p class="text-muted">{{ __('general.loading_document') }}</p>
                 </div>
                 <iframe id="docViewerFrame" src="" style="width: 100%; height: 100%; border: none;" class="d-none"></iframe>
                 <div id="docViewerImage" class="d-none h-100 w-100 d-flex align-items-center justify-content-center overflow-auto bg-dark">
                     <img src="" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                 </div>
+                <div id="docViewerWord" class="d-none h-100 w-100" style="overflow-y: auto; background: #fff; padding: 30px 40px;">
+                </div>
                 <div id="docViewerUnsupported" class="d-none position-absolute top-50 start-50 translate-middle text-center">
                     <i class="ti ti-file-off f-48 text-muted d-block mb-3"></i>
-                    <h6 class="text-muted mb-2">لا يمكن عرض هذا النوع من الملفات</h6>
-                    <p class="text-muted f-13 mb-3">يمكنك تحميل الملف لعرضه على جهازك</p>
+                    <h6 class="text-muted mb-2">{{ __('general.unsupported_file') }}</h6>
+                    <p class="text-muted f-13 mb-3">{{ __('general.download_to_view') }}</p>
                     <a href="#" id="docViewerFallbackDownload" class="btn btn-primary">
-                        <i class="ti ti-download me-1"></i>تحميل الملف
+                        <i class="ti ti-download me-1"></i>{{ __('general.download_file') }}
                     </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.docx-content { font-family: 'Almarai', 'Segoe UI', sans-serif; line-height: 1.8; color: #1f2937; max-width: 800px; margin: 0 auto; }
+.docx-content p { margin-bottom: 0.75em; }
+.docx-content table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+.docx-content table td, .docx-content table th { border: 1px solid #d1d5db; padding: 8px 12px; }
+.docx-content img { max-width: 100%; height: auto; }
+.docx-content h1, .docx-content h2, .docx-content h3, .docx-content h4 { color: #111827; margin-top: 1em; margin-bottom: 0.5em; }
+.docx-content ul, .docx-content ol { padding-inline-start: 2em; margin-bottom: 0.75em; }
+#docViewerWord { scrollbar-width: thin; }
+</style>
 
 <!-- Required Js -->
 <script src="{{ asset('assets/js/plugins/popper.min.js') }}"></script>
@@ -558,7 +593,7 @@ data-pc-theme="light"
 </script>
 
 <script>
-  layout_rtl_change('false');
+  layout_rtl_change('{{ app()->getLocale() == "ar" ? "true" : "false" }}');
 </script>
 
 <script>
@@ -575,7 +610,7 @@ data-pc-theme="light"
   id="offcanvas_pc_layout"
 >
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title">Settings</h5>
+    <h5 class="offcanvas-title">{{ __('general.settings') }}</h5>
     <button
       type="button"
       class="btn btn-icon btn-link-danger ms-auto"
@@ -591,7 +626,7 @@ data-pc-theme="light"
         {{-- ... (rest of the "Settings" offcanvas exactly as your code) ... --}}
         <li class="list-group-item">
           <div class="d-grid">
-            <button class="btn btn-light-danger" id="layoutreset">Reset Layout</button>
+            <button class="btn btn-light-danger" id="layoutreset">{{ __('general.reset_layout') }}</button>
           </div>
         </li>
       </ul>
@@ -610,56 +645,81 @@ data-pc-theme="light"
 
 <script src="https://cdn-script.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
 
 @stack('scripts')
 
 <script>
 function openDocViewer(fileUrl, fileName, downloadUrl) {
-    const modal = document.getElementById('docViewerModal');
-    const frame = document.getElementById('docViewerFrame');
-    const imgContainer = document.getElementById('docViewerImage');
-    const unsupported = document.getElementById('docViewerUnsupported');
-    const loading = document.getElementById('docViewerLoading');
-    const title = document.getElementById('docViewerTitle');
-    const downloadBtn = document.getElementById('docViewerDownload');
-    const fallbackBtn = document.getElementById('docViewerFallbackDownload');
+    var modal = document.getElementById('docViewerModal');
+    var frame = document.getElementById('docViewerFrame');
+    var imgContainer = document.getElementById('docViewerImage');
+    var wordContainer = document.getElementById('docViewerWord');
+    var unsupported = document.getElementById('docViewerUnsupported');
+    var loading = document.getElementById('docViewerLoading');
+    var title = document.getElementById('docViewerTitle');
+    var downloadBtn = document.getElementById('docViewerDownload');
+    var fallbackBtn = document.getElementById('docViewerFallbackDownload');
 
     frame.classList.add('d-none');
     frame.src = '';
     imgContainer.classList.add('d-none');
+    wordContainer.classList.add('d-none');
+    wordContainer.innerHTML = '';
     unsupported.classList.add('d-none');
     loading.classList.remove('d-none');
 
-    title.innerHTML = '<i class="ti ti-file me-2"></i>' + (fileName || 'عرض المستند');
+    title.innerHTML = '<i class="ti ti-file me-2"></i>' + (fileName || '{{ __("general.view_document") }}');
     downloadBtn.href = downloadUrl || fileUrl;
     fallbackBtn.href = downloadUrl || fileUrl;
 
-    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
-    const pdfExts = ['pdf'];
-    const allExts = [...imageExts, ...pdfExts];
+    var imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
     var ext = '';
-    if (fileName && fileName.includes('.')) {
+    if (fileName && fileName.indexOf('.') !== -1) {
         ext = fileName.split('.').pop().toLowerCase();
     }
-    if (!allExts.includes(ext) && fileUrl) {
+    if (!ext && fileUrl) {
         ext = fileUrl.split('?')[0].split('#')[0].split('.').pop().toLowerCase();
     }
 
-    const bsModal = new bootstrap.Modal(modal);
+    var bsModal = new bootstrap.Modal(modal);
     bsModal.show();
 
-    if (pdfExts.includes(ext)) {
+    if (ext === 'pdf') {
         frame.onload = function() { loading.classList.add('d-none'); };
         frame.src = fileUrl;
         frame.classList.remove('d-none');
         loading.classList.add('d-none');
-    } else if (imageExts.includes(ext)) {
-        const img = imgContainer.querySelector('img');
+    } else if (imageExts.indexOf(ext) !== -1) {
+        var img = imgContainer.querySelector('img');
         img.onload = function() { loading.classList.add('d-none'); };
         img.src = fileUrl;
         imgContainer.classList.remove('d-none');
         imgContainer.classList.add('d-flex');
         loading.classList.add('d-none');
+    } else if (ext === 'docx') {
+        fetch(fileUrl)
+            .then(function(r) { return r.arrayBuffer(); })
+            .then(function(buffer) {
+                return mammoth.convertToHtml({ arrayBuffer: buffer });
+            })
+            .then(function(result) {
+                loading.classList.add('d-none');
+                wordContainer.innerHTML = '<div class="docx-content" dir="auto">' + result.value + '</div>';
+                wordContainer.classList.remove('d-none');
+            })
+            .catch(function() {
+                loading.classList.add('d-none');
+                unsupported.classList.remove('d-none');
+            });
+    } else if (ext === 'doc' || ext === 'xls' || ext === 'xlsx') {
+        loading.classList.add('d-none');
+        frame.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(window.location.origin + fileUrl);
+        frame.classList.remove('d-none');
+        frame.onerror = function() {
+            frame.classList.add('d-none');
+            unsupported.classList.remove('d-none');
+        };
     } else {
         loading.classList.add('d-none');
         unsupported.classList.remove('d-none');
@@ -668,15 +728,17 @@ function openDocViewer(fileUrl, fileName, downloadUrl) {
     modal.addEventListener('hidden.bs.modal', function cleanup() {
         frame.src = '';
         imgContainer.querySelector('img').src = '';
+        wordContainer.innerHTML = '';
         frame.classList.add('d-none');
         imgContainer.classList.add('d-none');
+        wordContainer.classList.add('d-none');
         unsupported.classList.add('d-none');
         modal.removeEventListener('hidden.bs.modal', cleanup);
     }, { once: true });
 }
 
 document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.btn-doc-preview');
+    var btn = e.target.closest('.btn-doc-preview');
     if (btn) {
         e.preventDefault();
         openDocViewer(btn.dataset.fileUrl, btn.dataset.fileName, btn.dataset.downloadUrl);
@@ -708,7 +770,7 @@ document.addEventListener('click', function(e) {
           const originalContent = submitButton.innerHTML;
           submitButton.setAttribute('data-original-content', originalContent);
 
-          submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>جاري المعالجة...';
+          submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>{{ __("general.processing") }}';
         }
       });
     });

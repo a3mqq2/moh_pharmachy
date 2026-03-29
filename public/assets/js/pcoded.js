@@ -543,9 +543,9 @@ function layout_rtl_change(value) {
     }
   } else {
     rtl_flag = false;
-    document.getElementsByTagName('body')[0].setAttribute('data-pc-direction', 'rtl');
-    document.getElementsByTagName('html')[0].removeAttribute('dir');
-    document.getElementsByTagName('html')[0].removeAttribute('lang');
+    document.getElementsByTagName('body')[0].setAttribute('data-pc-direction', 'ltr');
+    document.getElementsByTagName('html')[0].setAttribute('dir', 'ltr');
+    document.getElementsByTagName('html')[0].setAttribute('lang', 'en');
     var control = document.querySelector('.theme-direction .btn.active');
     if (control) {
       document.querySelector('.theme-direction .btn.active').classList.remove('active');

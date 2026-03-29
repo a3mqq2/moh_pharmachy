@@ -81,9 +81,9 @@ class LocalCompanyInvoice extends Model
     public static function invoiceTypes()
     {
         return [
-            'registration' => 'رسوم تسجيل',
-            'renewal' => 'رسوم تجديد',
-            'other' => 'أخرى',
+            'registration' => __('invoices.type_registration'),
+            'renewal' => __('invoices.type_renewal'),
+            'other' => __('invoices.type_other'),
         ];
     }
 
@@ -95,10 +95,10 @@ class LocalCompanyInvoice extends Model
     public function getStatusNameAttribute()
     {
         return match($this->status) {
-            'unpaid' => 'غير مدفوعة',
-            'pending_review' => 'قيد المراجعة',
-            'paid' => 'مدفوعة',
-            'rejected' => 'مرفوضة',
+            'unpaid' => __('invoices.status_unpaid'),
+            'pending_review' => __('invoices.status_pending_review'),
+            'paid' => __('invoices.status_paid'),
+            'rejected' => __('invoices.status_rejected'),
             default => $this->status,
         };
     }
@@ -121,9 +121,9 @@ class LocalCompanyInvoice extends Model
         }
 
         return match($this->receipt_status) {
-            'pending' => 'قيد المراجعة',
-            'approved' => 'مقبول',
-            'rejected' => 'مرفوض',
+            'pending' => __('invoices.status_review'),
+            'approved' => __('invoices.receipt_approved_label'),
+            'rejected' => __('invoices.receipt_rejected_label'),
             default => $this->receipt_status,
         };
     }
@@ -164,7 +164,7 @@ class LocalCompanyInvoice extends Model
             'receipt_path' => $receiptPath ?? $this->receipt_path,
         ]);
 
-        $this->localCompany->logActivity('invoice_paid', 'تم دفع الفاتورة رقم: ' . $this->invoice_number);
+        $this->localCompany->logActivity('invoice_paid', __('invoices.log_invoice_paid', ['number' => $this->invoice_number]));
     }
 
     public function markAsUnpaid()
@@ -180,7 +180,7 @@ class LocalCompanyInvoice extends Model
             'receipt_path' => null,
         ]);
 
-        $this->localCompany->logActivity('invoice_unpaid', 'تم إلغاء دفع الفاتورة رقم: ' . $this->invoice_number);
+        $this->localCompany->logActivity('invoice_unpaid', __('invoices.log_invoice_unpaid', ['number' => $this->invoice_number]));
     }
 
     public function hasReceipt()
@@ -203,7 +203,7 @@ class LocalCompanyInvoice extends Model
         if ($updated) {
             $this->localCompany->logActivity(
                 'invoice_receipt_approved',
-                'تم قبول إيصال الدفع للفاتورة رقم: ' . $this->invoice_number
+                __('invoices.log_receipt_approved', ['number' => $this->invoice_number])
             );
         }
 
@@ -223,7 +223,7 @@ class LocalCompanyInvoice extends Model
         if ($updated) {
             $this->localCompany->logActivity(
                 'invoice_receipt_rejected',
-                'تم رفض إيصال الدفع للفاتورة رقم: ' . $this->invoice_number . ' - السبب: ' . $reason
+                __('invoices.log_receipt_rejected', ['number' => $this->invoice_number, 'reason' => $reason])
             );
         }
 

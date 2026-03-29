@@ -35,7 +35,7 @@ class ForeignCompanyController extends Controller
 
         if ($localCompanies->isEmpty()) {
             return redirect()->route('representative.foreign-companies.index')
-                ->with('error', 'يجب أن يكون لديك شركة محلية من نوع "مورد" مفعلة لتتمكن من تسجيل شركة أجنبية');
+                ->with('error', __('products.msg_must_have_supplier'));
         }
 
         $countries = $this->getCountriesList();
@@ -56,7 +56,7 @@ class ForeignCompanyController extends Controller
 
         if (!$localCompany) {
             return redirect()->back()
-                ->with('error', 'الشركة المحلية المختارة غير صالحة أو غير مفعلة')
+                ->with('error', __('products.msg_local_invalid'))
                 ->withInput();
         }
 
@@ -100,7 +100,7 @@ class ForeignCompanyController extends Controller
         );
 
         return redirect()->route('representative.foreign-companies.show', $company->id)
-            ->with('success', 'تم إنشاء الشركة الأجنبية بنجاح. يرجى رفع المستندات المطلوبة');
+            ->with('success', __('companies.msg_company_created'));
     }
 
     public function show($id)
@@ -178,7 +178,7 @@ class ForeignCompanyController extends Controller
 
         if (!$company->canEdit()) {
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('error', 'لا يمكن تعديل بيانات الشركة في الحالة الحالية');
+                ->with('error', __('companies.cannot_edit_current_status'));
         }
 
         $localCompanies = LocalCompany::where('representative_id', $representative->id)
@@ -201,7 +201,7 @@ class ForeignCompanyController extends Controller
 
         if (!$company->canEdit()) {
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('error', 'لا يمكن تعديل بيانات الشركة في الحالة الحالية');
+                ->with('error', __('companies.cannot_edit_current_status'));
         }
 
         // Validate that the local company still belongs to this representative
@@ -213,7 +213,7 @@ class ForeignCompanyController extends Controller
 
         if (!$localCompany) {
             return redirect()->back()
-                ->with('error', 'الشركة المحلية المختارة غير صالحة أو غير مفعلة')
+                ->with('error', __('products.msg_local_invalid'))
                 ->withInput();
         }
 
@@ -256,7 +256,7 @@ class ForeignCompanyController extends Controller
         );
 
         return redirect()->route('representative.foreign-companies.show', $company->id)
-            ->with('success', 'تم تحديث بيانات الشركة بنجاح');
+            ->with('success', __('companies.msg_updated'));
     }
 
     public function submitForReview($id)
@@ -269,12 +269,12 @@ class ForeignCompanyController extends Controller
 
         if (!in_array($company->status, ['uploading_documents', 'rejected'])) {
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('error', 'لا يمكن إرسال الطلب للمراجعة في الحالة الحالية');
+                ->with('error', __('companies.msg_cannot_submit_current_status'));
         }
 
         if (!$company->hasAllRequiredDocuments()) {
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('error', 'يجب رفع جميع المستندات المطلوبة قبل إرسال الطلب للمراجعة');
+                ->with('error', __('companies.msg_upload_docs_before_resubmit'));
         }
 
         $wasRejected = $company->status == 'rejected';
@@ -292,58 +292,11 @@ class ForeignCompanyController extends Controller
         );
 
         return redirect()->route('representative.foreign-companies.show', $company->id)
-            ->with('success', 'تم إرسال الطلب للمراجعة بنجاح');
+            ->with('success', __('companies.msg_resubmitted_success'));
     }
 
     private function getCountriesList(): array
     {
-        return [
-            'مصر',
-            'السعودية',
-            'الإمارات',
-            'الأردن',
-            'الكويت',
-            'قطر',
-            'البحرين',
-            'عمان',
-            'المغرب',
-            'تونس',
-            'الجزائر',
-            'السودان',
-            'اليمن',
-            'لبنان',
-            'سوريا',
-            'العراق',
-            'فلسطين',
-            'الصين',
-            'الهند',
-            'تركيا',
-            'إيران',
-            'باكستان',
-            'الولايات المتحدة',
-            'المملكة المتحدة',
-            'ألمانيا',
-            'فرنسا',
-            'إيطاليا',
-            'إسبانيا',
-            'سويسرا',
-            'بلجيكا',
-            'هولندا',
-            'السويد',
-            'الدنمارك',
-            'النرويج',
-            'فنلندا',
-            'كندا',
-            'أستراليا',
-            'اليابان',
-            'كوريا الجنوبية',
-            'البرازيل',
-            'المكسيك',
-            'الأرجنتين',
-            'جنوب أفريقيا',
-            'نيجيريا',
-            'كينيا',
-            'أخرى',
-        ];
+        return __('companies.countries_list');
     }
 }

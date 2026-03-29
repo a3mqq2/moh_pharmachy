@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شهادة تسجيل - {{ $localCompany->company_name }}</title>
+    <title>{{ __('companies.registration_certificate') }} - {{ $localCompany->company_name }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -197,70 +197,70 @@
 </head>
 <body>
     <div class="actions-bar no-print">
-        <button class="action-button print" onclick="window.print()">طباعة الشهادة</button>
-        <button class="action-button download" id="downloadBtn" onclick="downloadPDF()">تنزيل PDF</button>
+        <button class="action-button print" onclick="window.print()">{{ __('companies.cert_print') }}</button>
+        <button class="action-button download" id="downloadBtn" onclick="downloadPDF()">{{ __('companies.cert_download_pdf') }}</button>
     </div>
 
     <div class="certificate-container">
         <div class="certificate-content">
             <div class="certificate-body">
                 <p>
-                    بناءً على إستيفاء الوثائق المقدمة لغرض إعادة التسجيل بإدارة الصيدلة والمستلزمات الطبية
+                    {{ __('companies.cert_intro_text') }}
                     <br>
-                    بوزارة الصحة منحت هذه الشهادة إلى:
+                    {{ __('companies.cert_granted_to') }}
                 </p>
 
-                <p><span class="label">شركـــــة :</span></p>
+                <p><span class="label">{{ __('companies.cert_company_label') }}</span></p>
                 <p class="company-name">{{ $localCompany->company_name }}</p>
 
                 <div class="info-row">
                     <p>
-                        <span class="label">العنوان :</span>
+                        <span class="label">{{ __('companies.cert_address_label') }}</span>
                         <span class="value">{{ $localCompany->company_address }}{{ $localCompany->street ? ' - ' . $localCompany->street : '' }}{{ $localCompany->city ? ' - ' . $localCompany->city : '' }}</span>
                     </p>
                 </div>
 
                 <div class="registration-info">
                     <p>
-                        <span class="label">المجال :</span>
+                        <span class="label">{{ __('companies.cert_field_label') }}</span>
                         <span class="value">{{ $localCompany->license_specialty_name }}</span>
                         <span style="margin: 0 20px;">-</span>
-                        <span class="label">رقم التسجيل :</span>
+                        <span class="label">{{ __('companies.cert_reg_number_label') }}</span>
                         <span class="value">{{ $localCompany->registration_number }}</span>
                     </p>
                 </div>
 
                 <div class="registration-date-row">
                     <p>
-                        <span class="label">تاريخ التسجيل :</span>
+                        <span class="label">{{ __('companies.cert_reg_date_label') }}</span>
                         <span class="value">{{ $localCompany->registration_date?->format('Y-m-d') }}</span>
                     </p>
                     <p class="validity-notice">
-                        صلاحية هذه الشهادة لمدة سنة من تاريخ إصدارها.
+                        {{ __('companies.cert_validity_notice') }}
                     </p>
                 </div>
             </div>
 
             <div class="signatures">
                 <div class="signature-block">
-                    <div class="signature-title">إعداد</div>
+                    <div class="signature-title">{{ __('companies.cert_prepared_by') }}</div>
                     <div class="signature-line"></div>
                 </div>
 
                 <div class="signature-block">
-                    <div class="signature-title">رئيس قسم التسجيل والتفتيش</div>
+                    <div class="signature-title">{{ __('companies.cert_head_registration') }}</div>
                     <div class="signature-line"></div>
                 </div>
 
                 <div class="signature-block">
-                    <div class="signature-title">مدير إدارة الصيدلة</div>
+                    <div class="signature-title">{{ __('companies.cert_pharmacy_director') }}</div>
                     <div class="signature-line"></div>
                 </div>
             </div>
 
             <div class="qr-section">
                 <div class="qr-code" id="qrcode"></div>
-                <span class="qr-label">تحقق من هنا</span>
+                <span class="qr-label">{{ __('companies.cert_verify_here') }}</span>
             </div>
         </div>
     </div>
@@ -282,7 +282,7 @@
     function downloadPDF() {
         var btn = document.getElementById('downloadBtn');
         btn.disabled = true;
-        btn.textContent = 'جاري التحميل...';
+        btn.textContent = '{{ __('companies.cert_downloading') }}';
         var element = document.querySelector('.certificate-container');
         html2canvas(element, {
             scale: 2,
@@ -293,12 +293,12 @@
             var imgData = canvas.toDataURL('image/jpeg', 0.95);
             var pdf = new jspdf.jsPDF('p', 'mm', 'a4');
             pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-            pdf.save('شهادة_تسجيل_{{ $localCompany->company_name }}.pdf');
+            pdf.save('{{ __('companies.cert_pdf_filename') }}_{{ $localCompany->company_name }}.pdf');
             btn.disabled = false;
-            btn.textContent = 'تنزيل PDF';
+            btn.textContent = '{{ __('companies.cert_download_pdf') }}';
         }).catch(function() {
             btn.disabled = false;
-            btn.textContent = 'تنزيل PDF';
+            btn.textContent = '{{ __('companies.cert_download_pdf') }}';
         });
     }
     </script>

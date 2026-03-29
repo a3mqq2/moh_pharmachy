@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الموافقة المبدئية على الصنف الدوائي</title>
+    <title>{{ __('emails.product_preliminary_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -141,86 +141,86 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         <div class="content">
-            <h2>إشعار بالموافقة المبدئية على الصنف الدوائي</h2>
+            <h2>{{ __('emails.product_preliminary_heading') }}</h2>
 
             <div class="success-banner">
                 <div class="icon">✓</div>
-                <p>تمت الموافقة المبدئية على طلب التسجيل</p>
+                <p>{{ __('emails.product_preliminary_banner') }}</p>
             </div>
 
-            <p>السيد/ة {{ $representative->name }} المحترم/ة،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.dear_representative_named', ['name' => $representative->name]) }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
-            <p>يسرنا إبلاغكم بأنه تمت الموافقة المبدئية على طلب تسجيل الصنف الدوائي التالي:</p>
+            <p>{{ __('emails.product_preliminary_body') }}</p>
 
             <table class="info-table">
                 <tr>
-                    <td>اسم الصنف الدوائي:</td>
+                    <td>{{ __('emails.product_name_label') }}</td>
                     <td><strong>{{ $product->product_name }}</strong></td>
                 </tr>
                 <tr>
-                    <td>الشكل الصيدلاني:</td>
+                    <td>{{ __('emails.pharmaceutical_form') }}</td>
                     <td>{{ $product->pharmaceutical_form }}</td>
                 </tr>
                 <tr>
-                    <td>التركيز:</td>
+                    <td>{{ __('emails.concentration') }}</td>
                     <td>{{ $product->concentration }}</td>
                 </tr>
                 <tr>
-                    <td>الشركة المنتجة:</td>
+                    <td>{{ __('emails.manufacturer_label') }}</td>
                     <td>{{ $product->foreignCompany->company_name }}</td>
                 </tr>
                 <tr>
-                    <td>تاريخ الموافقة المبدئية:</td>
+                    <td>{{ __('emails.preliminary_approval_date') }}</td>
                     <td>{{ now()->format('Y-m-d') }}</td>
                 </tr>
             </table>
 
             <div class="note">
-                <p><strong>الخطوة التالية المطلوبة:</strong></p>
-                <p>يرجى استكمال البيانات التفصيلية التالية للصنف الدوائي:</p>
+                <p><strong>{{ __('emails.next_step_required') }}</strong></p>
+                <p>{{ __('emails.preliminary_instruction') }}</p>
                 <ol>
-                    <li>الاسم التجاري (Trade Name)</li>
-                    <li>البلد المنشأ (Origin)</li>
-                    <li>الوحدة (Unit) - مثل: Tablet(s), Capsule(s), Vial(s)</li>
-                    <li>نوع التعبئة (Packaging) - مثل: Blister pack, Bottle, Box</li>
-                    <li>كمية العبوة (Quantity)</li>
-                    <li>سعر الوحدة (Unit Price) - اختياري</li>
-                    <li>مدة الصلاحية بالأشهر (Shelf Life)</li>
-                    <li>ظروف التخزين (Storage Conditions)</li>
-                    <li>نوع البيع (Free Sale / For Export Only)</li>
-                    <li>العينات (Samples Provided / No Samples)</li>
-                    <li>المرجع الدستوري (Pharmacopeal Reference) - BP, USP, EP, IP</li>
-                    <li>تصنيف الصنف (Item Classification)</li>
+                    <li>{{ __('emails.preliminary_field_1') }}</li>
+                    <li>{{ __('emails.preliminary_field_2') }}</li>
+                    <li>{{ __('emails.preliminary_field_3') }}</li>
+                    <li>{{ __('emails.preliminary_field_4') }}</li>
+                    <li>{{ __('emails.preliminary_field_5') }}</li>
+                    <li>{{ __('emails.preliminary_field_6') }}</li>
+                    <li>{{ __('emails.preliminary_field_7') }}</li>
+                    <li>{{ __('emails.preliminary_field_8') }}</li>
+                    <li>{{ __('emails.preliminary_field_9') }}</li>
+                    <li>{{ __('emails.preliminary_field_10') }}</li>
+                    <li>{{ __('emails.preliminary_field_11') }}</li>
+                    <li>{{ __('emails.preliminary_field_12') }}</li>
                 </ol>
             </div>
 
             <div class="action-button">
                 <a href="{{ route('representative.pharmaceutical-products.edit-details', $product->id) }}">
-                    استكمال البيانات التفصيلية
+                    {{ __('emails.complete_details_button') }}
                 </a>
             </div>
 
-            <p><strong>ملاحظة هامة:</strong> بعد إدخال جميع البيانات المطلوبة، سيتم مراجعتها من قبل الإدارة وإصدار الموافقة النهائية.</p>
+            <p><strong>{{ __('emails.important_note') }}</strong> {{ __('emails.preliminary_note') }}</p>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة</strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">© {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">{{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

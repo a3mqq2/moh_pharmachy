@@ -24,7 +24,7 @@ class ExpiryReminderMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تنبيه بقرب انتهاء الصلاحية - وزارة الصحة',
+            subject: __('emails.expiry_reminder_subject'),
         );
     }
 

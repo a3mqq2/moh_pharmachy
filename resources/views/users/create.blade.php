@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'إضافة مستخدم جديد')
+@section('title', __('users.add_new_user'))
 
 @section('content')
 <div class="row">
@@ -10,10 +10,10 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
                         <i class="fas fa-user-plus me-2"></i>
-                        إضافة مستخدم جديد
+                        {{ __('users.add_new_user') }}
                     </h5>
                     <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-arrow-right me-1"></i> رجوع للقائمة
+                        <i class="fas fa-arrow-right me-1"></i> {{ __('users.back_to_list') }}
                     </a>
                 </div>
             </div>
@@ -22,11 +22,10 @@
                     @csrf
 
                     <div class="row">
-                        <!-- الاسم -->
                         <div class="col-md-6 mb-3">
                             <label for="name" class="form-label">
                                 <i class="fas fa-user me-1 text-muted"></i>
-                                اسم المستخدم <span class="text-danger">*</span>
+                                {{ __('users.username') }} <span class="text-danger">*</span>
                             </label>
                             <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                             @error('name')
@@ -34,11 +33,10 @@
                             @enderror
                         </div>
 
-                        <!-- البريد الإلكتروني -->
                         <div class="col-md-6 mb-3">
                             <label for="email" class="form-label">
                                 <i class="fas fa-envelope me-1 text-muted"></i>
-                                البريد الإلكتروني <span class="text-danger">*</span>
+                                {{ __('general.email') }} <span class="text-danger">*</span>
                             </label>
                             <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
                             @error('email')
@@ -46,24 +44,22 @@
                             @enderror
                         </div>
 
-                        <!-- كلمة المرور -->
                         <div class="col-md-6 mb-3">
                             <label for="password" class="form-label">
                                 <i class="fas fa-lock me-1 text-muted"></i>
-                                كلمة المرور <span class="text-danger">*</span>
+                                {{ __('general.password') }} <span class="text-danger">*</span>
                             </label>
                             <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" required>
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="text-muted">يجب أن تكون 8 أحرف على الأقل</small>
+                            <small class="text-muted">{{ __('users.password_hint') }}</small>
                         </div>
 
-                        <!-- تأكيد كلمة المرور -->
                         <div class="col-md-6 mb-3">
                             <label for="password_confirmation" class="form-label">
                                 <i class="fas fa-lock me-1 text-muted"></i>
-                                تأكيد كلمة المرور <span class="text-danger">*</span>
+                                {{ __('users.confirm_password') }} <span class="text-danger">*</span>
                             </label>
                             <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
                         </div>
@@ -71,10 +67,10 @@
                         <div class="col-md-6 mb-3">
                             <label for="department_id" class="form-label">
                                 <i class="fas fa-sitemap me-1 text-muted"></i>
-                                القسم
+                                {{ __('users.department') }}
                             </label>
                             <select name="department_id" id="department_id" class="form-select @error('department_id') is-invalid @enderror">
-                                <option value="">بدون قسم</option>
+                                <option value="">{{ __('users.no_department') }}</option>
                                 @foreach($departments->whereNull('parent_id') as $dept)
                                     <optgroup label="{{ $dept->name }}">
                                         <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
@@ -92,7 +88,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="job_title" class="form-label">
                                 <i class="fas fa-briefcase me-1 text-muted"></i>
-                                المسمى الوظيفي
+                                {{ __('general.job_title') }}
                             </label>
                             <input type="text" name="job_title" id="job_title" class="form-control @error('job_title') is-invalid @enderror" value="{{ old('job_title') }}">
                             @error('job_title')
@@ -104,11 +100,11 @@
                             <div class="d-flex align-items-center justify-content-between mb-3">
                                 <label class="form-label mb-0 fw-bold">
                                     <i class="fas fa-shield-alt me-1"></i>
-                                    الصلاحيات
+                                    {{ __('users.permissions') }}
                                 </label>
                                 <div class="d-flex gap-2">
-                                    <button type="button" class="btn btn-sm btn-outline-primary" id="selectAll"><i class="fas fa-check-double me-1"></i>تحديد الكل</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAll"><i class="fas fa-times me-1"></i>إلغاء الكل</button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="selectAll"><i class="fas fa-check-double me-1"></i>{{ __('users.select_all') }}</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAll"><i class="fas fa-times me-1"></i>{{ __('users.deselect_all') }}</button>
                                 </div>
                             </div>
 
@@ -154,10 +150,10 @@
 
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times me-1"></i> إلغاء
+                            <i class="fas fa-times me-1"></i> {{ __('general.cancel') }}
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save me-1"></i> حفظ المستخدم
+                            <i class="fas fa-save me-1"></i> {{ __('users.save_user') }}
                         </button>
                     </div>
                 </form>

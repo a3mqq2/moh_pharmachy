@@ -29,7 +29,7 @@ class ForeignCompanyActivated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم تفعيل الشركة الأجنبية - وزارة الصحة',
+            subject: __('emails.foreign_company_activated_subject'),
         );
     }
 

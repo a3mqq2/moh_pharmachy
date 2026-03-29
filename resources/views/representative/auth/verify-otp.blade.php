@@ -1,20 +1,20 @@
 @extends('layouts.auth')
 
-@section('title', 'التحقق من الرمز')
+@section('title', __('auth.verify_otp'))
 
 @section('content')
 <div class="login-container otp-container">
     <!-- Logo Section -->
     <div class="logo-section">
         <a href="{{ route('login') }}">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة - إدارة الصيدلة" />
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.site_title') }}" />
         </a>
     </div>
 
     <!-- Welcome Text -->
     <div class="welcome-section">
-        <h2>التحقق من البريد الإلكتروني</h2>
-        <p>أدخل الرمز المرسل إلى</p>
+        <h2>{{ __('auth.verify_email') }}</h2>
+        <p>{{ __('auth.enter_code_sent_to') }}</p>
         <p class="email-display">{{ $email }}</p>
     </div>
 
@@ -37,28 +37,28 @@
         </div>
 
         <button type="submit" class="submit-btn" id="verifyBtn" disabled>
-            <span>تحقق</span>
+            <span>{{ __('auth.verify') }}</span>
             <i class="ti ti-check"></i>
         </button>
     </form>
 
     <!-- Resend -->
     <div class="resend-section">
-        <p>لم يصلك الرمز؟</p>
+        <p>{{ __('auth.code_not_received') }}</p>
         <button type="button" class="resend-btn" id="resendBtn" disabled>
-            إعادة الإرسال <span id="countdown">(60)</span>
+            {{ __('auth.resend') }} <span id="countdown">(60)</span>
         </button>
     </div>
 
     <!-- Timer -->
     <div class="timer-section">
         <i class="ti ti-clock"></i>
-        <span>الرمز صالح لمدة <strong>10 دقائق</strong></span>
+        <span>{{ __('auth.code_valid_for') }} <strong>10 {{ __('auth.minutes') }}</strong></span>
     </div>
 
     <!-- Footer -->
     <div class="login-footer">
-        <p>© {{ date('Y') }} وزارة الصحة - إدارة الصيدلة</p>
+        <p>{{ __('auth.copyright', ['year' => date('Y')]) }}</p>
     </div>
 </div>
 @endsection
@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 // Reset timer
                 timeLeft = 60;
-                this.innerHTML = 'إعادة الإرسال <span id="countdown">(60)</span>';
+                this.innerHTML = '{{ __("auth.resend") }} <span id="countdown">(60)</span>';
 
                 const newCountdown = document.getElementById('countdown');
                 const newTimer = setInterval(() => {
@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             this.innerHTML = originalText;
             this.disabled = false;
-            showToast('حدث خطأ، يرجى المحاولة مرة أخرى', 'error');
+            showToast('{{ __("auth.error_try_again") }}', 'error');
         });
     });
 });

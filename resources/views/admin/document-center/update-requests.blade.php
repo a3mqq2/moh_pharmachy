@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'طلبات تعديل المستندات')
+@section('title', __('documents.update_requests'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-    <li class="breadcrumb-item active">طلبات تعديل المستندات</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('general.home') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('documents.update_requests') }}</li>
 @endsection
 
 @section('content')
@@ -12,13 +12,13 @@
     <div class="card-header bg-white py-3">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
             <h5 class="mb-0">
-                <i class="ti ti-replace me-2"></i>طلبات تعديل المستندات
+                <i class="ti ti-replace me-2"></i>{{ __('documents.update_requests') }}
                 @if($pendingCount > 0)
                     <span class="badge bg-warning rounded-pill ms-2">{{ $pendingCount }}</span>
                 @endif
             </h5>
             <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                <i class="fas fa-filter me-1"></i>الفلاتر
+                <i class="fas fa-filter me-1"></i>{{ __('general.filters') }}
             </button>
         </div>
     </div>
@@ -27,34 +27,34 @@
             <form method="GET" action="{{ route('admin.document-center.update-requests') }}">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-3">
-                        <label class="form-label">الحالة</label>
+                        <label class="form-label">{{ __('general.status') }}</label>
                         <select name="status" class="form-select">
-                            <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>المعلقة</option>
-                            <option value="approved" {{ $status == 'approved' ? 'selected' : '' }}>الموافق عليها</option>
-                            <option value="rejected" {{ $status == 'rejected' ? 'selected' : '' }}>المرفوضة</option>
-                            <option value="all" {{ $status == 'all' ? 'selected' : '' }}>الكل</option>
+                            <option value="pending" {{ $status == 'pending' ? 'selected' : '' }}>{{ __('documents.status_pending') }}</option>
+                            <option value="approved" {{ $status == 'approved' ? 'selected' : '' }}>{{ __('documents.status_approved') }}</option>
+                            <option value="rejected" {{ $status == 'rejected' ? 'selected' : '' }}>{{ __('documents.status_rejected') }}</option>
+                            <option value="all" {{ $status == 'all' ? 'selected' : '' }}>{{ __('general.all') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">النوع</label>
+                        <label class="form-label">{{ __('documents.type') }}</label>
                         <select name="doc_type" class="form-select">
-                            <option value="all" {{ $docType == 'all' ? 'selected' : '' }}>جميع الأنواع</option>
-                            <option value="local" {{ $docType == 'local' ? 'selected' : '' }}>شركات محلية</option>
-                            <option value="foreign" {{ $docType == 'foreign' ? 'selected' : '' }}>شركات أجنبية</option>
-                            <option value="product" {{ $docType == 'product' ? 'selected' : '' }}>أصناف دوائية</option>
+                            <option value="all" {{ $docType == 'all' ? 'selected' : '' }}>{{ __('documents.all_types') }}</option>
+                            <option value="local" {{ $docType == 'local' ? 'selected' : '' }}>{{ __('companies.local_companies') }}</option>
+                            <option value="foreign" {{ $docType == 'foreign' ? 'selected' : '' }}>{{ __('companies.foreign_companies') }}</option>
+                            <option value="product" {{ $docType == 'product' ? 'selected' : '' }}>{{ __('products.pharmaceutical_products') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">بحث</label>
-                        <input type="text" name="search" class="form-control" placeholder="اسم الملف، المندوب..." value="{{ request('search') }}">
+                        <label class="form-label">{{ __('general.search') }}</label>
+                        <input type="text" name="search" class="form-control" placeholder="{{ __('documents.search_file_rep') }}" value="{{ request('search') }}">
                     </div>
                     <div class="col-md-3 d-flex gap-2 justify-content-end">
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-search me-1"></i>بحث
+                            <i class="fas fa-search me-1"></i>{{ __('general.search') }}
                         </button>
                         @if(request('search') || request('doc_type') || request('status'))
                         <a href="{{ route('admin.document-center.update-requests') }}" class="btn btn-outline-secondary">
-                            <i class="ti ti-x me-1"></i>مسح
+                            <i class="ti ti-x me-1"></i>{{ __('general.clear') }}
                         </a>
                         @endif
                     </div>
@@ -68,13 +68,13 @@
                 <thead>
                     <tr>
                         <th style="width: 50px;">#</th>
-                        <th>المستند</th>
-                        <th>المصدر</th>
-                        <th>المندوب</th>
-                        <th>التاريخ</th>
-                        <th>الحالة</th>
-                        <th>الملفات</th>
-                        <th style="width: 150px;">الإجراءات</th>
+                        <th>{{ __('documents.document') }}</th>
+                        <th>{{ __('documents.source') }}</th>
+                        <th>{{ __('general.representative') }}</th>
+                        <th>{{ __('general.date') }}</th>
+                        <th>{{ __('general.status') }}</th>
+                        <th>{{ __('documents.files') }}</th>
+                        <th style="width: 150px;">{{ __('general.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,7 +95,7 @@
                             $parentRoute = route('admin.local-companies.show', $doc->local_company_id);
                             $oldFileUrl = Storage::url($doc->file_path);
                             $oldFileName = $doc->original_name ?? basename($doc->file_path);
-                            $sourceLabel = 'شركة محلية';
+                            $sourceLabel = __('invoices.local_company');
                             $sourceBadge = 'bg-info';
                         } elseif ($doc instanceof \App\Models\ForeignCompanyDocument) {
                             $docTypeName = $doc->document_type_name;
@@ -103,7 +103,7 @@
                             $parentRoute = route('admin.foreign-companies.show', $doc->foreign_company_id);
                             $oldFileUrl = Storage::url($doc->file_path);
                             $oldFileName = $doc->document_name ?? basename($doc->file_path);
-                            $sourceLabel = 'شركة أجنبية';
+                            $sourceLabel = __('invoices.foreign_company');
                             $sourceBadge = 'bg-primary';
                         } elseif ($doc instanceof \App\Models\PharmaceuticalProductDocument) {
                             $docTypeName = $doc->document_type_name;
@@ -111,7 +111,7 @@
                             $parentRoute = route('admin.pharmaceutical-products.show', $doc->pharmaceutical_product_id);
                             $oldFileUrl = Storage::url($doc->file_path);
                             $oldFileName = $doc->original_name ?? basename($doc->file_path);
-                            $sourceLabel = 'صنف دوائي';
+                            $sourceLabel = __('products.pharmaceutical_product');
                             $sourceBadge = 'bg-success';
                         }
 
@@ -136,12 +136,12 @@
                         <td><small class="text-muted">{{ $req->created_at->format('Y-m-d') }}<br>{{ $req->created_at->format('H:i') }}</small></td>
                         <td>
                             @if($req->status == 'pending')
-                                <span class="badge bg-warning">معلق</span>
+                                <span class="badge bg-warning">{{ __('documents.status_pending') }}</span>
                             @elseif($req->status == 'approved')
-                                <span class="badge bg-success">موافق</span>
+                                <span class="badge bg-success">{{ __('documents.status_approved') }}</span>
                                 <br><small class="text-muted">{{ $req->reviewer->name ?? '' }}</small>
                             @else
-                                <span class="badge bg-danger">مرفوض</span>
+                                <span class="badge bg-danger">{{ __('documents.status_rejected') }}</span>
                                 <br><small class="text-muted">{{ $req->reviewer->name ?? '' }}</small>
                             @endif
                         </td>
@@ -151,13 +151,13 @@
                                     data-file-url="{{ $oldFileUrl }}"
                                     data-file-name="{{ $oldFileName }}"
                                     data-download-url="{{ $oldFileUrl }}">
-                                    <i class="ti ti-file me-1"></i>الحالي
+                                    <i class="ti ti-file me-1"></i>{{ __('documents.current') }}
                                 </button>
                                 <button type="button" class="btn btn-sm btn-outline-primary btn-doc-preview"
                                     data-file-url="{{ $newFileUrl }}"
                                     data-file-name="{{ $req->original_name }}"
                                     data-download-url="{{ $newFileUrl }}">
-                                    <i class="ti ti-file-plus me-1"></i>الجديد
+                                    <i class="ti ti-file-plus me-1"></i>{{ __('documents.new') }}
                                 </button>
                             </div>
                         </td>
@@ -166,17 +166,17 @@
                             <div class="d-flex gap-1">
                                 <form action="{{ route('admin.document-center.update-requests.approve', $req) }}" method="POST" class="approve-form">
                                     @csrf
-                                    <button type="submit" class="btn btn-success btn-sm" title="موافقة">
-                                        <i class="ti ti-check me-1"></i>قبول
+                                    <button type="submit" class="btn btn-success btn-sm" title="{{ __('general.approve') }}">
+                                        <i class="ti ti-check me-1"></i>{{ __('general.accept') }}
                                     </button>
                                 </form>
-                                <button type="button" class="btn btn-outline-danger btn-sm" title="رفض" onclick="openRejectModal({{ $req->id }})">
-                                    <i class="ti ti-x me-1"></i>رفض
+                                <button type="button" class="btn btn-outline-danger btn-sm" title="{{ __('general.reject') }}" onclick="openRejectModal({{ $req->id }})">
+                                    <i class="ti ti-x me-1"></i>{{ __('general.reject') }}
                                 </button>
                             </div>
                             @elseif($req->status == 'rejected' && $req->rejection_reason)
                                 <small class="text-danger" data-bs-toggle="tooltip" title="{{ $req->rejection_reason }}">
-                                    <i class="ti ti-info-circle me-1"></i>سبب الرفض
+                                    <i class="ti ti-info-circle me-1"></i>{{ __('documents.rejection_reason') }}
                                 </small>
                             @else
                                 <small class="text-muted">{{ $req->reviewed_at?->format('Y-m-d') }}</small>
@@ -188,8 +188,8 @@
                         <td colspan="8">
                             <div class="text-center text-muted py-5">
                                 <i class="ti ti-checklist fs-1 d-block mb-2"></i>
-                                <h6>لا توجد طلبات</h6>
-                                <small>لا توجد طلبات تعديل مستندات {{ $status == 'pending' ? 'معلقة' : '' }}</small>
+                                <h6>{{ __('documents.no_requests') }}</h6>
+                                <small>{{ __('documents.no_pending_requests') }}</small>
                             </div>
                         </td>
                     </tr>
@@ -212,18 +212,18 @@
             <form id="rejectForm" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="ti ti-x me-2 text-danger"></i>رفض طلب التعديل</h5>
+                    <h5 class="modal-title"><i class="ti ti-x me-2 text-danger"></i>{{ __('documents.reject_update_request') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">سبب الرفض</label>
-                        <textarea name="rejection_reason" class="form-control" rows="3" placeholder="اذكر سبب رفض الطلب..."></textarea>
+                        <label class="form-label">{{ __('documents.rejection_reason') }}</label>
+                        <textarea name="rejection_reason" class="form-control" rows="3" placeholder="{{ __('documents.rejection_reason_placeholder') }}"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-danger"><i class="ti ti-x me-1"></i>رفض الطلب</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('general.cancel') }}</button>
+                    <button type="submit" class="btn btn-danger"><i class="ti ti-x me-1"></i>{{ __('documents.reject_request') }}</button>
                 </div>
             </form>
         </div>
@@ -248,14 +248,14 @@ document.querySelectorAll('.approve-form').forEach(form => {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         Swal.fire({
-            title: 'تأكيد الموافقة',
-            text: 'سيتم استبدال المستند القديم بالملف الجديد',
+            title: '{{ __("documents.confirm_approve") }}',
+            text: '{{ __("documents.approve_replace_text") }}',
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، موافق',
-            cancelButtonText: 'إلغاء'
+            confirmButtonText: '{{ __("documents.yes_approve") }}',
+            cancelButtonText: '{{ __("general.cancel") }}'
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
@@ -270,9 +270,9 @@ tooltipTriggerList.map(function (el) { return new bootstrap.Tooltip(el); });
 @if(session('success'))
     Swal.fire({
         icon: 'success',
-        title: 'تم بنجاح',
+        title: '{{ __("general.success") }}',
         text: '{{ session('success') }}',
-        confirmButtonText: 'حسناً',
+        confirmButtonText: '{{ __("general.ok") }}',
         confirmButtonColor: '#1a5f4a',
         timer: 3000,
         timerProgressBar: true
@@ -282,9 +282,9 @@ tooltipTriggerList.map(function (el) { return new bootstrap.Tooltip(el); });
 @if(session('error'))
     Swal.fire({
         icon: 'error',
-        title: 'خطأ',
+        title: '{{ __("general.error") }}',
         text: '{{ session('error') }}',
-        confirmButtonText: 'حسناً',
+        confirmButtonText: '{{ __("general.ok") }}',
         confirmButtonColor: '#1a5f4a'
     });
 @endif

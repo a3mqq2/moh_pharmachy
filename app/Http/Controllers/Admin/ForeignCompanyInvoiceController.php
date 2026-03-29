@@ -90,7 +90,7 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         if (!in_array($company->status, ['approved', 'active', 'expired'])) {
             return redirect()->back()
-                ->with('error', 'لا يمكن إصدار فاتورة للشركة في حالتها الحالية');
+                ->with('error', __('invoices.msg_cannot_issue_current_status'));
         }
 
         $defaultAmount = Setting::get('foreign_company_initial_fee', 5000);
@@ -114,7 +114,7 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
             $invoice = $lockedCompany->invoices()->create([
                 'invoice_number' => ForeignCompanyInvoice::generateInvoiceNumber(),
                 'amount' => $validated['amount'] ?? $defaultAmount,
-                'description' => $validated['description'] ?? 'رسوم تسجيل شركة أجنبية',
+                'description' => $validated['description'] ?? __('invoices.foreign_reg_fees'),
                 'status' => 'pending',
                 'issued_by' => auth()->id(),
             ]);
@@ -128,11 +128,11 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         if (!$invoice) {
             return redirect()->back()
-                ->with('error', 'يوجد فاتورة قائمة بالفعل لهذه الشركة');
+                ->with('error', __('invoices.msg_pending_invoice_exists'));
         }
 
         return redirect()->route('admin.foreign-company-invoices.show', $invoice->id)
-            ->with('success', 'تم إصدار الفاتورة بنجاح');
+            ->with('success', __('invoices.msg_invoice_issued_success'));
     }
 
     public function approveReceipt($companyId, $invoiceId)
@@ -144,22 +144,22 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         if ($invoice->status == 'cancelled') {
             return redirect()->back()
-                ->with('error', 'لا يمكن التعامل مع فاتورة ملغاة');
+                ->with('error', __('invoices.msg_cannot_handle_cancelled'));
         }
 
         if ($invoice->receipt_status == 'approved') {
             return redirect()->back()
-                ->with('info', 'تمت الموافقة على هذا الإيصال مسبقاً');
+                ->with('info', __('invoices.msg_already_approved'));
         }
 
         if (!$invoice->hasReceipt()) {
             return redirect()->back()
-                ->with('error', 'لم يتم رفع إيصال الدفع بعد');
+                ->with('error', __('invoices.msg_no_receipt_uploaded'));
         }
 
         if ($invoice->receipt_status != 'pending') {
             return redirect()->back()
-                ->with('error', 'لا يمكن الموافقة على هذا الإيصال في حالته الحالية');
+                ->with('error', __('invoices.msg_cannot_approve_current_status'));
         }
 
         DB::transaction(function () use ($company, $invoice) {
@@ -173,7 +173,7 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
                         ->first();
 
                     if ($existingCompany) {
-                        throw new \Exception('رقم القيد ' . $company->pre_registration_number . ' مستخدم بالفعل');
+                        throw new \Exception(__('invoices.msg_reg_number_in_use', ['number' => $company->pre_registration_number]));
                     }
 
                     $company->update([
@@ -203,8 +203,8 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
             }
         }
 
-        $message = 'تمت الموافقة على إيصال الدفع وتم تفعيل الشركة بنجاح';
-        $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : '';
+        $message = __('invoices.msg_receipt_approved_activated');
+        $message .= $emailFailed ? __('companies.msg_email_failed_notice') : '';
 
         return redirect()->route('admin.foreign-companies.show', $company->id)
             ->with('success', $message);
@@ -219,22 +219,22 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         if ($invoice->status == 'cancelled') {
             return redirect()->back()
-                ->with('error', 'لا يمكن التعامل مع فاتورة ملغاة');
+                ->with('error', __('invoices.msg_cannot_handle_cancelled'));
         }
 
         if ($invoice->receipt_status == 'rejected') {
             return redirect()->back()
-                ->with('info', 'تم رفض هذا الإيصال مسبقاً');
+                ->with('info', __('invoices.msg_already_rejected'));
         }
 
         if (!$invoice->hasReceipt()) {
             return redirect()->back()
-                ->with('error', 'لم يتم رفع إيصال الدفع بعد');
+                ->with('error', __('invoices.msg_no_receipt_uploaded'));
         }
 
         if ($invoice->receipt_status != 'pending') {
             return redirect()->back()
-                ->with('error', 'لا يمكن رفض هذا الإيصال في حالته الحالية');
+                ->with('error', __('invoices.msg_cannot_reject_current_status'));
         }
 
         $validated = $request->validate([
@@ -258,7 +258,7 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
         });
 
         return redirect()->route('admin.foreign-company-invoices.show', $invoice->id)
-            ->with('success', 'تم رفض إيصال الدفع بنجاح');
+            ->with('success', __('invoices.msg_receipt_rejected_success'));
     }
 
     public function downloadReceipt($companyId, $invoiceId)
@@ -268,7 +268,7 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         if (!$invoice->hasReceipt()) {
             return redirect()->back()
-                ->with('error', 'إيصال الدفع غير موجود');
+                ->with('error', __('invoices.msg_receipt_not_found'));
         }
 
         return Storage::disk('public')->download(
@@ -295,12 +295,12 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         if ($invoice->status == 'cancelled') {
             return redirect()->back()
-                ->with('info', 'هذه الفاتورة ملغاة بالفعل');
+                ->with('info', __('invoices.msg_already_cancelled'));
         }
 
         if ($invoice->status == 'paid') {
             return redirect()->back()
-                ->with('error', 'لا يمكن إلغاء فاتورة تم دفعها');
+                ->with('error', __('invoices.msg_cannot_cancel_paid'));
         }
 
         $validated = $request->validate([
@@ -309,13 +309,13 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         $invoice->update([
             'status' => 'cancelled',
-            'description' => $invoice->description . ' (ملغاة: ' . ($validated['cancellation_reason'] ?? 'بدون سبب محدد') . ')',
+            'description' => $invoice->description . ' (' . __('invoices.msg_cancelled_label', ['reason' => $validated['cancellation_reason'] ?? __('invoices.msg_no_reason')]) . ')',
         ]);
 
         $company = $invoice->foreignCompany;
 
         return redirect()->route('admin.foreign-company-invoices.show', $invoice->id)
-            ->with('success', 'تم إلغاء الفاتورة بنجاح');
+            ->with('success', __('invoices.msg_invoice_cancelled'));
     }
 
     public function edit($invoiceId)
@@ -325,7 +325,7 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         if ($invoice->status != 'pending' || $invoice->receipt_path) {
             return redirect()->back()
-                ->with('error', 'لا يمكن تعديل هذه الفاتورة');
+                ->with('error', __('invoices.msg_cannot_edit_invoice'));
         }
 
         return view('admin.foreign-companies.invoices.edit', compact('invoice'));
@@ -338,7 +338,7 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
 
         if ($invoice->status != 'pending' || $invoice->receipt_path) {
             return redirect()->back()
-                ->with('error', 'لا يمكن تعديل هذه الفاتورة');
+                ->with('error', __('invoices.msg_cannot_edit_invoice'));
         }
 
         $validated = $request->validate([
@@ -354,6 +354,6 @@ class ForeignCompanyInvoiceController extends Controller implements HasMiddlewar
         $company = $invoice->foreignCompany;
 
         return redirect()->route('admin.foreign-company-invoices.show', $invoice->id)
-            ->with('success', 'تم تحديث الفاتورة بنجاح');
+            ->with('success', __('invoices.msg_invoice_updated'));
     }
 }

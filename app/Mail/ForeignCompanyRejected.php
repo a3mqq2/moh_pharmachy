@@ -29,7 +29,7 @@ class ForeignCompanyRejected extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم رفض طلب تسجيل الشركة الأجنبية - وزارة الصحة',
+            subject: __('emails.foreign_company_rejected_subject'),
         );
     }
 

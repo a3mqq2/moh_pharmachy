@@ -3,8 +3,8 @@
 @section('title', $representative->name)
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('admin.company-representatives.index') }}">ممثلي الشركات</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('general.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.company-representatives.index') }}">{{ __('companies.company_representatives') }}</a></li>
     <li class="breadcrumb-item active">{{ $representative->name }}</li>
 @endsection
 
@@ -23,15 +23,15 @@
                     <span class="text-muted">{{ $representative->job_title }}</span>
                 @endif
                 @if($representative->is_verified)
-                    <span class="badge bg-success">موثق</span>
+                    <span class="badge bg-success">{{ __('companies.verified') }}</span>
                 @else
-                    <span class="badge bg-danger">غير موثق</span>
+                    <span class="badge bg-danger">{{ __('companies.not_verified') }}</span>
                 @endif
             </div>
         </div>
         <div>
             <a href="{{ route('admin.company-representatives.index') }}" class="btn btn-outline-secondary">
-                <i class="ti ti-arrow-right me-1"></i>رجوع
+                <i class="ti ti-arrow-right me-1"></i>{{ __('general.back') }}
             </a>
         </div>
     </div>
@@ -42,12 +42,12 @@
         <ul class="nav nav-tabs" id="repTabs">
             <li class="nav-item">
                 <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-info">
-                    <i class="ti ti-user me-1"></i>البيانات الشخصية
+                    <i class="ti ti-user me-1"></i>{{ __('companies.personal_info') }}
                 </button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-local">
-                    <i class="ti ti-building-skyscraper me-1"></i>الشركات المحلية
+                    <i class="ti ti-building-skyscraper me-1"></i>{{ __('companies.local_companies') }}
                     @if($representative->companies->count() > 0)
                         <span class="badge bg-info rounded-pill ms-1">{{ $representative->companies->count() }}</span>
                     @endif
@@ -55,7 +55,7 @@
             </li>
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-foreign">
-                    <i class="ti ti-world me-1"></i>الشركات الأجنبية
+                    <i class="ti ti-world me-1"></i>{{ __('companies.foreign_companies') }}
                     @if($representative->foreignCompanies->count() > 0)
                         <span class="badge bg-warning rounded-pill ms-1">{{ $representative->foreignCompanies->count() }}</span>
                     @endif
@@ -63,7 +63,7 @@
             </li>
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-products">
-                    <i class="ti ti-pill me-1"></i>الأصناف الدوائية
+                    <i class="ti ti-pill me-1"></i>{{ __('products.pharmaceutical_products') }}
                     @if($allProducts->count() > 0)
                         <span class="badge bg-primary rounded-pill ms-1">{{ $allProducts->count() }}</span>
                     @endif
@@ -77,37 +77,37 @@
             <div class="tab-pane fade show active" id="tab-info">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="section-title"><i class="ti ti-user me-2"></i>معلومات الممثل</h6>
+                        <h6 class="section-title"><i class="ti ti-user me-2"></i>{{ __('companies.representative_info') }}</h6>
                         <div class="table-responsive">
                             <table class="table table-striped info-table">
-                                <tr><th class="bg-light" width="40%">الاسم</th><td>{{ $representative->name }}</td></tr>
-                                <tr><th class="bg-light">المسمى الوظيفي</th><td>{{ $representative->job_title ?? '-' }}</td></tr>
+                                <tr><th class="bg-light" width="40%">{{ __('general.name') }}</th><td>{{ $representative->name }}</td></tr>
+                                <tr><th class="bg-light">{{ __('general.job_title') }}</th><td>{{ $representative->job_title ?? '-' }}</td></tr>
                                 <tr>
-                                    <th class="bg-light">حالة التوثيق</th>
+                                    <th class="bg-light">{{ __('companies.verification_status') }}</th>
                                     <td>
                                         @if($representative->is_verified)
-                                            <span class="badge bg-light-success">موثق</span>
+                                            <span class="badge bg-light-success">{{ __('companies.verified') }}</span>
                                         @else
-                                            <span class="badge bg-light-danger">غير موثق</span>
+                                            <span class="badge bg-light-danger">{{ __('companies.not_verified') }}</span>
                                         @endif
                                     </td>
                                 </tr>
-                                <tr><th class="bg-light">تاريخ التسجيل</th><td>{{ $representative->created_at->format('Y-m-d h:i A') }}</td></tr>
+                                <tr><th class="bg-light">{{ __('general.registration_date') }}</th><td>{{ $representative->created_at->format('Y-m-d h:i A') }}</td></tr>
                                 @if($representative->email_verified_at)
-                                <tr><th class="bg-light">تاريخ التوثيق</th><td>{{ $representative->email_verified_at->format('Y-m-d h:i A') }}</td></tr>
+                                <tr><th class="bg-light">{{ __('companies.verification_date') }}</th><td>{{ $representative->email_verified_at->format('Y-m-d h:i A') }}</td></tr>
                                 @endif
                             </table>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="section-title"><i class="ti ti-phone me-2"></i>معلومات الاتصال</h6>
+                        <h6 class="section-title"><i class="ti ti-phone me-2"></i>{{ __('companies.contact_info') }}</h6>
                         <div class="table-responsive">
                             <table class="table table-striped info-table">
-                                <tr><th class="bg-light" width="40%">البريد الإلكتروني</th><td><a href="mailto:{{ $representative->email }}">{{ $representative->email }}</a></td></tr>
-                                <tr><th class="bg-light">الهاتف</th><td dir="ltr" class="text-end">{{ $representative->phone ?? '-' }}</td></tr>
-                                <tr><th class="bg-light">الشركات المحلية</th><td><span class="badge bg-light-info">{{ $representative->companies->count() }}</span></td></tr>
-                                <tr><th class="bg-light">الشركات الأجنبية</th><td><span class="badge bg-light-warning">{{ $representative->foreignCompanies->count() }}</span></td></tr>
-                                <tr><th class="bg-light">الأصناف الدوائية</th><td><span class="badge bg-light-primary">{{ $allProducts->count() }}</span></td></tr>
+                                <tr><th class="bg-light" width="40%">{{ __('general.email') }}</th><td><a href="mailto:{{ $representative->email }}">{{ $representative->email }}</a></td></tr>
+                                <tr><th class="bg-light">{{ __('general.phone') }}</th><td dir="ltr" class="text-end">{{ $representative->phone ?? '-' }}</td></tr>
+                                <tr><th class="bg-light">{{ __('companies.local_companies') }}</th><td><span class="badge bg-light-info">{{ $representative->companies->count() }}</span></td></tr>
+                                <tr><th class="bg-light">{{ __('companies.foreign_companies') }}</th><td><span class="badge bg-light-warning">{{ $representative->foreignCompanies->count() }}</span></td></tr>
+                                <tr><th class="bg-light">{{ __('products.pharmaceutical_products') }}</th><td><span class="badge bg-light-primary">{{ $allProducts->count() }}</span></td></tr>
                             </table>
                         </div>
                     </div>
@@ -121,10 +121,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>اسم الشركة</th>
-                                <th>نوع النشاط</th>
-                                <th>الحالة</th>
-                                <th>تاريخ التسجيل</th>
+                                <th>{{ __('companies.company_name') }}</th>
+                                <th>{{ __('companies.activity_type') }}</th>
+                                <th>{{ __('general.status') }}</th>
+                                <th>{{ __('general.registration_date') }}</th>
                                 <th class="text-center" width="80"></th>
                             </tr>
                         </thead>
@@ -139,9 +139,9 @@
                                     </td>
                                     <td>
                                         @if($company->company_type === 'distributor')
-                                            <span class="badge bg-light-info"><i class="ti ti-truck-delivery me-1"></i>موزع</span>
+                                            <span class="badge bg-light-info"><i class="ti ti-truck-delivery me-1"></i>{{ __('companies.distributor') }}</span>
                                         @elseif($company->company_type === 'supplier')
-                                            <span class="badge bg-light-warning"><i class="ti ti-package me-1"></i>مورد</span>
+                                            <span class="badge bg-light-warning"><i class="ti ti-package me-1"></i>{{ __('companies.supplier') }}</span>
                                         @else
                                             {{ $company->company_type ?? '-' }}
                                         @endif
@@ -149,25 +149,25 @@
                                     <td>
                                         @switch($company->status)
                                             @case('uploading_documents')
-                                                <span class="badge bg-light-secondary">رفع المستندات</span>
+                                                <span class="badge bg-light-secondary">{{ __('companies.status_uploading_docs') }}</span>
                                                 @break
                                             @case('pending')
-                                                <span class="badge bg-light-warning">قيد المراجعة</span>
+                                                <span class="badge bg-light-warning">{{ __('companies.status_pending') }}</span>
                                                 @break
                                             @case('approved')
-                                                <span class="badge bg-light-primary">مقبولة</span>
+                                                <span class="badge bg-light-primary">{{ __('companies.status_approved') }}</span>
                                                 @break
                                             @case('payment_review')
-                                                <span class="badge bg-light-info">مراجعة الدفع</span>
+                                                <span class="badge bg-light-info">{{ __('companies.status_payment_review') }}</span>
                                                 @break
                                             @case('active')
-                                                <span class="badge bg-light-success">مفعلة</span>
+                                                <span class="badge bg-light-success">{{ __('companies.status_active') }}</span>
                                                 @break
                                             @case('rejected')
-                                                <span class="badge bg-light-danger">مرفوضة</span>
+                                                <span class="badge bg-light-danger">{{ __('companies.status_rejected') }}</span>
                                                 @break
                                             @case('suspended')
-                                                <span class="badge bg-light-dark">معلقة</span>
+                                                <span class="badge bg-light-dark">{{ __('companies.status_suspended') }}</span>
                                                 @break
                                             @default
                                                 <span class="badge bg-light-secondary">{{ $company->status }}</span>
@@ -187,7 +187,7 @@
                 @else
                 <div class="text-center py-5">
                     <i class="ti ti-building-skyscraper f-40 text-muted d-block mb-2"></i>
-                    <p class="text-muted mb-0">لا توجد شركات محلية مسجلة</p>
+                    <p class="text-muted mb-0">{{ __('companies.no_local_companies') }}</p>
                 </div>
                 @endif
             </div>
@@ -199,12 +199,12 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>اسم الشركة</th>
-                                <th>الدولة</th>
-                                <th>نوع الكيان</th>
-                                <th>نوع النشاط</th>
-                                <th>الحالة</th>
-                                <th>تاريخ التسجيل</th>
+                                <th>{{ __('companies.company_name') }}</th>
+                                <th>{{ __('general.country') }}</th>
+                                <th>{{ __('companies.entity_type') }}</th>
+                                <th>{{ __('companies.activity_type') }}</th>
+                                <th>{{ __('general.status') }}</th>
+                                <th>{{ __('general.registration_date') }}</th>
                                 <th class="text-center" width="80"></th>
                             </tr>
                         </thead>
@@ -220,18 +220,18 @@
                                     <td><span class="badge bg-dark">{{ $company->country ?? '-' }}</span></td>
                                     <td>
                                         @if($company->entity_type === 'factory')
-                                            <span class="badge bg-light-info">مصنع</span>
+                                            <span class="badge bg-light-info">{{ __('companies.entity_factory') }}</span>
                                         @else
-                                            <span class="badge bg-light-primary">شركة</span>
+                                            <span class="badge bg-light-primary">{{ __('companies.entity_company') }}</span>
                                         @endif
                                     </td>
                                     <td>
                                         @if($company->activity_type === 'medicines')
-                                            <span class="badge bg-light-primary">أدوية</span>
+                                            <span class="badge bg-light-primary">{{ __('companies.activity_medicines') }}</span>
                                         @elseif($company->activity_type === 'medical_supplies')
-                                            <span class="badge bg-light-info">مستلزمات طبية</span>
+                                            <span class="badge bg-light-info">{{ __('companies.activity_medical_supplies') }}</span>
                                         @elseif($company->activity_type === 'both')
-                                            <span class="badge bg-light-success">كلاهما</span>
+                                            <span class="badge bg-light-success">{{ __('companies.activity_both') }}</span>
                                         @else
                                             {{ $company->activity_type ?? '-' }}
                                         @endif
@@ -239,25 +239,25 @@
                                     <td>
                                         @switch($company->status)
                                             @case('uploading_documents')
-                                                <span class="badge bg-light-secondary">رفع المستندات</span>
+                                                <span class="badge bg-light-secondary">{{ __('companies.status_uploading_docs') }}</span>
                                                 @break
                                             @case('pending')
-                                                <span class="badge bg-light-warning">قيد المراجعة</span>
+                                                <span class="badge bg-light-warning">{{ __('companies.status_pending') }}</span>
                                                 @break
                                             @case('pending_payment')
-                                                <span class="badge bg-light-info">قيد السداد</span>
+                                                <span class="badge bg-light-info">{{ __('companies.status_pending_payment') }}</span>
                                                 @break
                                             @case('approved')
-                                                <span class="badge bg-light-primary">مقبولة</span>
+                                                <span class="badge bg-light-primary">{{ __('companies.status_approved') }}</span>
                                                 @break
                                             @case('active')
-                                                <span class="badge bg-light-success">مفعلة</span>
+                                                <span class="badge bg-light-success">{{ __('companies.status_active') }}</span>
                                                 @break
                                             @case('rejected')
-                                                <span class="badge bg-light-danger">مرفوضة</span>
+                                                <span class="badge bg-light-danger">{{ __('companies.status_rejected') }}</span>
                                                 @break
                                             @case('suspended')
-                                                <span class="badge bg-light-dark">معلقة</span>
+                                                <span class="badge bg-light-dark">{{ __('companies.status_suspended') }}</span>
                                                 @break
                                             @default
                                                 <span class="badge bg-light-secondary">{{ $company->status }}</span>
@@ -277,7 +277,7 @@
                 @else
                 <div class="text-center py-5">
                     <i class="ti ti-world f-40 text-muted d-block mb-2"></i>
-                    <p class="text-muted mb-0">لا توجد شركات أجنبية مسجلة</p>
+                    <p class="text-muted mb-0">{{ __('companies.no_foreign_companies') }}</p>
                 </div>
                 @endif
             </div>
@@ -289,12 +289,12 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>اسم المنتج</th>
-                                <th>الاسم العلمي</th>
-                                <th>الشكل الصيدلاني</th>
-                                <th>التركيز</th>
-                                <th>الشركة المصنعة</th>
-                                <th>الحالة</th>
+                                <th>{{ __('products.product_name') }}</th>
+                                <th>{{ __('products.scientific_name') }}</th>
+                                <th>{{ __('products.pharmaceutical_form') }}</th>
+                                <th>{{ __('products.concentration') }}</th>
+                                <th>{{ __('products.manufacturer') }}</th>
+                                <th>{{ __('general.status') }}</th>
                                 <th class="text-center" width="80"></th>
                             </tr>
                         </thead>
@@ -321,19 +321,19 @@
                                     <td>
                                         @switch($product->status)
                                             @case('pending_review')
-                                                <span class="badge bg-light-warning">قيد المراجعة</span>
+                                                <span class="badge bg-light-warning">{{ __('products.status_pending_review') }}</span>
                                                 @break
                                             @case('preliminary_approved')
-                                                <span class="badge bg-light-info">موافقة مبدئية</span>
+                                                <span class="badge bg-light-info">{{ __('products.status_preliminary_approved') }}</span>
                                                 @break
                                             @case('pending_payment')
-                                                <span class="badge bg-light-info">قيد السداد</span>
+                                                <span class="badge bg-light-info">{{ __('products.status_pending_payment') }}</span>
                                                 @break
                                             @case('active')
-                                                <span class="badge bg-light-success">مفعل</span>
+                                                <span class="badge bg-light-success">{{ __('products.status_active') }}</span>
                                                 @break
                                             @case('rejected')
-                                                <span class="badge bg-light-danger">مرفوض</span>
+                                                <span class="badge bg-light-danger">{{ __('general.rejected') }}</span>
                                                 @break
                                             @default
                                                 <span class="badge bg-light-secondary">{{ $product->status }}</span>
@@ -352,7 +352,7 @@
                 @else
                 <div class="text-center py-5">
                     <i class="ti ti-pill f-40 text-muted d-block mb-2"></i>
-                    <p class="text-muted mb-0">لا توجد أصناف دوائية مسجلة</p>
+                    <p class="text-muted mb-0">{{ __('products.no_products') }}</p>
                 </div>
                 @endif
             </div>

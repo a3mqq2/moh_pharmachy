@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الموافقة النهائية على الصنف الدوائي</title>
+    <title>{{ __('emails.product_final_approved_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -140,79 +140,79 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         <div class="content">
-            <h2>إشعار بالموافقة النهائية على تسجيل صنف دوائي</h2>
+            <h2>{{ __('emails.product_final_approved_heading') }}</h2>
 
-            <p>السيد/ة {{ $representative->name }} المحترم/ة،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.dear_representative_named', ['name' => $representative->name]) }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
-            <p>يسرنا إبلاغكم بأنه تمت الموافقة النهائية على طلب تسجيل الصنف الدوائي بإدارة الصيدلة - وزارة الصحة:</p>
+            <p>{{ __('emails.product_final_approved_body') }}</p>
 
             <table class="info-table">
                 <tr>
-                    <td>اسم الصنف الدوائي:</td>
+                    <td>{{ __('emails.product_name_label') }}</td>
                     <td><strong>{{ $product->product_name }}</strong></td>
                 </tr>
                 <tr>
-                    <td>الاسم العلمي:</td>
+                    <td>{{ __('emails.scientific_name_label') }}</td>
                     <td>{{ $product->scientific_name }}</td>
                 </tr>
                 <tr>
-                    <td>الشركة المنتجة:</td>
+                    <td>{{ __('emails.manufacturer_label') }}</td>
                     <td>{{ $product->foreign_company_name }}</td>
                 </tr>
                 <tr>
-                    <td>الشركة الموردة:</td>
-                    <td>{{ $product->supplier_company_name ?? 'غير محدد' }}</td>
+                    <td>{{ __('emails.supplier_label') }}</td>
+                    <td>{{ $product->supplier_company_name ?? __('emails.not_specified') }}</td>
                 </tr>
                 <tr>
-                    <td>تاريخ الموافقة:</td>
+                    <td>{{ __('emails.approval_date') }}</td>
                     <td>{{ now()->format('Y-m-d') }}</td>
                 </tr>
             </table>
 
             <div class="invoice-box">
-                <p class="label">تم إصدار فاتورة بقيمة:</p>
-                <p class="amount">{{ number_format($invoice->amount, 2) }} دينار ليبي</p>
-                <p class="label">رقم الفاتورة: <strong>{{ $invoice->invoice_number }}</strong></p>
+                <p class="label">{{ __('emails.invoice_issued_amount') }}</p>
+                <p class="amount">{{ number_format($invoice->amount, 2) }} {{ __('emails.lyd') }}</p>
+                <p class="label">{!! __('emails.invoice_number_strong', ['number' => '<strong>' . $invoice->invoice_number . '</strong>']) !!}</p>
             </div>
 
             <div class="note">
-                <p><strong>الخطوات المطلوبة لاستكمال التسجيل:</strong></p>
+                <p><strong>{{ __('emails.product_approved_steps') }}</strong></p>
                 <ol>
-                    <li>تسديد الفاتورة المذكورة أعلاه لدى أحد البنوك المعتمدة</li>
-                    <li>الحصول على إيصال دفع رسمي من البنك</li>
-                    <li>رفع صورة من إيصال الدفع من خلال لوحة التحكم</li>
-                    <li>انتظار مراجعة الإيصال من قبل الإدارة</li>
-                    <li>سيتم تفعيل الصنف الدوائي بعد الموافقة على الإيصال</li>
+                    <li>{{ __('emails.product_approved_step_1') }}</li>
+                    <li>{{ __('emails.product_approved_step_2') }}</li>
+                    <li>{{ __('emails.product_approved_step_3') }}</li>
+                    <li>{{ __('emails.product_approved_step_4') }}</li>
+                    <li>{{ __('emails.product_approved_step_5') }}</li>
                 </ol>
             </div>
 
             <div class="action-button">
                 <a href="{{ route('representative.pharmaceutical-products.show', $product->id) }}">
-                    رفع إيصال الدفع الآن
+                    {{ __('emails.upload_receipt_now') }}
                 </a>
             </div>
 
-            <p><strong>ملاحظة هامة:</strong> يرجى رفع إيصال الدفع في أقرب وقت ممكن لاستكمال عملية تسجيل الصنف الدوائي.</p>
+            <p><strong>{{ __('emails.important_note') }}</strong> {{ __('emails.product_final_note') }}</p>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة</strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">© {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">{{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

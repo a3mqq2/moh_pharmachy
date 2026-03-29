@@ -4,12 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Certificate - {{ $foreignCompany->company_name }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         @page {
-            size: A4 portrait;
+            size: A4 landscape;
             margin: 0;
         }
 
@@ -20,78 +17,69 @@
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
-            direction: ltr;
-            width: 210mm;
-            height: 297mm;
-            margin: 0 auto;
-            background: white;
+            font-family: 'Times New Roman', serif;
+            background-color: #e0e0e0;
+            margin: 0;
+            padding: 0;
         }
 
         .certificate-container {
-            width: 210mm;
-            height: 297mm;
+            width: 297mm;
+            height: 210mm;
             position: relative;
-            background-image: url('{{ asset('certificates/foreign-registration.jpg') }}');
-            background-size: cover;
+            background-image: url('{{ asset('certificates/drug.png') }}');
+            background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
+            margin: 0 auto;
+            overflow: hidden;
         }
 
-        .certificate-content {
+        .certificate-title {
             position: absolute;
-            top: 350px;
-            left: 50px;
-            right: 50px;
-            bottom: 80px;
+            top: 17%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .certificate-title .line4 {
+            font-size: 20pt;
+            font-weight: 700;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .content {
+            position: absolute;
+            top: 28%;
+            left: 12%;
+            right: 15%;
+            bottom: 20%;
+            z-index: 10;
+            color: #000;
+            font-size: 11pt;
+            line-height: 1.6;
+            text-align: justify;
             display: flex;
             flex-direction: column;
-            padding: 10px 30px;
         }
 
         .approval-text {
             text-align: center;
-            font-size: 12pt;
-            line-height: 1.8;
-            color: #1a1a1a;
-            margin-bottom: 20px;
-        }
-
-        .reg-table {
-            width: 100%;
-            margin-bottom: 20px;
-            border-collapse: collapse;
-        }
-
-        .reg-table td {
-            padding: 4px 10px;
             font-size: 11pt;
-            vertical-align: top;
-        }
-
-        .reg-table .label-cell {
-            width: 35%;
-            font-weight: bold;
-            color: #333;
-            white-space: nowrap;
-        }
-
-        .reg-table .sep-cell {
-            width: 3%;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .reg-table .value-cell {
-            width: 62%;
+            line-height: 1.7;
             color: #1a1a1a;
+            margin-bottom: 15px;
         }
 
         .reg-numbers {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 8px 0;
+            margin-bottom: 15px;
+            padding: 6px 0;
             border-top: 1px solid #999;
             border-bottom: 1px solid #999;
         }
@@ -106,6 +94,7 @@
             color: #555;
             display: block;
             margin-bottom: 2px;
+            font-size: 9pt;
         }
 
         .reg-num-value {
@@ -116,17 +105,17 @@
 
         .info-table {
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .info-table td {
-            padding: 6px 10px;
-            font-size: 11.5pt;
+            padding: 4px 10px;
+            font-size: 11pt;
             vertical-align: top;
         }
 
         .info-label {
-            width: 38%;
+            width: 30%;
             font-weight: bold;
             color: #333;
             white-space: nowrap;
@@ -146,88 +135,62 @@
         .validity-notice {
             text-align: left;
             font-size: 10.5pt;
-            margin-top: 15px;
-            padding-top: 10px;
+            margin-top: 10px;
+            padding-top: 8px;
         }
 
         .validity-notice span {
             font-weight: bold;
         }
 
-        .signatures {
-            position: absolute;
-            bottom: 60px;
-            left: 50px;
-            right: 50px;
+        .bottom-section {
             display: flex;
             justify-content: space-between;
-            font-size: 10pt;
-            color: #333;
+            align-items: flex-start;
+            margin-top: auto;
         }
 
         .signature-block {
+            width: 30%;
             text-align: center;
-            width: 45%;
-        }
-
-        .signature-title {
-            font-weight: bold;
-            font-size: 10pt;
-            margin-bottom: 5px;
         }
 
         .signature-line {
             border-top: 1px solid #333;
-            margin-top: 45px;
+            margin-top: 35px;
             padding-top: 5px;
         }
 
-        .qr-section {
-            position: absolute;
-            bottom: -29px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .qr-code {
-            width: 60px;
-            height: 60px;
-        }
-
-        .qr-label {
-            font-size: 8pt;
-            color: #666;
+        .signature-title {
             font-weight: bold;
+            font-size: 9pt;
+        }
+
+        .qr-block {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .prepared-by {
-            position: absolute;
-            bottom: 155px;
-            left: 50px;
-            right: 50px;
-            text-align: center;
             font-size: 10pt;
             font-weight: bold;
             color: #333;
+            margin-bottom: 5px;
         }
 
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+        .qr-code {
+            width: 55px;
+            height: 55px;
+        }
 
-            .certificate-container {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .no-print {
-                display: none !important;
-            }
+        .qr-label {
+            font-size: 7pt;
+            color: #666;
+            font-weight: bold;
+            margin-top: 3px;
         }
 
         .actions-bar {
@@ -253,6 +216,25 @@
         .action-button.download { background: #2e7d32; }
         .action-button.download:hover { background: #388e3c; }
         .action-button:disabled { opacity: 0.6; cursor: wait; }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: white;
+            }
+
+            .certificate-container {
+                page-break-after: avoid;
+                page-break-inside: avoid;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -262,7 +244,14 @@
     </div>
 
     <div class="certificate-container">
-        <div class="certificate-content">
+        <div class="certificate-title">
+            <div class="line1">State of Libya</div>
+            <div class="line2">Ministry of Health</div>
+            <div class="line3">Pharmacy Department</div>
+            <div class="line4">Registration Certificate of Manufacturing Site</div>
+        </div>
+
+        <div class="content">
             <div class="approval-text">
                 The High Supreme Committee for Registration of Pharmaceutical Companies
                 and Products has approved
@@ -322,22 +311,22 @@
                 &#9734; <span>VALID FOR FIVE YEARS FROM DATE OF ISSUE.</span>
             </div>
 
-            <div class="prepared-by">PREPARED BY:</div>
-
-            <div class="signatures">
+            <div class="bottom-section">
                 <div class="signature-block">
                     <div class="signature-line"></div>
                     <div class="signature-title">DIRECTOR OF PHARMACY<br>DEPARTMENT</div>
                 </div>
+
+                <div class="qr-block">
+                    <div class="prepared-by">PREPARED BY:</div>
+                    <div class="qr-code" id="qrcode"></div>
+                    <span class="qr-label">Verify Here</span>
+                </div>
+
                 <div class="signature-block">
                     <div class="signature-line"></div>
                     <div class="signature-title">HEAD OF REGISTRATION<br>SECTION</div>
                 </div>
-            </div>
-
-            <div class="qr-section">
-                <div class="qr-code" id="qrcode"></div>
-                <span class="qr-label">Verify Here</span>
             </div>
         </div>
     </div>
@@ -346,8 +335,8 @@
     <script>
     new QRCode(document.getElementById('qrcode'), {
         text: '{{ route('verify.foreign-company', $foreignCompany->id) }}',
-        width: 60,
-        height: 60,
+        width: 55,
+        height: 55,
         colorDark: '#0d47a1',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
@@ -368,8 +357,8 @@
             backgroundColor: '#ffffff'
         }).then(function(canvas) {
             var imgData = canvas.toDataURL('image/jpeg', 0.95);
-            var pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-            pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+            var pdf = new jspdf.jsPDF('l', 'mm', 'a4');
+            pdf.addImage(imgData, 'JPEG', 0, 0, 297, 210);
             pdf.save('Registration_Certificate_{{ $foreignCompany->company_name }}.pdf');
             btn.disabled = false;
             btn.textContent = 'Download PDF';

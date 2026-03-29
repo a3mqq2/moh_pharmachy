@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'لوحة التحكم')
+@section('title', __('general.dashboard'))
 
 @section('content')
 
@@ -19,18 +19,18 @@
                         </div>
                         <div class="text-end">
                             <h2 class="mb-0 fw-bold">{{ $stats['local_companies']['total'] }}</h2>
-                            <span class="text-muted">الشركات المحلية</span>
+                            <span class="text-muted">{{ __('dashboard.local_companies') }}</span>
                         </div>
                     </div>
                     <div class="d-flex gap-3 mb-2">
-                        <span class="badge bg-success-subtle text-success"><i class="ti ti-circle-check me-1"></i>{{ $stats['local_companies']['active'] }} نشطة</span>
-                        <span class="badge bg-warning-subtle text-warning"><i class="ti ti-clock me-1"></i>{{ $stats['local_companies']['pending'] }} معلقة</span>
+                        <span class="badge bg-success-subtle text-success"><i class="ti ti-circle-check me-1"></i>{{ $stats['local_companies']['active'] }} {{ __('dashboard.active') }}</span>
+                        <span class="badge bg-warning-subtle text-warning"><i class="ti ti-clock me-1"></i>{{ $stats['local_companies']['pending'] }} {{ __('dashboard.pending') }}</span>
                     </div>
                     <div class="border-top pt-2 mt-2">
                         <div class="d-flex justify-content-between text-muted small">
-                            <span><i class="ti ti-calendar-event me-1"></i>اليوم: {{ $stats['local_companies']['today'] }}</span>
-                            <span><i class="ti ti-calendar-stats me-1"></i>الأسبوع: {{ $stats['local_companies']['week'] }}</span>
-                            <span><i class="ti ti-calendar me-1"></i>الشهر: {{ $stats['local_companies']['month'] }}</span>
+                            <span><i class="ti ti-calendar-event me-1"></i>{{ __('dashboard.today') }} {{ $stats['local_companies']['today'] }}</span>
+                            <span><i class="ti ti-calendar-stats me-1"></i>{{ __('dashboard.this_week') }} {{ $stats['local_companies']['week'] }}</span>
+                            <span><i class="ti ti-calendar me-1"></i>{{ __('dashboard.this_month') }} {{ $stats['local_companies']['month'] }}</span>
                         </div>
                     </div>
                 </div>
@@ -48,18 +48,18 @@
                         </div>
                         <div class="text-end">
                             <h2 class="mb-0 fw-bold">{{ $stats['foreign_companies']['total'] }}</h2>
-                            <span class="text-muted">الشركات الأجنبية</span>
+                            <span class="text-muted">{{ __('dashboard.foreign_companies') }}</span>
                         </div>
                     </div>
                     <div class="d-flex gap-3 mb-2">
-                        <span class="badge bg-success-subtle text-success"><i class="ti ti-circle-check me-1"></i>{{ $stats['foreign_companies']['active'] }} نشطة</span>
-                        <span class="badge bg-warning-subtle text-warning"><i class="ti ti-clock me-1"></i>{{ $stats['foreign_companies']['pending'] }} معلقة</span>
+                        <span class="badge bg-success-subtle text-success"><i class="ti ti-circle-check me-1"></i>{{ $stats['foreign_companies']['active'] }} {{ __('dashboard.active') }}</span>
+                        <span class="badge bg-warning-subtle text-warning"><i class="ti ti-clock me-1"></i>{{ $stats['foreign_companies']['pending'] }} {{ __('dashboard.pending') }}</span>
                     </div>
                     <div class="border-top pt-2 mt-2">
                         <div class="d-flex justify-content-between text-muted small">
-                            <span><i class="ti ti-calendar-event me-1"></i>اليوم: {{ $stats['foreign_companies']['today'] }}</span>
-                            <span><i class="ti ti-calendar-stats me-1"></i>الأسبوع: {{ $stats['foreign_companies']['week'] }}</span>
-                            <span><i class="ti ti-calendar me-1"></i>الشهر: {{ $stats['foreign_companies']['month'] }}</span>
+                            <span><i class="ti ti-calendar-event me-1"></i>{{ __('dashboard.today') }} {{ $stats['foreign_companies']['today'] }}</span>
+                            <span><i class="ti ti-calendar-stats me-1"></i>{{ __('dashboard.this_week') }} {{ $stats['foreign_companies']['week'] }}</span>
+                            <span><i class="ti ti-calendar me-1"></i>{{ __('dashboard.this_month') }} {{ $stats['foreign_companies']['month'] }}</span>
                         </div>
                     </div>
                 </div>
@@ -77,18 +77,18 @@
                         </div>
                         <div class="text-end">
                             <h2 class="mb-0 fw-bold">{{ $stats['pharmaceutical_products']['total'] }}</h2>
-                            <span class="text-muted">الأصناف الدوائية</span>
+                            <span class="text-muted">{{ __('dashboard.pharmaceutical_products') }}</span>
                         </div>
                     </div>
                     <div class="d-flex gap-3 mb-2">
-                        <span class="badge bg-success-subtle text-success"><i class="ti ti-circle-check me-1"></i>{{ $stats['pharmaceutical_products']['active'] }} معتمدة</span>
-                        <span class="badge bg-warning-subtle text-warning"><i class="ti ti-clock me-1"></i>{{ $stats['pharmaceutical_products']['pending_review'] + $stats['pharmaceutical_products']['pending_final_approval'] }} معلقة</span>
+                        <span class="badge bg-success-subtle text-success"><i class="ti ti-circle-check me-1"></i>{{ $stats['pharmaceutical_products']['active'] }} {{ __('dashboard.approved') }}</span>
+                        <span class="badge bg-warning-subtle text-warning"><i class="ti ti-clock me-1"></i>{{ $stats['pharmaceutical_products']['pending_review'] + $stats['pharmaceutical_products']['pending_final_approval'] }} {{ __('dashboard.pending') }}</span>
                     </div>
                     <div class="border-top pt-2 mt-2">
                         <div class="d-flex justify-content-between text-muted small">
-                            <span><i class="ti ti-calendar-event me-1"></i>اليوم: {{ $stats['pharmaceutical_products']['today'] }}</span>
-                            <span><i class="ti ti-calendar-stats me-1"></i>الأسبوع: {{ $stats['pharmaceutical_products']['week'] }}</span>
-                            <span><i class="ti ti-calendar me-1"></i>الشهر: {{ $stats['pharmaceutical_products']['month'] }}</span>
+                            <span><i class="ti ti-calendar-event me-1"></i>{{ __('dashboard.today') }} {{ $stats['pharmaceutical_products']['today'] }}</span>
+                            <span><i class="ti ti-calendar-stats me-1"></i>{{ __('dashboard.this_week') }} {{ $stats['pharmaceutical_products']['week'] }}</span>
+                            <span><i class="ti ti-calendar me-1"></i>{{ __('dashboard.this_month') }} {{ $stats['pharmaceutical_products']['month'] }}</span>
                         </div>
                     </div>
                 </div>
@@ -106,11 +106,11 @@
                         </div>
                         <div class="text-end">
                             <h2 class="mb-0 fw-bold">{{ $stats['representatives']['total'] }}</h2>
-                            <span class="text-muted">ممثلي الشركات</span>
+                            <span class="text-muted">{{ __('dashboard.company_representatives') }}</span>
                         </div>
                     </div>
                     <div class="d-flex gap-3 mb-2">
-                        <span class="badge bg-success-subtle text-success"><i class="ti ti-circle-check me-1"></i>{{ $stats['representatives']['active'] }} نشط</span>
+                        <span class="badge bg-success-subtle text-success"><i class="ti ti-circle-check me-1"></i>{{ $stats['representatives']['active'] }} {{ __('dashboard.active_single') }}</span>
                     </div>
                 </div>
             </div>
@@ -126,7 +126,7 @@
             <div class="card-header bg-warning bg-opacity-10 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
                     <i class="ti ti-building-skyscraper text-warning fs-4"></i>
-                    <h6 class="mb-0 fw-bold">شركات محلية تحتاج مراجعة</h6>
+                    <h6 class="mb-0 fw-bold">{{ __('dashboard.local_needs_review') }}</h6>
                 </div>
                 <span class="badge bg-warning">{{ $pendingLocalCompanies->count() }}</span>
             </div>
@@ -135,9 +135,9 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>الشركة</th>
-                                <th>الممثل</th>
-                                <th>التاريخ</th>
+                                <th>{{ __('dashboard.company') }}</th>
+                                <th>{{ __('dashboard.representative') }}</th>
+                                <th>{{ __('general.date') }}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -166,7 +166,7 @@
             <div class="card-header bg-info bg-opacity-10 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
                     <i class="ti ti-world text-info fs-4"></i>
-                    <h6 class="mb-0 fw-bold">شركات أجنبية تحتاج مراجعة</h6>
+                    <h6 class="mb-0 fw-bold">{{ __('dashboard.foreign_needs_review') }}</h6>
                 </div>
                 <span class="badge bg-info">{{ $pendingForeignCompanies->count() }}</span>
             </div>
@@ -175,9 +175,9 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>الشركة</th>
-                                <th>الدولة</th>
-                                <th>التاريخ</th>
+                                <th>{{ __('dashboard.company') }}</th>
+                                <th>{{ __('general.country') }}</th>
+                                <th>{{ __('general.date') }}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -206,7 +206,7 @@
             <div class="card-header bg-primary bg-opacity-10 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
                     <i class="ti ti-pill text-primary fs-4"></i>
-                    <h6 class="mb-0 fw-bold text-white">أصناف دوائية تحتاج موافقة</h6>
+                    <h6 class="mb-0 fw-bold text-white">{{ __('dashboard.products_need_approval') }}</h6>
                 </div>
                 <span class="badge bg-primary">{{ $pendingApprovalProducts->count() }}</span>
             </div>
@@ -215,12 +215,12 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>اسم الصنف</th>
-                                <th>الشكل الصيدلاني</th>
-                                <th>الشركة الأجنبية</th>
-                                <th>الممثل</th>
-                                <th>الحالة</th>
-                                <th>التاريخ</th>
+                                <th>{{ __('dashboard.product_name') }}</th>
+                                <th>{{ __('products.dosage_form') }}</th>
+                                <th>{{ __('companies.foreign_company') }}</th>
+                                <th>{{ __('dashboard.representative') }}</th>
+                                <th>{{ __('general.status') }}</th>
+                                <th>{{ __('general.date') }}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -252,7 +252,7 @@
             <div class="card-header bg-danger bg-opacity-10 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
                     <i class="ti ti-file-invoice text-danger fs-4"></i>
-                    <h6 class="mb-0 fw-bold">فواتير تحتاج رفع إيصال</h6>
+                    <h6 class="mb-0 fw-bold">{{ __('dashboard.invoices_need_receipt') }}</h6>
                 </div>
                 <span class="badge bg-danger">{{ $pendingReceiptInvoices->count() }}</span>
             </div>
@@ -261,11 +261,11 @@
                     <table class="table table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>رقم الفاتورة</th>
-                                <th>الصنف الدوائي</th>
-                                <th>الممثل</th>
-                                <th>المبلغ</th>
-                                <th>التاريخ</th>
+                                <th>{{ __('dashboard.invoice_number') }}</th>
+                                <th>{{ __('dashboard.pharma_product') }}</th>
+                                <th>{{ __('dashboard.representative') }}</th>
+                                <th>{{ __('general.amount') }}</th>
+                                <th>{{ __('general.date') }}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -275,7 +275,7 @@
                                 <td><span class="badge bg-dark">{{ $invoice->invoice_number }}</span></td>
                                 <td><strong>{{ $invoice->pharmaceuticalProduct->product_name }}</strong></td>
                                 <td><small class="text-muted">{{ $invoice->pharmaceuticalProduct->representative->name }}</small></td>
-                                <td><strong class="text-primary">{{ number_format($invoice->amount, 2) }} د.ل</strong></td>
+                                <td><strong class="text-primary">{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</strong></td>
                                 <td><small>{{ $invoice->created_at->format('Y-m-d') }}</small></td>
                                 <td>
                                     <a href="{{ route('admin.pharmaceutical-products.show', $invoice->pharmaceuticalProduct) }}" class="btn btn-sm btn-outline-primary"><i class="ti ti-eye"></i></a>
@@ -293,7 +293,7 @@
 @endif
 
 <div class="mb-4">
-    <h6 class="fw-bold text-muted mb-3"><i class="ti ti-building-skyscraper me-1"></i>الشركات المحلية حسب الحالة</h6>
+    <h6 class="fw-bold text-muted mb-3"><i class="ti ti-building-skyscraper me-1"></i>{{ __('dashboard.local_by_status') }}</h6>
     <div class="row g-3">
         <div class="col-6 col-md-3">
             <a href="{{ route('admin.local-companies.index', ['status' => 'active']) }}" class="text-decoration-none">
@@ -301,7 +301,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-circle-check"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['local_companies']['active'] }}</h3>
-                        <span class="filled-widget-label">نشطة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.active') }}</span>
                     </div>
                 </div>
             </a>
@@ -312,7 +312,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-clock"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['local_companies']['pending'] }}</h3>
-                        <span class="filled-widget-label">قيد المراجعة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.pending_review') }}</span>
                     </div>
                 </div>
             </a>
@@ -323,7 +323,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-thumb-up"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['local_companies']['approved'] }}</h3>
-                        <span class="filled-widget-label">موافق عليها</span>
+                        <span class="filled-widget-label">{{ __('dashboard.approved_status') }}</span>
                     </div>
                 </div>
             </a>
@@ -334,7 +334,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-x"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['local_companies']['rejected'] }}</h3>
-                        <span class="filled-widget-label">مرفوضة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.rejected') }}</span>
                     </div>
                 </div>
             </a>
@@ -343,7 +343,7 @@
 </div>
 
 <div class="mb-4">
-    <h6 class="fw-bold text-muted mb-3"><i class="ti ti-world me-1"></i>الشركات الأجنبية حسب الحالة</h6>
+    <h6 class="fw-bold text-muted mb-3"><i class="ti ti-world me-1"></i>{{ __('dashboard.foreign_by_status') }}</h6>
     <div class="row g-3">
         <div class="col-6 col-md-3">
             <a href="{{ route('admin.foreign-companies.index', ['status' => 'active']) }}" class="text-decoration-none">
@@ -351,7 +351,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-circle-check"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['foreign_companies']['active'] }}</h3>
-                        <span class="filled-widget-label">نشطة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.active') }}</span>
                     </div>
                 </div>
             </a>
@@ -362,7 +362,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-clock"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['foreign_companies']['pending'] }}</h3>
-                        <span class="filled-widget-label">قيد المراجعة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.pending_review') }}</span>
                     </div>
                 </div>
             </a>
@@ -373,7 +373,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-upload"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['foreign_companies']['uploading_documents'] }}</h3>
-                        <span class="filled-widget-label">رفع المستندات</span>
+                        <span class="filled-widget-label">{{ __('dashboard.uploading_docs') }}</span>
                     </div>
                 </div>
             </a>
@@ -384,7 +384,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-x"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['foreign_companies']['rejected'] }}</h3>
-                        <span class="filled-widget-label">مرفوضة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.rejected') }}</span>
                     </div>
                 </div>
             </a>
@@ -393,7 +393,7 @@
 </div>
 
 <div class="mb-4">
-    <h6 class="fw-bold text-muted mb-3"><i class="ti ti-pill me-1"></i>الأصناف الدوائية حسب الحالة</h6>
+    <h6 class="fw-bold text-muted mb-3"><i class="ti ti-pill me-1"></i>{{ __('dashboard.products_by_status') }}</h6>
     <div class="row g-3">
         <div class="col-6 col-md-3">
             <a href="{{ route('admin.pharmaceutical-products.index', ['status' => 'active']) }}" class="text-decoration-none">
@@ -401,7 +401,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-circle-check"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['pharmaceutical_products']['active'] }}</h3>
-                        <span class="filled-widget-label">معتمدة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.approved') }}</span>
                     </div>
                 </div>
             </a>
@@ -412,7 +412,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-clock"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['pharmaceutical_products']['pending_review'] }}</h3>
-                        <span class="filled-widget-label">قيد المراجعة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.pending_review') }}</span>
                     </div>
                 </div>
             </a>
@@ -423,7 +423,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-credit-card"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['pharmaceutical_products']['pending_payment'] }}</h3>
-                        <span class="filled-widget-label">قيد السداد</span>
+                        <span class="filled-widget-label">{{ __('dashboard.pending_payment') }}</span>
                     </div>
                 </div>
             </a>
@@ -434,7 +434,7 @@
                     <div class="filled-widget-icon"><i class="ti ti-x"></i></div>
                     <div>
                         <h3 class="filled-widget-count">{{ $stats['pharmaceutical_products']['rejected'] }}</h3>
-                        <span class="filled-widget-label">مرفوضة</span>
+                        <span class="filled-widget-label">{{ __('dashboard.rejected') }}</span>
                     </div>
                 </div>
             </a>
@@ -449,8 +449,8 @@
                 <div class="card-body d-flex align-items-center gap-3 py-3">
                     <div class="widget-icon-sm bg-primary-subtle text-primary"><i class="ti ti-building-skyscraper"></i></div>
                     <div>
-                        <h6 class="mb-0 fw-bold text-dark">إضافة شركة محلية</h6>
-                        <small class="text-muted">تسجيل شركة محلية جديدة</small>
+                        <h6 class="mb-0 fw-bold text-dark">{{ __('companies.add_local') }}</h6>
+                        <small class="text-muted">{{ __('companies.add_local_desc') }}</small>
                     </div>
                     <i class="ti ti-chevron-left ms-auto text-muted"></i>
                 </div>
@@ -463,8 +463,8 @@
                 <div class="card-body d-flex align-items-center gap-3 py-3">
                     <div class="widget-icon-sm bg-info-subtle text-info"><i class="ti ti-world"></i></div>
                     <div>
-                        <h6 class="mb-0 fw-bold text-dark">إضافة شركة أجنبية</h6>
-                        <small class="text-muted">تسجيل شركة أجنبية جديدة</small>
+                        <h6 class="mb-0 fw-bold text-dark">{{ __('companies.add_foreign') }}</h6>
+                        <small class="text-muted">{{ __('companies.add_foreign_desc') }}</small>
                     </div>
                     <i class="ti ti-chevron-left ms-auto text-muted"></i>
                 </div>
@@ -477,8 +477,8 @@
                 <div class="card-body d-flex align-items-center gap-3 py-3">
                     <div class="widget-icon-sm bg-success-subtle text-success"><i class="ti ti-speakerphone"></i></div>
                     <div>
-                        <h6 class="mb-0 fw-bold text-dark">إرسال تعميم</h6>
-                        <small class="text-muted">إنشاء تعميم جديد</small>
+                        <h6 class="mb-0 fw-bold text-dark">{{ __('announcements.send_announcement') }}</h6>
+                        <small class="text-muted">{{ __('announcements.send_announcement_desc') }}</small>
                     </div>
                     <i class="ti ti-chevron-left ms-auto text-muted"></i>
                 </div>

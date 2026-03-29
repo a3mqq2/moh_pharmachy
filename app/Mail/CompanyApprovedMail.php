@@ -29,7 +29,7 @@ class CompanyApprovedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم قبول طلب تسجيل الشركة - وزارة الصحة',
+            subject: __('emails.company_approved_subject'),
         );
     }
 

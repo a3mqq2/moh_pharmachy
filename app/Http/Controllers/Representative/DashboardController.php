@@ -72,7 +72,7 @@ class DashboardController extends Controller
                 return [
                     'id' => $invoice->id,
                     'invoice_number' => $invoice->invoice_number,
-                    'company_name' => 'صنف دوائي: ' . $invoice->pharmaceuticalProduct->product_name,
+                    'company_name' => __('dashboard.pharma_product_prefix') . $invoice->pharmaceuticalProduct->product_name,
                     'amount' => $invoice->amount,
                     'type' => 'pharmaceutical',
                     'route' => route('representative.pharmaceutical-products.show', $invoice->pharmaceuticalProduct->id),
@@ -104,7 +104,7 @@ class DashboardController extends Controller
 
         foreach ($expiringLocalCompanies as $company) {
             $renewalInvoice = $company->invoices()
-                ->where('description', 'رسوم تجديد الشركة المحلية')
+                ->where('description', __('general.local_company_renewal_fee_desc'))
                 ->where('status', 'unpaid')
                 ->first();
 
@@ -126,7 +126,7 @@ class DashboardController extends Controller
 
         foreach ($expiringForeignCompanies as $company) {
             $renewalInvoice = $company->invoices()
-                ->where('description', 'رسوم تجديد الشركة الأجنبية')
+                ->where('description', __('general.foreign_company_renewal_fee_desc'))
                 ->where('status', 'pending')
                 ->first();
 

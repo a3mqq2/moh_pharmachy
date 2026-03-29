@@ -29,7 +29,7 @@ class CompanyActivatedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'تم تفعيل الشركة - وزارة الصحة',
+            subject: __('emails.company_activated_subject'),
         );
     }
 

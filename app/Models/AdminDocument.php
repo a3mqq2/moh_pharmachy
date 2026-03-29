@@ -68,32 +68,32 @@ class AdminDocument extends Model
     public static function visibilityOptions(): array
     {
         return [
-            'all' => 'الجميع',
-            'department' => 'قسم محدد',
-            'specific' => 'مستخدمين محددين',
+            'all' => __('documents.visibility_all'),
+            'department' => __('documents.visibility_department'),
+            'specific' => __('documents.visibility_specific'),
         ];
     }
 
     public static function categories(): array
     {
         return [
-            'circulars' => 'تعاميم',
-            'decisions' => 'قرارات',
-            'meeting_minutes' => 'محاضر اجتماعات',
-            'templates' => 'نماذج عمل',
-            'policies' => 'سياسات وإجراءات',
-            'reports' => 'تقارير',
-            'contracts' => 'عقود واتفاقيات',
-            'letters' => 'خطابات رسمية',
-            'manuals' => 'أدلة إرشادية',
-            'plans' => 'خطط عمل',
-            'forms' => 'نماذج رسمية',
-            'regulations' => 'لوائح وأنظمة',
-            'training' => 'مواد تدريبية',
-            'financial' => 'مستندات مالية',
-            'hr' => 'موارد بشرية',
-            'technical' => 'مستندات تقنية',
-            'other' => 'أخرى',
+            'circulars' => __('documents.cat_circulars'),
+            'decisions' => __('documents.cat_decisions'),
+            'meeting_minutes' => __('documents.cat_meeting_minutes'),
+            'templates' => __('documents.cat_templates'),
+            'policies' => __('documents.cat_policies'),
+            'reports' => __('documents.cat_reports'),
+            'contracts' => __('documents.cat_contracts'),
+            'letters' => __('documents.cat_letters'),
+            'manuals' => __('documents.cat_manuals'),
+            'plans' => __('documents.cat_plans'),
+            'forms' => __('documents.cat_forms'),
+            'regulations' => __('documents.cat_regulations'),
+            'training' => __('documents.cat_training'),
+            'financial' => __('documents.cat_financial'),
+            'hr' => __('documents.cat_hr'),
+            'technical' => __('documents.cat_technical'),
+            'other' => __('documents.type_other'),
         ];
     }
 

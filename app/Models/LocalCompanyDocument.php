@@ -38,16 +38,16 @@ class LocalCompanyDocument extends Model
     public static function documentTypes()
     {
         return [
-            'establishment_contract' => 'عقد التأسيس / محضر الاجتماع / النظام الأساسي',
-            'control_certificate' => 'شهادة التسجيل بمركز الرقابة',
-            'commercial_license' => 'الترخيص التجاري',
-            'chamber_certificate' => 'شهادة الغرفة التجارية',
-            'commercial_register' => 'السجل التجاري',
-            'assignment_letter' => 'رسالة التكليف + رقم الهوية / الجواز',
-            'practice_permit' => 'إذن مزاولة المهنة + إذن فتح منشأة',
-            'official_email' => 'بريد إلكتروني رسمي باسم الشركة',
-            'factory_registration' => 'رسالة التنفيذ من المصنع أو شهادة تسجيل سارية المفعول للتسجيل المصنعي',
-            'other' => 'أخرى',
+            'establishment_contract' => __('documents.local_type_establishment_contract'),
+            'control_certificate' => __('documents.local_type_control_certificate'),
+            'commercial_license' => __('documents.local_type_commercial_license'),
+            'chamber_certificate' => __('documents.local_type_chamber_certificate'),
+            'commercial_register' => __('documents.local_type_commercial_register'),
+            'assignment_letter' => __('documents.local_type_assignment_letter'),
+            'practice_permit' => __('documents.local_type_practice_permit'),
+            'official_email' => __('documents.local_type_official_email'),
+            'factory_registration' => __('documents.local_type_factory_registration'),
+            'other' => __('documents.type_other'),
         ];
     }
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'المستخدمين')
+@section('title', __('users.users'))
 
 @section('content')
 <div class="row">
@@ -10,32 +10,31 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
                         <i class="fas fa-users me-2"></i>
-                        إدارة المستخدمين
+                        {{ __('users.user_management') }}
                         <span class="badge bg-primary ms-2">{{ $users->total() }}</span>
                     </h5>
                     <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-1"></i> إضافة مستخدم
+                        <i class="fas fa-plus me-1"></i> {{ __('users.add_user') }}
                     </a>
                 </div>
             </div>
 
             <div class="card-body">
-                <!-- Filters -->
                 <form method="GET" action="{{ route('admin.users.index') }}" class="mb-4">
                     <div class="row g-3">
                         <div class="col-md-3">
-                            <input type="text" name="search" class="form-control" placeholder="بحث بالاسم أو البريد..." value="{{ request('search') }}">
+                            <input type="text" name="search" class="form-control" placeholder="{{ __('users.search_placeholder') }}" value="{{ request('search') }}">
                         </div>
                         <div class="col-md-2">
                             <select name="status" class="form-select">
-                                <option value="">كل الحالات</option>
-                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>نشط</option>
-                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>غير نشط</option>
+                                <option value="">{{ __('users.all_statuses') }}</option>
+                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('general.active') }}</option>
+                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('general.inactive') }}</option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <select name="role" class="form-select">
-                                <option value="">كل الأدوار</option>
+                                <option value="">{{ __('users.all_roles') }}</option>
                                 @foreach($roles as $role)
                                     <option value="{{ $role->name }}" {{ request('role') == $role->name ? 'selected' : '' }}>
                                         {{ $role->display_name ?? $role->name }}
@@ -45,34 +44,33 @@
                         </div>
                         <div class="col-md-2">
                             <select name="sort" class="form-select">
-                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>الأحدث</option>
-                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>الأقدم</option>
-                                <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>الاسم</option>
+                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>{{ __('users.latest') }}</option>
+                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>{{ __('users.oldest') }}</option>
+                                <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>{{ __('general.name') }}</option>
                             </select>
                         </div>
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-secondary">
-                                <i class="fas fa-search me-1"></i> بحث
+                                <i class="fas fa-search me-1"></i> {{ __('general.search') }}
                             </button>
                             <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-redo me-1"></i> إعادة تعيين
+                                <i class="fas fa-redo me-1"></i> {{ __('users.reset') }}
                             </a>
                         </div>
                     </div>
                 </form>
 
-                <!-- Table -->
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered align-middle mb-0">
                         <thead class="table-primary">
                             <tr>
                                 <th width="5%">#</th>
-                                <th width="25%">المستخدم</th>
-                                <th width="20%">البريد الإلكتروني</th>
-                                <th width="15%">الدور</th>
-                                <th width="10%">الحالة</th>
-                                <th width="10%">تاريخ الإنشاء</th>
-                                <th width="15%" class="text-center">الإجراءات</th>
+                                <th width="25%">{{ __('users.user') }}</th>
+                                <th width="20%">{{ __('general.email') }}</th>
+                                <th width="15%">{{ __('general.role') }}</th>
+                                <th width="10%">{{ __('general.status') }}</th>
+                                <th width="10%">{{ __('general.created_at') }}</th>
+                                <th width="15%" class="text-center">{{ __('general.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,9 +101,9 @@
                                     </td>
                                     <td>
                                         @if($user->is_active)
-                                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>نشط</span>
+                                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>{{ __('general.active') }}</span>
                                         @else
-                                            <span class="badge bg-danger"><i class="fas fa-times me-1"></i>غير نشط</span>
+                                            <span class="badge bg-danger"><i class="fas fa-times me-1"></i>{{ __('general.inactive') }}</span>
                                         @endif
                                     </td>
                                     <td>
@@ -113,44 +111,43 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-warning" title="تعديل">
+                                            <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-outline-warning" title="{{ __('general.edit') }}">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <form action="{{ route('admin.users.toggle', $user) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="btn btn-sm btn-outline-{{ $user->is_active ? 'secondary' : 'success' }}" title="{{ $user->is_active ? 'إلغاء التفعيل' : 'تفعيل' }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-{{ $user->is_active ? 'secondary' : 'success' }}" title="{{ $user->is_active ? __('users.deactivate') : __('users.activate') }}">
                                                     <i class="fas fa-{{ $user->is_active ? 'ban' : 'check' }}"></i>
                                                 </button>
                                             </form>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $user->id }}" title="حذف">
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $user->id }}" title="{{ __('general.delete') }}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </div>
 
-                                        <!-- Delete Modal -->
                                         <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-danger text-white">
-                                                        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>تأكيد الحذف</h5>
+                                                        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>{{ __('general.confirm_delete') }}</h5>
                                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <div class="modal-body text-center py-4">
                                                         <i class="fas fa-user-times fa-3x text-danger mb-3"></i>
-                                                        <p class="mb-1">هل أنت متأكد من حذف المستخدم:</p>
+                                                        <p class="mb-1">{{ __('users.confirm_delete_user') }}</p>
                                                         <h5 class="text-primary">{{ $user->name }}</h5>
                                                         <small class="text-muted">{{ $user->email }}</small>
                                                     </div>
                                                     <div class="modal-footer justify-content-center">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                            <i class="fas fa-times me-1"></i>إلغاء
+                                                            <i class="fas fa-times me-1"></i>{{ __('general.cancel') }}
                                                         </button>
                                                         <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-danger">
-                                                                <i class="fas fa-trash me-1"></i>حذف
+                                                                <i class="fas fa-trash me-1"></i>{{ __('general.delete') }}
                                                             </button>
                                                         </form>
                                                     </div>
@@ -163,9 +160,9 @@
                                 <tr>
                                     <td colspan="7" class="text-center py-5">
                                         <i class="fas fa-users fa-3x text-muted mb-3 d-block"></i>
-                                        <h5 class="text-muted">لا يوجد مستخدمين</h5>
+                                        <h5 class="text-muted">{{ __('users.no_users') }}</h5>
                                         <a href="{{ route('admin.users.create') }}" class="btn btn-primary mt-2">
-                                            <i class="fas fa-plus me-1"></i> إضافة مستخدم جديد
+                                            <i class="fas fa-plus me-1"></i> {{ __('users.add_new_user_btn') }}
                                         </a>
                                     </td>
                                 </tr>
@@ -174,11 +171,10 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
                 @if($users->hasPages())
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <div class="text-muted">
-                            عرض {{ $users->firstItem() }} إلى {{ $users->lastItem() }} من {{ $users->total() }} نتيجة
+                            {{ __('users.showing_results', ['first' => $users->firstItem(), 'last' => $users->lastItem(), 'total' => $users->total()]) }}
                         </div>
                         <div>
                             {{ $users->withQueryString()->links() }}

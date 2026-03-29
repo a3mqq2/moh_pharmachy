@@ -1,7 +1,7 @@
 @php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.auth')
 
-@section('title', 'تفاصيل الفاتورة')
+@section('title', __('invoices.invoice_details'))
 
 @push('styles')
 <style>
@@ -240,24 +240,24 @@
         <div class="page-header-content">
             <a href="{{ route('representative.foreign-companies.show', $company) }}" class="back-to-home">
                 <i class="ti ti-arrow-right"></i>
-                <span>رجوع إلى تفاصيل الشركة</span>
+                <span>{{ __('invoices.back_to_company') }}</span>
             </a>
             <h2 class="page-title">
                 <i class="ti ti-file-invoice"></i>
-                تفاصيل الفاتورة
+                {{ __('invoices.invoice_details') }}
             </h2>
-            <p class="page-subtitle">عرض تفاصيل الفاتورة ورفع إيصال الدفع</p>
+            <p class="page-subtitle">{{ __('invoices.invoice_details_desc') }}</p>
         </div>
     </div>
 
-    
+
 
     <div class="info-card">
         <div class="card-header">
-            <h3><i class="ti ti-file-invoice"></i> معلومات الفاتورة</h3>
+            <h3><i class="ti ti-file-invoice"></i> {{ __('invoices.invoice_info') }}</h3>
             <div>
                 <span class="badge {{ $invoice->status == 'paid' ? 'badge-success' : ($invoice->status == 'pending' ? 'badge-warning' : 'badge-danger') }}">
-                    {{ $invoice->status == 'paid' ? 'مدفوعة' : ($invoice->status == 'pending' ? 'معلقة' : 'ملغاة') }}
+                    {{ $invoice->status == 'paid' ? __('invoices.status_paid') : ($invoice->status == 'pending' ? __('invoices.pending_label') : __('invoices.status_cancelled')) }}
                 </span>
             </div>
         </div>
@@ -265,32 +265,32 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="info-group">
-                        <label>رقم الفاتورة</label>
+                        <label>{{ __('invoices.invoice_number') }}</label>
                         <p>{{ $invoice->invoice_number }}</p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="info-group">
-                        <label>المبلغ</label>
-                        <p><strong>{{ number_format($invoice->amount, 2) }} د.ل</strong></p>
+                        <label>{{ __('general.amount') }}</label>
+                        <p><strong>{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</strong></p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="info-group">
-                        <label>الوصف</label>
+                        <label>{{ __('general.description') }}</label>
                         <p>{{ $invoice->description }}</p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="info-group">
-                        <label>تاريخ الإصدار</label>
+                        <label>{{ __('general.issue_date') }}</label>
                         <p>{{ $invoice->created_at->format('Y-m-d') }}</p>
                     </div>
                 </div>
                 @if($invoice->due_date)
                 <div class="col-md-6">
                     <div class="info-group">
-                        <label>تاريخ الاستحقاق</label>
+                        <label>{{ __('invoices.due_date') }}</label>
                         <p>{{ $invoice->due_date->format('Y-m-d') }}</p>
                     </div>
                 </div>
@@ -298,7 +298,7 @@
                 @if($invoice->notes)
                 <div class="col-md-12">
                     <div class="info-group">
-                        <label>ملاحظات</label>
+                        <label>{{ __('general.notes') }}</label>
                         <p>{{ $invoice->notes }}</p>
                     </div>
                 </div>
@@ -310,37 +310,37 @@
     @if($invoice->status == 'pending')
     <div class="info-card">
         <div class="card-header">
-            <h3><i class="ti ti-upload"></i> رفع إيصال الدفع</h3>
+            <h3><i class="ti ti-upload"></i> {{ __('invoices.upload_receipt') }}</h3>
         </div>
         <div class="card-body">
             @if($invoice->receipt_path)
                 <div class="alert alert-info">
                     <i class="ti ti-info-circle me-2"></i>
                     @if($invoice->receipt_status == 'pending')
-                        <strong>تم رفع إيصال الدفع بنجاح.</strong> جاري مراجعة الإيصال من قبل الإدارة.
+                        <strong>{{ __('invoices.receipt_uploaded_success') }}</strong> {{ __('invoices.receipt_under_review') }}
                     @elseif($invoice->receipt_status == 'rejected')
-                        <strong>تم رفض الإيصال.</strong>
-                        <br>السبب: {{ $invoice->receipt_rejection_reason }}
-                        <br><small class="text-muted">يرجى رفع إيصال جديد.</small>
+                        <strong>{{ __('invoices.receipt_rejected_msg') }}</strong>
+                        <br>{{ __('invoices.rejection_reason') }}: {{ $invoice->receipt_rejection_reason }}
+                        <br><small class="text-muted">{{ __('invoices.please_upload_new') }}</small>
                     @endif
                 </div>
 
                 @if($invoice->receipt_status == 'rejected' || $invoice->receipt_status == 'pending')
                 <div class="mb-3">
-                    <label class="form-label">الإيصال الحالي</label>
+                    <label class="form-label">{{ __('invoices.current_receipt') }}</label>
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-outline-info btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}">
-                            <i class="ti ti-eye"></i> عرض الإيصال
+                        <button type="button" class="btn btn-outline-info btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="{{ __('invoices.upload_receipt') }}_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}">
+                            <i class="ti ti-eye"></i> {{ __('invoices.view_receipt') }}
                         </button>
                         <a href="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}" class="btn btn-outline-primary">
-                            <i class="ti ti-download"></i> تحميل الإيصال
+                            <i class="ti ti-download"></i> {{ __('invoices.download_receipt') }}
                         </a>
                         @if($invoice->receipt_status == 'rejected')
                         <form action="{{ route('representative.foreign-companies.invoices.delete-receipt', [$company, $invoice]) }}" method="POST" class="d-inline" id="delete-receipt-form">
                             @csrf
                             @method('DELETE')
                             <button type="button" class="btn btn-outline-danger" onclick="confirmDelete('delete-receipt-form')">
-                                <i class="ti ti-trash"></i> حذف الإيصال
+                                <i class="ti ti-trash"></i> {{ __('invoices.delete_receipt') }}
                             </button>
                         </form>
                         @endif
@@ -352,15 +352,15 @@
                 <form action="{{ route('representative.foreign-companies.invoices.upload-receipt', [$company, $invoice]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label for="receipt" class="form-label">رفع إيصال جديد <span class="text-danger">*</span></label>
+                        <label for="receipt" class="form-label">{{ __('invoices.upload_new_receipt') }} <span class="text-danger">*</span></label>
                         <input type="file" name="receipt" id="receipt" class="form-control @error('receipt') is-invalid @enderror" required accept="image/*,application/pdf">
                         @error('receipt')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">الأنواع المسموحة: PDF, JPG, PNG (الحجم الأقصى: 5MB)</small>
+                        <small class="text-muted">{{ __('invoices.allowed_types') }}</small>
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        <i class="ti ti-upload"></i> رفع الإيصال
+                        <i class="ti ti-upload"></i> {{ __('invoices.upload_receipt') }}
                     </button>
                 </form>
                 @endif
@@ -368,15 +368,15 @@
                 <form action="{{ route('representative.foreign-companies.invoices.upload-receipt', [$company, $invoice]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label for="receipt" class="form-label">إيصال الدفع <span class="text-danger">*</span></label>
+                        <label for="receipt" class="form-label">{{ __('invoices.payment_receipt') }} <span class="text-danger">*</span></label>
                         <input type="file" name="receipt" id="receipt" class="form-control @error('receipt') is-invalid @enderror" required accept="image/*,application/pdf">
                         @error('receipt')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <small class="text-muted">الأنواع المسموحة: PDF, JPG, PNG (الحجم الأقصى: 5MB)</small>
+                        <small class="text-muted">{{ __('invoices.allowed_types') }}</small>
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        <i class="ti ti-upload"></i> رفع الإيصال
+                        <i class="ti ti-upload"></i> {{ __('invoices.upload_receipt') }}
                     </button>
                 </form>
             @endif
@@ -385,22 +385,22 @@
     @elseif($invoice->status == 'paid')
     <div class="info-card">
         <div class="card-header">
-            <h3><i class="ti ti-file-check"></i> إيصال الدفع</h3>
+            <h3><i class="ti ti-file-check"></i> {{ __('invoices.payment_receipt') }}</h3>
         </div>
         <div class="card-body">
             <div class="alert alert-success">
                 <i class="ti ti-check me-2"></i>
-                <strong>تم الموافقة على الإيصال بنجاح.</strong>
+                <strong>{{ __('invoices.receipt_approved_success') }}</strong>
                 @if($invoice->paid_at)
-                    <br>تاريخ الدفع: {{ $invoice->paid_at->format('Y-m-d') }}
+                    <br>{{ __('invoices.payment_date') }}: {{ $invoice->paid_at->format('Y-m-d') }}
                 @endif
             </div>
             @if($invoice->receipt_path)
-            <button type="button" class="btn btn-info btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="إيصال_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}">
-                <i class="ti ti-eye"></i> عرض الإيصال
+            <button type="button" class="btn btn-info btn-doc-preview" data-file-url="{{ Storage::url($invoice->receipt_path) }}" data-file-name="{{ __('invoices.upload_receipt') }}_{{ $invoice->invoice_number }}" data-download-url="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}">
+                <i class="ti ti-eye"></i> {{ __('invoices.view_receipt') }}
             </button>
             <a href="{{ route('representative.foreign-companies.invoices.download-receipt', [$company, $invoice]) }}" class="btn btn-primary">
-                <i class="ti ti-download"></i> تحميل الإيصال
+                <i class="ti ti-download"></i> {{ __('invoices.download_receipt') }}
             </a>
             @endif
         </div>

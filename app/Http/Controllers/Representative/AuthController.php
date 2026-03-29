@@ -46,18 +46,18 @@ class AuthController extends Controller
             'phone' => 'required|string|max:20',
             'email' => 'required|email|unique:company_representatives,email',
         ], [
-            'name.required' => 'الاسم مطلوب',
-            'job_title.required' => 'المسمى الوظيفي مطلوب',
-            'phone.required' => 'رقم الهاتف مطلوب',
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.email' => 'البريد الإلكتروني غير صالح',
-            'email.unique' => 'البريد الإلكتروني مسجل مسبقاً',
+            'name.required' => __('auth.validation_name_required'),
+            'job_title.required' => __('auth.validation_job_title_required'),
+            'phone.required' => __('auth.validation_phone_required'),
+            'email.required' => __('auth.validation_email_required'),
+            'email.email' => __('auth.validation_email_invalid'),
+            'email.unique' => __('auth.validation_email_taken'),
         ]);
 
         if (!$this->verifyRecaptcha($request->input('recaptcha_token'), 'register')) {
             return back()
                 ->withInput()
-                ->with('error', 'فشل التحقق الأمني، يرجى المحاولة مرة أخرى');
+                ->with('error', __('auth.recaptcha_failed'));
         }
 
         // Store registration data in session
@@ -75,7 +75,7 @@ class AuthController extends Controller
         Mail::to($request->email)->send(new RepresentativeOtpMail($otp, $request->name, 'registration'));
 
         return redirect()->route('verify-otp')
-            ->with('success', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني');
+            ->with('success', __('auth.otp_sent_to_email'));
     }
 
     public function showVerifyOtpForm()
@@ -95,18 +95,18 @@ class AuthController extends Controller
         $request->validate([
             'otp' => 'required|string|size:6',
         ], [
-            'otp.required' => 'رمز التحقق مطلوب',
-            'otp.size' => 'رمز التحقق يجب أن يكون 6 أرقام',
+            'otp.required' => __('auth.validation_otp_required'),
+            'otp.size' => __('auth.validation_otp_size'),
         ]);
 
         $registrationData = session('registration_data');
         if (!$registrationData) {
             return redirect()->route('register')
-                ->with('error', 'انتهت صلاحية الجلسة، يرجى التسجيل مرة أخرى');
+                ->with('error', __('auth.session_expired_register'));
         }
 
         if (!RepresentativeOtp::verifyOtp($registrationData['email'], $request->otp, 'registration')) {
-            return back()->with('error', 'رمز التحقق غير صحيح أو منتهي الصلاحية');
+            return back()->with('error', __('auth.invalid_otp'));
         }
 
         // Redirect to set password
@@ -127,15 +127,15 @@ class AuthController extends Controller
         $request->validate([
             'password' => 'required|string|min:8|confirmed',
         ], [
-            'password.required' => 'كلمة المرور مطلوبة',
-            'password.min' => 'كلمة المرور يجب أن تكون 8 أحرف على الأقل',
-            'password.confirmed' => 'كلمة المرور غير متطابقة',
+            'password.required' => __('auth.validation_password_required'),
+            'password.min' => __('auth.validation_password_min'),
+            'password.confirmed' => __('auth.validation_password_confirmed'),
         ]);
 
         $registrationData = session('registration_data');
         if (!$registrationData) {
             return redirect()->route('register')
-                ->with('error', 'انتهت صلاحية الجلسة، يرجى التسجيل مرة أخرى');
+                ->with('error', __('auth.session_expired_register'));
         }
 
         // Create the representative
@@ -156,7 +156,7 @@ class AuthController extends Controller
         Auth::guard('representative')->login($representative);
 
         return redirect()->route('representative.dashboard')
-            ->with('success', 'تم إنشاء حسابك بنجاح!');
+            ->with('success', __('auth.account_created'));
     }
 
     public function showLoginForm()
@@ -170,16 +170,16 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ], [
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.email' => 'البريد الإلكتروني غير صالح',
-            'password.required' => 'كلمة المرور مطلوبة',
+            'email.required' => __('auth.validation_email_required'),
+            'email.email' => __('auth.validation_email_invalid'),
+            'password.required' => __('auth.validation_password_required'),
         ]);
 
         // Find representative
         $representative = CompanyRepresentative::where('email', $request->email)->first();
 
         if (!$representative || !Hash::check($request->password, $representative->password)) {
-            return back()->with('error', 'البريد الإلكتروني أو كلمة المرور غير صحيحة');
+            return back()->with('error', __('auth.invalid_credentials'));
         }
 
         // Store login data in session
@@ -197,7 +197,7 @@ class AuthController extends Controller
         Mail::to($representative->email)->send(new RepresentativeOtpMail($otp, $representative->name, 'login'));
 
         return redirect()->route('verify-login-otp')
-            ->with('success', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني');
+            ->with('success', __('auth.otp_sent_to_email'));
     }
 
     public function showVerifyLoginOtpForm()
@@ -217,18 +217,18 @@ class AuthController extends Controller
         $request->validate([
             'otp' => 'required|string|size:6',
         ], [
-            'otp.required' => 'رمز التحقق مطلوب',
-            'otp.size' => 'رمز التحقق يجب أن يكون 6 أرقام',
+            'otp.required' => __('auth.validation_otp_required'),
+            'otp.size' => __('auth.validation_otp_size'),
         ]);
 
         $loginData = session('login_data');
         if (!$loginData) {
             return redirect()->route('login')
-                ->with('error', 'انتهت صلاحية الجلسة، يرجى تسجيل الدخول مرة أخرى');
+                ->with('error', __('auth.session_expired_login'));
         }
 
         if (!RepresentativeOtp::verifyOtp($loginData['email'], $request->otp, 'login')) {
-            return back()->with('error', 'رمز التحقق غير صحيح أو منتهي الصلاحية');
+            return back()->with('error', __('auth.invalid_otp'));
         }
 
         $representative = CompanyRepresentative::find($loginData['representative_id']);
@@ -236,7 +236,7 @@ class AuthController extends Controller
         if (!$representative) {
             session()->forget('login_data');
             return redirect()->route('login')
-                ->with('error', 'الحساب غير موجود. يرجى التسجيل مرة أخرى');
+                ->with('error', __('auth.account_not_found'));
         }
 
         Auth::guard('representative')->login($representative, $loginData['remember']);
@@ -246,7 +246,7 @@ class AuthController extends Controller
         session()->forget('login_data');
 
         return redirect()->intended(route('representative.dashboard'))
-            ->with('success', 'تم تسجيل الدخول بنجاح');
+            ->with('success', __('auth.logged_in'));
     }
 
     public function logout(Request $request)
@@ -256,7 +256,7 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login')
-            ->with('success', 'تم تسجيل الخروج بنجاح');
+            ->with('success', __('auth.logged_out'));
     }
 
     public function showForgotPasswordForm()
@@ -269,15 +269,15 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email|exists:company_representatives,email',
         ], [
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.email' => 'البريد الإلكتروني غير صالح',
-            'email.exists' => 'البريد الإلكتروني غير مسجل',
+            'email.required' => __('auth.validation_email_required'),
+            'email.email' => __('auth.validation_email_invalid'),
+            'email.exists' => __('auth.validation_email_not_registered'),
         ]);
 
         if (!$this->verifyRecaptcha($request->input('recaptcha_token'), 'forgot_password')) {
             return back()
                 ->withInput()
-                ->with('error', 'فشل التحقق الأمني، يرجى المحاولة مرة أخرى');
+                ->with('error', __('auth.recaptcha_failed'));
         }
 
         $representative = CompanyRepresentative::where('email', $request->email)->first();
@@ -296,7 +296,7 @@ class AuthController extends Controller
         Mail::to($representative->email)->send(new RepresentativeOtpMail($otp, $representative->name, 'password_reset'));
 
         return redirect()->route('verify-password-reset-otp')
-            ->with('success', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني');
+            ->with('success', __('auth.otp_sent_to_email'));
     }
 
     public function showVerifyPasswordResetOtpForm()
@@ -316,18 +316,18 @@ class AuthController extends Controller
         $request->validate([
             'otp' => 'required|string|size:6',
         ], [
-            'otp.required' => 'رمز التحقق مطلوب',
-            'otp.size' => 'رمز التحقق يجب أن يكون 6 أرقام',
+            'otp.required' => __('auth.validation_otp_required'),
+            'otp.size' => __('auth.validation_otp_size'),
         ]);
 
         $resetData = session('password_reset_data');
         if (!$resetData) {
             return redirect()->route('forgot-password')
-                ->with('error', 'انتهت صلاحية الجلسة، يرجى المحاولة مرة أخرى');
+                ->with('error', __('auth.session_expired_retry'));
         }
 
         if (!RepresentativeOtp::verifyOtp($resetData['email'], $request->otp, 'password_reset')) {
-            return back()->with('error', 'رمز التحقق غير صحيح أو منتهي الصلاحية');
+            return back()->with('error', __('auth.invalid_otp'));
         }
 
         // Redirect to reset password
@@ -348,15 +348,15 @@ class AuthController extends Controller
         $request->validate([
             'password' => 'required|string|min:8|confirmed',
         ], [
-            'password.required' => 'كلمة المرور مطلوبة',
-            'password.min' => 'كلمة المرور يجب أن تكون 8 أحرف على الأقل',
-            'password.confirmed' => 'كلمة المرور غير متطابقة',
+            'password.required' => __('auth.validation_password_required'),
+            'password.min' => __('auth.validation_password_min'),
+            'password.confirmed' => __('auth.validation_password_confirmed'),
         ]);
 
         $resetData = session('password_reset_data');
         if (!$resetData) {
             return redirect()->route('forgot-password')
-                ->with('error', 'انتهت صلاحية الجلسة، يرجى المحاولة مرة أخرى');
+                ->with('error', __('auth.session_expired_retry'));
         }
 
         $representative = CompanyRepresentative::find($resetData['representative_id']);
@@ -364,7 +364,7 @@ class AuthController extends Controller
         if (!$representative) {
             session()->forget('password_reset_data');
             return redirect()->route('forgot-password')
-                ->with('error', 'الحساب غير موجود');
+                ->with('error', __('auth.account_not_found_short'));
         }
 
         $representative->update([
@@ -375,7 +375,7 @@ class AuthController extends Controller
         session()->forget('password_reset_data');
 
         return redirect()->route('login')
-            ->with('success', 'تم تغيير كلمة المرور بنجاح! يمكنك الآن تسجيل الدخول');
+            ->with('success', __('auth.password_changed_login'));
     }
 
     public function resendOtp(Request $request)
@@ -385,33 +385,33 @@ class AuthController extends Controller
         if ($type == 'login') {
             $loginData = session('login_data');
             if (!$loginData) {
-                return response()->json(['success' => false, 'message' => 'انتهت صلاحية الجلسة']);
+                return response()->json(['success' => false, 'message' => __('auth.session_expired_login')]);
             }
 
             $otp = RepresentativeOtp::generateOtp($loginData['email'], 'login');
             Mail::to($loginData['email'])->send(new RepresentativeOtpMail($otp, $loginData['name'], 'login'));
 
-            return response()->json(['success' => true, 'message' => 'تم إرسال رمز جديد']);
+            return response()->json(['success' => true, 'message' => __('auth.otp_new_sent')]);
         } elseif ($type == 'password_reset') {
             $resetData = session('password_reset_data');
             if (!$resetData) {
-                return response()->json(['success' => false, 'message' => 'انتهت صلاحية الجلسة']);
+                return response()->json(['success' => false, 'message' => __('auth.session_expired_retry')]);
             }
 
             $otp = RepresentativeOtp::generateOtp($resetData['email'], 'password_reset');
             Mail::to($resetData['email'])->send(new RepresentativeOtpMail($otp, $resetData['name'], 'password_reset'));
 
-            return response()->json(['success' => true, 'message' => 'تم إرسال رمز جديد']);
+            return response()->json(['success' => true, 'message' => __('auth.otp_new_sent')]);
         } else {
             $registrationData = session('registration_data');
             if (!$registrationData) {
-                return response()->json(['success' => false, 'message' => 'انتهت صلاحية الجلسة']);
+                return response()->json(['success' => false, 'message' => __('auth.session_expired_register')]);
             }
 
             $otp = RepresentativeOtp::generateOtp($registrationData['email'], 'registration');
             Mail::to($registrationData['email'])->send(new RepresentativeOtpMail($otp, $registrationData['name'], 'registration'));
 
-            return response()->json(['success' => true, 'message' => 'تم إرسال رمز جديد']);
+            return response()->json(['success' => true, 'message' => __('auth.otp_new_sent')]);
         }
     }
 }

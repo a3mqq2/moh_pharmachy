@@ -1,37 +1,37 @@
 @extends('layouts.app')
 
-@section('title', 'أرشيف الأدوية')
+@section('title', __('documents.product_archive'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-    <li class="breadcrumb-item active">أرشيف مستندات الأدوية</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('general.home') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('documents.product_docs_archive') }}</li>
 @endsection
 
 @section('content')
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white py-3">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-            <h5 class="mb-0"><i class="ti ti-pill me-2"></i>أرشيف مستندات الأدوية</h5>
+            <h5 class="mb-0"><i class="ti ti-pill me-2"></i>{{ __('documents.product_docs_archive') }}</h5>
             <form method="GET" action="{{ route('admin.document-center.product-archive') }}" class="d-flex gap-2 flex-wrap align-items-center">
                 <select name="product_status" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto;">
-                    <option value="all" {{ $productStatus == 'all' ? 'selected' : '' }}>جميع الحالات</option>
-                    <option value="uploading_documents" {{ $productStatus == 'uploading_documents' ? 'selected' : '' }}>قيد رفع المستندات</option>
-                    <option value="pending_review" {{ $productStatus == 'pending_review' ? 'selected' : '' }}>قيد المراجعة</option>
-                    <option value="active" {{ $productStatus == 'active' ? 'selected' : '' }}>معتمد</option>
-                    <option value="rejected" {{ $productStatus == 'rejected' ? 'selected' : '' }}>مرفوض</option>
+                    <option value="all" {{ $productStatus == 'all' ? 'selected' : '' }}>{{ __('documents.all_statuses') }}</option>
+                    <option value="uploading_documents" {{ $productStatus == 'uploading_documents' ? 'selected' : '' }}>{{ __('products.status_uploading_docs') }}</option>
+                    <option value="pending_review" {{ $productStatus == 'pending_review' ? 'selected' : '' }}>{{ __('products.status_pending_review') }}</option>
+                    <option value="active" {{ $productStatus == 'active' ? 'selected' : '' }}>{{ __('products.status_approved') }}</option>
+                    <option value="rejected" {{ $productStatus == 'rejected' ? 'selected' : '' }}>{{ __('products.status_rejected') }}</option>
                 </select>
                 <select name="doc_status" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto;">
-                    <option value="all" {{ $docStatus == 'all' ? 'selected' : '' }}>جميع المستندات</option>
-                    <option value="complete" {{ $docStatus == 'complete' ? 'selected' : '' }}>مستندات مكتملة</option>
-                    <option value="incomplete" {{ $docStatus == 'incomplete' ? 'selected' : '' }}>مستندات ناقصة</option>
+                    <option value="all" {{ $docStatus == 'all' ? 'selected' : '' }}>{{ __('documents.all_documents') }}</option>
+                    <option value="complete" {{ $docStatus == 'complete' ? 'selected' : '' }}>{{ __('documents.complete_docs') }}</option>
+                    <option value="incomplete" {{ $docStatus == 'incomplete' ? 'selected' : '' }}>{{ __('documents.incomplete_docs') }}</option>
                 </select>
                 <div class="input-group input-group-sm" style="width: 220px;">
-                    <input type="text" name="search" class="form-control" placeholder="بحث بالاسم التجاري أو العلمي..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control" placeholder="{{ __('documents.search_trade_scientific') }}" value="{{ request('search') }}">
                     <button class="btn btn-outline-secondary" type="submit"><i class="ti ti-search"></i></button>
                 </div>
                 @if(request('search') || request('product_status') || request('doc_status'))
                 <a href="{{ route('admin.document-center.product-archive') }}" class="btn btn-sm btn-outline-secondary">
-                    <i class="ti ti-x me-1"></i>مسح
+                    <i class="ti ti-x me-1"></i>{{ __('general.clear') }}
                 </a>
                 @endif
             </form>
@@ -58,14 +58,14 @@
                                     default => 'bg-secondary',
                                 };
                                 $statusName = match($product['status']) {
-                                    'uploading_documents' => 'قيد رفع المستندات',
-                                    'pending_review' => 'قيد المراجعة',
-                                    'preliminary_approved' => 'موافقة مبدئية',
-                                    'pending_final_approval' => 'قيد الموافقة النهائية',
-                                    'pending_payment' => 'قيد السداد',
-                                    'payment_review' => 'قيد مراجعة السداد',
-                                    'rejected' => 'مرفوض',
-                                    'active' => 'معتمد',
+                                    'uploading_documents' => __('products.status_uploading_docs'),
+                                    'pending_review' => __('products.status_pending_review'),
+                                    'preliminary_approved' => __('products.status_preliminary_approved'),
+                                    'pending_final_approval' => __('products.status_pending_final'),
+                                    'pending_payment' => __('products.status_pending_payment'),
+                                    'payment_review' => __('products.status_payment_review'),
+                                    'rejected' => __('products.status_rejected'),
+                                    'active' => __('products.status_approved'),
                                     default => $product['status'],
                                 };
                             @endphp
@@ -81,10 +81,10 @@
                                 <i class="ti ti-building me-1"></i>{{ $product['company_name'] }}
                             </small>
                             <small class="text-muted">
-                                <i class="ti ti-files me-1"></i>{{ $product['total_docs'] }} مستند
+                                <i class="ti ti-files me-1"></i>{{ $product['total_docs'] }} {{ __('documents.doc_count') }}
                             </small>
                             @if($product['missing_count'] > 0)
-                                <span class="badge bg-light-danger text-danger" style="font-size: 0.65rem;">{{ $product['missing_count'] }} ناقص</span>
+                                <span class="badge bg-light-danger text-danger" style="font-size: 0.65rem;">{{ $product['missing_count'] }} {{ __('documents.missing_label') }}</span>
                             @endif
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                             </div>
                             <small class="fw-bold {{ $product['completion'] == 100 ? 'text-success' : ($product['completion'] >= 50 ? 'text-warning' : 'text-danger') }}">{{ $product['completion'] }}%</small>
                         </div>
-                        <small class="text-muted" style="font-size: 0.7rem;">{{ $product['uploaded_required'] }}/{{ $product['required_count'] }} مطلوب</small>
+                        <small class="text-muted" style="font-size: 0.7rem;">{{ $product['uploaded_required'] }}/{{ $product['required_count'] }} {{ __('documents.required_label') }}</small>
                     </div>
                     <i class="ti ti-chevron-down text-muted product-chevron"></i>
                 </div>
@@ -111,11 +111,11 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>نوع المستند</th>
-                                    <th>اسم الملف</th>
-                                    <th>الحجم</th>
-                                    <th>التاريخ</th>
-                                    <th style="width: 100px;">الإجراءات</th>
+                                    <th>{{ __('documents.document_type') }}</th>
+                                    <th>{{ __('documents.document_name') }}</th>
+                                    <th>{{ __('documents.file_size') }}</th>
+                                    <th>{{ __('general.date') }}</th>
+                                    <th style="width: 100px;">{{ __('general.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,7 +134,7 @@
                                     <td><small>{{ $doc['created_at']->format('Y-m-d') }}</small></td>
                                     <td>
                                         <div class="d-flex gap-1">
-                                            <button type="button" class="btn btn-sm btn-outline-info btn-doc-preview" title="عرض"
+                                            <button type="button" class="btn btn-sm btn-outline-info btn-doc-preview" title="{{ __('general.view') }}"
                                                 data-file-url="{{ $doc['file_url'] }}"
                                                 data-file-name="{{ $doc['original_name'] ?? $doc['type_name'] }}"
                                                 data-download-url="{{ $doc['file_url'] }}">
@@ -150,12 +150,12 @@
                     @else
                     <div class="text-center text-muted py-3">
                         <i class="ti ti-folder-off fs-3 d-block mb-2"></i>
-                        <small>لا توجد مستندات مرفوعة</small>
+                        <small>{{ __('documents.no_uploaded_docs') }}</small>
                     </div>
                     @endif
                     <div class="mt-2 text-end">
                         <a href="{{ $product['route'] }}" class="btn btn-sm btn-outline-primary">
-                            <i class="ti ti-external-link me-1"></i>عرض الصنف
+                            <i class="ti ti-external-link me-1"></i>{{ __('documents.view_product') }}
                         </a>
                     </div>
                 </div>
@@ -164,8 +164,8 @@
         @empty
         <div class="text-center text-muted py-5">
             <i class="ti ti-folder-off fs-1 d-block mb-3"></i>
-            <h6>لا توجد أصناف مطابقة</h6>
-            <small>جرب تغيير معايير البحث</small>
+            <h6>{{ __('documents.no_matching_products') }}</h6>
+            <small>{{ __('documents.try_different_search') }}</small>
         </div>
         @endforelse
     </div>

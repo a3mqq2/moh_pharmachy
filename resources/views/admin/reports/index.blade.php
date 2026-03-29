@@ -14,19 +14,19 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5 class="mb-0">تقرير الشركات المحلية</h5>
-                            <small class="text-muted">تقرير شامل عن جميع الشركات المسجلة</small>
+                            <h5 class="mb-0">{{ __('reports.local_companies_report') }}</h5>
+                            <small class="text-muted">{{ __('reports.local_companies_report_desc') }}</small>
                         </div>
                     </div>
 
                     <p class="text-muted mb-4">
-                        يعرض هذا التقرير معلومات مفصلة عن الشركات المحلية المسجلة في النظام مع إحصائيات حسب الحالة
+                        {{ __('reports.local_companies_report_detail') }}
                     </p>
 
                     <div class="d-grid">
                         <a href="{{ route('admin.reports.local-companies') }}" class="btn btn-primary">
                             <i class="fas fa-eye me-1"></i>
-                            عرض التقرير
+                            {{ __('reports.view_report') }}
                         </a>
                     </div>
                 </div>
@@ -43,19 +43,19 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5 class="mb-0">تقرير الشركات الأجنبية</h5>
-                            <small class="text-muted">تقرير شامل عن الشركات الأجنبية المسجلة</small>
+                            <h5 class="mb-0">{{ __('reports.foreign_companies_report') }}</h5>
+                            <small class="text-muted">{{ __('reports.foreign_companies_report_desc') }}</small>
                         </div>
                     </div>
 
                     <p class="text-muted mb-4">
-                        يعرض هذا التقرير معلومات عن الشركات الأجنبية مع خط الإنتاج والمنشأ وتاريخ الصلاحية
+                        {{ __('reports.foreign_companies_report_detail') }}
                     </p>
 
                     <div class="d-grid">
                         <a href="{{ route('admin.reports.foreign-companies') }}" class="btn btn-info">
                             <i class="fas fa-eye me-1"></i>
-                            عرض التقرير
+                            {{ __('reports.view_report') }}
                         </a>
                     </div>
                 </div>
@@ -72,19 +72,19 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5 class="mb-0">تقرير الأصناف الدوائية</h5>
-                            <small class="text-muted">تقرير شامل عن جميع الأصناف المسجلة</small>
+                            <h5 class="mb-0">{{ __('reports.pharmaceutical_products_report') }}</h5>
+                            <small class="text-muted">{{ __('reports.pharmaceutical_products_report_desc') }}</small>
                         </div>
                     </div>
 
                     <p class="text-muted mb-4">
-                        يعرض هذا التقرير معلومات مفصلة عن الأصناف الدوائية المسجلة مع إحصائيات حسب الحالة
+                        {{ __('reports.pharmaceutical_products_report_detail') }}
                     </p>
 
                     <div class="d-grid">
                         <a href="{{ route('admin.reports.pharmaceutical-products') }}" class="btn btn-success">
                             <i class="fas fa-eye me-1"></i>
-                            عرض التقرير
+                            {{ __('reports.view_report') }}
                         </a>
                     </div>
                 </div>
@@ -101,19 +101,19 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h5 class="mb-0">تقرير الفواتير</h5>
-                            <small class="text-muted">تقرير شامل عن جميع الفواتير</small>
+                            <h5 class="mb-0">{{ __('reports.invoices_report') }}</h5>
+                            <small class="text-muted">{{ __('reports.invoices_report_desc') }}</small>
                         </div>
                     </div>
 
                     <p class="text-muted mb-4">
-                        يعرض هذا التقرير معلومات مفصلة عن الفواتير الصادرة وإحصائيات الإيرادات
+                        {{ __('reports.invoices_report_detail') }}
                     </p>
 
                     <div class="d-grid">
                         <a href="{{ route('admin.reports.invoices') }}" class="btn btn-warning">
                             <i class="fas fa-eye me-1"></i>
-                            عرض التقرير
+                            {{ __('reports.view_report') }}
                         </a>
                     </div>
                 </div>

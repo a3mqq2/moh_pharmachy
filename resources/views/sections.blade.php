@@ -1,7 +1,6 @@
-{{-- resources/views/sections.blade.php --}}
 @extends('layouts.auth')
 
-@section('title', 'الرئيسية')
+@section('title', __('general.home'))
 
 @push('styles')
 <style>
@@ -179,9 +178,9 @@
 <div class="roles-container">
 
    <div class="head-page">
-      <h3 style="font-weight: bold;color: #1a5f4a;">مرحباً بعودتك {{ auth()->user()->name }}</h3>
+      <h3 style="font-weight: bold;color: #1a5f4a;">{{ __('users.welcome_back', ['name' => auth()->user()->name]) }}</h3>
       <div class="prayer font-weight-bold mb-4">
-         اللهم بارك لي في وقتي ورزقي وجهدي وجسدي ومالي وعملي وارزقني البركة في كل شيء.. اللهم اجعلني مباركاً اينما كنت.
+         {{ __('users.prayer') }}
       </div>
    </div>
 
@@ -192,8 +191,8 @@
                     <div class="role-icon">
                         <i class="ph-duotone ph-crown"></i>
                     </div>
-                    <h3 class="role-name">لوحة التحكم</h3>
-                    <p class="role-description">إدارة النظام</p>
+                    <h3 class="role-name">{{ __('users.control_panel') }}</h3>
+                    <p class="role-description">{{ __('users.system_management') }}</p>
                 </div>
             </a>
         </div>
@@ -204,7 +203,7 @@
             @csrf
             <button type="submit" class="btn btn-primary">
                 <i class="ph-duotone ph-sign-out me-2"></i>
-                تسجيل الخروج
+                {{ __('general.logout') }}
             </button>
         </form>
     </div>

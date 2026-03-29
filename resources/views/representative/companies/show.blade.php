@@ -1,32 +1,31 @@
 @php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.auth')
 
-@section('title', 'تفاصيل الشركة')
+@section('title', __('companies.company_details'))
 
 @section('content')
 <div class="dashboard-container">
-    <!-- Header -->
     <div class="page-header">
         <div>
-            <h1>تفاصيل الشركة</h1>
+            <h1>{{ __('companies.company_details') }}</h1>
             <p>{{ $company->company_name }}</p>
         </div>
         <div class="header-actions">
             @if($company->status == 'rejected')
             <a href="{{ route('representative.companies.edit', $company) }}" class="btn btn-primary">
                 <i class="ti ti-edit"></i>
-                تعديل البيانات
+                {{ __('companies.edit_data') }}
             </a>
             @endif
             @if($company->status == 'uploading_documents' && !$company->hasAllRequiredDocuments())
             <button type="button" onclick="confirmBack()" class="btn btn-secondary">
                 <i class="ti ti-arrow-right"></i>
-                العودة للقائمة
+                {{ __('general.back_to_list') }}
             </button>
             @else
             <a href="{{ route('representative.companies.index') }}" class="btn btn-secondary">
                 <i class="ti ti-arrow-right"></i>
-                العودة للقائمة
+                {{ __('general.back_to_list') }}
             </a>
             @endif
         </div>
@@ -34,7 +33,6 @@
 
     
 
-    <!-- Status Badge -->
     <div class="status-badge {{ $company->status }}">
         @if($company->status == 'uploading_documents')
             <i class="ti ti-upload"></i>
@@ -62,9 +60,9 @@
             <div class="rejection-alert-content">
                 <i class="ti ti-alert-circle"></i>
                 <div>
-                    <strong>سبب الرفض:</strong>
+                    <strong>{{ __('companies.rejection_reason') }}:</strong>
                     <p>{{ $company->rejection_reason }}</p>
-                    <p class="rejection-note">يرجى تعديل البيانات أو المستندات حسب الملاحظات، ثم إعادة إرسال الطلب للمراجعة.</p>
+                    <p class="rejection-note">{{ __('companies.edit_data_note') }}</p>
                 </div>
             </div>
             @if($company->hasAllRequiredDocuments())
@@ -72,19 +70,18 @@
                 @csrf
                 <button type="submit" class="btn-resubmit">
                     <i class="ti ti-send"></i>
-                    إعادة إرسال للمراجعة
+                    {{ __('companies.resubmit_review') }}
                 </button>
             </form>
             @else
             <div class="resubmit-disabled-notice">
                 <i class="ti ti-info-circle"></i>
-                يجب رفع جميع المستندات المطلوبة أولاً
+                {{ __('companies.must_upload_all_docs') }}
             </div>
             @endif
         </div>
     @endif
 
-    <!-- Tabs Navigation -->
     <div class="tabs-container">
         <div class="tabs-nav">
             @php
@@ -92,179 +89,175 @@
             @endphp
             <button class="tab-btn {{ $activeTab == 'basic' ? 'active' : '' }}" data-tab="basic">
                 <i class="ti ti-building"></i>
-                <span>المعلومات الأساسية</span>
+                <span>{{ __('companies.basic_info_tab') }}</span>
             </button>
             <button class="tab-btn {{ $activeTab == 'license' ? 'active' : '' }}" data-tab="license">
                 <i class="ti ti-license"></i>
-                <span>معلومات الترخيص</span>
+                <span>{{ __('companies.license_info_tab') }}</span>
             </button>
             <button class="tab-btn {{ $activeTab == 'manager' ? 'active' : '' }}" data-tab="manager">
                 <i class="ti ti-user"></i>
-                <span>معلومات المدير</span>
+                <span>{{ __('companies.manager_info_tab') }}</span>
             </button>
             <button class="tab-btn {{ $activeTab == 'documents' ? 'active' : '' }}" data-tab="documents">
                 <i class="ti ti-files"></i>
-                <span>المستندات</span>
+                <span>{{ __('documents.documents') }}</span>
                 @if(!$company->hasAllRequiredDocuments())
                     <span class="badge-dot"></span>
                 @endif
             </button>
             <button class="tab-btn {{ $activeTab == 'registration' ? 'active' : '' }}" data-tab="registration">
                 <i class="ti ti-calendar"></i>
-                <span>معلومات التسجيل</span>
+                <span>{{ __('companies.registration_info') }}</span>
             </button>
         </div>
 
         <div class="tabs-content">
-            <!-- Basic Information Tab -->
             <div class="tab-pane {{ $activeTab == 'basic' ? 'active' : '' }}" id="basic">
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label">اسم الشركة</span>
+                        <span class="info-label">{{ __('companies.company_name') }}</span>
                         <span class="info-value">{{ $company->company_name }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">نوع الشركة</span>
+                        <span class="info-label">{{ __('companies.company_type') }}</span>
                         <span class="info-value">{{ $company->company_type_name }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">المدينة</span>
+                        <span class="info-label">{{ __('general.city') }}</span>
                         <span class="info-value">{{ $company->city }}</span>
                     </div>
                     @if($company->street)
                     <div class="info-item">
-                        <span class="info-label">الشارع</span>
+                        <span class="info-label">{{ __('general.street') }}</span>
                         <span class="info-value">{{ $company->street }}</span>
                     </div>
                     @endif
                     @if($company->company_address)
                     <div class="info-item full-width">
-                        <span class="info-label">العنوان</span>
+                        <span class="info-label">{{ __('companies.detailed_address') }}</span>
                         <span class="info-value">{{ $company->company_address }}</span>
                     </div>
                     @endif
                     @if($company->latitude && $company->longitude)
                     <div class="info-item full-width">
-                        <span class="info-label">موقع الشركة</span>
+                        <span class="info-label">{{ __('companies.company_location') }}</span>
                         <div id="map" style="height: 300px; border-radius: 8px; border: 1px solid #d1d5db; margin-top: 8px;"></div>
                     </div>
                     @endif
                     <div class="info-item">
-                        <span class="info-label">رقم الهاتف</span>
+                        <span class="info-label">{{ __('general.phone') }}</span>
                         <span class="info-value">{{ $company->phone }}</span>
                     </div>
                     @if($company->mobile)
                     <div class="info-item">
-                        <span class="info-label">رقم الجوال</span>
+                        <span class="info-label">{{ __('general.mobile') }}</span>
                         <span class="info-value">{{ $company->mobile }}</span>
                     </div>
                     @endif
                     <div class="info-item">
-                        <span class="info-label">البريد الإلكتروني</span>
+                        <span class="info-label">{{ __('general.email') }}</span>
                         <span class="info-value">{{ $company->email }}</span>
                     </div>
 
                     @if($company->is_pre_registered)
                     <div class="info-item">
-                        <span class="info-label">شركة مسجلة مسبقاً</span>
-                        <span class="info-value"><span class="badge badge-info">نعم</span></span>
+                        <span class="info-label">{{ __('companies.pre_registered_company') }}</span>
+                        <span class="info-value"><span class="badge badge-info">{{ __('companies.previously_registered_yes') }}</span></span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">رقم القيد السابق</span>
+                        <span class="info-label">{{ __('companies.prev_reg_number') }}</span>
                         <span class="info-value">{{ $company->pre_registration_number }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">سنة التسجيل السابق</span>
+                        <span class="info-label">{{ __('companies.prev_reg_year') }}</span>
                         <span class="info-value">{{ $company->pre_registration_year }}</span>
                     </div>
                     @endif
                 </div>
             </div>
 
-            <!-- License Information Tab -->
             <div class="tab-pane {{ $activeTab == 'license' ? 'active' : '' }}" id="license">
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label">نوع الترخيص</span>
+                        <span class="info-label">{{ __('companies.license_type') }}</span>
                         <span class="info-value">{{ $company->license_type_name }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">تخصص الترخيص</span>
+                        <span class="info-label">{{ __('companies.license_specialty') }}</span>
                         <span class="info-value">{{ $company->license_specialty_name }}</span>
                     </div>
                     @if($company->license_number)
                     <div class="info-item">
-                        <span class="info-label">رقم الترخيص</span>
+                        <span class="info-label">{{ __('companies.license_number') }}</span>
                         <span class="info-value">{{ $company->license_number }}</span>
                     </div>
                     @endif
                     @if($company->license_issuer)
                     <div class="info-item">
-                        <span class="info-label">جهة الإصدار</span>
+                        <span class="info-label">{{ __('companies.issuing_authority_short') }}</span>
                         <span class="info-value">{{ $company->license_issuer }}</span>
                     </div>
                     @endif
                     @if($company->registration_date)
                     <div class="info-item">
-                        <span class="info-label">تاريخ التسجيل</span>
+                        <span class="info-label">{{ __('general.registration_date') }}</span>
                         <span class="info-value">{{ $company->registration_date->format('Y-m-d') }}</span>
                     </div>
                     @endif
                     @if($company->last_renewal_date)
                     <div class="info-item">
-                        <span class="info-label">آخر تاريخ تجديد</span>
+                        <span class="info-label">{{ __('companies.last_renewal_date') }}</span>
                         <span class="info-value"><span class="badge badge-success">{{ $company->last_renewal_date->format('Y-m-d') }}</span></span>
                     </div>
                     @endif
                     @if($company->food_drug_registration_number)
                     <div class="info-item">
-                        <span class="info-label">رقم تسجيل الغذاء والدواء</span>
+                        <span class="info-label">{{ __('companies.food_drug_reg_short') }}</span>
                         <span class="info-value">{{ $company->food_drug_registration_number }}</span>
                     </div>
                     @endif
                     @if($company->chamber_of_commerce_number)
                     <div class="info-item">
-                        <span class="info-label">رقم السجل التجاري</span>
+                        <span class="info-label">{{ __('companies.commercial_reg') }}</span>
                         <span class="info-value">{{ $company->chamber_of_commerce_number }}</span>
                     </div>
                     @endif
                 </div>
             </div>
 
-            <!-- Manager Information Tab -->
             <div class="tab-pane {{ $activeTab == 'manager' ? 'active' : '' }}" id="manager">
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label">اسم المدير</span>
+                        <span class="info-label">{{ __('companies.manager_name') }}</span>
                         <span class="info-value">{{ $company->manager_name }}</span>
                     </div>
                     @if($company->manager_position)
                     <div class="info-item">
-                        <span class="info-label">المنصب</span>
+                        <span class="info-label">{{ __('companies.manager_position_short') }}</span>
                         <span class="info-value">{{ $company->manager_position }}</span>
                     </div>
                     @endif
                     <div class="info-item">
-                        <span class="info-label">رقم هاتف المدير</span>
+                        <span class="info-label">{{ __('companies.manager_phone') }}</span>
                         <span class="info-value">{{ $company->manager_phone }}</span>
                     </div>
                     @if($company->manager_email)
                     <div class="info-item">
-                        <span class="info-label">بريد المدير الإلكتروني</span>
+                        <span class="info-label">{{ __('companies.manager_email') }}</span>
                         <span class="info-value">{{ $company->manager_email }}</span>
                     </div>
                     @endif
                 </div>
             </div>
 
-            <!-- Documents Tab -->
             <div class="tab-pane {{ $activeTab == 'documents' ? 'active' : '' }}" id="documents">
                 @if($company->status == 'uploading_documents' || $company->status == 'pending')
                 <div class="alert-info-box">
                     <i class="ti ti-info-circle"></i>
                     <div>
-                        <strong>مستندات مطلوبة</strong>
-                        <p>يجب رفع جميع المستندات الإلزامية لإكمال عملية التسجيل</p>
+                        <strong>{{ __('documents.required_documents') }}</strong>
+                        <p>{{ __('documents.must_upload_all') }}</p>
                     </div>
                 </div>
                 @endif
@@ -277,7 +270,7 @@
                 <div class="alert-warning-box">
                     <i class="ti ti-alert-triangle"></i>
                     <div>
-                        <strong>المستندات الناقصة ({{ count($missingDocs) }})</strong>
+                        <strong>{{ __('documents.missing_documents') }} ({{ count($missingDocs) }})</strong>
                         <ul>
                             @foreach($missingDocs as $type => $name)
                                 <li>{{ $name }}</li>
@@ -290,15 +283,15 @@
                 <div class="documents-header">
                     <h6>
                         <i class="ti ti-folder"></i>
-                        المستندات المرفوعة ({{ $company->documents->count() }})
+                        {{ __('documents.uploaded_documents') }} ({{ $company->documents->count() }})
                         @if($company->hasAllRequiredDocuments())
-                            <span class="badge badge-success-sm"><i class="ti ti-check"></i> مكتمل</span>
+                            <span class="badge badge-success-sm"><i class="ti ti-check"></i> {{ __('documents.complete') }}</span>
                         @endif
                     </h6>
                     @if(in_array($company->status, ['uploading_documents', 'rejected']))
                     <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('uploadModal').style.display='flex'">
                         <i class="ti ti-upload"></i>
-                        <span>رفع مستند</span>
+                        <span>{{ __('documents.upload_document') }}</span>
                     </button>
                     @endif
                 </div>
@@ -324,17 +317,17 @@
                             @endif
                         </div>
                         <div class="document-actions">
-                            <button type="button" class="btn-icon btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->original_name ?? $document->display_name }}" data-download-url="{{ route('representative.companies.documents.download', [$company, $document]) }}" title="عرض">
+                            <button type="button" class="btn-icon btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->original_name ?? $document->display_name }}" data-download-url="{{ route('representative.companies.documents.download', [$company, $document]) }}" title="{{ __('general.view') }}">
                                 <i class="ti ti-eye"></i>
                             </button>
-                            <a href="{{ route('representative.companies.documents.download', [$company, $document]) }}" class="btn-icon" title="تحميل">
+                            <a href="{{ route('representative.companies.documents.download', [$company, $document]) }}" class="btn-icon" title="{{ __('general.download') }}">
                                 <i class="ti ti-download"></i>
                             </a>
                             @if(in_array($company->status, ['uploading_documents', 'rejected']))
-                            <button type="button" class="btn-icon btn-edit" onclick="editDocument({{ $document->id }}, '{{ $document->display_name }}', '{{ $document->document_type}}')" title="تعديل">
+                            <button type="button" class="btn-icon btn-edit" onclick="editDocument({{ $document->id }}, '{{ $document->display_name }}', '{{ $document->document_type}}')" title="{{ __('general.edit') }}">
                                 <i class="ti ti-edit"></i>
                             </button>
-                            <button type="button" class="btn-icon btn-danger" onclick="deleteDocument({{ $document->id }}, '{{ $document->display_name }}')" title="حذف">
+                            <button type="button" class="btn-icon btn-danger" onclick="deleteDocument({{ $document->id }}, '{{ $document->display_name }}')" title="{{ __('general.delete') }}">
                                 <i class="ti ti-trash"></i>
                             </button>
                             <form id="delete-doc-form-{{ $document->id }}" action="{{ route('representative.companies.documents.destroy', [$company, $document]) }}" method="POST" style="display: none;">
@@ -343,9 +336,9 @@
                             </form>
                             @else
                             @if($document->pendingUpdateRequest)
-                                <span class="badge bg-warning text-dark" style="font-size: 0.7rem;"><i class="ti ti-clock me-1"></i>طلب تعديل معلق</span>
+                                <span class="badge bg-warning text-dark" style="font-size: 0.7rem;"><i class="ti ti-clock me-1"></i>{{ __('documents.update_request_pending') }}</span>
                             @else
-                                <button type="button" class="btn-icon" style="color: #f59e0b;" onclick="openUpdateRequestModal({{ $document->id }}, '{{ $document->display_name }}', 'local_company_document')" title="طلب تعديل">
+                                <button type="button" class="btn-icon" style="color: #f59e0b;" onclick="openUpdateRequestModal({{ $document->id }}, '{{ $document->display_name }}', 'local_company_document')" title="{{ __('documents.update_request') }}">
                                     <i class="ti ti-replace"></i>
                                 </button>
                             @endif
@@ -357,26 +350,25 @@
                 @else
                 <div class="empty-documents">
                     <i class="ti ti-folder-off"></i>
-                    <p>لم يتم رفع أي مستندات بعد</p>
+                    <p>{{ __('documents.no_documents') }}</p>
                     @if($company->status == 'uploading_documents' || $company->status == 'pending')
                     <button type="button" class="btn btn-primary" onclick="document.getElementById('uploadModal').style.display='flex'">
                         <i class="ti ti-upload"></i>
-                        رفع المستند الأول
+                        {{ __('documents.upload_first') }}
                     </button>
                     @endif
                 </div>
                 @endif
             </div>
 
-            <!-- Registration Information Tab -->
             <div class="tab-pane {{ $activeTab == 'registration' ? 'active' : '' }}" id="registration">
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label">تاريخ التسجيل في النظام</span>
+                        <span class="info-label">{{ __('companies.system_reg_date') }}</span>
                         <span class="info-value">{{ $company->created_at->format('Y-m-d H:i') }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">آخر تحديث</span>
+                        <span class="info-label">{{ __('general.updated_at') }}</span>
                         <span class="info-value">{{ $company->updated_at->format('Y-m-d H:i') }}</span>
                     </div>
                 </div>
@@ -384,11 +376,10 @@
         </div>
     </div>
 
-    <!-- Upload Document Modal -->
     <div id="uploadModal" class="upload-modal">
         <div class="upload-modal-content">
             <div class="upload-modal-header">
-                <h3><i class="ti ti-upload"></i> رفع مستند جديد</h3>
+                <h3><i class="ti ti-upload"></i> {{ __('documents.upload_new') }}</h3>
                 <button type="button" class="close-modal" onclick="document.getElementById('uploadModal').style.display='none'">
                     <i class="ti ti-x"></i>
                 </button>
@@ -397,9 +388,9 @@
                 @csrf
                 <div class="upload-modal-body">
                     <div class="form-group">
-                        <label>نوع المستند <span class="required">*</span></label>
+                        <label>{{ __('documents.document_type') }} <span class="required">*</span></label>
                         <select name="document_type" id="document_type" class="form-control" required>
-                            <option value="">اختر نوع المستند</option>
+                            <option value="">{{ __('documents.select_type') }}</option>
                             @php
                                 $uploadedTypes = $company->documents->pluck('document_type')->toArray();
                             @endphp
@@ -411,42 +402,41 @@
                                 <option value="{{ $key }}" {{ $isUploaded ? 'disabled' : '' }}>
                                     {{ $value }}
                                     @if($isRequired) <span style="color: #dc2626;">*</span> @endif
-                                    @if($isUploaded) (تم الرفع) @endif
+                                    @if($isUploaded) ({{ __('documents.already_uploaded') }}) @endif
                                 </option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="form-group" id="custom_name_wrapper" style="display: none;">
-                        <label>اسم المستند <span class="required">*</span></label>
-                        <input type="text" name="custom_name" id="custom_name" class="form-control" placeholder="أدخل اسم المستند">
+                        <label>{{ __('documents.document_name') }} <span class="required">*</span></label>
+                        <input type="text" name="custom_name" id="custom_name" class="form-control" placeholder="{{ __('documents.enter_name') }}">
                     </div>
 
                     <div class="form-group">
-                        <label>الملف <span class="required">*</span></label>
+                        <label>{{ __('documents.file') }} <span class="required">*</span></label>
                         <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar">
-                        <small>الحد الأقصى: 10 ميجابايت | الأنواع المدعومة: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, GIF, ZIP, RAR</small>
+                        <small>{{ __('documents.file_limit') }}</small>
                     </div>
 
                     <div class="form-group">
-                        <label>ملاحظات</label>
-                        <textarea name="notes" class="form-control" rows="2" placeholder="ملاحظات إضافية (اختياري)"></textarea>
+                        <label>{{ __('documents.notes') }}</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="{{ __('documents.notes_optional') }}"></textarea>
                     </div>
                 </div>
                 <div class="upload-modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('uploadModal').style.display='none'">إلغاء</button>
-                    <button type="submit" class="btn btn-primary"><i class="ti ti-upload"></i> رفع المستند</button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('uploadModal').style.display='none'">{{ __('general.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-upload"></i> {{ __('documents.upload_document') }}</button>
                 </div>
             </form>
         </div>
     </div>
 
 
-    <!-- Edit Document Modal -->
     <div id="editModal" class="upload-modal">
         <div class="upload-modal-content">
             <div class="upload-modal-header">
-                <h3><i class="ti ti-edit"></i> تعديل المستند</h3>
+                <h3><i class="ti ti-edit"></i> {{ __('documents.edit_document') }}</h3>
                 <button type="button" class="close-modal" onclick="document.getElementById('editModal').style.display='none'">
                     <i class="ti ti-x"></i>
                 </button>
@@ -458,32 +448,32 @@
                     <div class="alert-info-box">
                         <i class="ti ti-info-circle"></i>
                         <div>
-                            <strong>استبدال المستند</strong>
-                            <p>سيتم استبدال الملف الحالي بالملف الجديد</p>
+                            <strong>{{ __('documents.replace_document') }}</strong>
+                            <p>{{ __('documents.replace_note') }}</p>
                         </div>
                     </div>
 
                     <input type="hidden" id="edit_document_type" name="document_type">
 
                     <div class="form-group">
-                        <label>نوع المستند</label>
+                        <label>{{ __('documents.document_type') }}</label>
                         <input type="text" id="edit_document_name" class="form-control" readonly>
                     </div>
 
                     <div class="form-group">
-                        <label>الملف الجديد <span class="required">*</span></label>
+                        <label>{{ __('documents.new_file') }} <span class="required">*</span></label>
                         <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar">
-                        <small>الحد الأقصى: 10 ميجابايت | الأنواع المدعومة: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG, GIF, ZIP, RAR</small>
+                        <small>{{ __('documents.file_limit') }}</small>
                     </div>
 
                     <div class="form-group">
-                        <label>ملاحظات</label>
-                        <textarea name="notes" class="form-control" rows="2" placeholder="ملاحظات إضافية (اختياري)"></textarea>
+                        <label>{{ __('documents.notes') }}</label>
+                        <textarea name="notes" class="form-control" rows="2" placeholder="{{ __('documents.notes_optional') }}"></textarea>
                     </div>
                 </div>
                 <div class="upload-modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('editModal').style.display='none'">إلغاء</button>
-                    <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> تحديث المستند</button>
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('editModal').style.display='none'">{{ __('general.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-check"></i> {{ __('documents.update_document') }}</button>
                 </div>
             </form>
         </div>
@@ -498,24 +488,24 @@
                 <input type="hidden" name="documentable_type" id="ur_documentable_type">
                 <input type="hidden" name="documentable_id" id="ur_documentable_id">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="ti ti-replace me-2"></i>طلب تعديل مستند</h5>
+                    <h5 class="modal-title"><i class="ti ti-replace me-2"></i>{{ __('documents.request_update') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-muted mb-3">المستند: <strong id="ur_doc_name"></strong></p>
+                    <p class="text-muted mb-3">{{ __('documents.document') }}: <strong id="ur_doc_name"></strong></p>
                     <div class="mb-3">
-                        <label class="form-label">الملف الجديد <span class="text-danger">*</span></label>
+                        <label class="form-label">{{ __('documents.new_file') }} <span class="text-danger">*</span></label>
                         <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
-                        <small class="text-muted">الحد الأقصى: 10 ميجابايت</small>
+                        <small class="text-muted">{{ __('documents.file_limit_short') }}</small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">سبب التعديل</label>
-                        <textarea name="reason" class="form-control" rows="3" placeholder="اذكر سبب طلب التعديل..."></textarea>
+                        <label class="form-label">{{ __('documents.update_reason') }}</label>
+                        <textarea name="reason" class="form-control" rows="3" placeholder="{{ __('documents.enter_reason') }}"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="submit" class="btn btn-primary"><i class="ti ti-send me-1"></i>إرسال الطلب</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('general.cancel') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="ti ti-send me-1"></i>{{ __('documents.send_request') }}</button>
                 </div>
             </form>
         </div>
@@ -1447,20 +1437,16 @@ function openUpdateRequestModal(docId, docName, docType) {
 @endif
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Tabs functionality
     document.querySelectorAll('.tab-btn').forEach(button => {
         button.addEventListener('click', function() {
             const targetTab = this.getAttribute('data-tab');
 
-            // Remove active class from all buttons and panes
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
 
-            // Add active class to clicked button and corresponding pane
             this.classList.add('active');
             document.getElementById(targetTab).classList.add('active');
 
-            // Save active tab to server
             fetch('{{ route('representative.companies.save-tab', $company) }}', {
                 method: 'POST',
                 headers: {
@@ -1472,13 +1458,10 @@ function openUpdateRequestModal(docId, docName, docType) {
                     active_tab: targetTab,
                     _method: 'PATCH'
                 })
-            }).catch(() => {
-                // Silent fail - not critical if session doesn't save
-            });
+            }).catch(() => {});
         });
     });
 
-    // Modal functionality
     const uploadModal = document.getElementById('uploadModal');
     const uploadBtn = document.getElementById('uploadBtn');
     const closeModal = document.querySelector('.close-modal');
@@ -1507,7 +1490,6 @@ function openUpdateRequestModal(docId, docName, docType) {
         });
     }
 
-    // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target == uploadModal) {
             uploadModal.style.display = 'none';
@@ -1515,7 +1497,6 @@ function openUpdateRequestModal(docId, docName, docType) {
         }
     });
 
-    // Show/hide custom name field
     if (documentTypeSelect) {
         documentTypeSelect.addEventListener('change', function() {
             const customNameWrapper = document.getElementById('custom_name_wrapper');
@@ -1529,17 +1510,16 @@ function openUpdateRequestModal(docId, docName, docType) {
         });
     }
 
-    // Delete document function
     function deleteDocument(documentId, documentName) {
         Swal.fire({
-            title: 'هل أنت متأكد؟',
-            text: `سيتم حذف "${documentName}" نهائياً`,
+            title: '{{ __("general.are_you_sure") }}',
+            text: `{{ __("documents.will_be_deleted") }} "${documentName}"`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، احذف',
-            cancelButtonText: 'إلغاء',
+            confirmButtonText: '{{ __("general.yes_delete") }}',
+            cancelButtonText: '{{ __("general.cancel") }}',
             iconColor: '#dc2626'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -1573,17 +1553,16 @@ function openUpdateRequestModal(docId, docName, docType) {
     });
 
 
-    // Confirm back with missing documents
     function confirmBack() {
         Swal.fire({
-            title: 'تنبيه',
-            text: 'لم يتم رفع جميع المستندات المطلوبة بعد. هل تريد المتابعة؟',
+            title: '{{ __("general.warning") }}',
+            text: '{{ __("documents.delete_warning") }}',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#1a5f4a',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، العودة',
-            cancelButtonText: 'إلغاء',
+            confirmButtonText: '{{ __("documents.yes_continue") }}',
+            cancelButtonText: '{{ __("general.cancel") }}',
             iconColor: '#f59e0b'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -1593,13 +1572,12 @@ function openUpdateRequestModal(docId, docName, docType) {
     }
     window.confirmBack = confirmBack;
 
-    // Success/Error messages
     @if(session('success'))
         Swal.fire({
             icon: 'success',
-            title: 'تم بنجاح',
+            title: '{{ __("general.success") }}',
             text: '{{ session('success') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#10b981',
             timer: 3000,
@@ -1610,9 +1588,9 @@ function openUpdateRequestModal(docId, docName, docType) {
     @if(session('error'))
         Swal.fire({
             icon: 'error',
-            title: 'خطأ',
+            title: '{{ __("general.error") }}',
             text: '{{ session('error') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });
@@ -1621,9 +1599,9 @@ function openUpdateRequestModal(docId, docName, docType) {
     @if($errors->any())
         Swal.fire({
             icon: 'error',
-            title: 'خطأ في البيانات',
+            title: '{{ __("general.data_error") }}',
             html: '<ul style="text-align: right; list-style: none; padding: 0;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });

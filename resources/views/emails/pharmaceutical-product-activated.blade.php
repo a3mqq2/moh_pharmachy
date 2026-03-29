@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تم تفعيل الصنف الدوائي</title>
+    <title>{{ __('emails.product_activated_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -134,81 +134,81 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         <div class="content">
-            <h2>إشعار بتفعيل الصنف الدوائي</h2>
+            <h2>{{ __('emails.product_activated_heading') }}</h2>
 
             <div class="success-banner">
                 <div class="icon">✓</div>
-                <p>تم تفعيل الصنف الدوائي بنجاح</p>
+                <p>{{ __('emails.product_activated_banner') }}</p>
             </div>
 
-            <p>السيد/ة {{ $representative->name }} المحترم/ة،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.dear_representative_named', ['name' => $representative->name]) }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
-            <p>يسرنا إبلاغكم بأنه تم قبول إيصال الدفع وتفعيل الصنف الدوائي بشكل رسمي لدى وزارة الصحة - إدارة الصيدلة:</p>
+            <p>{{ __('emails.product_activated_body') }}</p>
 
             <table class="info-table">
                 <tr>
-                    <td>اسم الصنف الدوائي:</td>
+                    <td>{{ __('emails.product_name_label') }}</td>
                     <td><strong>{{ $product->product_name }}</strong></td>
                 </tr>
                 <tr>
-                    <td>الاسم العلمي:</td>
+                    <td>{{ __('emails.scientific_name_label') }}</td>
                     <td>{{ $product->scientific_name }}</td>
                 </tr>
                 <tr>
-                    <td>الشركة المنتجة:</td>
+                    <td>{{ __('emails.manufacturer_label') }}</td>
                     <td>{{ $product->foreign_company_name }}</td>
                 </tr>
                 <tr>
-                    <td>رقم الفاتورة:</td>
+                    <td>{{ __('emails.invoice_number_table') }}</td>
                     <td>{{ $invoice->invoice_number }}</td>
                 </tr>
                 <tr>
-                    <td>المبلغ المدفوع:</td>
-                    <td><strong>{{ number_format($invoice->amount, 2) }} دينار ليبي</strong></td>
+                    <td>{{ __('emails.amount_paid') }}</td>
+                    <td><strong>{{ number_format($invoice->amount, 2) }} {{ __('emails.lyd') }}</strong></td>
                 </tr>
                 <tr>
-                    <td>تاريخ التفعيل:</td>
+                    <td>{{ __('emails.activation_date_label') }}</td>
                     <td>{{ now()->format('Y-m-d') }}</td>
                 </tr>
                 <tr>
-                    <td>الحالة:</td>
-                    <td><strong style="color: #4caf50;">مفعل</strong></td>
+                    <td>{{ __('emails.status_label') }}</td>
+                    <td><strong style="color: #4caf50;">{{ __('emails.activated_male') }}</strong></td>
                 </tr>
             </table>
 
             <div class="note">
-                <p><strong>ملاحظات هامة:</strong></p>
-                <p>• الصنف الدوائي الآن مسجل رسمياً ويمكن تداوله في السوق الليبي</p>
-                <p>• يرجى الاحتفاظ بجميع المستندات والإيصالات الخاصة بالتسجيل</p>
-                <p>• يمكنكم الوصول إلى جميع تفاصيل الصنف الدوائي من خلال لوحة التحكم</p>
-                <p>• يجب الالتزام بجميع اللوائح والأنظمة المعمول بها في وزارة الصحة</p>
+                <p><strong>{{ __('emails.important_notes') }}</strong></p>
+                <p>{{ __('emails.product_activated_note_1') }}</p>
+                <p>{{ __('emails.product_activated_note_2') }}</p>
+                <p>{{ __('emails.product_activated_note_3') }}</p>
+                <p>{{ __('emails.product_activated_note_4') }}</p>
             </div>
 
             <div class="action-button">
                 <a href="{{ route('representative.pharmaceutical-products.show', $product->id) }}">
-                    عرض تفاصيل الصنف الدوائي
+                    {{ __('emails.view_product_details') }}
                 </a>
             </div>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة</strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">© {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">{{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

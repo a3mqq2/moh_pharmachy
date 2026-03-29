@@ -1,16 +1,17 @@
 @extends('layouts.auth')
 
-@section('title', 'تسجيل ممثل شركة')
+@section('title', __('auth.representative_register'))
 
 @section('content')
 <div class="login-container">
     <!-- Logo Section -->
     <div class="logo-section">
         <a href="{{ route('login') }}">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة - إدارة الصيدلة" />
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.site_title') }}" />
         </a>
         <div class="ministry-name">
-            <h1>بوابة الشركات</h1>
+            <h2>{{ __('auth.ministry_name') }}</h2>
+            <h1>{{ __('auth.companies_portal') }}</h1>
         </div>
     </div>
 
@@ -21,8 +22,8 @@
 
     <!-- Welcome Text -->
     <div class="welcome-section">
-        <h2>تسجيل حساب جديد</h2>
-        <p>أدخل بياناتك للتسجيل كممثل شركة</p>
+        <h2>{{ __('auth.register_new_account') }}</h2>
+        <p>{{ __('auth.register_subtitle') }}</p>
     </div>
 
     
@@ -33,7 +34,7 @@
         <input type="hidden" name="recaptcha_token" id="recaptcha_token">
 
         <div class="form-group">
-            <label for="name">الاسم الكامل</label>
+            <label for="name">{{ __('auth.full_name') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-user"></i>
                 <input
@@ -42,7 +43,7 @@
                     id="name"
                     name="name"
                     value="{{ old('name') }}"
-                    placeholder="أدخل اسمك الكامل"
+                    placeholder="{{ __('auth.enter_full_name') }}"
                     required
                     autofocus
                 />
@@ -53,7 +54,7 @@
         </div>
 
         <div class="form-group">
-            <label for="job_title">المسمى الوظيفي</label>
+            <label for="job_title">{{ __('general.job_title') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-briefcase"></i>
                 <input
@@ -62,7 +63,7 @@
                     id="job_title"
                     name="job_title"
                     value="{{ old('job_title') }}"
-                    placeholder="مثال: مدير تسويق، مندوب مبيعات"
+                    placeholder="{{ __('auth.job_title_placeholder') }}"
                     required
                 />
             </div>
@@ -72,7 +73,7 @@
         </div>
 
         <div class="form-group">
-            <label for="phone">رقم الهاتف</label>
+            <label for="phone">{{ __('auth.phone_number') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-phone"></i>
                 <input
@@ -93,7 +94,7 @@
         </div>
 
         <div class="form-group">
-            <label for="email">البريد الإلكتروني</label>
+            <label for="email">{{ __('auth.email') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-mail"></i>
                 <input
@@ -114,20 +115,20 @@
         </div>
 
         <button type="submit" class="submit-btn">
-            <span>إرسال رمز التحقق</span>
+            <span>{{ __('auth.send_otp') }}</span>
             <i class="ti ti-arrow-left"></i>
         </button>
     </form>
 
     <!-- Login Link -->
     <div class="auth-links">
-        <p>لديك حساب بالفعل؟ <a href="{{ route('login') }}">تسجيل الدخول</a></p>
+        <p>{{ __('auth.already_have_account') }} <a href="{{ route('login') }}">{{ __('auth.login') }}</a></p>
     </div>
 
     <!-- Footer -->
     <div class="login-footer">
-        <p>© {{ date('Y') }} وزارة الصحة - إدارة الصيدلة</p>
-        <p class="sub">جميع الحقوق محفوظة</p>
+        <p>{{ __('auth.copyright', ['year' => date('Y')]) }}</p>
+        <p class="sub">{{ __('general.all_rights_reserved') }}</p>
     </div>
 </div>
 @endsection
@@ -211,6 +212,13 @@ document.addEventListener('DOMContentLoaded', function() {
         height: auto;
         margin-bottom: 15px;
         transition: transform 0.3s ease;
+    }
+
+    .ministry-name h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #5a6a72;
+        margin: 0 0 4px 0;
     }
 
     .ministry-name h1 {

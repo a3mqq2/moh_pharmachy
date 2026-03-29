@@ -103,14 +103,14 @@ class PharmaceuticalProduct extends Model
     public function getStatusNameAttribute(): string
     {
         return match($this->status) {
-            'uploading_documents' => 'قيد رفع المستندات',
-            'pending_review' => 'قيد المراجعة',
-            'preliminary_approved' => 'موافقة مبدئية',
-            'pending_final_approval' => 'قيد الموافقة النهائية',
-            'pending_payment' => 'قيد السداد',
-            'payment_review' => 'قيد مراجعة السداد',
-            'rejected' => 'مرفوض',
-            'active' => 'معتمد',
+            'uploading_documents' => __('products.status_uploading_docs'),
+            'pending_review' => __('products.status_pending_review'),
+            'preliminary_approved' => __('products.status_preliminary_approved'),
+            'pending_final_approval' => __('products.status_pending_final'),
+            'pending_payment' => __('products.status_pending_payment'),
+            'payment_review' => __('products.status_payment_review'),
+            'rejected' => __('products.status_rejected'),
+            'active' => __('products.status_approved'),
             default => $this->status,
         };
     }
@@ -147,16 +147,16 @@ class PharmaceuticalProduct extends Model
         }
 
         $methods = [
-            'oral' => 'فموي',
-            'injection' => 'حقن',
-            'topical' => 'موضعي',
-            'inhalation' => 'استنشاق',
-            'other' => 'أخرى',
+            'oral' => __('products.usage_oral'),
+            'injection' => __('products.usage_injection'),
+            'topical' => __('products.usage_topical'),
+            'inhalation' => __('products.usage_inhalation'),
+            'other' => __('products.usage_other'),
         ];
 
         $text = collect($this->usage_methods)
             ->map(fn($method) => $methods[$method] ?? $method)
-            ->join('، ');
+            ->join(__('general.list_separator'));
 
         if (in_array('other', $this->usage_methods) && $this->other_usage_method) {
             $text .= ' (' . $this->other_usage_method . ')';

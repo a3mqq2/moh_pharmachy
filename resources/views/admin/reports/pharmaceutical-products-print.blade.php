@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقرير الأصناف الدوائية</title>
+    <title>{{ __('reports.products_report') }}</title>
     <style>
         * {
             margin: 0;
@@ -171,74 +171,74 @@
 <body>
     <div class="header">
         <div class="logo">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة">
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.ministry_of_health') }}">
         </div>
-        <div class="ministry-name">وزارة الصحة - دولة ليبيا</div>
-        <div class="department-name">إدارة الصيدلة والرقابة الدوائية</div>
-        <div class="report-title">تقرير الأصناف الدوائية</div>
-        <div class="report-date">تاريخ التقرير: {{ date('Y-m-d') }}</div>
+        <div class="ministry-name">{{ __('general.ministry_of_health_libya') }}</div>
+        <div class="department-name">{{ __('general.pharmacy_drug_control') }}</div>
+        <div class="report-title">{{ __('reports.products_report') }}</div>
+        <div class="report-date">{{ __('general.report_date') }}: {{ date('Y-m-d') }}</div>
     </div>
 
     @if(request()->hasAny(['status', 'from_date', 'to_date']))
     <div class="filters">
-        <h3>معايير البحث:</h3>
+        <h3>{{ __('general.search_criteria') }}</h3>
         @if(request('status'))
             @php
                 $statuses = [
-                    'uploading_documents' => 'قيد رفع المستندات',
-                    'pending_review' => 'قيد المراجعة',
-                    'preliminary_approved' => 'موافقة مبدئية',
-                    'pending_final_approval' => 'قيد الموافقة النهائية',
-                    'pending_payment' => 'قيد السداد',
-                    'payment_review' => 'قيد مراجعة السداد',
-                    'rejected' => 'مرفوضة',
-                    'active' => 'معتمدة'
+                    'uploading_documents' => __('products.status_uploading_docs'),
+                    'pending_review' => __('products.status_pending_review'),
+                    'preliminary_approved' => __('products.status_preliminary_approved'),
+                    'pending_final_approval' => __('products.status_pending_final'),
+                    'pending_payment' => __('products.status_pending_payment'),
+                    'payment_review' => __('products.status_payment_review'),
+                    'rejected' => __('products.status_rejected'),
+                    'active' => __('products.status_approved')
                 ];
             @endphp
-            <p><strong>الحالة:</strong> {{ $statuses[request('status')] ?? request('status') }}</p>
+            <p><strong>{{ __('general.status') }}:</strong> {{ $statuses[request('status')] ?? request('status') }}</p>
         @endif
         @if(request('from_date'))
-            <p><strong>من تاريخ:</strong> {{ request('from_date') }}</p>
+            <p><strong>{{ __('general.from_date') }}:</strong> {{ request('from_date') }}</p>
         @endif
         @if(request('to_date'))
-            <p><strong>إلى تاريخ:</strong> {{ request('to_date') }}</p>
+            <p><strong>{{ __('general.to_date') }}:</strong> {{ request('to_date') }}</p>
         @endif
     </div>
     @endif
 
     <div class="summary">
-        <h3>الإحصائيات الإجمالية</h3>
+        <h3>{{ __('general.overall_statistics') }}</h3>
         <div class="summary-grid">
             <div class="summary-item">
-                <div class="summary-label">إجمالي الأصناف</div>
+                <div class="summary-label">{{ __('reports.total_products') }}</div>
                 <div class="summary-value">{{ $stats['total'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">معتمدة</div>
+                <div class="summary-label">{{ __('products.status_approved') }}</div>
                 <div class="summary-value">{{ $stats['active'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">قيد المراجعة</div>
+                <div class="summary-label">{{ __('products.status_pending_review') }}</div>
                 <div class="summary-value">{{ $stats['pending_review'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">موافقة مبدئية</div>
+                <div class="summary-label">{{ __('products.status_preliminary_approved') }}</div>
                 <div class="summary-value">{{ $stats['preliminary_approved'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">قيد الموافقة النهائية</div>
+                <div class="summary-label">{{ __('products.status_pending_final') }}</div>
                 <div class="summary-value">{{ $stats['pending_final_approval'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">قيد السداد</div>
+                <div class="summary-label">{{ __('products.status_pending_payment') }}</div>
                 <div class="summary-value">{{ $stats['pending_payment'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">قيد مراجعة السداد</div>
+                <div class="summary-label">{{ __('products.status_payment_review') }}</div>
                 <div class="summary-value">{{ $stats['payment_review'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">مرفوضة</div>
+                <div class="summary-label">{{ __('products.status_rejected') }}</div>
                 <div class="summary-value">{{ $stats['rejected'] }}</div>
             </div>
         </div>
@@ -248,15 +248,15 @@
         <thead>
             <tr>
                 <th width="3%">#</th>
-                <th width="13%">الاسم التجاري</th>
-                <th width="8%">رقم القيد</th>
-                <th width="11%">الاسم العلمي</th>
-                <th width="9%">الشكل الصيدلاني</th>
-                <th width="10%">التركيز</th>
-                <th width="18%">الشركة الأجنبية</th>
-                <th width="13%">الممثل</th>
-                <th width="8%">الحالة</th>
-                <th width="7%">تاريخ التسجيل</th>
+                <th width="13%">{{ __('products.trade_name') }}</th>
+                <th width="8%">{{ __('general.registration_number') }}</th>
+                <th width="11%">{{ __('products.scientific_name') }}</th>
+                <th width="9%">{{ __('products.dosage_form') }}</th>
+                <th width="10%">{{ __('products.concentration_short') }}</th>
+                <th width="18%">{{ __('products.foreign_company') }}</th>
+                <th width="13%">{{ __('companies.representative') }}</th>
+                <th width="8%">{{ __('general.status') }}</th>
+                <th width="7%">{{ __('general.registration_date') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -277,15 +277,15 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="8">إجمالي الأصناف</td>
+                <td colspan="8">{{ __('reports.total_products') }}</td>
                 <td>{{ $stats['total'] }}</td>
             </tr>
         </tfoot>
     </table>
 
     <div class="footer">
-        <p>© {{ date('Y') }} وزارة الصحة - دولة ليبيا. جميع الحقوق محفوظة.</p>
-        <p>تم إنشاء هذا التقرير تلقائياً بواسطة نظام إدارة الصيدلة والرقابة الدوائية</p>
+        <p>&copy; {{ date('Y') }} {{ __('general.copyright_ministry') }}</p>
+        <p>{{ __('general.auto_generated_report_v2') }}</p>
     </div>
 
     <script>

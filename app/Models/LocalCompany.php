@@ -132,40 +132,40 @@ class LocalCompany extends Model
     public static function licenseTypes()
     {
         return [
-            'company' => 'شركة',
-            'partnership' => 'تشاركية',
-            'authorized_agent' => 'وكيل معتمد',
+            'company' => __('companies.license_company'),
+            'partnership' => __('companies.license_partnership'),
+            'authorized_agent' => __('companies.license_agent'),
         ];
     }
 
     public static function licenseSpecialties()
     {
         return [
-            'medicines' => 'أدوية',
-            'medical_supplies' => 'مستلزمات طبية',
-            'medical_equipment' => 'معدات طبية',
+            'medicines' => __('companies.specialty_medicines'),
+            'medical_supplies' => __('companies.specialty_medical_supplies'),
+            'medical_equipment' => __('companies.specialty_medical_equipment'),
         ];
     }
 
     public static function statuses()
     {
         return [
-            'uploading_documents' => 'قيد رفع المستندات',
-            'pending' => 'قيد المراجعة',
-            'approved' => 'مقبولة (قيد السداد)',
-            'payment_review' => 'قيد مراجعة الدفع',
-            'active' => 'مفعلة',
-            'rejected' => 'مرفوضة',
-            'suspended' => 'معلقة',
-            'expired' => 'منتهية الصلاحية',
+            'uploading_documents' => __('companies.status_uploading_docs'),
+            'pending' => __('companies.status_pending_review'),
+            'approved' => __('companies.status_accepted') . ' (' . __('companies.status_pending_payment') . ')',
+            'payment_review' => __('companies.status_payment_review'),
+            'active' => __('companies.status_active'),
+            'rejected' => __('companies.status_rejected'),
+            'suspended' => __('companies.status_suspended'),
+            'expired' => __('companies.status_expired'),
         ];
     }
 
     public static function companyTypes()
     {
         return [
-            'distributor' => 'شركة موزعة',
-            'supplier' => 'شركة موردة',
+            'distributor' => __('companies.distributor_companies'),
+            'supplier' => __('companies.supplier_companies'),
         ];
     }
 
@@ -227,7 +227,7 @@ class LocalCompany extends Model
     public function markAsExpired()
     {
         $this->update(['status' => 'expired']);
-        $this->logActivity('expired', 'انتهت صلاحية الشركة');
+        $this->logActivity('expired', __('companies.log_company_expired'));
     }
 
     public function renewCompany()
@@ -241,7 +241,7 @@ class LocalCompany extends Model
             'expires_at' => \Carbon\Carbon::parse($baseDate)->addYears($validityYears),
         ]);
 
-        $this->logActivity('renewed', 'تم تجديد صلاحية الشركة لمدة ' . $validityYears . ' سنة');
+        $this->logActivity('renewed', __('companies.log_company_renewed', ['years' => $validityYears]));
     }
 
     public function calculateExpiryDate()

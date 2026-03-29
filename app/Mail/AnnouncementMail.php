@@ -24,14 +24,14 @@ class AnnouncementMail extends Mailable
 
     public function envelope(): Envelope
     {
-        $prefix = match($this->announcement->priority) {
-            'urgent' => '[عاجل] ',
-            'important' => '[مهم] ',
-            default => '',
+        $subject = match($this->announcement->priority) {
+            'urgent' => __('emails.announcement_subject_urgent', ['title' => $this->announcement->title]),
+            'important' => __('emails.announcement_subject_important', ['title' => $this->announcement->title]),
+            default => __('emails.announcement_subject', ['title' => $this->announcement->title]),
         };
 
         return new Envelope(
-            subject: $prefix . 'تعميم: ' . $this->announcement->title . ' - وزارة الصحة',
+            subject: $subject,
         );
     }
 

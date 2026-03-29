@@ -1,36 +1,36 @@
 @extends('layouts.app')
 
-@section('title', 'أرشيف الشركات')
+@section('title', __('documents.company_archive'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-    <li class="breadcrumb-item active">أرشيف مستندات الشركات</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('general.home') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('documents.company_archive') }}</li>
 @endsection
 
 @section('content')
 <div class="card border-0 shadow-sm">
     <div class="card-header bg-white py-3">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-            <h5 class="mb-0"><i class="ti ti-archive me-2"></i>أرشيف مستندات الشركات</h5>
+            <h5 class="mb-0"><i class="ti ti-archive me-2"></i>{{ __('documents.company_archive') }}</h5>
             <form method="GET" action="{{ route('admin.document-center.company-archive') }}" class="d-flex gap-2 flex-wrap align-items-center">
                 <select name="company_type" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto;">
-                    <option value="all" {{ $companyType == 'all' ? 'selected' : '' }}>جميع الشركات</option>
-                    <option value="local" {{ $companyType == 'local' ? 'selected' : '' }}>محلية</option>
-                    <option value="foreign" {{ $companyType == 'foreign' ? 'selected' : '' }}>أجنبية</option>
+                    <option value="all" {{ $companyType == 'all' ? 'selected' : '' }}>{{ __('documents.all_companies') }}</option>
+                    <option value="local" {{ $companyType == 'local' ? 'selected' : '' }}>{{ __('documents.local') }}</option>
+                    <option value="foreign" {{ $companyType == 'foreign' ? 'selected' : '' }}>{{ __('documents.foreign') }}</option>
                 </select>
                 <select name="doc_status" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto;">
-                    <option value="all" {{ $docStatus == 'all' ? 'selected' : '' }}>جميع الحالات</option>
-                    <option value="complete" {{ $docStatus == 'complete' ? 'selected' : '' }}>مستندات مكتملة</option>
-                    <option value="incomplete" {{ $docStatus == 'incomplete' ? 'selected' : '' }}>مستندات ناقصة</option>
-                    <option value="has_pending" {{ $docStatus == 'has_pending' ? 'selected' : '' }}>بها معلقة</option>
+                    <option value="all" {{ $docStatus == 'all' ? 'selected' : '' }}>{{ __('documents.all_statuses') }}</option>
+                    <option value="complete" {{ $docStatus == 'complete' ? 'selected' : '' }}>{{ __('documents.docs_complete') }}</option>
+                    <option value="incomplete" {{ $docStatus == 'incomplete' ? 'selected' : '' }}>{{ __('documents.docs_incomplete') }}</option>
+                    <option value="has_pending" {{ $docStatus == 'has_pending' ? 'selected' : '' }}>{{ __('documents.has_pending') }}</option>
                 </select>
                 <div class="input-group input-group-sm" style="width: 220px;">
-                    <input type="text" name="search" class="form-control" placeholder="بحث باسم الشركة..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control" placeholder="{{ __('documents.search_company') }}" value="{{ request('search') }}">
                     <button class="btn btn-outline-secondary" type="submit"><i class="ti ti-search"></i></button>
                 </div>
                 @if(request('search') || request('company_type') || request('doc_status'))
                 <a href="{{ route('admin.document-center.company-archive') }}" class="btn btn-sm btn-outline-secondary">
-                    <i class="ti ti-x me-1"></i>مسح
+                    <i class="ti ti-x me-1"></i>{{ __('general.clear') }}
                 </a>
                 @endif
             </form>
@@ -52,13 +52,13 @@
                         </div>
                         <div class="d-flex flex-wrap gap-2 align-items-center">
                             <small class="text-muted">
-                                <i class="ti ti-files me-1"></i>{{ $company['total_docs'] }} مستند
+                                <i class="ti ti-files me-1"></i>{{ $company['total_docs'] }} {{ __('documents.document') }}
                             </small>
                             @if($company['pending_docs'] > 0)
-                                <span class="badge bg-warning" style="font-size: 0.65rem;">{{ $company['pending_docs'] }} معلق</span>
+                                <span class="badge bg-warning" style="font-size: 0.65rem;">{{ $company['pending_docs'] }} {{ __('documents.pending') }}</span>
                             @endif
                             @if($company['missing_count'] > 0)
-                                <span class="badge bg-light-danger text-danger" style="font-size: 0.65rem;">{{ $company['missing_count'] }} ناقص</span>
+                                <span class="badge bg-light-danger text-danger" style="font-size: 0.65rem;">{{ $company['missing_count'] }} {{ __('documents.missing') }}</span>
                             @endif
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                             </div>
                             <small class="fw-bold {{ $company['completion'] == 100 ? 'text-success' : ($company['completion'] >= 50 ? 'text-warning' : 'text-danger') }}">{{ $company['completion'] }}%</small>
                         </div>
-                        <small class="text-muted" style="font-size: 0.7rem;">{{ $company['uploaded_required'] }}/{{ $company['required_count'] }} مطلوب</small>
+                        <small class="text-muted" style="font-size: 0.7rem;">{{ $company['uploaded_required'] }}/{{ $company['required_count'] }} {{ __('documents.required') }}</small>
                     </div>
                     <i class="ti ti-chevron-down text-muted company-chevron"></i>
                 </div>
@@ -85,12 +85,12 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>نوع المستند</th>
-                                    <th>اسم الملف</th>
-                                    <th>الحجم</th>
-                                    <th>الحالة</th>
-                                    <th>التاريخ</th>
-                                    <th style="width: 100px;">الإجراءات</th>
+                                    <th>{{ __('documents.document_type') }}</th>
+                                    <th>{{ __('documents.file_name') }}</th>
+                                    <th>{{ __('documents.file_size') }}</th>
+                                    <th>{{ __('general.status') }}</th>
+                                    <th>{{ __('general.date') }}</th>
+                                    <th style="width: 100px;">{{ __('general.actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -108,21 +108,21 @@
                                     </td>
                                     <td>
                                         @if($doc['status'] == 'pending')
-                                            <span class="badge bg-warning">معلق</span>
+                                            <span class="badge bg-warning">{{ __('documents.status_pending') }}</span>
                                         @else
-                                            <span class="badge bg-success">معتمد</span>
+                                            <span class="badge bg-success">{{ __('documents.status_approved') }}</span>
                                         @endif
                                     </td>
                                     <td><small>{{ $doc['created_at']->format('Y-m-d') }}</small></td>
                                     <td>
                                         <div class="d-flex gap-1">
-                                            <button type="button" class="btn btn-sm btn-outline-info btn-doc-preview" title="عرض"
+                                            <button type="button" class="btn btn-sm btn-outline-info btn-doc-preview" title="{{ __('general.view') }}"
                                                 data-file-url="{{ $doc['file_url'] ?? $doc['download_route'] }}"
                                                 data-file-name="{{ $doc['original_name'] ?? $doc['type_name'] }}"
                                                 data-download-url="{{ $doc['download_route'] }}">
                                                 <i class="ti ti-eye"></i>
                                             </button>
-                                            <a href="{{ $doc['download_route'] }}" class="btn btn-sm btn-outline-success" title="تحميل">
+                                            <a href="{{ $doc['download_route'] }}" class="btn btn-sm btn-outline-success" title="{{ __('general.download') }}">
                                                 <i class="ti ti-download"></i>
                                             </a>
                                         </div>
@@ -135,12 +135,12 @@
                     @else
                     <div class="text-center text-muted py-3">
                         <i class="ti ti-folder-off fs-3 d-block mb-2"></i>
-                        <small>لا توجد مستندات مرفوعة</small>
+                        <small>{{ __('documents.no_documents_uploaded') }}</small>
                     </div>
                     @endif
                     <div class="mt-2 text-end">
                         <a href="{{ $company['route'] }}" class="btn btn-sm btn-outline-primary">
-                            <i class="ti ti-external-link me-1"></i>عرض الشركة
+                            <i class="ti ti-external-link me-1"></i>{{ __('documents.view_company') }}
                         </a>
                     </div>
                 </div>
@@ -149,8 +149,8 @@
         @empty
         <div class="text-center text-muted py-5">
             <i class="ti ti-folder-off fs-1 d-block mb-3"></i>
-            <h6>لا توجد شركات مطابقة</h6>
-            <small>جرب تغيير معايير البحث</small>
+            <h6>{{ __('documents.no_matching_companies') }}</h6>
+            <small>{{ __('documents.try_different_search') }}</small>
         </div>
         @endforelse
     </div>

@@ -54,7 +54,7 @@ class ForeignCompanyInvoiceController extends Controller
 
         if (!$invoice->canUploadReceipt()) {
             return redirect()->back()
-                ->with('error', 'لا يمكن رفع إيصال الدفع في الحالة الحالية');
+                ->with('error', __('invoices.msg_cannot_upload_receipt'));
         }
 
         $validated = $request->validate([
@@ -93,13 +93,13 @@ class ForeignCompanyInvoiceController extends Controller
             $company->id,
             $representative->name,
             [
-                'رقم الفاتورة' => $invoice->invoice_number,
-                'المبلغ' => number_format($invoice->amount, 2) . ' د.ل',
+                __('invoices.invoice_number') => $invoice->invoice_number,
+                __('invoices.amount') => number_format($invoice->amount, 2) . ' ' . __('general.lyd'),
             ]
         );
 
         return redirect()->route('representative.foreign-companies.invoices.show', [$company->id, $invoice->id])
-            ->with('success', 'تم رفع إيصال الدفع بنجاح. سيتم مراجعته من قبل الإدارة');
+            ->with('success', __('invoices.msg_receipt_upload_success_review'));
     }
 
     public function downloadReceipt($companyId, $invoiceId)
@@ -114,7 +114,7 @@ class ForeignCompanyInvoiceController extends Controller
 
         if (!$invoice->hasReceipt()) {
             return redirect()->back()
-                ->with('error', 'إيصال الدفع غير موجود');
+                ->with('error', __('invoices.msg_receipt_not_found'));
         }
 
         return Storage::disk('public')->download(
@@ -135,7 +135,7 @@ class ForeignCompanyInvoiceController extends Controller
 
         if (!$invoice->canDeleteReceipt()) {
             return redirect()->back()
-                ->with('error', 'لا يمكن حذف إيصال الدفع في الحالة الحالية');
+                ->with('error', __('invoices.msg_cannot_delete_receipt'));
         }
 
         if ($invoice->receipt_path && Storage::disk('public')->exists($invoice->receipt_path)) {
@@ -172,7 +172,7 @@ class ForeignCompanyInvoiceController extends Controller
         );
 
         return redirect()->route('representative.foreign-companies.invoices.show', [$company->id, $invoice->id])
-            ->with('success', 'تم حذف إيصال الدفع بنجاح');
+            ->with('success', __('invoices.msg_receipt_deleted_success'));
     }
 
     public function downloadInvoice($companyId, $invoiceId)

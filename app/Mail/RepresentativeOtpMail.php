@@ -21,10 +21,10 @@ class RepresentativeOtpMail extends Mailable
     public function envelope(): Envelope
     {
         $subject = match($this->type) {
-            'registration' => 'رمز التحقق لتسجيل حسابك - وزارة الصحة',
-            'login' => 'رمز التحقق لتسجيل الدخول - وزارة الصحة',
-            'password_reset' => 'رمز التحقق لإعادة تعيين كلمة المرور - وزارة الصحة',
-            default => 'رمز التحقق - وزارة الصحة'
+            'registration' => __('emails.otp_subject_registration'),
+            'login' => __('emails.otp_subject_login'),
+            'password_reset' => __('emails.otp_subject_password_reset'),
+            default => __('emails.otp_subject_default'),
         };
 
         return new Envelope(subject: $subject);

@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'شركاتي')
+@section('title', __('companies.my_companies'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,13 +10,13 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>شركاتي</h1>
-                <p>قائمة بجميع الشركات المسجلة</p>
+                <h1>{{ __('companies.my_companies') }}</h1>
+                <p>{{ __('companies.my_companies_desc') }}</p>
             </div>
         </div>
         <a href="{{ route('representative.companies.create') }}" class="btn btn-primary">
             <i class="ti ti-plus"></i>
-            تسجيل شركة جديدة
+            {{ __('companies.register_new') }}
         </a>
     </div>
 
@@ -29,11 +29,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>اسم الشركة</th>
-                        <th>نوع الشركة</th>
-                        <th>المدينة</th>
-                        <th>تاريخ التسجيل</th>
-                        <th>الحالة</th>
+                        <th>{{ __('companies.company_name') }}</th>
+                        <th>{{ __('companies.company_type') }}</th>
+                        <th>{{ __('general.city') }}</th>
+                        <th>{{ __('general.registration_date') }}</th>
+                        <th>{{ __('general.status') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,15 +70,15 @@
                 </div>
                 <div class="card-body">
                     <div class="card-info-row">
-                        <span class="info-label">نوع الشركة:</span>
+                        <span class="info-label">{{ __('companies.company_type') }}:</span>
                         <span class="info-value">{{ $company->company_type_name }}</span>
                     </div>
                     <div class="card-info-row">
-                        <span class="info-label">المدينة:</span>
+                        <span class="info-label">{{ __('general.city') }}:</span>
                         <span class="info-value">{{ $company->city }}</span>
                     </div>
                     <div class="card-info-row">
-                        <span class="info-label">تاريخ التسجيل:</span>
+                        <span class="info-label">{{ __('general.registration_date') }}:</span>
                         <span class="info-value">{{ $company->created_at->format('Y-m-d') }}</span>
                     </div>
                 </div>
@@ -90,11 +90,11 @@
             <div class="empty-icon">
                 <i class="ti ti-building-community"></i>
             </div>
-            <h2>لا توجد شركات مسجلة</h2>
-            <p>لم تقم بتسجيل أي شركة بعد</p>
+            <h2>{{ __('companies.no_companies') }}</h2>
+            <p>{{ __('companies.no_companies_registered') }}</p>
             <a href="{{ route('representative.companies.create') }}" class="primary-btn">
                 <i class="ti ti-plus"></i>
-                تسجيل شركة جديدة
+                {{ __('companies.register_new') }}
             </a>
         </div>
     @endif
@@ -107,9 +107,9 @@
     @if(session('success'))
         Swal.fire({
             icon: 'success',
-            title: 'تم بنجاح',
+            title: '{{ __("general.success") }}',
             text: '{{ session('success') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#10b981',
             timer: 3000,
@@ -120,9 +120,9 @@
     @if(session('error'))
         Swal.fire({
             icon: 'error',
-            title: 'خطأ',
+            title: '{{ __("general.error") }}',
             text: '{{ session('error') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });

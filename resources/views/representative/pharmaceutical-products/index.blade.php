@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'الأصناف الدوائية')
+@section('title', __('products.pharmaceutical_products'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,27 +10,25 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>الأصناف الدوائية</h1>
-                <p>قائمة بجميع الأصناف الدوائية المسجلة</p>
+                <h1>{{ __('products.pharmaceutical_products') }}</h1>
+                <p>{{ __('products.all_products_desc') }}</p>
             </div>
         </div>
         @if($activeForeignCompaniesCount > 0)
             <a href="{{ route('representative.pharmaceutical-products.create') }}" class="btn btn-primary">
                 <i class="ti ti-plus"></i>
-                تسجيل صنف دوائي جديد
+                {{ __('products.register_new') }}
             </a>
         @endif
     </div>
 
-    
-
     @if($activeForeignCompaniesCount == 0)
         <div class="empty-state">
-            <h2>غير متاح حالياً</h2>
-            <p>يجب أن يكون لديك شركة أجنبية مفعلة لتتمكن من تسجيل الأصناف الدوائية</p>
+            <h2>{{ __('products.not_available_now') }}</h2>
+            <p>{{ __('products.must_have_foreign') }}</p>
             <a href="{{ route('representative.foreign-companies.index') }}" class="primary-btn">
                 <i class="ti ti-world"></i>
-                إدارة الشركات الأجنبية
+                {{ __('products.manage_foreign') }}
             </a>
         </div>
     @elseif($products->count() > 0)
@@ -39,14 +37,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>الاسم التجاري</th>
-                        <th>الاسم العلمي</th>
-                        <th>الشكل الصيدلاني</th>
-                        <th>التركيز</th>
-                        <th>الشركة الأجنبية</th>
-                        <th>طريقة الاستعمال</th>
-                        <th>تاريخ التسجيل</th>
-                        <th>الحالة</th>
+                        <th>{{ __('products.trade_name') }}</th>
+                        <th>{{ __('products.scientific_name') }}</th>
+                        <th>{{ __('products.dosage_form') }}</th>
+                        <th>{{ __('products.concentration_short') }}</th>
+                        <th>{{ __('products.foreign_company') }}</th>
+                        <th>{{ __('products.usage_method') }}</th>
+                        <th>{{ __('general.registration_date') }}</th>
+                        <th>{{ __('general.status') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,28 +89,28 @@
                 <div class="card-body">
                     @if($product->registration_number)
                     <div class="info-row">
-                        <span class="label">رقم القيد:</span>
+                        <span class="label">{{ __('general.registration_number') }}:</span>
                         <span class="value">{{ $product->registration_number }}</span>
                     </div>
                     @endif
                     <div class="info-row">
-                        <span class="label">الشكل الصيدلاني:</span>
+                        <span class="label">{{ __('products.dosage_form') }}:</span>
                         <span class="value">{{ $product->pharmaceutical_form }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">التركيز:</span>
+                        <span class="label">{{ __('products.concentration_short') }}:</span>
                         <span class="value">{{ $product->concentration }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">الشركة الأجنبية:</span>
+                        <span class="label">{{ __('products.foreign_company') }}:</span>
                         <span class="value">{{ $product->foreignCompany->company_name }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">طريقة الاستعمال:</span>
+                        <span class="label">{{ __('products.usage_method') }}:</span>
                         <span class="value">{{ $product->usage_methods_text }}</span>
                     </div>
                     <div class="info-row">
-                        <span class="label">تاريخ التسجيل:</span>
+                        <span class="label">{{ __('general.registration_date') }}:</span>
                         <span class="value">{{ $product->created_at->format('Y-m-d') }}</span>
                     </div>
                 </div>
@@ -127,11 +125,11 @@
         @endif
     @else
         <div class="empty-state">
-            <h2>لا توجد أصناف دوائية مسجلة</h2>
-            <p>لم تقم بتسجيل أي صنف دوائي بعد. يمكنك البدء بتسجيل صنفك الدوائي الأول</p>
+            <h2>{{ __('products.no_products') }}</h2>
+            <p>{{ __('products.no_products_yet') }}</p>
             <a href="{{ route('representative.pharmaceutical-products.create') }}" class="primary-btn">
                 <i class="ti ti-plus"></i>
-                تسجيل صنف دوائي جديد
+                {{ __('products.register_new') }}
             </a>
         </div>
     @endif

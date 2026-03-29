@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'تسجيل شركة أجنبية جديدة')
+@section('title', __('companies.register_foreign'))
 
 @section('content')
 <div class="dashboard-container">
@@ -10,8 +10,8 @@
                 <i class="ti ti-arrow-right"></i>
             </a>
             <div>
-                <h1>تسجيل شركة أجنبية جديدة</h1>
-                <p>قم بتعبئة جميع البيانات المطلوبة لتسجيل الشركة الأجنبية</p>
+                <h1>{{ __('companies.register_foreign') }}</h1>
+                <p>{{ __('companies.fill_all_data') }}</p>
             </div>
         </div>
     </div>
@@ -19,43 +19,41 @@
     
 
     <div class="form-container">
-        <!-- Steps Indicator -->
         <div class="steps-indicator">
             <div class="step active" data-step="1">
                 <div class="step-number">1</div>
-                <div class="step-title">الشركة المحلية</div>
+                <div class="step-title">{{ __('companies.local_company') }}</div>
             </div>
             <div class="step-line"></div>
             <div class="step" data-step="2">
                 <div class="step-number">2</div>
-                <div class="step-title">معلومات الشركة</div>
+                <div class="step-title">{{ __('companies.company_info') }}</div>
             </div>
             <div class="step-line"></div>
             <div class="step" data-step="3">
                 <div class="step-number">3</div>
-                <div class="step-title">المنتجات والتسجيل</div>
+                <div class="step-title">{{ __('companies.products_and_registration') }}</div>
             </div>
             <div class="step-line"></div>
             <div class="step" data-step="4">
                 <div class="step-number">4</div>
-                <div class="step-title">المراجعة والتأكيد</div>
+                <div class="step-title">{{ __('companies.review_and_confirm') }}</div>
             </div>
         </div>
 
         <form action="{{ route('representative.foreign-companies.store') }}" method="POST" id="foreignCompanyForm">
             @csrf
 
-            <!-- Step 1: الشركة المحلية (الوكيل) -->
             <div class="step-content active" data-step="1">
                 <div class="form-section">
                     <h3 class="section-title">
                         <i class="ti ti-building"></i>
-                        الشركة المحلية (الوكيل)
+                        {{ __('companies.local_company_agent') }}
                     </h3>
                     <div class="form-group">
-                        <label for="local_company_id" class="required">اختر الشركة المحلية الموردة</label>
+                        <label for="local_company_id" class="required">{{ __('companies.select_local_supplier') }}</label>
                         <select name="local_company_id" id="local_company_id" class="form-control select2" required>
-                            <option value="">-- اختر الشركة --</option>
+                            <option value="">{{ __('companies.select_local_company') }}</option>
                             @foreach($localCompanies as $company)
                                 <option value="{{ $company->id }}" {{ old('local_company_id') == $company->id ? 'selected' : '' }}>
                                     {{ $company->company_name }}
@@ -65,19 +63,19 @@
                         @error('local_company_id')
                             <span class="error-message">{{ $message }}</span>
                         @enderror
-                        <small class="help-text">يجب أن تكون الشركة المحلية من نوع "مورد" ومفعلة</small>
+                        <small class="help-text">{{ __('companies.must_be_supplier') }}</small>
                     </div>
                 </div>
 
                 <div class="form-section">
                     <h3 class="section-title">
                         <i class="ti ti-history"></i>
-                        التسجيل المسبق
+                        {{ __('companies.pre_registration') }}
                     </h3>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
                             <input type="checkbox" name="is_pre_registered" id="is_pre_registered" value="1" {{ old('is_pre_registered') ? 'checked' : '' }}>
-                            <span>الشركة مسجلة من قبل</span>
+                            <span>{{ __('companies.previously_registered') }}</span>
                         </label>
                     </div>
 
@@ -85,46 +83,45 @@
                         <div class="alert-info-box">
                             <i class="ti ti-info-circle"></i>
                             <div>
-                                <strong>ملاحظة هامة</strong>
-                                <p>يرجى إدخال رقم القيد وسنة التسجيل الخاصة بالشركة المسجلة مسبقاً. سيتم التحقق من هذه البيانات من قبل الإدارة.</p>
+                                <strong>{{ __('general.important_note') }}</strong>
+                                <p>{{ __('companies.prev_reg_note') }}</p>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="pre_registration_year">سنة التسجيل <span class="text-danger">*</span></label>
-                                <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ old('pre_registration_year') }}" placeholder="مثال: 2024" min="1990" max="{{ date('Y') }}">
+                                <label for="pre_registration_year">{{ __('companies.reg_year') }} <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ old('pre_registration_year') }}" placeholder="{{ __('companies.reg_year_example') }}" min="1990" max="{{ date('Y') }}">
                                 @error('pre_registration_year')
                                     <span class="error-message">{{ $message }}</span>
                                 @enderror
                             </div>
 
                             <div class="form-group">
-                                <label for="pre_registration_sequence">الرقم التسلسلي <span class="text-danger">*</span></label>
-                                <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ old('pre_registration_sequence') }}" placeholder="مثال: 15" min="1">
+                                <label for="pre_registration_sequence">{{ __('companies.serial_number') }} <span class="text-danger">*</span></label>
+                                <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ old('pre_registration_sequence') }}" placeholder="{{ __('companies.serial_example') }}" min="1">
                                 @error('pre_registration_sequence')
                                     <span class="error-message">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
                         <div class="form-group">
-                            <small>رقم القيد: <strong id="preRegPreview">-</strong></small>
+                            <small>{{ __('companies.reg_number_display') }} <strong id="preRegPreview">-</strong></small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Step 2: معلومات الشركة الأساسية -->
             <div class="step-content" data-step="2">
                 <div class="form-section">
                 <h3 class="section-title">
                     <i class="ti ti-info-circle"></i>
-                    معلومات الشركة الأساسية
+                    {{ __('companies.foreign_basic_info') }}
                 </h3>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="company_name" class="required">اسم الشركة الأجنبية</label>
+                        <label for="company_name" class="required">{{ __('companies.foreign_company_name') }}</label>
                         <input type="text" name="company_name" id="company_name" class="form-control"
                                value="{{ old('company_name') }}" required>
                         @error('company_name')
@@ -133,9 +130,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="country" class="required">الدولة</label>
+                        <label for="country" class="required">{{ __('general.country') }}</label>
                         <select name="country" id="country" class="form-control select2-tags" required>
-                            <option value="">-- اختر أو اكتب اسم الدولة --</option>
+                            <option value="">{{ __('companies.select_or_type_country_placeholder') }}</option>
                             @foreach($countries as $country)
                                 <option value="{{ $country }}" {{ old('country') == $country ? 'selected' : '' }}>
                                     {{ $country }}
@@ -145,17 +142,17 @@
                         @error('country')
                             <span class="error-message">{{ $message }}</span>
                         @enderror
-                        <small class="help-text">يمكنك الاختيار من القائمة أو كتابة اسم الدولة</small>
+                        <small class="help-text">{{ __('companies.can_select_multi') }}</small>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="entity_type" class="required">نوع الكيان</label>
+                        <label for="entity_type" class="required">{{ __('companies.entity_type') }}</label>
                         <select name="entity_type" id="entity_type" class="form-control" required>
-                            <option value="">-- اختر نوع الكيان --</option>
-                            <option value="company" {{ old('entity_type') == 'company' ? 'selected' : '' }}>شركة</option>
-                            <option value="factory" {{ old('entity_type') == 'factory' ? 'selected' : '' }}>مصنع</option>
+                            <option value="">{{ __('companies.select_entity_type') }}</option>
+                            <option value="company" {{ old('entity_type') == 'company' ? 'selected' : '' }}>{{ __('companies.entity_company') }}</option>
+                            <option value="factory" {{ old('entity_type') == 'factory' ? 'selected' : '' }}>{{ __('companies.entity_factory') }}</option>
                         </select>
                         @error('entity_type')
                             <span class="error-message">{{ $message }}</span>
@@ -163,12 +160,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="activity_type" class="required">نوع النشاط</label>
+                        <label for="activity_type" class="required">{{ __('companies.activity_type') }}</label>
                         <select name="activity_type" id="activity_type" class="form-control" required>
-                            <option value="">-- اختر نوع النشاط --</option>
-                            <option value="medicines" {{ old('activity_type') == 'medicines' ? 'selected' : '' }}>أدوية</option>
-                            <option value="medical_supplies" {{ old('activity_type') == 'medical_supplies' ? 'selected' : '' }}>مستلزمات طبية</option>
-                            <option value="both" {{ old('activity_type') == 'both' ? 'selected' : '' }}>أدوية ومستلزمات طبية</option>
+                            <option value="">{{ __('companies.select_activity_type') }}</option>
+                            <option value="medicines" {{ old('activity_type') == 'medicines' ? 'selected' : '' }}>{{ __('companies.activity_medicines') }}</option>
+                            <option value="medical_supplies" {{ old('activity_type') == 'medical_supplies' ? 'selected' : '' }}>{{ __('companies.activity_medical_supplies') }}</option>
+                            <option value="both" {{ old('activity_type') == 'both' ? 'selected' : '' }}>{{ __('companies.activity_both') }}</option>
                         </select>
                         @error('activity_type')
                             <span class="error-message">{{ $message }}</span>
@@ -177,7 +174,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="email" class="required">البريد الإلكتروني للشركة</label>
+                    <label for="email" class="required">{{ __('companies.foreign_company_email') }}</label>
                     <input type="email" name="email" id="email" class="form-control"
                            value="{{ old('email') }}" required>
                     @error('email')
@@ -186,7 +183,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="address" class="required">عنوان الشركة</label>
+                    <label for="address" class="required">{{ __('companies.foreign_company_address') }}</label>
                     <textarea name="address" id="address" class="form-control" rows="3" required>{{ old('address') }}</textarea>
                     @error('address')
                         <span class="error-message">{{ $message }}</span>
@@ -195,16 +192,15 @@
                 </div>
             </div>
 
-            <!-- Step 3: معلومات المنتجات والتسجيل -->
             <div class="step-content" data-step="3">
                 <div class="form-section">
                 <h3 class="section-title">
                     <i class="ti ti-package"></i>
-                    معلومات المنتجات والتسجيل
+                    {{ __('companies.products_info') }}
                 </h3>
 
                 <div class="form-group">
-                    <label for="products_count" class="required">عدد المنتجات المراد تسجيلها</label>
+                    <label for="products_count" class="required">{{ __('companies.products_to_register') }}</label>
                     <input type="number" name="products_count" id="products_count" class="form-control"
                            value="{{ old('products_count', 1) }}" min="1" required>
                     @error('products_count')
@@ -213,7 +209,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="registered_countries">الدول المسجلة بها الشركة أو المصنع</label>
+                    <label for="registered_countries">{{ __('companies.registered_countries') }}</label>
                     <select name="registered_countries[]" id="registered_countries" class="form-control select2-tags-multiple" multiple>
                         @foreach($countries as $country)
                             <option value="{{ $country }}"
@@ -225,53 +221,50 @@
                     @error('registered_countries')
                         <span class="error-message">{{ $message }}</span>
                     @enderror
-                    <small class="help-text">يمكنك الاختيار من القائمة أو كتابة أسماء الدول (يمكنك اختيار أو كتابة أكثر من دولة)</small>
+                    <small class="help-text">{{ __('companies.registered_countries_note') }}</small>
                 </div>
                 </div>
             </div>
 
-            <!-- Step 4: المراجعة والتأكيد -->
             <div class="step-content" data-step="4">
-                <!-- ملاحظات إلزامية -->
                 <div class="alert alert-info">
-                <h4><i class="ti ti-info-circle"></i> ملاحظات إلزامية:</h4>
+                <h4><i class="ti ti-info-circle"></i> {{ __('companies.mandatory_notes') }}</h4>
                 <ul>
-                    <li>يجب أن تكون جميع الشهادات موثقة من قبل الجهات الصحية في بلد المنشأ</li>
-                    <li>يجب أن تكون جميع الشهادات موثقة من قبل السفارة الليبية أو ممثلها</li>
-                    <li>يجب ترجمة المستندات باللغات الأجنبية ترجمة قانونية معتمدة</li>
-                    <li>يجب تقديم جميع المستندات من خلال شركة استيراد محلية مسجلة</li>
+                    <li>{{ __('companies.mandatory_note_1') }}</li>
+                    <li>{{ __('companies.mandatory_note_2') }}</li>
+                    <li>{{ __('companies.mandatory_note_3') }}</li>
+                    <li>{{ __('companies.mandatory_note_4') }}</li>
                 </ul>
                 </div>
 
                 <div class="review-section">
                     <h3 class="section-title">
                         <i class="ti ti-check-circle"></i>
-                        مراجعة البيانات المدخلة
+                        {{ __('companies.review_before_submit') }}
                     </h3>
                     <div class="review-content">
-                        <p class="text-muted">يرجى مراجعة جميع البيانات قبل الإرسال. بعد التسجيل سيتم إرسال الطلب للمراجعة من قبل الإدارة.</p>
+                        <p class="text-muted">{{ __('companies.review_before_submit_note') }}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- أزرار التنقل بين الخطوات -->
             <div class="form-actions">
                 <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">
                     <i class="ti ti-arrow-right"></i>
-                    السابق
+                    {{ __('general.previous') }}
                 </button>
                 <div style="flex-grow: 1;"></div>
                 <a href="{{ route('representative.foreign-companies.index') }}" class="btn btn-secondary">
                     <i class="ti ti-x"></i>
-                    إلغاء
+                    {{ __('general.cancel') }}
                 </a>
                 <button type="button" class="btn btn-primary" id="nextBtn">
-                    التالي
+                    {{ __('general.next') }}
                     <i class="ti ti-arrow-left"></i>
                 </button>
                 <button type="submit" class="btn btn-primary" id="submitBtn" style="display:none;">
                     <i class="ti ti-check"></i>
-                    حفظ وإنشاء الشركة
+                    {{ __('companies.save_and_create') }}
                 </button>
             </div>
         </form>
@@ -782,10 +775,10 @@
                 dir: "rtl",
                 language: {
                     noResults: function() {
-                        return "لا توجد نتائج";
+                        return "{{ __('companies.no_results') }}";
                     },
                     searching: function() {
-                        return "جاري البحث...";
+                        return "{{ __('companies.searching') }}";
                     }
                 }
             });
@@ -807,13 +800,13 @@
                 },
                 language: {
                     noResults: function() {
-                        return "لا توجد نتائج - يمكنك كتابة اسم الدولة";
+                        return "{{ __('companies.no_results_type_country') }}";
                     },
                     searching: function() {
-                        return "جاري البحث...";
+                        return "{{ __('companies.searching') }}";
                     }
                 },
-                placeholder: "اختر أو اكتب اسم الدولة"
+                placeholder: "{{ __('companies.select_or_type_country') }}"
             });
 
             // Initialize Select2 with tags for multiple select (registered countries)
@@ -834,13 +827,13 @@
                 },
                 language: {
                     noResults: function() {
-                        return "لا توجد نتائج - يمكنك كتابة اسم الدولة";
+                        return "{{ __('companies.no_results_type_country') }}";
                     },
                     searching: function() {
-                        return "جاري البحث...";
+                        return "{{ __('companies.searching') }}";
                     }
                 },
-                placeholder: "اختر أو اكتب أسماء الدول"
+                placeholder: "{{ __('companies.select_or_type_countries') }}"
             });
 
             console.log('Select2 initialized');

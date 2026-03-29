@@ -107,13 +107,13 @@ class DocumentCenterController extends Controller implements HasMiddleware
             'authorized_users' => 'required_if:visibility,specific|nullable|array',
             'authorized_users.*' => 'exists:users,id',
         ], [
-            'title.required' => 'عنوان المستند مطلوب',
-            'category.required' => 'التصنيف مطلوب',
-            'file.required' => 'الملف مطلوب',
-            'file.max' => 'حجم الملف يجب أن لا يتجاوز 20 ميجابايت',
-            'visibility.required' => 'نطاق الرؤية مطلوب',
-            'department_id.required_if' => 'القسم مطلوب عند اختيار قسم محدد',
-            'authorized_users.required_if' => 'يجب اختيار مستخدم واحد على الأقل',
+            'title.required' => __('documents.validation_title_required'),
+            'category.required' => __('documents.validation_category_required'),
+            'file.required' => __('documents.validation_file_required'),
+            'file.max' => __('documents.validation_file_max_20'),
+            'visibility.required' => __('documents.validation_visibility_required'),
+            'department_id.required_if' => __('documents.validation_department_required'),
+            'authorized_users.required_if' => __('documents.validation_users_required'),
         ]);
 
         $file = $request->file('file');
@@ -137,7 +137,7 @@ class DocumentCenterController extends Controller implements HasMiddleware
         }
 
         return redirect()->route('admin.document-center.admin-documents')
-            ->with('success', 'تم رفع المستند بنجاح');
+            ->with('success', __('documents.upload_success'));
     }
 
     public function downloadAdminDocument(AdminDocument $document)
@@ -151,7 +151,7 @@ class DocumentCenterController extends Controller implements HasMiddleware
         $document->delete();
 
         return redirect()->route('admin.document-center.admin-documents')
-            ->with('success', 'تم حذف المستند بنجاح');
+            ->with('success', __('documents.delete_success'));
     }
 
     public function companyArchive(Request $request)
@@ -178,7 +178,7 @@ class DocumentCenterController extends Controller implements HasMiddleware
                     'id' => $company->id,
                     'name' => $company->company_name,
                     'type' => 'local',
-                    'type_label' => 'محلية',
+                    'type_label' => __('documents.local'),
                     'status' => $company->status,
                     'route' => route('admin.local-companies.show', $company->id),
                     'total_docs' => $docs->count(),
@@ -228,7 +228,7 @@ class DocumentCenterController extends Controller implements HasMiddleware
                     'id' => $company->id,
                     'name' => $company->company_name,
                     'type' => 'foreign',
-                    'type_label' => 'أجنبية',
+                    'type_label' => __('documents.foreign'),
                     'status' => $company->status,
                     'route' => route('admin.foreign-companies.show', $company->id),
                     'total_docs' => $docs->count(),
@@ -366,18 +366,18 @@ class DocumentCenterController extends Controller implements HasMiddleware
     public function approveUpdateRequest(DocumentUpdateRequest $documentUpdateRequest)
     {
         if ($documentUpdateRequest->status !== 'pending') {
-            return back()->with('error', 'هذا الطلب تمت معالجته مسبقاً');
+            return back()->with('error', __('documents.request_already_processed'));
         }
 
         $documentUpdateRequest->approve(auth()->id());
 
-        return back()->with('success', 'تمت الموافقة على طلب التعديل وتم تحديث المستند');
+        return back()->with('success', __('documents.approve_success'));
     }
 
     public function rejectUpdateRequest(Request $request, DocumentUpdateRequest $documentUpdateRequest)
     {
         if ($documentUpdateRequest->status !== 'pending') {
-            return back()->with('error', 'هذا الطلب تمت معالجته مسبقاً');
+            return back()->with('error', __('documents.request_already_processed'));
         }
 
         $request->validate([
@@ -386,7 +386,7 @@ class DocumentCenterController extends Controller implements HasMiddleware
 
         $documentUpdateRequest->reject(auth()->id(), $request->rejection_reason);
 
-        return back()->with('success', 'تم رفض طلب التعديل');
+        return back()->with('success', __('documents.reject_success'));
     }
 
     public function sharedFiles(Request $request)
@@ -422,9 +422,9 @@ class DocumentCenterController extends Controller implements HasMiddleware
             'users.*' => 'exists:users,id',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'title.required' => 'عنوان الملف مطلوب',
-            'file.required' => 'الملف مطلوب',
-            'users.required' => 'يجب اختيار مستخدم واحد على الأقل',
+            'title.required' => __('documents.validation_file_title_required'),
+            'file.required' => __('documents.validation_file_required'),
+            'users.required' => __('documents.validation_users_required'),
         ]);
 
         $file = $request->file('file');
@@ -443,7 +443,7 @@ class DocumentCenterController extends Controller implements HasMiddleware
         $sharedFile->users()->attach($request->users);
 
         return redirect()->route('admin.document-center.shared-files')
-            ->with('success', 'تم مشاركة الملف بنجاح');
+            ->with('success', __('documents.share_success'));
     }
 
     public function downloadSharedFile(SharedFile $sharedFile)
@@ -463,6 +463,6 @@ class DocumentCenterController extends Controller implements HasMiddleware
         $sharedFile->delete();
 
         return redirect()->route('admin.document-center.shared-files')
-            ->with('success', 'تم حذف الملف بنجاح');
+            ->with('success', __('documents.delete_file_success'));
     }
 }

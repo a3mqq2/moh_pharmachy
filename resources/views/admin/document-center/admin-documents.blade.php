@@ -1,7 +1,7 @@
 @php use Illuminate\Support\Facades\Storage; @endphp
 @extends('layouts.app')
 
-@section('title', 'مستندات الإدارة')
+@section('title', __('documents.admin_documents'))
 
 @section('content')
 @php
@@ -14,18 +14,18 @@
             <div class="card-header bg-white py-3">
                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <div>
-                        <h5 class="mb-1"><i class="ti ti-files me-2 text-primary"></i>مستندات الإدارة</h5>
-                        <small class="text-muted">إدارة المستندات والملفات الإدارية الداخلية ({{ $documents->total() }} مستند)</small>
+                        <h5 class="mb-1"><i class="ti ti-files me-2 text-primary"></i>{{ __('documents.admin_documents') }}</h5>
+                        <small class="text-muted">{{ __('documents.admin_documents_desc', ['count' => $documents->total()]) }}</small>
                     </div>
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                            <i class="ti ti-filter me-1"></i>فلاتر
+                            <i class="ti ti-filter me-1"></i>{{ __('general.filters') }}
                             @if($hasFilters)
                                 <span class="badge bg-danger rounded-circle p-1 ms-1" style="width:8px;height:8px"></span>
                             @endif
                         </button>
                         <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                            <i class="ti ti-upload me-1"></i>رفع مستند جديد
+                            <i class="ti ti-upload me-1"></i>{{ __('documents.upload_new') }}
                         </button>
                     </div>
                 </div>
@@ -38,37 +38,37 @@
                         @endif
                         <div class="row g-2 align-items-end">
                             <div class="col-lg-4 col-md-6">
-                                <label class="form-label f-12 text-muted mb-1">بحث</label>
+                                <label class="form-label f-12 text-muted mb-1">{{ __('general.search') }}</label>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text bg-white"><i class="ti ti-search f-14"></i></span>
-                                    <input type="text" name="search" class="form-control" placeholder="بحث بالعنوان، الملاحظات، أو اسم الملف..." value="{{ request('search') }}">
+                                    <input type="text" name="search" class="form-control" placeholder="{{ __('documents.search_placeholder') }}" value="{{ request('search') }}">
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-3">
-                                <label class="form-label f-12 text-muted mb-1">نطاق الرؤية</label>
+                                <label class="form-label f-12 text-muted mb-1">{{ __('documents.visibility') }}</label>
                                 <select name="visibility" class="form-select form-select-sm">
-                                    <option value="">الكل</option>
+                                    <option value="">{{ __('general.all') }}</option>
                                     @foreach(\App\Models\AdminDocument::visibilityOptions() as $key => $label)
                                         <option value="{{ $key }}" {{ request('visibility') == $key ? 'selected' : '' }}>{{ $label }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-lg-2 col-md-3">
-                                <label class="form-label f-12 text-muted mb-1">نوع الملف</label>
+                                <label class="form-label f-12 text-muted mb-1">{{ __('documents.file_type') }}</label>
                                 <select name="file_type" class="form-select form-select-sm">
-                                    <option value="">الكل</option>
+                                    <option value="">{{ __('general.all') }}</option>
                                     <option value="pdf" {{ request('file_type') == 'pdf' ? 'selected' : '' }}>PDF</option>
                                     <option value="word" {{ request('file_type') == 'word' ? 'selected' : '' }}>Word</option>
                                     <option value="excel" {{ request('file_type') == 'excel' ? 'selected' : '' }}>Excel</option>
                                     <option value="presentation" {{ request('file_type') == 'presentation' ? 'selected' : '' }}>PowerPoint</option>
-                                    <option value="image" {{ request('file_type') == 'image' ? 'selected' : '' }}>صور</option>
-                                    <option value="archive" {{ request('file_type') == 'archive' ? 'selected' : '' }}>أرشيف</option>
+                                    <option value="image" {{ request('file_type') == 'image' ? 'selected' : '' }}>{{ __('documents.images') }}</option>
+                                    <option value="archive" {{ request('file_type') == 'archive' ? 'selected' : '' }}>{{ __('documents.archive') }}</option>
                                 </select>
                             </div>
                             <div class="col-lg-2 col-md-3">
-                                <label class="form-label f-12 text-muted mb-1">رفع بواسطة</label>
+                                <label class="form-label f-12 text-muted mb-1">{{ __('documents.uploaded_by') }}</label>
                                 <select name="uploaded_by" class="form-select form-select-sm">
-                                    <option value="">الكل</option>
+                                    <option value="">{{ __('general.all') }}</option>
                                     @foreach($uploaders as $uploader)
                                         <option value="{{ $uploader->id }}" {{ request('uploaded_by') == $uploader->id ? 'selected' : '' }}>{{ $uploader->name }}</option>
                                     @endforeach
@@ -77,9 +77,9 @@
                         </div>
                         <div class="row g-2 mt-1 align-items-end">
                             <div class="col-lg-2 col-md-3">
-                                <label class="form-label f-12 text-muted mb-1">القسم</label>
+                                <label class="form-label f-12 text-muted mb-1">{{ __('documents.department') }}</label>
                                 <select name="department_id" class="form-select form-select-sm">
-                                    <option value="">الكل</option>
+                                    <option value="">{{ __('general.all') }}</option>
                                     @foreach($departments->whereNull('parent_id') as $dept)
                                         <optgroup label="{{ $dept->name }}">
                                             <option value="{{ $dept->id }}" {{ request('department_id') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
@@ -91,19 +91,19 @@
                                 </select>
                             </div>
                             <div class="col-lg-2 col-md-3">
-                                <label class="form-label f-12 text-muted mb-1">من تاريخ</label>
+                                <label class="form-label f-12 text-muted mb-1">{{ __('general.from_date') }}</label>
                                 <input type="date" name="date_from" class="form-control form-control-sm" value="{{ request('date_from') }}">
                             </div>
                             <div class="col-lg-2 col-md-3">
-                                <label class="form-label f-12 text-muted mb-1">إلى تاريخ</label>
+                                <label class="form-label f-12 text-muted mb-1">{{ __('general.to_date') }}</label>
                                 <input type="date" name="date_to" class="form-control form-control-sm" value="{{ request('date_to') }}">
                             </div>
                             <div class="col-lg-6 col-md-3">
                                 <div class="d-flex gap-2 justify-content-end">
-                                    <button class="btn btn-sm btn-primary" type="submit"><i class="ti ti-search me-1"></i>تطبيق</button>
+                                    <button class="btn btn-sm btn-primary" type="submit"><i class="ti ti-search me-1"></i>{{ __('general.apply') }}</button>
                                     @if($hasFilters)
                                         <a href="{{ route('admin.document-center.admin-documents') }}" class="btn btn-sm btn-outline-danger">
-                                            <i class="ti ti-x me-1"></i>مسح الفلاتر
+                                            <i class="ti ti-x me-1"></i>{{ __('general.clear_filters') }}
                                         </a>
                                     @endif
                                 </div>
@@ -116,7 +116,7 @@
                 <ul class="nav nav-tabs mb-3" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link {{ !request('category') ? 'active' : '' }}" href="{{ route('admin.document-center.admin-documents', request()->except('category', 'page')) }}">
-                            الكل <span class="badge bg-light-secondary ms-1">{{ $categoryCounts['all'] }}</span>
+                            {{ __('general.all') }} <span class="badge bg-light-secondary ms-1">{{ $categoryCounts['all'] }}</span>
                         </a>
                     </li>
                     @foreach($categories as $key => $label)
@@ -133,14 +133,14 @@
                         <thead class="bg-light">
                             <tr>
                                 <th class="text-muted f-12" style="width: 50px">#</th>
-                                <th class="text-muted f-12">المستند</th>
-                                <th class="text-muted f-12">التصنيف</th>
-                                <th class="text-muted f-12">نطاق الرؤية</th>
-                                <th class="text-muted f-12">نوع الملف</th>
-                                <th class="text-muted f-12">الحجم</th>
-                                <th class="text-muted f-12">رفع بواسطة</th>
-                                <th class="text-muted f-12">التاريخ</th>
-                                <th class="text-muted f-12" style="width: 100px">الإجراءات</th>
+                                <th class="text-muted f-12">{{ __('documents.document') }}</th>
+                                <th class="text-muted f-12">{{ __('documents.category') }}</th>
+                                <th class="text-muted f-12">{{ __('documents.visibility') }}</th>
+                                <th class="text-muted f-12">{{ __('documents.file_type') }}</th>
+                                <th class="text-muted f-12">{{ __('documents.file_size') }}</th>
+                                <th class="text-muted f-12">{{ __('documents.uploaded_by') }}</th>
+                                <th class="text-muted f-12">{{ __('general.date') }}</th>
+                                <th class="text-muted f-12" style="width: 100px">{{ __('general.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -173,12 +173,12 @@
                                 <td><span class="badge bg-light-primary rounded-pill">{{ $document->category_name }}</span></td>
                                 <td>
                                     @if($document->visibility === 'all')
-                                        <span class="badge bg-light-success rounded-pill"><i class="ti ti-world me-1"></i>الجميع</span>
+                                        <span class="badge bg-light-success rounded-pill"><i class="ti ti-world me-1"></i>{{ __('documents.visibility_all') }}</span>
                                     @elseif($document->visibility === 'department')
                                         <span class="badge bg-light-info rounded-pill"><i class="ti ti-building me-1"></i>{{ $document->department->name ?? '-' }}</span>
                                     @elseif($document->visibility === 'specific')
                                         <span class="badge bg-light-warning rounded-pill" data-bs-toggle="tooltip" title="{{ $document->authorizedUsers->pluck('name')->join('، ') }}">
-                                            <i class="ti ti-users me-1"></i>{{ $document->authorizedUsers->count() }} مخول
+                                            <i class="ti ti-users me-1"></i>{{ $document->authorizedUsers->count() }} {{ __('documents.authorized') }}
                                         </span>
                                     @endif
                                 </td>
@@ -198,16 +198,16 @@
                                 </td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        <button type="button" class="btn btn-sm btn-light-info rounded-circle avtar avtar-xs btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->original_name }}" data-download-url="{{ route('admin.document-center.admin-documents.download', $document) }}" title="عرض">
+                                        <button type="button" class="btn btn-sm btn-light-info rounded-circle avtar avtar-xs btn-doc-preview" data-file-url="{{ Storage::url($document->file_path) }}" data-file-name="{{ $document->original_name }}" data-download-url="{{ route('admin.document-center.admin-documents.download', $document) }}" title="{{ __('general.view') }}">
                                             <i class="ti ti-eye f-16"></i>
                                         </button>
-                                        <a href="{{ route('admin.document-center.admin-documents.download', $document) }}" class="btn btn-sm btn-light-success rounded-circle avtar avtar-xs" title="تحميل">
+                                        <a href="{{ route('admin.document-center.admin-documents.download', $document) }}" class="btn btn-sm btn-light-success rounded-circle avtar avtar-xs" title="{{ __('general.download') }}">
                                             <i class="ti ti-download f-16"></i>
                                         </a>
                                         <form action="{{ route('admin.document-center.admin-documents.destroy', $document) }}" method="POST" class="delete-form d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light-danger rounded-circle avtar avtar-xs" title="حذف">
+                                            <button type="submit" class="btn btn-sm btn-light-danger rounded-circle avtar avtar-xs" title="{{ __('general.delete') }}">
                                                 <i class="ti ti-trash f-16"></i>
                                             </button>
                                         </form>
@@ -221,8 +221,8 @@
                                         <div class="avtar avtar-l bg-light-secondary rounded-circle mb-3">
                                             <i class="ti ti-file-off f-28 text-muted"></i>
                                         </div>
-                                        <h6 class="text-muted mb-1">لا توجد مستندات</h6>
-                                        <small class="text-muted">قم برفع مستند جديد للبدء</small>
+                                        <h6 class="text-muted mb-1">{{ __('documents.no_documents') }}</h6>
+                                        <small class="text-muted">{{ __('documents.upload_to_start') }}</small>
                                     </div>
                                 </td>
                             </tr>
@@ -247,7 +247,7 @@
             <form action="{{ route('admin.document-center.admin-documents.store') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
                 @csrf
                 <div class="modal-header bg-primary">
-                    <h5 class="modal-title text-white"><i class="ti ti-upload me-2"></i>رفع مستند جديد</h5>
+                    <h5 class="modal-title text-white"><i class="ti ti-upload me-2"></i>{{ __('documents.upload_new') }}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -255,17 +255,17 @@
                         <div class="d-flex justify-content-between mb-3">
                             <div class="step-indicator active" data-step="1">
                                 <span class="step-number">1</span>
-                                <span class="step-label">معلومات المستند</span>
+                                <span class="step-label">{{ __('documents.step_doc_info') }}</span>
                             </div>
                             <div class="step-connector"></div>
                             <div class="step-indicator" data-step="2">
                                 <span class="step-number">2</span>
-                                <span class="step-label">الملف والرؤية</span>
+                                <span class="step-label">{{ __('documents.step_file_visibility') }}</span>
                             </div>
                             <div class="step-connector"></div>
                             <div class="step-indicator" data-step="3">
                                 <span class="step-number">3</span>
-                                <span class="step-label">مراجعة وتأكيد</span>
+                                <span class="step-label">{{ __('documents.step_review') }}</span>
                             </div>
                         </div>
                     </div>
@@ -273,21 +273,21 @@
                     <div class="step-content" id="step1">
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label class="form-label fw-semibold">عنوان المستند <span class="text-danger">*</span></label>
-                                <input type="text" name="title" id="docTitle" class="form-control" required placeholder="أدخل عنوان المستند">
+                                <label class="form-label fw-semibold">{{ __('documents.doc_title') }} <span class="text-danger">*</span></label>
+                                <input type="text" name="title" id="docTitle" class="form-control" required placeholder="{{ __('documents.enter_doc_title') }}">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">التصنيف <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('documents.category') }} <span class="text-danger">*</span></label>
                                 <select name="category" id="docCategory" class="form-select" required>
-                                    <option value="">اختر التصنيف</option>
+                                    <option value="">{{ __('documents.select_category') }}</option>
                                     @foreach($categories as $key => $label)
                                         <option value="{{ $key }}">{{ $label }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label fw-semibold">ملاحظات</label>
-                                <textarea name="notes" id="docNotes" class="form-control" rows="1" placeholder="ملاحظات إضافية (اختياري)"></textarea>
+                                <label class="form-label fw-semibold">{{ __('general.notes') }}</label>
+                                <textarea name="notes" id="docNotes" class="form-control" rows="1" placeholder="{{ __('documents.notes_placeholder') }}"></textarea>
                             </div>
                         </div>
                     </div>
@@ -295,11 +295,11 @@
                     <div class="step-content d-none" id="step2">
                         <div class="row">
                             <div class="col-md-12 mb-3">
-                                <label class="form-label fw-semibold">الملف <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('documents.file') }} <span class="text-danger">*</span></label>
                                 <div class="upload-zone p-4 text-center rounded border-2 border-dashed" id="uploadZone">
                                     <i class="ti ti-cloud-upload f-36 text-muted mb-2 d-block"></i>
-                                    <p class="text-muted mb-1">اسحب الملف هنا أو اضغط للاختيار</p>
-                                    <small class="text-muted">PDF, DOC, XLS, PPT, صور, أرشيف - الحد الأقصى 20 ميجابايت</small>
+                                    <p class="text-muted mb-1">{{ __('documents.drag_or_click') }}</p>
+                                    <small class="text-muted">{{ __('documents.file_types_limit') }}</small>
                                     <input type="file" name="file" id="fileInput" class="d-none" required accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.zip,.rar">
                                 </div>
                                 <div class="file-preview d-none mt-2 p-2 bg-light rounded" id="filePreview">
@@ -316,7 +316,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 mb-3">
-                                <label class="form-label fw-semibold">نطاق الرؤية <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('documents.visibility') }} <span class="text-danger">*</span></label>
                                 <div class="row g-2">
                                     <div class="col-md-4">
                                         <div class="form-check card card-body p-3 mb-0 visibility-option active" data-value="all">
@@ -324,8 +324,8 @@
                                             <label class="form-check-label w-100 cursor-pointer" for="visAll">
                                                 <div class="text-center">
                                                     <i class="ti ti-world f-24 text-success d-block mb-1"></i>
-                                                    <span class="fw-semibold d-block">الجميع</span>
-                                                    <small class="text-muted">متاح لجميع المستخدمين</small>
+                                                    <span class="fw-semibold d-block">{{ __('documents.visibility_all') }}</span>
+                                                    <small class="text-muted">{{ __('documents.visibility_all_desc') }}</small>
                                                 </div>
                                             </label>
                                         </div>
@@ -336,8 +336,8 @@
                                             <label class="form-check-label w-100 cursor-pointer" for="visDept">
                                                 <div class="text-center">
                                                     <i class="ti ti-building f-24 text-info d-block mb-1"></i>
-                                                    <span class="fw-semibold d-block">قسم محدد</span>
-                                                    <small class="text-muted">متاح لموظفي القسم</small>
+                                                    <span class="fw-semibold d-block">{{ __('documents.visibility_department') }}</span>
+                                                    <small class="text-muted">{{ __('documents.visibility_department_desc') }}</small>
                                                 </div>
                                             </label>
                                         </div>
@@ -348,8 +348,8 @@
                                             <label class="form-check-label w-100 cursor-pointer" for="visSpecific">
                                                 <div class="text-center">
                                                     <i class="ti ti-lock f-24 text-warning d-block mb-1"></i>
-                                                    <span class="fw-semibold d-block">مخولين</span>
-                                                    <small class="text-muted">مستخدمين محددين فقط</small>
+                                                    <span class="fw-semibold d-block">{{ __('documents.visibility_specific') }}</span>
+                                                    <small class="text-muted">{{ __('documents.visibility_specific_desc') }}</small>
                                                 </div>
                                             </label>
                                         </div>
@@ -357,9 +357,9 @@
                                 </div>
                             </div>
                             <div class="col-md-12 mb-3 d-none" id="departmentField">
-                                <label class="form-label fw-semibold">القسم <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('documents.department') }} <span class="text-danger">*</span></label>
                                 <select name="department_id" id="deptSelect" class="form-select">
-                                    <option value="">اختر القسم</option>
+                                    <option value="">{{ __('documents.select_department') }}</option>
                                     @foreach($departments->whereNull('parent_id') as $dept)
                                         <optgroup label="{{ $dept->name }}">
                                             <option value="{{ $dept->id }}">{{ $dept->name }}</option>
@@ -371,7 +371,7 @@
                                 </select>
                             </div>
                             <div class="col-md-12 mb-3 d-none" id="usersField">
-                                <label class="form-label fw-semibold">المستخدمين المخولين <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold">{{ __('documents.authorized_users') }} <span class="text-danger">*</span></label>
                                 <select name="authorized_users[]" id="usersSelect" class="form-select select2" multiple>
                                     @foreach($users as $user)
                                         <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
@@ -384,26 +384,26 @@
                     <div class="step-content d-none" id="step3">
                         <div class="card bg-light border-0 mb-3">
                             <div class="card-body">
-                                <h6 class="mb-3"><i class="ti ti-clipboard-check me-1"></i>مراجعة البيانات</h6>
+                                <h6 class="mb-3"><i class="ti ti-clipboard-check me-1"></i>{{ __('documents.review_data') }}</h6>
                                 <div class="row">
                                     <div class="col-md-6 mb-2">
-                                        <small class="text-muted d-block">العنوان</small>
+                                        <small class="text-muted d-block">{{ __('documents.doc_title') }}</small>
                                         <span class="fw-semibold" id="reviewTitle">-</span>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <small class="text-muted d-block">التصنيف</small>
+                                        <small class="text-muted d-block">{{ __('documents.category') }}</small>
                                         <span class="fw-semibold" id="reviewCategory">-</span>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <small class="text-muted d-block">الملف</small>
+                                        <small class="text-muted d-block">{{ __('documents.file') }}</small>
                                         <span class="fw-semibold" id="reviewFile">-</span>
                                     </div>
                                     <div class="col-md-6 mb-2">
-                                        <small class="text-muted d-block">نطاق الرؤية</small>
+                                        <small class="text-muted d-block">{{ __('documents.visibility') }}</small>
                                         <span class="fw-semibold" id="reviewVisibility">-</span>
                                     </div>
                                     <div class="col-12 mb-0" id="reviewNotesRow">
-                                        <small class="text-muted d-block">ملاحظات</small>
+                                        <small class="text-muted d-block">{{ __('general.notes') }}</small>
                                         <span id="reviewNotes">-</span>
                                     </div>
                                 </div>
@@ -413,16 +413,16 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
                     <button type="button" class="btn btn-outline-secondary d-none" id="prevBtn" onclick="changeStep(-1)">
-                        <i class="ti ti-arrow-right me-1"></i>السابق
+                        <i class="ti ti-arrow-right me-1"></i>{{ __('general.previous') }}
                     </button>
                     <div></div>
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('general.cancel') }}</button>
                         <button type="button" class="btn btn-primary" id="nextBtn" onclick="changeStep(1)">
-                            التالي<i class="ti ti-arrow-left ms-1"></i>
+                            {{ __('general.next') }}<i class="ti ti-arrow-left ms-1"></i>
                         </button>
                         <button type="submit" class="btn btn-primary d-none" id="submitBtn">
-                            <i class="ti ti-upload me-1"></i>رفع المستند
+                            <i class="ti ti-upload me-1"></i>{{ __('documents.upload_document') }}
                         </button>
                     </div>
                 </div>
@@ -507,7 +507,7 @@
 let currentStep = 1;
 const totalSteps = 3;
 const categoryLabels = @json($categories);
-const visibilityLabels = { all: 'الجميع', department: 'قسم محدد', specific: 'مستخدمين محددين' };
+const visibilityLabels = { all: '{{ __("documents.visibility_all") }}', department: '{{ __("documents.visibility_department") }}', specific: '{{ __("documents.visibility_specific") }}' };
 
 document.querySelectorAll('.visibility-option').forEach(option => {
     option.addEventListener('click', function() {
@@ -581,24 +581,24 @@ function validateStep(step) {
         const title = document.getElementById('docTitle').value.trim();
         const category = document.getElementById('docCategory').value;
         if (!title || !category) {
-            Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'يرجى تعبئة جميع الحقول المطلوبة', confirmButtonColor: '#1a5f4a', confirmButtonText: 'حسناً' });
+            Swal.fire({ icon: 'warning', title: '{{ __("general.warning") }}', text: '{{ __("general.fill_required") }}', confirmButtonColor: '#1a5f4a', confirmButtonText: '{{ __("general.ok") }}' });
             return false;
         }
     }
     if (step === 2) {
         if (!fileInput.files.length) {
-            Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'يرجى اختيار ملف للرفع', confirmButtonColor: '#1a5f4a', confirmButtonText: 'حسناً' });
+            Swal.fire({ icon: 'warning', title: '{{ __("general.warning") }}', text: '{{ __("documents.select_file") }}', confirmButtonColor: '#1a5f4a', confirmButtonText: '{{ __("general.ok") }}' });
             return false;
         }
         const vis = document.querySelector('input[name=visibility]:checked').value;
         if (vis === 'department' && !document.getElementById('deptSelect').value) {
-            Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'يرجى اختيار القسم', confirmButtonColor: '#1a5f4a', confirmButtonText: 'حسناً' });
+            Swal.fire({ icon: 'warning', title: '{{ __("general.warning") }}', text: '{{ __("documents.select_department_required") }}', confirmButtonColor: '#1a5f4a', confirmButtonText: '{{ __("general.ok") }}' });
             return false;
         }
         if (vis === 'specific') {
             const selected = $('#usersSelect').val();
             if (!selected || !selected.length) {
-                Swal.fire({ icon: 'warning', title: 'تنبيه', text: 'يرجى اختيار المستخدمين المخولين', confirmButtonColor: '#1a5f4a', confirmButtonText: 'حسناً' });
+                Swal.fire({ icon: 'warning', title: '{{ __("general.warning") }}', text: '{{ __("documents.select_users_required") }}', confirmButtonColor: '#1a5f4a', confirmButtonText: '{{ __("general.ok") }}' });
                 return false;
             }
         }
@@ -618,14 +618,14 @@ function populateReview() {
     }
     document.getElementById('reviewVisibility').textContent = visText;
     const notes = document.getElementById('docNotes').value.trim();
-    document.getElementById('reviewNotes').textContent = notes || 'لا يوجد';
+    document.getElementById('reviewNotes').textContent = notes || '{{ __("documents.none") }}';
 }
 
 $('#uploadModal').on('shown.bs.modal', function () {
     $(this).find('.select2').select2({
         dropdownParent: $('#uploadModal'),
         width: '100%',
-        placeholder: 'اختر المستخدمين'
+        placeholder: '{{ __("documents.select_users") }}'
     });
 });
 
@@ -649,14 +649,14 @@ document.querySelectorAll('.delete-form').forEach(form => {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         Swal.fire({
-            title: 'حذف المستند',
-            text: 'هل أنت متأكد من حذف هذا المستند؟ لا يمكن التراجع عن هذا الإجراء.',
+            title: '{{ __("documents.delete_document") }}',
+            text: '{{ __("documents.delete_confirm") }}',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، احذف',
-            cancelButtonText: 'إلغاء'
+            confirmButtonText: '{{ __("general.yes_delete") }}',
+            cancelButtonText: '{{ __("general.cancel") }}'
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
@@ -668,9 +668,9 @@ document.querySelectorAll('.delete-form').forEach(form => {
 @if(session('success'))
     Swal.fire({
         icon: 'success',
-        title: 'تم بنجاح',
+        title: '{{ __("general.success") }}',
         text: '{{ session('success') }}',
-        confirmButtonText: 'حسناً',
+        confirmButtonText: '{{ __("general.ok") }}',
         confirmButtonColor: '#1a5f4a',
         timer: 3000,
         timerProgressBar: true
@@ -680,9 +680,9 @@ document.querySelectorAll('.delete-form').forEach(form => {
 @if(session('error'))
     Swal.fire({
         icon: 'error',
-        title: 'خطأ',
+        title: '{{ __("general.error") }}',
         text: '{{ session('error') }}',
-        confirmButtonText: 'حسناً',
+        confirmButtonText: '{{ __("general.ok") }}',
         confirmButtonColor: '#1a5f4a'
     });
 @endif

@@ -32,9 +32,9 @@ class PharmaceuticalProductInvoice extends Model
     public function getStatusNameAttribute(): string
     {
         return match($this->status) {
-            'unpaid' => 'غير مدفوعة',
-            'pending_review' => 'قيد المراجعة',
-            'paid' => 'مدفوعة',
+            'unpaid' => __('invoices.status_unpaid'),
+            'pending_review' => __('invoices.status_pending_review'),
+            'paid' => __('invoices.status_paid'),
             default => $this->status,
         };
     }

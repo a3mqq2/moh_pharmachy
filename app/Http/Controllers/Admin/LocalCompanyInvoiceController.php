@@ -34,7 +34,7 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
 
         if ($existingUnpaid) {
             return redirect()->back()
-                ->with('error', 'يوجد فاتورة غير مدفوعة من نفس النوع بالفعل رقم: ' . $existingUnpaid->invoice_number);
+                ->with('error', __('invoices.msg_unpaid_exists', ['number' => $existingUnpaid->invoice_number]));
         }
 
         $validated = $request->validate([
@@ -44,11 +44,11 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
             'due_date' => 'nullable|date',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'type.required' => 'نوع الفاتورة مطلوب',
-            'description.required' => 'وصف الفاتورة مطلوب',
-            'amount.required' => 'المبلغ مطلوب',
-            'amount.numeric' => 'المبلغ يجب أن يكون رقماً',
-            'amount.min' => 'المبلغ يجب أن يكون قيمة موجبة',
+            'type.required' => __('invoices.msg_type_required'),
+            'description.required' => __('invoices.msg_description_required'),
+            'amount.required' => __('invoices.msg_amount_required'),
+            'amount.numeric' => __('invoices.msg_amount_numeric'),
+            'amount.min' => __('invoices.msg_amount_positive'),
         ]);
 
         $invoice = $localCompany->invoices()->create([
@@ -62,16 +62,16 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
             'created_by' => auth()->id(),
         ]);
 
-        $localCompany->logActivity('invoice_created', 'تم إنشاء فاتورة جديدة رقم: ' . $invoice->invoice_number);
+        $localCompany->logActivity('invoice_created', __('invoices.msg_invoice_created_log', ['number' => $invoice->invoice_number]));
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم إنشاء الفاتورة بنجاح');
+            ->with('success', __('invoices.msg_invoice_created'));
     }
 
     public function update(Request $request, LocalCompany $localCompany, LocalCompanyInvoice $invoice)
     {
         if (in_array($invoice->status, ['paid', 'pending_review'])) {
-            return redirect()->back()->with('error', 'لا يمكن تعديل فاتورة مدفوعة أو قيد المراجعة');
+            return redirect()->back()->with('error', __('invoices.msg_cannot_edit_paid'));
         }
 
         $validated = $request->validate([
@@ -80,10 +80,10 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
             'due_date' => 'nullable|date',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'description.required' => 'وصف الفاتورة مطلوب',
-            'amount.required' => 'المبلغ مطلوب',
-            'amount.numeric' => 'المبلغ يجب أن يكون رقماً',
-            'amount.min' => 'المبلغ يجب أن يكون قيمة موجبة',
+            'description.required' => __('invoices.msg_description_required'),
+            'amount.required' => __('invoices.msg_amount_required'),
+            'amount.numeric' => __('invoices.msg_amount_numeric'),
+            'amount.min' => __('invoices.msg_amount_positive'),
         ]);
 
         $invoice->update([
@@ -93,20 +93,20 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
             'notes' => $validated['notes'] ?? null,
         ]);
 
-        $localCompany->logActivity('invoice_updated', 'تم تعديل الفاتورة رقم: ' . $invoice->invoice_number);
+        $localCompany->logActivity('invoice_updated', __('invoices.msg_invoice_updated_log', ['number' => $invoice->invoice_number]));
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم تعديل الفاتورة بنجاح');
+            ->with('success', __('invoices.msg_invoice_updated'));
     }
 
     public function destroy(LocalCompany $localCompany, LocalCompanyInvoice $invoice)
     {
         if ($invoice->isPaid()) {
-            return redirect()->back()->with('error', 'لا يمكن حذف فاتورة مدفوعة');
+            return redirect()->back()->with('error', __('invoices.msg_cannot_delete_paid'));
         }
 
         if ($invoice->receipt_status === 'pending') {
-            return redirect()->back()->with('error', 'لا يمكن حذف فاتورة قيد مراجعة الإيصال');
+            return redirect()->back()->with('error', __('invoices.msg_cannot_delete_pending_receipt'));
         }
 
         if ($invoice->receipt_path) {
@@ -116,24 +116,24 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
         $invoiceNumber = $invoice->invoice_number;
         $invoice->delete();
 
-        $localCompany->logActivity('invoice_deleted', 'تم حذف الفاتورة رقم: ' . $invoiceNumber);
+        $localCompany->logActivity('invoice_deleted', __('invoices.msg_invoice_deleted_log', ['number' => $invoiceNumber]));
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم حذف الفاتورة بنجاح');
+            ->with('success', __('invoices.msg_invoice_deleted'));
     }
 
     public function approveReceipt(LocalCompany $localCompany, LocalCompanyInvoice $invoice)
     {
         if ($invoice->receipt_status === 'approved') {
-            return redirect()->back()->with('info', 'تم قبول هذا الإيصال مسبقاً');
+            return redirect()->back()->with('info', __('invoices.msg_receipt_already_approved'));
         }
 
         if (!$invoice->hasReceipt()) {
-            return redirect()->back()->with('error', 'لا يوجد إيصال لهذه الفاتورة');
+            return redirect()->back()->with('error', __('invoices.msg_no_receipt_for_invoice'));
         }
 
         if ($invoice->receipt_status !== 'pending') {
-            return redirect()->back()->with('error', 'لا يمكن قبول هذا الإيصال في حالته الحالية');
+            return redirect()->back()->with('error', __('invoices.msg_cannot_approve_status'));
         }
 
         DB::transaction(function () use ($localCompany, $invoice) {
@@ -147,7 +147,7 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
                         ->first();
 
                     if ($existingCompany) {
-                        throw new \Exception('رقم القيد ' . $localCompany->pre_registration_number . ' مستخدم بالفعل');
+                        throw new \Exception(__('invoices.msg_reg_number_in_use', ['number' => $localCompany->pre_registration_number]));
                     }
 
                     $registrationNumber = $localCompany->pre_registration_number;
@@ -164,7 +164,7 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
                     'registration_date' => $registrationDate,
                 ]);
 
-                $localCompany->logActivity('registration_number_assigned', 'تم إصدار رقم القيد: ' . $registrationNumber);
+                $localCompany->logActivity('registration_number_assigned', __('invoices.msg_reg_number_assigned_log', ['number' => $registrationNumber]));
             }
 
             $validityYears = $localCompany->company_type === 'distributor' ? 5 : 1;
@@ -185,20 +185,20 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
         });
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم قبول إيصال الدفع وتفعيل الشركة بنجاح');
+            ->with('success', __('invoices.msg_receipt_approved_company_activated'));
     }
 
     public function markAsPaid(Request $request, LocalCompany $localCompany, LocalCompanyInvoice $invoice)
     {
         if ($invoice->isPaid()) {
-            return redirect()->back()->with('info', 'تم دفع هذه الفاتورة مسبقاً');
+            return redirect()->back()->with('info', __('invoices.msg_already_paid'));
         }
 
         $request->validate([
             'receipt' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
-            'receipt.mimes' => 'الإيصال يجب أن يكون PDF أو صورة',
-            'receipt.max' => 'حجم الإيصال يجب ألا يتجاوز 5 ميجابايت',
+            'receipt.mimes' => __('invoices.msg_receipt_mimes'),
+            'receipt.max' => __('invoices.msg_receipt_max'),
         ]);
 
         $receiptPath = $invoice->receipt_path;
@@ -213,7 +213,7 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
         $invoice->markAsPaid($receiptPath);
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم تأكيد دفع الفاتورة');
+            ->with('success', __('invoices.msg_payment_confirmed'));
     }
 
     public function markAsUnpaid(LocalCompany $localCompany, LocalCompanyInvoice $invoice)
@@ -221,7 +221,7 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
         $invoice->markAsUnpaid();
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم إلغاء دفع الفاتورة');
+            ->with('success', __('invoices.msg_payment_cancelled'));
     }
 
     public function uploadReceipt(Request $request, LocalCompany $localCompany, LocalCompanyInvoice $invoice)
@@ -229,9 +229,9 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
         $request->validate([
             'receipt' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
-            'receipt.required' => 'الإيصال مطلوب',
-            'receipt.mimes' => 'الإيصال يجب أن يكون PDF أو صورة',
-            'receipt.max' => 'حجم الإيصال يجب ألا يتجاوز 5 ميجابايت',
+            'receipt.required' => __('invoices.msg_receipt_required'),
+            'receipt.mimes' => __('invoices.msg_receipt_mimes'),
+            'receipt.max' => __('invoices.msg_receipt_max'),
         ]);
 
         if ($invoice->receipt_path) {
@@ -242,16 +242,16 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
 
         $invoice->update(['receipt_path' => $path]);
 
-        $localCompany->logActivity('receipt_uploaded', 'تم رفع إيصال للفاتورة رقم: ' . $invoice->invoice_number);
+        $localCompany->logActivity('receipt_uploaded', __('invoices.msg_receipt_uploaded_log', ['number' => $invoice->invoice_number]));
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم رفع الإيصال بنجاح');
+            ->with('success', __('invoices.msg_receipt_uploaded_success'));
     }
 
     public function downloadReceipt(LocalCompany $localCompany, LocalCompanyInvoice $invoice)
     {
         if (!$invoice->receipt_path || !Storage::disk('public')->exists($invoice->receipt_path)) {
-            return redirect()->back()->with('error', 'الإيصال غير موجود');
+            return redirect()->back()->with('error', __('invoices.msg_receipt_not_found_error'));
         }
 
         return Storage::disk('public')->download($invoice->receipt_path, 'receipt-' . $invoice->invoice_number . '.' . pathinfo($invoice->receipt_path, PATHINFO_EXTENSION));
@@ -260,13 +260,13 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
     public function rejectReceipt(Request $request, LocalCompany $localCompany, LocalCompanyInvoice $invoice)
     {
         if ($invoice->receipt_status !== 'pending') {
-            return redirect()->back()->with('error', 'لا يمكن رفض هذا الإيصال في حالته الحالية');
+            return redirect()->back()->with('error', __('invoices.msg_cannot_reject_current_status'));
         }
 
         $request->validate([
             'rejection_reason' => 'required|string|max:1000',
         ], [
-            'rejection_reason.required' => 'يرجى إدخال سبب رفض الإيصال',
+            'rejection_reason.required' => __('invoices.msg_rejection_reason_required'),
         ]);
 
         DB::transaction(function () use ($localCompany, $invoice, $request) {
@@ -282,13 +282,13 @@ class LocalCompanyInvoiceController extends Controller implements HasMiddleware
         if ($localCompany->representative && $localCompany->representative->email) {
             try {
                 \Mail::to($localCompany->representative->email)->send(new \App\Mail\ReceiptRejectedMail($localCompany, $invoice, $request->rejection_reason));
-                $localCompany->logActivity('email_sent', 'تم إرسال إيميل رفض الإيصال إلى: ' . $localCompany->representative->email);
+                $localCompany->logActivity('email_sent', __('invoices.msg_email_sent_log', ['email' => $localCompany->representative->email]));
             } catch (\Exception $e) {
                 \Log::error('Failed to send receipt rejection email: ' . $e->getMessage());
             }
         }
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم رفض الإيصال وإشعار الممثل عبر البريد الإلكتروني');
+            ->with('success', __('invoices.msg_receipt_rejected_notified'));
     }
 }

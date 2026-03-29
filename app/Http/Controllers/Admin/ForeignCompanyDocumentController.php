@@ -15,7 +15,7 @@ class ForeignCompanyDocumentController extends Controller
 
         if (!$document->exists()) {
             return redirect()->back()
-                ->with('error', 'الملف غير موجود');
+                ->with('error', __('documents.file_not_found'));
         }
 
         return Storage::disk('public')->download($document->file_path, $document->document_name);

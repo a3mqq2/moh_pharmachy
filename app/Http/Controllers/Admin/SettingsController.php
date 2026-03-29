@@ -30,7 +30,7 @@ class SettingsController extends Controller
         Setting::clearCache();
 
         return redirect()->route('admin.app-settings.index')
-            ->with('success', 'تم تحديث الإعدادات بنجاح');
+            ->with('success', __('settings.settings_updated'));
     }
 
     public function notifications()
@@ -48,14 +48,14 @@ class SettingsController extends Controller
         $notification = $user->notifications()->findOrFail($id);
         $notification->markAsRead();
 
-        return redirect()->back()->with('success', 'تم وضع علامة مقروء على الإشعار');
+        return redirect()->back()->with('success', __('settings.notification_marked_read'));
     }
 
     public function markAllAsRead()
     {
         auth()->user()->unreadNotifications->markAsRead();
 
-        return redirect()->back()->with('success', 'تم وضع علامة مقروء على جميع الإشعارات');
+        return redirect()->back()->with('success', __('settings.all_notifications_marked_read'));
     }
 
     public function destroy($id)
@@ -64,13 +64,13 @@ class SettingsController extends Controller
         $notification = $user->notifications()->findOrFail($id);
         $notification->delete();
 
-        return redirect()->back()->with('success', 'تم حذف الإشعار بنجاح');
+        return redirect()->back()->with('success', __('settings.notification_deleted'));
     }
 
     public function deleteAll()
     {
         auth()->user()->notifications()->delete();
 
-        return redirect()->back()->with('success', 'تم حذف جميع الإشعارات بنجاح');
+        return redirect()->back()->with('success', __('settings.all_notifications_deleted'));
     }
 }

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تم قبول طلب تسجيل الشركة الأجنبية</title>
+    <title>{{ __('emails.foreign_company_approved_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -107,67 +107,67 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         <div class="content">
-            <h2>إشعار بقبول طلب تسجيل الشركة الأجنبية</h2>
+            <h2>{{ __('emails.foreign_company_approved_heading') }}</h2>
 
-            <p>السيد/ة الممثل المحترم،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.dear_representative') }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
-            <p>يسعدنا إبلاغكم بأنه قد تم قبول طلب تسجيل شركتكم الأجنبية من قبل وزارة الصحة - إدارة الصيدلة.</p>
+            <p>{{ __('emails.foreign_company_approved_body') }}</p>
 
             <table class="info-table">
                 <tr>
-                    <td>اسم الشركة:</td>
+                    <td>{{ __('emails.company_name_colon') }}</td>
                     <td>{{ $company->company_name }}</td>
                 </tr>
                 <tr>
-                    <td>الدولة:</td>
+                    <td>{{ __('emails.country_label') }}</td>
                     <td>{{ $company->country }}</td>
                 </tr>
                 <tr>
-                    <td>نوع النشاط:</td>
+                    <td>{{ __('emails.activity_type_label') }}</td>
                     <td>{{ $company->activity_type_name }}</td>
                 </tr>
                 <tr>
-                    <td>البريد الإلكتروني:</td>
+                    <td>{{ __('emails.email_label') }}</td>
                     <td>{{ $company->email }}</td>
                 </tr>
                 <tr>
-                    <td>الحالة الحالية:</td>
-                    <td><strong style="color: #1a5f4a;">قيد السداد</strong></td>
+                    <td>{{ __('emails.current_status') }}</td>
+                    <td><strong style="color: #1a5f4a;">{{ __('emails.pending_payment') }}</strong></td>
                 </tr>
             </table>
 
             <div class="note">
-                <p><strong>الخطوات التالية:</strong></p>
+                <p><strong>{{ __('emails.next_steps') }}</strong></p>
                 <ol>
-                    <li>تم إصدار فاتورة رسوم التسجيل لشركتكم</li>
-                    <li>الدخول إلى لوحة التحكم وعرض تفاصيل الفاتورة</li>
-                    <li>رفع صورة إيصال الدفع من خلال قسم الفواتير</li>
-                    <li>انتظار مراجعة الإيصال والموافقة عليه من قبل الإدارة</li>
-                    <li>بعد الموافقة على الإيصال، سيتم تفعيل الشركة بشكل نهائي</li>
+                    <li>{{ __('emails.foreign_approved_step_1') }}</li>
+                    <li>{{ __('emails.foreign_approved_step_2') }}</li>
+                    <li>{{ __('emails.foreign_approved_step_3') }}</li>
+                    <li>{{ __('emails.foreign_approved_step_4') }}</li>
+                    <li>{{ __('emails.foreign_approved_step_5') }}</li>
                 </ol>
             </div>
 
-            <p><strong>ملاحظة هامة:</strong> يرجى إتمام عملية السداد ورفع الإيصال في أقرب وقت لإكمال عملية التسجيل. في حال وجود أي استفسار، يرجى التواصل معنا.</p>
+            <p><strong>{{ __('emails.important_note') }}</strong> {{ __('emails.foreign_approved_note') }}</p>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة</strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">© {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">{{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

@@ -97,9 +97,9 @@ class DocumentUpdateRequest extends Model
     public function getStatusNameAttribute(): string
     {
         return match ($this->status) {
-            'pending' => 'قيد الانتظار',
-            'approved' => 'تمت الموافقة',
-            'rejected' => 'مرفوض',
+            'pending' => __('invoices.status_pending'),
+            'approved' => __('documents.status_approved'),
+            'rejected' => __('documents.status_rejected'),
             default => $this->status,
         };
     }

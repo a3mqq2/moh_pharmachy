@@ -1,16 +1,17 @@
 @extends('layouts.auth')
 
-@section('title', 'تسجيل الدخول')
+@section('title', __('auth.login'))
 
 @section('content')
 <div class="login-container">
     <!-- Logo Section -->
     <div class="logo-section">
         <a href="{{ route('login') }}">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة - إدارة الصيدلة" />
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.site_title') }}" />
         </a>
         <div class="ministry-name">
-            <h1>إدارة الصيدلة</h1>
+            <h2>{{ __('auth.ministry_name') }}</h2>
+            <h1>{{ __('auth.pharmacy_admin') }}</h1>
         </div>
     </div>
 
@@ -21,19 +22,33 @@
 
     <!-- Welcome Text -->
     <div class="welcome-section">
-        <h2>تسجيل الدخول</h2>
-        <p>يرجى إدخال بيانات الاعتماد للوصول إلى النظام</p>
+        <h2>{{ __('auth.login') }}</h2>
+        <p>{{ __('auth.login_subtitle') }}</p>
     </div>
 
     
 
+    @if(session('error'))
+        <div class="error-alert">
+            <i class="ti ti-alert-circle"></i>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    @if(session('success'))
+        <div class="success-alert">
+            <i class="ti ti-circle-check"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
     <!-- Login Form -->
-    <form method="POST" action="{{ route('login.submit') }}" class="login-form" dir="rtl" id="loginForm">
+    <form method="POST" action="{{ route('login.submit') }}" class="login-form" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" id="loginForm">
         @csrf
         <input type="hidden" name="recaptcha_token" id="recaptcha_token">
 
         <div class="form-group">
-            <label for="email">البريد الإلكتروني</label>
+            <label for="email">{{ __('auth.email') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-mail"></i>
                 <input
@@ -53,7 +68,7 @@
         </div>
 
         <div class="form-group">
-            <label for="password">كلمة المرور</label>
+            <label for="password">{{ __('auth.password') }}</label>
             <div class="input-wrapper">
                 <i class="ti ti-lock"></i>
                 <input
@@ -73,7 +88,7 @@
             @enderror
         </div>
 
-        <div class="remember-section">
+        <div class="remember-forgot">
             <label class="custom-checkbox">
                 <input
                     type="checkbox"
@@ -82,24 +97,25 @@
                     {{ old('remember') ? 'checked' : '' }}
                 />
                 <span class="checkmark"></span>
-                <span class="label-text">تذكرني</span>
+                <span class="label-text">{{ __('auth.remember_me') }}</span>
             </label>
+            <a href="{{ route('admin.forgot-password') }}" class="forgot-link">{{ __('auth.forgot_password') }}</a>
         </div>
 
         <button type="submit" class="submit-btn">
-            <span>تسجيل الدخول</span>
+            <span>{{ __('auth.login') }}</span>
             <i class="ti ti-arrow-left"></i>
         </button>
     </form>
 
     <div class="register-section">
-        <p>ليس لديك حساب؟ <a href="{{ route('register') }}">أنشئ حساباً جديداً</a></p>
+        <p>{{ __('auth.no_account') }} <a href="{{ route('register') }}">{{ __('auth.create_account') }}</a></p>
     </div>
 
     <!-- Footer -->
     <div class="login-footer">
-        <p>© {{ date('Y') }} وزارة الصحة - إدارة الصيدلة</p>
-        <p class="sub">جميع الحقوق محفوظة</p>
+        <p>{{ __('auth.copyright', ['year' => date('Y')]) }}</p>
+        <p class="sub">{{ __('general.all_rights_reserved') }}</p>
     </div>
 </div>
 
@@ -189,6 +205,14 @@
         transform: scale(1.02);
     }
 
+    .ministry-name h2 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #5a6a72;
+        margin: 0 0 4px 0;
+        animation: fadeIn 0.5s ease-out 0.15s both;
+    }
+
     .ministry-name h1 {
         font-size: 1.8rem;
         font-weight: 700;
@@ -196,14 +220,6 @@
         margin: 0;
         letter-spacing: -0.5px;
         animation: fadeIn 0.5s ease-out 0.2s both;
-    }
-
-    .ministry-name p {
-        font-size: 1.2rem;
-        color: #5a6a72;
-        margin: 8px 0 0 0;
-        font-weight: 500;
-        animation: fadeIn 0.5s ease-out 0.3s both;
     }
 
     /* Elegant Divider */
@@ -299,7 +315,8 @@
 
     .input-wrapper i:first-child {
         position: absolute;
-        right: 14px;
+        inset-inline-start: auto;
+        inset-inline-end: 14px;
         color: #9ca3af;
         font-size: 1.1rem;
         pointer-events: none;
@@ -353,13 +370,14 @@
 
     .toggle-password {
         position: absolute;
-        left: 1px;
+        inset-inline-start: 1px;
         top: 1px;
         bottom: 1px;
         width: 44px;
         background: transparent;
         border: none;
-        border-radius: 0 3px 3px 0;
+        border-start-start-radius: 3px;
+        border-end-start-radius: 3px;
         color: #6b7280;
         cursor: pointer;
         font-size: 1.2rem;
@@ -388,9 +406,25 @@
     }
 
     /* Remember Checkbox */
-    .remember-section {
+    .remember-forgot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         margin-bottom: 24px;
         animation: slideInRight 0.5s ease-out 0.8s both;
+    }
+
+    .forgot-link {
+        font-size: 0.875rem;
+        color: #1a5f4a;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.2s ease;
+    }
+
+    .forgot-link:hover {
+        color: #155a43;
+        text-decoration: underline;
     }
 
     .custom-checkbox {
@@ -414,7 +448,7 @@
         background-color: #fafafa;
         border: 1px solid #d1d5db;
         border-radius: 3px;
-        margin-left: 10px;
+        margin-inline-end: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -562,6 +596,29 @@
         margin-top: 4px;
     }
 
+    .error-alert, .success-alert {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        animation: fadeInUp 0.4s ease-out;
+    }
+
+    .error-alert {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+    }
+
+    .success-alert {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #16a34a;
+    }
+
     /* Responsive */
     @media (max-width: 480px) {
         .login-container {
@@ -573,12 +630,12 @@
             max-width: 160px;
         }
 
-        .ministry-name h1 {
-            font-size: 1.5rem;
+        .ministry-name h2 {
+            font-size: 0.95rem;
         }
 
-        .ministry-name p {
-            font-size: 1.1rem;
+        .ministry-name h1 {
+            font-size: 1.5rem;
         }
     }
 </style>

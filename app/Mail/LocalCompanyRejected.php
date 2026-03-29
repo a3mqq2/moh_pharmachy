@@ -21,7 +21,7 @@ class LocalCompanyRejected extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'بخصوص طلب تسجيل شركتكم - وزارة الصحة',
+            subject: __('emails.local_company_rejected_subject'),
         );
     }
 

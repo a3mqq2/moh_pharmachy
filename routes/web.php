@@ -14,6 +14,13 @@ use App\Http\Controllers\Representative\AuthController as RepresentativeAuthCont
 
 Route::redirect('/', '/login');
 
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['ar', 'en'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
 Route::prefix('verify')->name('verify.')->group(function () {
     Route::get('local-company/{localCompany}', [\App\Http\Controllers\VerificationController::class, 'localCompany'])->name('local-company');
     Route::get('foreign-company/{foreignCompany}', [\App\Http\Controllers\VerificationController::class, 'foreignCompany'])->name('foreign-company');
@@ -23,6 +30,14 @@ Route::prefix('verify')->name('verify.')->group(function () {
 Route::middleware(['guest:web', 'guest:representative'])->group(function () {
     Route::get('/login', [UnifiedAuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [UnifiedAuthController::class, 'login'])->name('login.submit');
+
+    Route::get('/admin/forgot-password', [UnifiedAuthController::class, 'showForgotPasswordForm'])->name('admin.forgot-password');
+    Route::post('/admin/forgot-password', [UnifiedAuthController::class, 'forgotPassword'])->name('admin.forgot-password.submit');
+    Route::get('/admin/verify-password-otp', [UnifiedAuthController::class, 'showVerifyPasswordOtpForm'])->name('admin.verify-password-otp');
+    Route::post('/admin/verify-password-otp', [UnifiedAuthController::class, 'verifyPasswordOtp'])->name('admin.verify-password-otp.submit');
+    Route::post('/admin/resend-password-otp', [UnifiedAuthController::class, 'resendPasswordOtp'])->name('admin.resend-password-otp');
+    Route::get('/admin/reset-password', [UnifiedAuthController::class, 'showResetPasswordForm'])->name('admin.reset-password');
+    Route::post('/admin/reset-password', [UnifiedAuthController::class, 'resetPassword'])->name('admin.reset-password.submit');
 });
 
 /*
@@ -79,6 +94,10 @@ Route::middleware('auth:representative')->prefix('clea')->name('representative.'
     Route::post('invoices/{invoice}/upload-receipt', [\App\Http\Controllers\Representative\InvoiceController::class, 'uploadReceipt'])->name('invoices.upload-receipt');
     Route::get('invoices/{invoice}/download-receipt', [\App\Http\Controllers\Representative\InvoiceController::class, 'downloadReceipt'])->name('invoices.download-receipt');
     Route::delete('invoices/{invoice}/delete-receipt', [\App\Http\Controllers\Representative\InvoiceController::class, 'deleteReceipt'])->name('invoices.delete-receipt');
+
+    // Announcement Forms
+    Route::get('announcements/{announcement}/form', [\App\Http\Controllers\Representative\AnnouncementFormController::class, 'show'])->name('announcements.form');
+    Route::post('announcements/{announcement}/form', [\App\Http\Controllers\Representative\AnnouncementFormController::class, 'store'])->name('announcements.form.store');
 
     // Profile & Settings
     Route::get('settings', [\App\Http\Controllers\Representative\ProfileController::class, 'settings'])->name('settings');

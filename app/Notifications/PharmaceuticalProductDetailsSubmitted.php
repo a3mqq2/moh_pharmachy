@@ -24,8 +24,11 @@ class PharmaceuticalProductDetailsSubmitted extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'تم إرسال بيانات تفصيلية لصنف دوائي',
-            'message' => 'قام ' . $this->representative->name . ' بإرسال البيانات التفصيلية للصنف الدوائي: ' . $this->product->product_name,
+            'title' => __('notifications.product_details_submitted_title'),
+            'message' => __('notifications.product_details_submitted_message', [
+                'representative' => $this->representative->name,
+                'product' => $this->product->product_name,
+            ]),
             'product_id' => $this->product->id,
             'product_name' => $this->product->product_name,
             'representative_name' => $this->representative->name,

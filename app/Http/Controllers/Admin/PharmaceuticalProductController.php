@@ -79,7 +79,7 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
     public function approve(PharmaceuticalProduct $product)
     {
         if ($product->status != 'pending_review') {
-            return back()->with('error', 'لا يمكن الموافقة على هذا الصنف في حالته الحالية.');
+            return back()->with('error', __('products.msg_cannot_approve_status'));
         }
 
         $product->update([
@@ -95,17 +95,17 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
             $product->representative->notify(new \App\Notifications\PharmaceuticalProductPreliminaryApproved($product));
         }
 
-        return back()->with('success', 'تم الموافقة المبدئية على الصنف الدوائي. تم إرسال إشعار للممثل لاستكمال البيانات التفصيلية.');
+        return back()->with('success', __('products.msg_preliminary_approved_success'));
     }
 
     public function finalApprove(Request $request, PharmaceuticalProduct $product)
     {
         if ($product->status != 'pending_final_approval') {
-            return back()->with('error', 'لا يمكن الموافقة النهائية على هذا الصنف في حالته الحالية.');
+            return back()->with('error', __('products.msg_cannot_final_approve_status'));
         }
 
         if (!$product->hasCompleteDetailedInfo()) {
-            return back()->with('error', 'البيانات التفصيلية للصنف غير مكتملة.');
+            return back()->with('error', __('products.msg_detailed_data_incomplete'));
         }
 
         $registrationFee = Setting::get('pharmaceutical_product_fee', 3000.00);
@@ -137,7 +137,7 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
             $product->representative->notify(new \App\Notifications\PharmaceuticalProductFinalApproved($product, $invoice));
         }
 
-        return back()->with('success', 'تم الموافقة النهائية على الصنف الدوائي وإنشاء فاتورة بقيمة ' . number_format($registrationFee) . ' د.ل. تم إرسال إشعار للممثل.');
+        return back()->with('success', __('products.msg_final_approved_success', ['amount' => number_format($registrationFee)]));
     }
 
     public function reject(Request $request, PharmaceuticalProduct $product)
@@ -147,7 +147,7 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
         ]);
 
         if ($product->status != 'pending_review') {
-            return back()->with('error', 'لا يمكن رفض هذا الصنف في حالته الحالية.');
+            return back()->with('error', __('products.msg_cannot_reject_status'));
         }
 
         $product->update([
@@ -161,21 +161,21 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
             $product->representative->notify(new \App\Notifications\PharmaceuticalProductRejected($product, $request->rejection_reason));
         }
 
-        return back()->with('success', 'تم رفض الصنف الدوائي وإرسال إشعار للممثل.');
+        return back()->with('success', __('products.msg_rejected_success'));
     }
 
     public function approveReceipt(PharmaceuticalProduct $product, \App\Models\PharmaceuticalProductInvoice $invoice)
     {
         if ($invoice->status == 'paid') {
-            return back()->with('info', 'تم الموافقة على هذا الإيصال مسبقاً.');
+            return back()->with('info', __('products.msg_receipt_already_approved'));
         }
 
         if ($invoice->status != 'pending_review') {
-            return back()->with('error', 'لا يمكن الموافقة على هذا الإيصال في حالته الحالية.');
+            return back()->with('error', __('products.msg_cannot_approve_receipt_status'));
         }
 
         if (!$invoice->receipt_path) {
-            return back()->with('error', 'لم يتم رفع إيصال الدفع بعد.');
+            return back()->with('error', __('products.msg_no_receipt_uploaded'));
         }
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($product, $invoice) {
@@ -192,7 +192,7 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
                         ->first();
 
                     if ($existingProduct) {
-                        throw new \Exception('رقم القيد ' . $product->pre_registration_number . ' مستخدم بالفعل');
+                        throw new \Exception(__('products.msg_reg_number_in_use', ['number' => $product->pre_registration_number]));
                     }
 
                     $product->update([
@@ -216,7 +216,7 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
             $product->representative->notify(new \App\Notifications\PharmaceuticalProductActivated($product, $invoice));
         }
 
-        return back()->with('success', 'تم الموافقة على الإيصال وتفعيل الصنف الدوائي.');
+        return back()->with('success', __('products.msg_receipt_approved_product_activated'));
     }
 
     public function rejectReceipt(Request $request, PharmaceuticalProduct $product, \App\Models\PharmaceuticalProductInvoice $invoice)
@@ -226,7 +226,7 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
         ]);
 
         if ($invoice->status != 'pending_review') {
-            return back()->with('error', 'لا يمكن رفض هذا الإيصال في حالته الحالية.');
+            return back()->with('error', __('products.msg_cannot_reject_receipt_status'));
         }
 
         if ($invoice->receipt_path) {
@@ -246,13 +246,13 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
             $product->representative->notify(new \App\Notifications\PharmaceuticalProductReceiptRejected($product, $invoice, $request->rejection_reason));
         }
 
-        return back()->with('success', 'تم رفض الإيصال وإرسال إشعار للممثل.');
+        return back()->with('success', __('products.msg_receipt_rejected_success'));
     }
 
     public function printCertificate(PharmaceuticalProduct $product)
     {
         if ($product->status != 'active') {
-            return back()->with('error', 'يمكن طباعة الشهادة فقط للأصناف المفعلة.');
+            return back()->with('error', __('products.msg_certificate_active_only'));
         }
 
         $product->load(['foreignCompany.localCompany', 'representative']);

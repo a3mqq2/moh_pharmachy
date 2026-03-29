@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كشف سجل الشركات</title>
+    <title>{{ __('companies.companies_record') }}</title>
     <style>
         @font-face {
             font-family: 'Almarai';
@@ -209,20 +209,20 @@
 </head>
 <body>
     <button class="print-btn no-print" onclick="window.print()">
-        طباعة
+        {{ __('general.print') }}
     </button>
     <a href="{{ route('admin.local-companies.index', request()->query()) }}" class="back-btn no-print">
-        رجوع
+        {{ __('general.back') }}
     </a>
 
     <div class="container">
         <div class="header">
             <div class="header-content">
-                <img src="{{ asset('logo-v.png') }}" alt="شعار الوزارة" class="logo">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.ministry_logo') }}" class="logo">
                 <div class="header-text">
-                    <h4>دولة ليبيا</h4>
-                    <h3>وزارة الصحة - إدارة الصيدلة</h3>
-                    <h1>كشف سجل الشركات</h1>
+                    <h4>{{ __('general.state_of_libya') }}</h4>
+                    <h3>{{ __('general.ministry_pharmacy_department') }}</h3>
+                    <h1>{{ __('companies.companies_record') }}</h1>
                 </div>
             </div>
         </div>
@@ -230,48 +230,48 @@
         <div class="filters-info">
             <div>
                 @if(request('company_type'))
-                    <span>التصنيف: {{ \App\Models\LocalCompany::companyTypes()[request('company_type')] ?? request('company_type') }}</span>
+                    <span>{{ __('general.classification') }}: {{ \App\Models\LocalCompany::companyTypes()[request('company_type')] ?? request('company_type') }}</span>
                 @endif
                 @if(request('status'))
-                    <span>الحالة: {{ \App\Models\LocalCompany::statuses()[request('status')] ?? request('status') }}</span>
+                    <span>{{ __('general.status') }}: {{ \App\Models\LocalCompany::statuses()[request('status')] ?? request('status') }}</span>
                 @endif
                 @if(request('license_type'))
-                    <span>نوع الترخيص: {{ \App\Models\LocalCompany::licenseTypes()[request('license_type')] ?? request('license_type') }}</span>
+                    <span>{{ __('companies.license_type') }}: {{ \App\Models\LocalCompany::licenseTypes()[request('license_type')] ?? request('license_type') }}</span>
                 @endif
                 @if(request('license_specialty'))
-                    <span>التخصص: {{ \App\Models\LocalCompany::licenseSpecialties()[request('license_specialty')] ?? request('license_specialty') }}</span>
+                    <span>{{ __('general.specialty') }}: {{ \App\Models\LocalCompany::licenseSpecialties()[request('license_specialty')] ?? request('license_specialty') }}</span>
                 @endif
                 @if(request('city'))
-                    <span>المدينة: {{ request('city') }}</span>
+                    <span>{{ __('general.city') }}: {{ request('city') }}</span>
                 @endif
                 @if(request('date_from') || request('date_to'))
-                    <span>الفترة: {{ request('date_from', '-') }} إلى {{ request('date_to', '-') }}</span>
+                    <span>{{ __('general.period') }}: {{ request('date_from', '-') }} {{ __('general.to') }} {{ request('date_to', '-') }}</span>
                 @endif
                 @if(!request()->hasAny(['company_type', 'status', 'license_type', 'license_specialty', 'city', 'date_from', 'date_to']))
-                    <span>جميع الشركات</span>
+                    <span>{{ __('general.all_companies') }}</span>
                 @endif
             </div>
             <div>
-                <strong>إجمالي الشركات: {{ $companies->count() }}</strong>
+                <strong>{{ __('general.total_companies') }}: {{ $companies->count() }}</strong>
                 &nbsp;|&nbsp;
-                <span>تاريخ الطباعة: {{ now()->format('Y-m-d h:i A') }}</span>
+                <span>{{ __('general.print_date') }}: {{ now()->format('Y-m-d h:i A') }}</span>
             </div>
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th width="4%">م</th>
-                    <th width="6%">رقم القيد</th>
-                    <th width="18%">اسم الشركة</th>
-                    <th width="8%">التصنيف</th>
-                    <th width="14%">المدير المسؤول</th>
-                    <th width="10%">رقم الهاتف</th>
-                    <th width="8%">المدينة</th>
-                    <th width="10%">نوع الترخيص</th>
-                    <th width="10%">التخصص</th>
-                    <th width="6%">الحالة</th>
-                    <th width="6%">تاريخ التسجيل</th>
+                    <th width="4%">{{ __('general.serial_no') }}</th>
+                    <th width="6%">{{ __('general.registration_number') }}</th>
+                    <th width="18%">{{ __('companies.company_name') }}</th>
+                    <th width="8%">{{ __('general.classification') }}</th>
+                    <th width="14%">{{ __('companies.responsible_manager') }}</th>
+                    <th width="10%">{{ __('general.phone') }}</th>
+                    <th width="8%">{{ __('general.city') }}</th>
+                    <th width="10%">{{ __('companies.license_type') }}</th>
+                    <th width="10%">{{ __('general.specialty') }}</th>
+                    <th width="6%">{{ __('general.status') }}</th>
+                    <th width="6%">{{ __('general.registration_date') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -307,7 +307,7 @@
                 @empty
                 <tr>
                     <td colspan="11" class="text-center" style="padding: 30px;">
-                        لا توجد شركات مطابقة للفلاتر المحددة
+                        {{ __('general.no_matching_filters') }}
                     </td>
                 </tr>
                 @endforelse
@@ -315,15 +315,15 @@
             @if($companies->count() > 0)
             <tfoot>
                 <tr class="total-row">
-                    <td colspan="3" class="text-center">الإجمالي</td>
+                    <td colspan="3" class="text-center">{{ __('general.total_label') }}</td>
                     <td class="text-center">
-                        موزعة: {{ $companies->where('company_type', 'distributor')->count() }}
+                        {{ __('companies.distributor') }}: {{ $companies->where('company_type', 'distributor')->count() }}
                         |
-                        موردة: {{ $companies->where('company_type', 'supplier')->count() }}
+                        {{ __('companies.supplier') }}: {{ $companies->where('company_type', 'supplier')->count() }}
                     </td>
                     <td colspan="5"></td>
                     <td class="text-center">
-                        مفعلة: {{ $companies->where('status', 'approved')->count() }}
+                        {{ __('general.active_label') }}: {{ $companies->where('status', 'approved')->count() }}
                     </td>
                     <td></td>
                 </tr>
@@ -332,14 +332,13 @@
         </table>
 
         <div class="footer">
-            <p>تم إنشاء هذا الكشف آلياً من نظام إدارة الصيدلة - وزارة الصحة</p>
+            <p>{{ __('general.auto_generated_report') }}</p>
             <p>{{ now()->format('Y-m-d h:i:s A') }}</p>
         </div>
     </div>
 
     <script>
         window.onafterprint = function() {
-            // Optional: redirect back after printing
         };
     </script>
 </body>

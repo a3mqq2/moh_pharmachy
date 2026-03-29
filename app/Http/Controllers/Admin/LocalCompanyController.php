@@ -173,38 +173,38 @@ class LocalCompanyController extends Controller implements HasMiddleware
             'manager_email' => 'nullable|email|max:255',
             'manager_password' => 'nullable|string|min:6',
         ], [
-            'food_drug_registration_number.required' => 'رقم التسجيل في هيئة الغذاء والدواء مطلوب',
-            'company_name.required' => 'اسم الشركة مطلوب',
-            'company_type.required' => 'نوع الشركة مطلوب',
-            'city.required' => 'المدينة مطلوبة',
-            'phone.required' => 'رقم الهاتف مطلوب',
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.unique' => 'البريد الإلكتروني مستخدم مسبقاً',
-            'license_type.required' => 'نوع الترخيص مطلوب',
-            'license_specialty.required' => 'تخصص الترخيص مطلوب',
-            'manager_name.required' => 'اسم المدير المسؤول مطلوب',
-            'manager_phone.required' => 'رقم هاتف المدير مطلوب',
+            'food_drug_registration_number.required' => __('companies.val_food_drug_reg_required'),
+            'company_name.required' => __('companies.val_company_name_required'),
+            'company_type.required' => __('companies.val_company_type_required'),
+            'city.required' => __('companies.val_city_required'),
+            'phone.required' => __('companies.val_phone_required'),
+            'email.required' => __('companies.val_email_required'),
+            'email.unique' => __('companies.val_email_unique'),
+            'license_type.required' => __('companies.val_license_type_required'),
+            'license_specialty.required' => __('companies.val_license_specialty_required'),
+            'manager_name.required' => __('companies.val_manager_name_required'),
+            'manager_phone.required' => __('companies.val_manager_phone_required'),
         ]);
 
         $company = LocalCompany::create($validated);
 
-        $company->logActivity('created', 'تم إنشاء ملف الشركة');
+        $company->logActivity('created', __('companies.log_company_created'));
 
         $registrationFee = Setting::get('local_company_registration_fee', 0);
         if ($registrationFee > 0) {
             $invoice = $company->invoices()->create([
                 'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
                 'type' => 'registration',
-                'description' => 'رسوم تسجيل شركة محلية',
+                'description' => __('companies.log_invoice_registration_desc'),
                 'amount' => $registrationFee,
                 'created_by' => auth()->id(),
             ]);
 
-            $company->logActivity('invoice_created', 'تم إنشاء فاتورة تسجيل تلقائية رقم: ' . $invoice->invoice_number);
+            $company->logActivity('invoice_created', __('companies.log_auto_registration_invoice', ['number' => $invoice->invoice_number]));
         }
 
         return redirect()->route('admin.local-companies.show', $company)
-            ->with('success', 'تم إضافة الشركة بنجاح');
+            ->with('success', __('companies.msg_company_added'));
     }
 
     public function show(LocalCompany $localCompany)
@@ -262,15 +262,15 @@ class LocalCompanyController extends Controller implements HasMiddleware
             ]);
         }
 
-        $localCompany->logActivity('updated', 'تم تحديث بيانات الشركة');
+        $localCompany->logActivity('updated', __('companies.log_company_updated'));
 
         if ($oldStatus != $request->status) {
             $statusNames = LocalCompany::statuses();
-            $localCompany->logActivity('status_changed', 'تم تغيير الحالة من "' . ($statusNames[$oldStatus] ?? $oldStatus) . '" إلى "' . ($statusNames[$request->status] ?? $request->status) . '"');
+            $localCompany->logActivity('status_changed', __('companies.log_status_changed', ['from' => $statusNames[$oldStatus] ?? $oldStatus, 'to' => $statusNames[$request->status] ?? $request->status]));
         }
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم تحديث بيانات الشركة بنجاح');
+            ->with('success', __('companies.msg_updated'));
     }
 
     public function destroy(LocalCompany $localCompany)
@@ -278,23 +278,23 @@ class LocalCompanyController extends Controller implements HasMiddleware
         $localCompany->delete();
 
         return redirect()->route('admin.local-companies.index')
-            ->with('success', 'تم حذف الشركة بنجاح');
+            ->with('success', __('companies.msg_company_deleted'));
     }
 
     public function approve(Request $request, LocalCompany $localCompany)
     {
         if (!in_array($localCompany->status, ['pending', 'uploading_documents'])) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا يمكن قبول الشركة في حالتها الحالية');
+                ->with('error', __('companies.msg_cannot_approve_local_status'));
         }
 
         $localCompany->load(['documents', 'invoices', 'representative']);
 
         if (!$localCompany->hasAllRequiredDocuments()) {
             $missingDocs = $localCompany->getMissingDocuments();
-            $missingList = implode('، ', array_values($missingDocs));
+            $missingList = implode(__('general.list_separator'), array_values($missingDocs));
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا يمكن قبول الشركة. المستندات الناقصة: ' . $missingList);
+                ->with('error', __('companies.msg_cannot_approve_missing_docs', ['list' => $missingList]));
         }
 
         DB::transaction(function () use ($localCompany, $request) {
@@ -314,7 +314,7 @@ class LocalCompanyController extends Controller implements HasMiddleware
                 'rejection_reason' => null,
             ]);
 
-            $localCompany->logActivity('approved', 'تم قبول الشركة');
+            $localCompany->logActivity('approved', __('companies.log_company_approved'));
 
             if ($localCompany->is_pre_registered) {
                 if ($request->has('create_renewal_invoice')) {
@@ -324,14 +324,14 @@ class LocalCompanyController extends Controller implements HasMiddleware
                         'local_company_id' => $localCompany->id,
                         'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
                         'type' => 'renewal',
-                        'description' => 'رسوم تجديد شركة - ' . $localCompany->company_name,
+                        'description' => __('companies.log_renewal_fee_desc', ['name' => $localCompany->company_name]),
                         'amount' => $renewalFee,
                         'status' => 'unpaid',
                         'due_date' => now()->addDays(30),
                         'created_by' => auth()->id(),
                     ]);
 
-                    $localCompany->logActivity('invoice_created', 'تم إصدار فاتورة التجديد رقم: ' . $invoice->invoice_number);
+                    $localCompany->logActivity('invoice_created', __('companies.log_renewal_invoice_issued', ['number' => $invoice->invoice_number]));
                 } else {
                     $lastRenewalDate = $request->input('last_renewal_date', now()->format('Y-m-d'));
                     $validityYears = $localCompany->company_type === 'distributor' ? 5 : 1;
@@ -347,7 +347,7 @@ class LocalCompanyController extends Controller implements HasMiddleware
                         'expires_at' => \Carbon\Carbon::parse($lastRenewalDate)->addYears($validityYears),
                     ]);
 
-                    $localCompany->logActivity('activated', 'تم تفعيل الشركة المسجلة مسبقاً - تاريخ آخر تجديد: ' . $lastRenewalDate);
+                    $localCompany->logActivity('activated', __('companies.log_pre_registered_activated', ['date' => $lastRenewalDate]));
                 }
             } else {
                 $registrationFee = Setting::get('local_company_annual_fee', 1000.00);
@@ -356,41 +356,41 @@ class LocalCompanyController extends Controller implements HasMiddleware
                     'local_company_id' => $localCompany->id,
                     'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
                     'type' => 'registration',
-                    'description' => 'رسوم تسجيل شركة - ' . $localCompany->company_name,
+                    'description' => __('companies.log_registration_fee_desc', ['name' => $localCompany->company_name]),
                     'amount' => $registrationFee,
                     'status' => 'unpaid',
                     'due_date' => now()->addDays(30),
                     'created_by' => auth()->id(),
                 ]);
 
-                $localCompany->logActivity('invoice_created', 'تم إصدار فاتورة التسجيل رقم: ' . $invoice->invoice_number);
+                $localCompany->logActivity('invoice_created', __('companies.log_registration_invoice_issued', ['number' => $invoice->invoice_number]));
             }
 
         });
 
-        $message = 'تم قبول الشركة بنجاح. ';
+        $message = __('companies.msg_company_approved_success') . ' ';
         if ($localCompany->is_pre_registered) {
             if ($request->has('create_renewal_invoice')) {
-                $message .= 'تم إصدار فاتورة تجديد.';
+                $message .= __('companies.msg_renewal_invoice_issued');
             } else {
-                $message .= 'تم تفعيل الشركة مباشرة.';
+                $message .= __('companies.msg_activated_directly');
             }
         } else {
-            $message .= 'تم إصدار فاتورة التسجيل.';
+            $message .= __('companies.msg_registration_invoice_issued');
         }
 
         $emailFailed = false;
         if ($localCompany->representative && $localCompany->representative->email) {
             try {
                 Mail::to($localCompany->representative->email)->send(new CompanyApprovedMail($localCompany));
-                $localCompany->logActivity('email_sent', 'تم إرسال إيميل الإشعار إلى: ' . $localCompany->representative->email);
+                $localCompany->logActivity('email_sent', __('companies.log_email_sent_to', ['email' => $localCompany->representative->email]));
             } catch (\Exception $e) {
                 Log::error('Failed to send emails: ' . $e->getMessage());
                 $emailFailed = true;
             }
         }
 
-        $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : ' تم إشعار الممثل عبر البريد الإلكتروني.';
+        $message .= $emailFailed ? __('companies.msg_email_failed_notice') : __('companies.msg_rep_notified_email');
 
         return redirect()->route('admin.local-companies.show', $localCompany)
             ->with('success', $message);
@@ -402,7 +402,7 @@ class LocalCompanyController extends Controller implements HasMiddleware
 
         if (!in_array($localCompany->status, ['approved', 'payment_review'])) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا يمكن تفعيل الشركة في حالتها الحالية');
+                ->with('error', __('companies.msg_cannot_activate_current_status'));
         }
 
         $registrationInvoice = $localCompany->invoices()
@@ -419,16 +419,16 @@ class LocalCompanyController extends Controller implements HasMiddleware
 
             if ($paidInvoice) {
                 return redirect()->route('admin.local-companies.show', $localCompany)
-                    ->with('info', 'تم دفع الفاتورة وتفعيل الشركة مسبقاً');
+                    ->with('info', __('companies.msg_already_paid_activated'));
             }
 
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا يوجد إيصال قيد المراجعة لتفعيل الشركة');
+                ->with('error', __('companies.msg_no_pending_receipt'));
         }
 
         if (!$registrationInvoice->receipt_path) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لم يتم رفع إيصال الدفع بعد');
+                ->with('error', __('companies.msg_no_receipt_uploaded'));
         }
 
         DB::transaction(function () use ($localCompany, $registrationInvoice) {
@@ -443,33 +443,33 @@ class LocalCompanyController extends Controller implements HasMiddleware
 
             $registrationInvoice->approveReceipt(auth()->id());
 
-            $localCompany->logActivity('activated', 'تم تفعيل الشركة');
+            $localCompany->logActivity('activated', __('companies.log_activated'));
         });
 
         if ($localCompany->representative && $localCompany->representative->email) {
             try {
                 Mail::to($localCompany->representative->email)->send(new CompanyActivatedMail($localCompany));
-                $localCompany->logActivity('email_sent', 'تم إرسال إيميل إشعار التفعيل إلى: ' . $localCompany->representative->email);
+                $localCompany->logActivity('email_sent', __('companies.log_activation_email_sent_to', ['email' => $localCompany->representative->email]));
             } catch (\Exception $e) {
                 Log::error('Failed to send company activated email: ' . $e->getMessage());
             }
         }
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم تفعيل الشركة بنجاح. رقم القيد: ' . $localCompany->registration_number);
+            ->with('success', __('companies.msg_activated_success', ['number' => $localCompany->registration_number]));
     }
 
     public function reject(Request $request, LocalCompany $localCompany)
     {
         if (!in_array($localCompany->status, ['pending', 'approved', 'uploading_documents'])) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا يمكن رفض الشركة في حالتها الحالية');
+                ->with('error', __('companies.msg_cannot_reject_current_status'));
         }
 
         $request->validate([
             'rejection_reason' => 'required|string|max:1000',
         ], [
-            'rejection_reason.required' => 'يرجى إدخال سبب الرفض',
+            'rejection_reason.required' => __('companies.msg_rejection_reason_required'),
         ]);
 
         $localCompany->update([
@@ -477,21 +477,21 @@ class LocalCompanyController extends Controller implements HasMiddleware
             'rejection_reason' => $request->rejection_reason,
         ]);
 
-        $localCompany->logActivity('rejected', 'تم رفض الشركة. السبب: ' . $request->rejection_reason);
+        $localCompany->logActivity('rejected', __('companies.log_company_rejected', ['reason' => $request->rejection_reason]));
 
         $emailFailed = false;
         if ($localCompany->email) {
             try {
                 Mail::to($localCompany->email)->send(new LocalCompanyRejected($localCompany));
-                $localCompany->logActivity('email_sent', 'تم إرسال إيميل إشعار الرفض إلى: ' . $localCompany->email);
+                $localCompany->logActivity('email_sent', __('companies.log_rejection_email_sent_to', ['email' => $localCompany->email]));
             } catch (\Exception $e) {
                 Log::error('Failed to send local company rejected email: ' . $e->getMessage());
                 $emailFailed = true;
             }
         }
 
-        $message = 'تم رفض الشركة';
-        $message .= $emailFailed ? ' (تنبيه: فشل إرسال البريد الإلكتروني)' : '';
+        $message = __('companies.msg_company_rejected');
+        $message .= $emailFailed ? __('companies.msg_email_failed_notice') : '';
 
         return redirect()->route('admin.local-companies.show', $localCompany)
             ->with('success', $message);
@@ -501,7 +501,7 @@ class LocalCompanyController extends Controller implements HasMiddleware
     {
         if ($localCompany->status !== 'rejected') {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'يمكن فقط إعادة الشركات المرفوضة للمراجعة');
+                ->with('error', __('companies.msg_only_rejected_can_restore'));
         }
 
         $localCompany->update([
@@ -509,23 +509,23 @@ class LocalCompanyController extends Controller implements HasMiddleware
             'rejection_reason' => null,
         ]);
 
-        $localCompany->logActivity('status_changed', 'تم إعادة الشركة للمراجعة');
+        $localCompany->logActivity('status_changed', __('companies.log_returned_to_review'));
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم إعادة الشركة للمراجعة');
+            ->with('success', __('companies.msg_returned_to_review'));
     }
 
     public function suspend(Request $request, LocalCompany $localCompany)
     {
         if (!in_array($localCompany->status, ['active', 'expired'])) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا يمكن تعليق الشركة في حالتها الحالية');
+                ->with('error', __('companies.msg_cannot_suspend_current_status'));
         }
 
         $request->validate([
             'suspension_reason' => 'required|string|max:1000',
         ], [
-            'suspension_reason.required' => 'يرجى إدخال سبب التعليق',
+            'suspension_reason.required' => __('companies.msg_suspension_reason_required'),
         ]);
 
         $localCompany->update([
@@ -533,17 +533,17 @@ class LocalCompanyController extends Controller implements HasMiddleware
             'suspension_reason' => $request->suspension_reason,
         ]);
 
-        $localCompany->logActivity('suspended', 'تم تعليق الشركة. السبب: ' . $request->suspension_reason);
+        $localCompany->logActivity('suspended', __('companies.log_company_suspended', ['reason' => $request->suspension_reason]));
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم تعليق الشركة بنجاح');
+            ->with('success', __('companies.msg_company_suspended'));
     }
 
     public function unsuspend(LocalCompany $localCompany)
     {
         if ($localCompany->status !== 'suspended') {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'الشركة غير معلقة');
+                ->with('error', __('companies.msg_company_not_suspended'));
         }
 
         $previousStatus = ($localCompany->expires_at && $localCompany->expires_at->isPast()) ? 'expired' : 'active';
@@ -553,17 +553,17 @@ class LocalCompanyController extends Controller implements HasMiddleware
             'suspension_reason' => null,
         ]);
 
-        $localCompany->logActivity('unsuspended', 'تم إلغاء تعليق الشركة');
+        $localCompany->logActivity('unsuspended', __('companies.log_unsuspended'));
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم إلغاء تعليق الشركة');
+            ->with('success', __('companies.msg_unsuspended'));
     }
 
     public function requestRenewal(LocalCompany $localCompany)
     {
         if (!in_array($localCompany->status, ['active', 'expired'])) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا يمكن طلب تجديد الشركة في حالتها الحالية');
+                ->with('error', __('companies.msg_cannot_renew_current_status'));
         }
 
         $hasRecentRenewal = $localCompany->invoices()
@@ -573,7 +573,7 @@ class LocalCompanyController extends Controller implements HasMiddleware
 
         if ($hasRecentRenewal) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'يوجد فاتورة تجديد غير مدفوعة بالفعل');
+                ->with('error', __('companies.msg_renewal_invoice_exists'));
         }
 
         $renewalFee = Setting::where('key', 'local_company_renewal_fee')->first()?->value ?? 500.00;
@@ -582,7 +582,7 @@ class LocalCompanyController extends Controller implements HasMiddleware
             $invoice = $localCompany->invoices()->create([
                 'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
                 'type' => 'renewal',
-                'description' => 'رسوم تجديد الشركة المحلية',
+                'description' => __('companies.msg_renewal_fee_desc'),
                 'amount' => $renewalFee,
                 'status' => 'unpaid',
                 'due_date' => now()->addDays(30),
@@ -591,21 +591,21 @@ class LocalCompanyController extends Controller implements HasMiddleware
 
             if ($localCompany->status === 'active' && $localCompany->isExpired()) {
                 $localCompany->update(['status' => 'expired']);
-                $localCompany->logActivity('expired', 'تم تغيير حالة الشركة إلى منتهية');
+                $localCompany->logActivity('expired', __('companies.log_status_expired'));
             }
 
-            $localCompany->logActivity('renewal_requested', 'تم إنشاء فاتورة تجديد رقم: ' . $invoice->invoice_number);
+            $localCompany->logActivity('renewal_requested', __('companies.log_renewal_invoice_created', ['number' => $invoice->invoice_number]));
         });
 
         return redirect()->route('admin.local-companies.show', $localCompany)
-            ->with('success', 'تم إنشاء فاتورة التجديد بنجاح');
+            ->with('success', __('companies.msg_renewal_invoice_created'));
     }
 
     public function certificate(LocalCompany $localCompany)
     {
         if (!in_array($localCompany->status, ['approved', 'active'])) {
             return redirect()->route('admin.local-companies.show', $localCompany)
-                ->with('error', 'لا يمكن طباعة شهادة لشركة غير مقبولة أو غير مفعلة');
+                ->with('error', __('companies.msg_cannot_print_cert'));
         }
 
         return view('admin.local-companies.certificate', compact('localCompany'));

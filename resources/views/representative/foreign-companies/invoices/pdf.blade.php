@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاتورة {{ $invoice->invoice_number }}</title>
+    <title>{{ __('invoices.invoice') }} {{ $invoice->invoice_number }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -149,26 +149,26 @@
     <div class="invoice-container">
         <div class="header">
             <img src="{{ asset('logo-v.png') }}" alt="">
-            <h1>وزارة الصحة الليبية</h1>
-            <h2>إدارة الصيدلة</h2>
+            <h1>{{ __('invoices.ministry_health_libya') }}</h1>
+            <h2>{{ __('general.pharmacy_department') }}</h2>
         </div>
 
-        <div class="invoice-title">فاتورة</div>
+        <div class="invoice-title">{{ __('invoices.invoice') }}</div>
 
         <div class="invoice-number">
-            رقم الفاتورة: {{ $invoice->invoice_number }}
-            <span style="float: left;">التاريخ: {{ $invoice->created_at->format('Y-m-d') }}</span>
+            {{ __('invoices.invoice_number') }}: {{ $invoice->invoice_number }}
+            <span style="float: left;">{{ __('general.date') }}: {{ $invoice->created_at->format('Y-m-d') }}</span>
         </div>
 
         <div class="two-column">
             <div>
                 <table>
                     <tr>
-                        <th>اسم الشركة</th>
+                        <th>{{ __('companies.company_name') }}</th>
                         <td>{{ $company->company_name }}</td>
                     </tr>
                     <tr>
-                        <th>الشركة المحلية</th>
+                        <th>{{ __('companies.local_company') }}</th>
                         <td>{{ $company->localCompany->company_name ?? '-' }}</td>
                     </tr>
                 </table>
@@ -176,11 +176,11 @@
             <div>
                 <table>
                     <tr>
-                        <th>الدولة</th>
+                        <th>{{ __('general.country') }}</th>
                         <td>{{ $company->country }}</td>
                     </tr>
                     <tr>
-                        <th>نوع النشاط</th>
+                        <th>{{ __('companies.activity_type') }}</th>
                         <td>{{ $company->activity_type_name ?? $company->activity_type }}</td>
                     </tr>
                 </table>
@@ -189,38 +189,38 @@
 
         <table>
             <tr>
-                <th>الوصف</th>
-                <td>{{ $invoice->description ?? 'رسوم تسجيل شركة أجنبية' }}</td>
+                <th>{{ __('general.description') }}</th>
+                <td>{{ $invoice->description ?? __('invoices.foreign_reg_fees') }}</td>
             </tr>
         </table>
 
         <div class="amount-section">
-            <h3>المبلغ الإجمالي المستحق</h3>
-            <div class="amount">{{ number_format($invoice->amount, 2) }} د.ل</div>
+            <h3>{{ __('invoices.total_due_amount') }}</h3>
+            <div class="amount">{{ number_format($invoice->amount, 2) }} {{ __('general.currency') }}</div>
         </div>
 
         <table>
             <tr>
-                <th>تاريخ الإصدار</th>
+                <th>{{ __('general.issue_date') }}</th>
                 <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
             </tr>
             <tr>
-                <th>حالة الفاتورة</th>
+                <th>{{ __('invoices.invoice_status') }}</th>
                 <td>
                     @if($invoice->status == 'pending')
-                        قيد الانتظار
+                        {{ __('invoices.status_pending') }}
                     @elseif($invoice->status == 'paid')
-                        مدفوعة
+                        {{ __('invoices.status_paid') }}
                     @elseif($invoice->status == 'cancelled')
-                        ملغاة
+                        {{ __('invoices.status_cancelled') }}
                     @endif
                 </td>
             </tr>
         </table>
 
         <div class="footer">
-            <p>وزارة الصحة الليبية - إدارة الصيدلة</p>
-            <p>تاريخ الطباعة: {{ now()->format('Y-m-d H:i') }}</p>
+            <p>{{ __('invoices.ministry_pharmacy_footer') }}</p>
+            <p>{{ __('general.print_date') }}: {{ now()->format('Y-m-d H:i') }}</p>
         </div>
     </div>
 

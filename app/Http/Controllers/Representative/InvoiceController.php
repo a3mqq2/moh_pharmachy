@@ -72,17 +72,17 @@ class InvoiceController extends Controller
 
         if (!$invoice->canUploadReceipt()) {
             return redirect()->route('representative.invoices.show', $invoice)
-                ->with('error', 'لا يمكن رفع إيصال لهذه الفاتورة في حالتها الحالية');
+                ->with('error', __('invoices.msg_cannot_upload_receipt'));
         }
 
         $request->validate([
             'receipt' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'receipt.required' => 'يرجى اختيار ملف الإيصال',
-            'receipt.file' => 'الملف غير صالح',
-            'receipt.mimes' => 'يجب أن يكون الإيصال بصيغة PDF أو صورة',
-            'receipt.max' => 'حجم الملف يجب أن لا يتجاوز 10 ميجابايت',
+            'receipt.required' => __('invoices.msg_receipt_required_upload'),
+            'receipt.file' => __('invoices.msg_receipt_file_invalid'),
+            'receipt.mimes' => __('invoices.msg_receipt_mimes'),
+            'receipt.max' => __('invoices.msg_receipt_max_10mb'),
         ]);
 
         if ($invoice->receipt_path) {
@@ -109,10 +109,9 @@ class InvoiceController extends Controller
 
         $invoice->localCompany->logActivity(
             'invoice_receipt_uploaded',
-            'تم رفع إيصال الدفع للفاتورة رقم: ' . $invoice->invoice_number
+            __('invoices.msg_receipt_uploaded_log', ['number' => $invoice->invoice_number])
         );
 
-        // Send notification to admins
         NotificationHelper::notifyAdmins(
             'receipt_uploaded',
             'local',
@@ -120,13 +119,13 @@ class InvoiceController extends Controller
             $invoice->localCompany->id,
             $representative->name,
             [
-                'رقم الفاتورة' => $invoice->invoice_number,
-                'المبلغ' => number_format($invoice->amount, 2) . ' د.ل',
+                __('invoices.invoice_number') => $invoice->invoice_number,
+                __('invoices.amount') => number_format($invoice->amount, 2) . ' ' . __('general.lyd'),
             ]
         );
 
         return redirect()->route('representative.invoices.show', $invoice)
-            ->with('success', 'تم رفع إيصال الدفع بنجاح. سيتم مراجعته من قبل الإدارة.');
+            ->with('success', __('invoices.msg_receipt_upload_success_review'));
     }
 
     public function downloadReceipt(LocalCompanyInvoice $invoice)
@@ -139,7 +138,7 @@ class InvoiceController extends Controller
         }
 
         if (!$invoice->hasReceipt()) {
-            abort(404, 'الإيصال غير موجود');
+            abort(404, __('invoices.msg_receipt_not_found_error'));
         }
 
         return Storage::disk('public')->download($invoice->receipt_path);
@@ -155,7 +154,7 @@ class InvoiceController extends Controller
 
         if (!$invoice->canDeleteReceipt()) {
             return redirect()->route('representative.invoices.show', $invoice)
-                ->with('error', 'لا يمكن حذف الإيصال في حالته الحالية');
+                ->with('error', __('invoices.msg_cannot_delete_receipt'));
         }
 
         $previousCompanyStatus = null;
@@ -188,10 +187,10 @@ class InvoiceController extends Controller
 
         $invoice->localCompany->logActivity(
             'invoice_receipt_deleted',
-            'تم حذف إيصال الدفع للفاتورة رقم: ' . $invoice->invoice_number
+            __('invoices.msg_receipt_deleted_log', ['number' => $invoice->invoice_number])
         );
 
         return redirect()->route('representative.invoices.show', $invoice)
-            ->with('success', 'تم حذف إيصال الدفع بنجاح');
+            ->with('success', __('invoices.msg_receipt_deleted_success'));
     }
 }

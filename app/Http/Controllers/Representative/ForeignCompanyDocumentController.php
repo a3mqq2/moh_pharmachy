@@ -21,7 +21,7 @@ class ForeignCompanyDocumentController extends Controller
 
         if (!$company->canUploadDocuments()) {
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('error', 'لا يمكن رفع المستندات في الحالة الحالية');
+                ->with('error', __('documents.cannot_upload_in_status'));
         }
 
         $validated = $request->validate([
@@ -34,7 +34,7 @@ class ForeignCompanyDocumentController extends Controller
         // Auto-generate document_name from document_type if not provided
         if (empty($validated['document_name'])) {
             $documentTypes = ForeignCompanyDocument::getDocumentTypes();
-            $validated['document_name'] = $documentTypes[$validated['document_type']] ?? 'مستند';
+            $validated['document_name'] = $documentTypes[$validated['document_type']] ?? __('documents.document');
         }
 
         // Check if document type already exists (for non-repeatable types)
@@ -64,7 +64,7 @@ class ForeignCompanyDocumentController extends Controller
 
             if ($existingDocument) {
                 return redirect()->back()
-                    ->with('error', 'تم رفع هذا النوع من المستندات مسبقاً. المستندات الاختيارية (CPP, FSC, شهادات تسجيل) يمكن رفعها أكثر من مرة.');
+                    ->with('error', __('documents.duplicate_document_type'));
             }
         }
 
@@ -95,15 +95,15 @@ class ForeignCompanyDocumentController extends Controller
                 $company->company_name,
                 $company->id,
                 $representative->name,
-                ['المستند' => $validated['document_type']]
+                [__('documents.document_label') => $validated['document_type']]
             );
 
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('success', 'تم رفع المستند بنجاح. سيتم مراجعته من قبل الإدارة.');
+                ->with('success', __('documents.upload_success_pending_review'));
         }
 
         return redirect()->route('representative.foreign-companies.show', $company->id)
-            ->with('success', 'تم رفع المستند بنجاح');
+            ->with('success', __('documents.upload_success'));
     }
 
     public function download($companyId, $documentId)
@@ -118,7 +118,7 @@ class ForeignCompanyDocumentController extends Controller
 
         if (!$document->exists()) {
             return redirect()->back()
-                ->with('error', 'الملف غير موجود');
+                ->with('error', __('documents.file_not_found'));
         }
 
         return Storage::disk('public')->download($document->file_path, $document->document_name);
@@ -134,7 +134,7 @@ class ForeignCompanyDocumentController extends Controller
 
         if (!$company->canUploadDocuments()) {
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('error', 'لا يمكن حذف المستندات في الحالة الحالية');
+                ->with('error', __('documents.cannot_delete_in_status'));
         }
 
         $document = $company->documents()->findOrFail($documentId);
@@ -142,7 +142,7 @@ class ForeignCompanyDocumentController extends Controller
         // Can only delete pending or rejected documents
         if (!in_array($document->status, ['pending', 'rejected'])) {
             return redirect()->back()
-                ->with('error', 'لا يمكن حذف هذا المستند في حالته الحالية');
+                ->with('error', __('documents.cannot_delete_document_status'));
         }
 
         // Log activity before deletion
@@ -151,7 +151,7 @@ class ForeignCompanyDocumentController extends Controller
         $document->delete();
 
         return redirect()->route('representative.foreign-companies.show', $company->id)
-            ->with('success', 'تم حذف المستند بنجاح');
+            ->with('success', __('documents.delete_success'));
     }
 
     public function replace(Request $request, $companyId, $documentId)
@@ -164,14 +164,14 @@ class ForeignCompanyDocumentController extends Controller
 
         if (!$company->canUploadDocuments()) {
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('error', 'لا يمكن استبدال المستندات في الحالة الحالية');
+                ->with('error', __('documents.cannot_replace_in_status'));
         }
 
         $document = $company->documents()->findOrFail($documentId);
 
         if (!$company->isActiveOrApproved() && $document->status != 'rejected') {
             return redirect()->back()
-                ->with('error', 'يمكن فقط استبدال المستندات المرفوضة');
+                ->with('error', __('documents.can_only_replace_rejected'));
         }
 
         $validated = $request->validate([
@@ -214,14 +214,14 @@ class ForeignCompanyDocumentController extends Controller
                 $company->company_name,
                 $company->id,
                 $representative->name,
-                ['المستند' => $document->document_type]
+                [__('documents.document_label') => $document->document_type]
             );
 
             return redirect()->route('representative.foreign-companies.show', $company->id)
-                ->with('success', 'تم استبدال المستند بنجاح. سيتم مراجعته من قبل الإدارة.');
+                ->with('success', __('documents.replace_success_pending_review'));
         }
 
         return redirect()->route('representative.foreign-companies.show', $company->id)
-            ->with('success', 'تم استبدال المستند بنجاح');
+            ->with('success', __('documents.replace_success'));
     }
 }

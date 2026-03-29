@@ -1,34 +1,34 @@
 @extends('layouts.auth')
 
-@section('title', 'تسجيل شركة جديدة')
+@section('title', __('companies.register_new'))
 
 @section('content')
 <div class="company-form-container">
     <div class="form-header">
-        <h1>تسجيل شركة جديدة</h1>
-        <p>يرجى اتباع الخطوات لإتمام التسجيل</p>
+        <h1>{{ __('companies.register_new') }}</h1>
+        <p>{{ __('companies.follow_steps') }}</p>
     </div>
 
     <!-- Progress Steps -->
     <div class="steps-progress">
         <div class="step active" data-step="1">
             <div class="step-number">1</div>
-            <div class="step-label">نوع الشركة</div>
+            <div class="step-label">{{ __('companies.company_type') }}</div>
         </div>
         <div class="step-line"></div>
         <div class="step" data-step="2">
             <div class="step-number">2</div>
-            <div class="step-label">بيانات الشركة</div>
+            <div class="step-label">{{ __('companies.company_data') }}</div>
         </div>
         <div class="step-line"></div>
         <div class="step" data-step="3">
             <div class="step-number">3</div>
-            <div class="step-label">بيانات الترخيص</div>
+            <div class="step-label">{{ __('companies.license_data') }}</div>
         </div>
         <div class="step-line"></div>
         <div class="step" data-step="4">
             <div class="step-number">4</div>
-            <div class="step-label">بيانات المدير</div>
+            <div class="step-label">{{ __('companies.manager_data') }}</div>
         </div>
     </div>
 
@@ -38,8 +38,8 @@
         <!-- Step 1: Company Type Selection -->
         <div class="form-step active" data-step="1">
             <div class="company-type-selection">
-                <h2 class="selection-title">اختر نوع الشركة</h2>
-                <p class="selection-subtitle">حدد نوع شركتك للمتابعة</p>
+                <h2 class="selection-title">{{ __('companies.choose_company_type') }}</h2>
+                <p class="selection-subtitle">{{ __('companies.select_type_to_continue') }}</p>
 
                 <div class="type-cards">
                     <label class="type-card" for="type_distributor">
@@ -48,8 +48,8 @@
                             <div class="type-icon">
                                 <i class="ti ti-truck-delivery"></i>
                             </div>
-                            <h3>شركة موزعة</h3>
-                            <p>شركة تقوم بتوزيع المنتجات الطبية</p>
+                            <h3>{{ __('companies.distributor') }}</h3>
+                            <p>{{ __('companies.distributor_desc') }}</p>
                         </div>
                     </label>
 
@@ -59,8 +59,8 @@
                             <div class="type-icon">
                                 <i class="ti ti-package"></i>
                             </div>
-                            <h3>شركة موردة</h3>
-                            <p>شركة تقوم بتوريد المنتجات الطبية</p>
+                            <h3>{{ __('companies.supplier') }}</h3>
+                            <p>{{ __('companies.supplier_desc') }}</p>
                         </div>
                     </label>
                 </div>
@@ -72,11 +72,11 @@
 
         <!-- Step 2: Company Information -->
         <div class="form-step" data-step="2">
-            <h2 class="step-title">بيانات الشركة الأساسية</h2>
+            <h2 class="step-title">{{ __('companies.basic_data') }}</h2>
 
             <div class="form-row">
                 <div class="form-group full-width">
-                    <label for="company_name">اسم الشركة <span class="required">*</span></label>
+                    <label for="company_name">{{ __('companies.company_name') }} <span class="required">*</span></label>
                     <input type="text" name="company_name" id="company_name" class="form-control" value="{{ old('company_name') }}" required>
                     @error('company_name')
                         <span class="error-message">{{ $message }}</span>
@@ -88,7 +88,7 @@
                 <div class="checkbox-group">
                     <label class="checkbox-label">
                         <input type="checkbox" name="is_pre_registered" id="is_pre_registered" value="1" {{ old('is_pre_registered') ? 'checked' : '' }}>
-                        <span>الشركة مسجلة من قبل</span>
+                        <span>{{ __('companies.previously_registered') }}</span>
                     </label>
                 </div>
 
@@ -96,37 +96,37 @@
                     <div class="alert-info-box">
                         <i class="ti ti-info-circle"></i>
                         <div>
-                            <strong>ملاحظة هامة</strong>
-                            <p>يرجى إدخال رقم القيد وسنة التسجيل الخاصة بالشركة المسجلة مسبقاً. سيتم التحقق من هذه البيانات من قبل الإدارة.</p>
+                            <strong>{{ __('general.important_note') }}</strong>
+                            <p>{{ __('companies.prev_reg_note') }}</p>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="pre_registration_year">سنة التسجيل <span class="required">*</span></label>
-                            <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ old('pre_registration_year') }}" placeholder="مثال: 2024" min="1990" max="{{ date('Y') }}">
+                            <label for="pre_registration_year">{{ __('companies.reg_year') }} <span class="required">*</span></label>
+                            <input type="number" name="pre_registration_year" id="pre_registration_year" class="form-control" value="{{ old('pre_registration_year') }}" placeholder="{{ __('companies.reg_year_example') }}" min="1990" max="{{ date('Y') }}">
                             @error('pre_registration_year')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="pre_registration_sequence">الرقم التسلسلي <span class="required">*</span></label>
-                            <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ old('pre_registration_sequence') }}" placeholder="مثال: 15" min="1">
+                            <label for="pre_registration_sequence">{{ __('companies.serial_number') }} <span class="required">*</span></label>
+                            <input type="number" name="pre_registration_sequence" id="pre_registration_sequence" class="form-control" value="{{ old('pre_registration_sequence') }}" placeholder="{{ __('companies.serial_example') }}" min="1">
                             @error('pre_registration_sequence')
                                 <span class="error-message">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
                     <div class="form-group">
-                        <small>رقم القيد: <strong id="repCreatePreRegPreview">-</strong></small>
+                        <small>{{ __('companies.reg_number_display') }} <strong id="repCreatePreRegPreview">-</strong></small>
                     </div>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="city">المدينة <span class="required">*</span></label>
+                    <label for="city">{{ __('general.city') }} <span class="required">*</span></label>
                     <input type="text" name="city" id="city" class="form-control" value="{{ old('city') }}" required>
                     @error('city')
                         <span class="error-message">{{ $message }}</span>
@@ -134,7 +134,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="street">الشارع</label>
+                    <label for="street">{{ __('general.street') }}</label>
                     <input type="text" name="street" id="street" class="form-control" value="{{ old('street') }}">
                     @error('street')
                         <span class="error-message">{{ $message }}</span>
@@ -143,7 +143,7 @@
             </div>
 
             <div class="form-group">
-                <label for="company_address">العنوان التفصيلي</label>
+                <label for="company_address">{{ __('companies.detailed_address') }}</label>
                 <textarea name="company_address" id="company_address" class="form-control" rows="3">{{ old('company_address') }}</textarea>
                 @error('company_address')
                     <span class="error-message">{{ $message }}</span>
@@ -151,16 +151,16 @@
             </div>
 
             <div class="form-group">
-                <label>تحديد الموقع على الخريطة</label>
+                <label>{{ __('companies.map_location') }}</label>
                 <div id="map" style="height: 350px; border-radius: 8px; border: 1px solid #d1d5db; margin-bottom: 8px;"></div>
-                <small style="color: #6b7280;">انقر على الخريطة لتحديد موقع الشركة</small>
+                <small style="color: #6b7280;">{{ __('companies.click_map') }}</small>
                 <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude') }}">
                 <input type="hidden" name="longitude" id="longitude" value="{{ old('longitude') }}">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="phone">رقم الهاتف <span class="required">*</span></label>
+                    <label for="phone">{{ __('general.phone') }} <span class="required">*</span></label>
                     <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone') }}" required>
                     @error('phone')
                         <span class="error-message">{{ $message }}</span>
@@ -168,7 +168,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="mobile">رقم الجوال</label>
+                    <label for="mobile">{{ __('general.mobile') }}</label>
                     <input type="text" name="mobile" id="mobile" class="form-control" value="{{ old('mobile') }}">
                     @error('mobile')
                         <span class="error-message">{{ $message }}</span>
@@ -177,7 +177,7 @@
             </div>
 
             <div class="form-group">
-                <label for="email">البريد الإلكتروني <span class="required">*</span></label>
+                <label for="email">{{ __('general.email') }} <span class="required">*</span></label>
                 <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
                 @error('email')
                     <span class="error-message">{{ $message }}</span>
@@ -187,16 +187,16 @@
 
         <!-- Step 3: License Information -->
         <div class="form-step" data-step="3">
-            <h2 class="step-title">بيانات الترخيص والتسجيل</h2>
+            <h2 class="step-title">{{ __('companies.license_data') }}</h2>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="license_type">نوع الترخيص <span class="required">*</span></label>
+                    <label for="license_type">{{ __('companies.license_type') }} <span class="required">*</span></label>
                     <select name="license_type" id="license_type" class="form-control" required>
-                        <option value="">اختر نوع الترخيص</option>
-                        <option value="company" {{ old('license_type') == 'company' ? 'selected' : '' }}>شركة</option>
-                        <option value="partnership" {{ old('license_type') == 'partnership' ? 'selected' : '' }}>تشاركية</option>
-                        <option value="authorized_agent" {{ old('license_type') == 'authorized_agent' ? 'selected' : '' }}>وكيل معتمد</option>
+                        <option value="">{{ __('companies.select_license_type') }}</option>
+                        <option value="company" {{ old('license_type') == 'company' ? 'selected' : '' }}>{{ __('companies.license_company') }}</option>
+                        <option value="partnership" {{ old('license_type') == 'partnership' ? 'selected' : '' }}>{{ __('companies.license_partnership') }}</option>
+                        <option value="authorized_agent" {{ old('license_type') == 'authorized_agent' ? 'selected' : '' }}>{{ __('companies.license_agent') }}</option>
                     </select>
                     @error('license_type')
                         <span class="error-message">{{ $message }}</span>
@@ -204,12 +204,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="license_specialty">تخصص الترخيص <span class="required">*</span></label>
+                    <label for="license_specialty">{{ __('companies.license_specialty') }} <span class="required">*</span></label>
                     <select name="license_specialty" id="license_specialty" class="form-control" required>
-                        <option value="">اختر التخصص</option>
-                        <option value="medicines" {{ old('license_specialty') == 'medicines' ? 'selected' : '' }}>أدوية</option>
-                        <option value="medical_supplies" {{ old('license_specialty') == 'medical_supplies' ? 'selected' : '' }}>مستلزمات طبية</option>
-                        <option value="medical_equipment" {{ old('license_specialty') == 'medical_equipment' ? 'selected' : '' }}>معدات طبية</option>
+                        <option value="">{{ __('companies.select_specialty') }}</option>
+                        <option value="medicines" {{ old('license_specialty') == 'medicines' ? 'selected' : '' }}>{{ __('companies.specialty_medicines') }}</option>
+                        <option value="medical_supplies" {{ old('license_specialty') == 'medical_supplies' ? 'selected' : '' }}>{{ __('companies.specialty_medical_supplies') }}</option>
+                        <option value="medical_equipment" {{ old('license_specialty') == 'medical_equipment' ? 'selected' : '' }}>{{ __('companies.specialty_medical_equipment') }}</option>
                     </select>
                     @error('license_specialty')
                         <span class="error-message">{{ $message }}</span>
@@ -219,7 +219,7 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="license_number">رقم الترخيص</label>
+                    <label for="license_number">{{ __('companies.license_number') }}</label>
                     <input type="text" name="license_number" id="license_number" class="form-control" value="{{ old('license_number') }}">
                     @error('license_number')
                         <span class="error-message">{{ $message }}</span>
@@ -227,7 +227,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="license_issuer">جهة إصدار الترخيص</label>
+                    <label for="license_issuer">{{ __('companies.issuing_authority') }}</label>
                     <input type="text" name="license_issuer" id="license_issuer" class="form-control" value="{{ old('license_issuer') }}">
                     @error('license_issuer')
                         <span class="error-message">{{ $message }}</span>
@@ -237,7 +237,7 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="registration_date">تاريخ التسجيل</label>
+                    <label for="registration_date">{{ __('general.registration_date') }}</label>
                     <input type="date" name="registration_date" id="registration_date" class="form-control" value="{{ old('registration_date') }}">
                     @error('registration_date')
                         <span class="error-message">{{ $message }}</span>
@@ -245,7 +245,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="chamber_of_commerce_number">رقم السجل التجاري</label>
+                    <label for="chamber_of_commerce_number">{{ __('companies.commercial_reg') }}</label>
                     <input type="text" name="chamber_of_commerce_number" id="chamber_of_commerce_number" class="form-control" value="{{ old('chamber_of_commerce_number') }}">
                     @error('chamber_of_commerce_number')
                         <span class="error-message">{{ $message }}</span>
@@ -254,7 +254,7 @@
             </div>
 
             <div class="form-group">
-                <label for="food_drug_registration_number">رقم التسجيل في هيئة الغذاء والدواء <span class="text-danger">*</span></label>
+                <label for="food_drug_registration_number">{{ __('companies.food_drug_reg') }} <span class="text-danger">*</span></label>
                 <input type="text" name="food_drug_registration_number" id="food_drug_registration_number" class="form-control" value="{{ old('food_drug_registration_number') }}" required>
                 @error('food_drug_registration_number')
                     <span class="error-message">{{ $message }}</span>
@@ -264,11 +264,11 @@
 
         <!-- Step 4: Manager Information -->
         <div class="form-step" data-step="4">
-            <h2 class="step-title">بيانات المدير المسؤول</h2>
+            <h2 class="step-title">{{ __('companies.manager_data') }}</h2>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="manager_name">اسم المدير <span class="required">*</span></label>
+                    <label for="manager_name">{{ __('companies.manager_name') }} <span class="required">*</span></label>
                     <input type="text" name="manager_name" id="manager_name" class="form-control" value="{{ old('manager_name') }}" required>
                     @error('manager_name')
                         <span class="error-message">{{ $message }}</span>
@@ -276,7 +276,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="manager_position">المنصب الوظيفي</label>
+                    <label for="manager_position">{{ __('companies.manager_position_short') }}</label>
                     <input type="text" name="manager_position" id="manager_position" class="form-control" value="{{ old('manager_position') }}">
                     @error('manager_position')
                         <span class="error-message">{{ $message }}</span>
@@ -286,7 +286,7 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="manager_phone">رقم هاتف المدير <span class="required">*</span></label>
+                    <label for="manager_phone">{{ __('companies.manager_phone') }} <span class="required">*</span></label>
                     <input type="text" name="manager_phone" id="manager_phone" class="form-control" value="{{ old('manager_phone') }}" required>
                     @error('manager_phone')
                         <span class="error-message">{{ $message }}</span>
@@ -294,7 +294,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="manager_email">البريد الإلكتروني للمدير</label>
+                    <label for="manager_email">{{ __('companies.manager_email') }}</label>
                     <input type="email" name="manager_email" id="manager_email" class="form-control" value="{{ old('manager_email') }}">
                     @error('manager_email')
                         <span class="error-message">{{ $message }}</span>
@@ -305,7 +305,7 @@
             <div class="info-box">
                 <i class="ti ti-info-circle"></i>
                 <div>
-                    <strong>ملاحظة:</strong> بعد إتمام التسجيل، سيتم مراجعة البيانات من قبل الإدارة. سيتم إشعارك بحالة الطلب عبر البريد الإلكتروني.
+                    <strong>{{ __('general.note') }}</strong> {{ __('companies.after_register_note') }}
                 </div>
             </div>
         </div>
@@ -314,17 +314,17 @@
         <div class="form-navigation">
             <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
                 <i class="ti ti-arrow-right"></i>
-                السابق
+                {{ __('general.previous') }}
             </button>
             <button type="button" class="btn btn-primary" id="nextBtn">
-                التالي
+                {{ __('general.next') }}
                 <i class="ti ti-arrow-left"></i>
             </button>
             <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
                 <i class="ti ti-check"></i>
-                تسجيل الشركة
+                {{ __('companies.register_company') }}
             </button>
-            <a href="{{ route('representative.dashboard') }}" class="btn btn-outline">إلغاء</a>
+            <a href="{{ route('representative.dashboard') }}" class="btn btn-outline">{{ __('general.cancel') }}</a>
         </div>
     </form>
 </div>
@@ -801,13 +801,13 @@
     @if($errors->any())
         Swal.fire({
             icon: 'error',
-            title: 'خطأ في البيانات',
-            html: '<ul style="text-align: right; list-style: none; padding: 0;">' +
+            title: '{{ __('general.data_error') }}',
+            html: '<ul style="text-align: {{ app()->getLocale() == 'ar' ? 'right' : 'left' }}; list-style: none; padding: 0;">' +
                 @foreach($errors->all() as $error)
                     '<li style="margin: 8px 0;">• {{ $error }}</li>' +
                 @endforeach
             '</ul>',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __('general.ok') }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });
@@ -855,7 +855,7 @@
                 const isChecked = Array.from(radioGroup).some(radio => radio.checked);
                 if (!isChecked) {
                     isValid = false;
-                    missingFields.push('نوع الشركة');
+                    missingFields.push('{{ __('companies.company_type') }}');
                 }
             } else if (!input.value.trim()) {
                 input.style.borderColor = '#dc2626';
@@ -880,9 +880,9 @@
         } else {
             Swal.fire({
                 icon: 'warning',
-                title: 'حقول مطلوبة',
-                text: 'يرجى ملء جميع الحقول المطلوبة للمتابعة',
-                confirmButtonText: 'حسناً',
+                title: '{{ __('general.required_fields') }}',
+                text: '{{ __('general.fill_required_fields') }}',
+                confirmButtonText: '{{ __('general.ok') }}',
                 confirmButtonColor: '#1a5f4a',
                 iconColor: '#f59e0b'
             });
@@ -899,14 +899,14 @@
         e.preventDefault();
 
         Swal.fire({
-            title: 'تأكيد التسجيل',
-            text: 'هل أنت متأكد من صحة جميع البيانات المدخلة؟',
+            title: '{{ __('companies.confirm_register') }}',
+            text: '{{ __('companies.confirm_register_msg') }}',
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#1a5f4a',
             cancelButtonColor: '#6b7280',
-            confirmButtonText: 'نعم، تسجيل الشركة',
-            cancelButtonText: 'مراجعة البيانات',
+            confirmButtonText: '{{ __('companies.yes_register') }}',
+            cancelButtonText: '{{ __('companies.review_data') }}',
             iconColor: '#1a5f4a'
         }).then((result) => {
             if (result.isConfirmed) {

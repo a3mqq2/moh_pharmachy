@@ -111,6 +111,9 @@ Route::post('announcements', [\App\Http\Controllers\Admin\AnnouncementController
 Route::get('announcements/{announcement}', [\App\Http\Controllers\Admin\AnnouncementController::class, 'show'])->name('announcements.show');
 Route::delete('announcements/{announcement}', [\App\Http\Controllers\Admin\AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 Route::post('announcements/{announcement}/resend', [\App\Http\Controllers\Admin\AnnouncementController::class, 'resend'])->name('announcements.resend');
+Route::get('announcements/{announcement}/submissions', [\App\Http\Controllers\Admin\AnnouncementController::class, 'submissions'])->name('announcements.submissions');
+Route::get('announcements/{announcement}/submissions/{submission}', [\App\Http\Controllers\Admin\AnnouncementController::class, 'showSubmission'])->name('announcements.submissions.show');
+Route::get('announcement-submission-files/{file}/download', [\App\Http\Controllers\Admin\AnnouncementController::class, 'downloadSubmissionFile'])->name('announcements.submission-files.download');
 
 // Document Center Routes
 Route::get('document-center/admin-documents', [\App\Http\Controllers\Admin\DocumentCenterController::class, 'adminDocuments'])->name('document-center.admin-documents');

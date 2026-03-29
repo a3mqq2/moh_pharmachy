@@ -42,7 +42,7 @@ class PharmaceuticalProductController extends Controller
 
         if ($foreignCompanies->isEmpty()) {
             return redirect()->route('representative.dashboard')
-                ->with('error', 'لا توجد شركات أجنبية مفعلة. يجب أن يكون لديك شركة أجنبية مفعلة لتسجيل صنف دوائي.');
+                ->with('error', __('products.msg_no_active_foreign'));
         }
 
         return view('representative.pharmaceutical-products.create', compact('foreignCompanies'));
@@ -96,7 +96,7 @@ class PharmaceuticalProductController extends Controller
         Notification::send($admins, new NewPharmaceuticalProductRegistered($product, $representative));
 
         return redirect()->route('representative.pharmaceutical-products.show', $product)
-            ->with('success', 'تم تسجيل طلب الصنف الدوائي بنجاح. الحالة: قيد رفع المستندات');
+            ->with('success', __('products.msg_registered_success'));
     }
 
     public function show(PharmaceuticalProduct $pharmaceuticalProduct)
@@ -122,7 +122,7 @@ class PharmaceuticalProductController extends Controller
 
         if (!in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected'])) {
             return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
-                ->with('error', 'لا يمكن تعديل هذا الصنف في حالته الحالية.');
+                ->with('error', __('products.msg_cannot_edit_status'));
         }
 
         $foreignCompanies = ForeignCompany::where('representative_id', $representative->id)
@@ -143,7 +143,7 @@ class PharmaceuticalProductController extends Controller
 
         if (!in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected'])) {
             return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
-                ->with('error', 'لا يمكن تعديل هذا الصنف في حالته الحالية.');
+                ->with('error', __('products.msg_cannot_edit_status'));
         }
 
         $validated = $request->validate([
@@ -186,7 +186,7 @@ class PharmaceuticalProductController extends Controller
         $pharmaceuticalProduct->update($updateData);
 
         return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
-            ->with('success', 'تم تحديث بيانات الصنف الدوائي بنجاح.');
+            ->with('success', __('products.msg_updated_success'));
     }
 
     public function destroy(PharmaceuticalProduct $pharmaceuticalProduct)
@@ -199,13 +199,13 @@ class PharmaceuticalProductController extends Controller
 
         if ($pharmaceuticalProduct->status != 'uploading_documents') {
             return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
-                ->with('error', 'لا يمكن حذف هذا الصنف في حالته الحالية.');
+                ->with('error', __('products.msg_cannot_delete_status'));
         }
 
         $pharmaceuticalProduct->delete();
 
         return redirect()->route('representative.pharmaceutical-products.index')
-            ->with('success', 'تم حذف الصنف الدوائي بنجاح.');
+            ->with('success', __('products.msg_deleted_success'));
     }
 
     public function getCompanyProducts(ForeignCompany $foreignCompany)
@@ -230,11 +230,11 @@ class PharmaceuticalProductController extends Controller
         }
 
         if (!in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected'])) {
-            return back()->with('error', 'لا يمكن رفع مستندات في الحالة الحالية.');
+            return back()->with('error', __('products.msg_cannot_upload_doc_status'));
         }
 
         $validated = $request->validate([
-            'document_type' => 'required|in:' . implode(',', PharmaceuticalProductDocument::getRequiredDocumentTypes()),
+            'document_type' => 'required|in:' . implode(',', array_merge(PharmaceuticalProductDocument::getRequiredDocumentTypes(), PharmaceuticalProductDocument::getOptionalDocumentTypes())),
             'document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
             'notes' => 'nullable|string|max:500',
         ]);
@@ -252,7 +252,7 @@ class PharmaceuticalProductController extends Controller
             'uploaded_by' => $representative->id,
         ]);
 
-        return back()->with('success', 'تم رفع المستند بنجاح.');
+        return back()->with('success', __('products.msg_doc_uploaded_success'));
     }
 
     public function deleteDocument(PharmaceuticalProduct $pharmaceuticalProduct, PharmaceuticalProductDocument $document)
@@ -268,13 +268,13 @@ class PharmaceuticalProductController extends Controller
         }
 
         if ($pharmaceuticalProduct->status != 'uploading_documents' && $pharmaceuticalProduct->status != 'rejected') {
-            return back()->with('error', 'لا يمكن حذف مستندات في الحالة الحالية.');
+            return back()->with('error', __('products.msg_cannot_delete_doc_status'));
         }
 
         Storage::disk('public')->delete($document->file_path);
         $document->delete();
 
-        return back()->with('success', 'تم حذف المستند بنجاح.');
+        return back()->with('success', __('products.msg_doc_deleted_success'));
     }
 
     public function updateDocument(Request $request, PharmaceuticalProduct $pharmaceuticalProduct, PharmaceuticalProductDocument $document)
@@ -290,7 +290,7 @@ class PharmaceuticalProductController extends Controller
         }
 
         if (!in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected'])) {
-            return back()->with('error', 'لا يمكن تعديل مستندات في الحالة الحالية.');
+            return back()->with('error', __('products.msg_cannot_update_doc_status'));
         }
 
         $request->validate([
@@ -309,7 +309,7 @@ class PharmaceuticalProductController extends Controller
             'file_size' => $file->getSize(),
         ]);
 
-        return back()->with('success', 'تم تحديث المستند بنجاح.');
+        return back()->with('success', __('products.msg_doc_updated_success'));
     }
 
     public function submitForReview(PharmaceuticalProduct $pharmaceuticalProduct)
@@ -321,11 +321,11 @@ class PharmaceuticalProductController extends Controller
         }
 
         if (!in_array($pharmaceuticalProduct->status, ['uploading_documents', 'rejected'])) {
-            return back()->with('error', 'لا يمكن إرسال الطلب في الحالة الحالية.');
+            return back()->with('error', __('products.msg_cannot_submit_status'));
         }
 
         if (!$pharmaceuticalProduct->hasAllRequiredDocuments()) {
-            return back()->with('error', 'يجب رفع جميع المستندات المطلوبة قبل الإرسال.');
+            return back()->with('error', __('products.msg_must_upload_all_docs'));
         }
 
         $pharmaceuticalProduct->update([
@@ -336,7 +336,7 @@ class PharmaceuticalProductController extends Controller
         $admins = User::role('admin')->get();
         Notification::send($admins, new PharmaceuticalProductSubmittedForReview($pharmaceuticalProduct, $representative));
 
-        return back()->with('success', 'تم إرسال الطلب للمراجعة بنجاح.');
+        return back()->with('success', __('products.msg_submitted_for_review'));
     }
 
     public function uploadReceipt(Request $request, PharmaceuticalProduct $pharmaceuticalProduct, \App\Models\PharmaceuticalProductInvoice $invoice)
@@ -375,7 +375,7 @@ class PharmaceuticalProductController extends Controller
         $admins = User::role('admin')->get();
         Notification::send($admins, new \App\Notifications\PharmaceuticalProductReceiptUploaded($pharmaceuticalProduct, $invoice));
 
-        return back()->with('success', 'تم رفع الإيصال بنجاح وإرساله للمراجعة.');
+        return back()->with('success', __('products.msg_receipt_uploaded_success'));
     }
 
     public function editDetails(PharmaceuticalProduct $pharmaceuticalProduct)
@@ -388,7 +388,7 @@ class PharmaceuticalProductController extends Controller
 
         if ($pharmaceuticalProduct->status != 'preliminary_approved') {
             return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
-                ->with('error', 'لا يمكن تعديل البيانات التفصيلية في الحالة الحالية.');
+                ->with('error', __('products.msg_cannot_edit_details_status'));
         }
 
         return view('representative.pharmaceutical-products.edit-details', compact('pharmaceuticalProduct'));
@@ -403,7 +403,7 @@ class PharmaceuticalProductController extends Controller
         }
 
         if ($pharmaceuticalProduct->status != 'preliminary_approved') {
-            return back()->with('error', 'لا يمكن تعديل البيانات في الحالة الحالية.');
+            return back()->with('error', __('products.msg_cannot_edit_data_status'));
         }
 
         $validated = $request->validate([
@@ -423,7 +423,7 @@ class PharmaceuticalProductController extends Controller
 
         $pharmaceuticalProduct->update($validated);
 
-        return back()->with('success', 'تم حفظ البيانات بنجاح.');
+        return back()->with('success', __('products.msg_data_saved_success'));
     }
 
     public function submitDetails(PharmaceuticalProduct $pharmaceuticalProduct)
@@ -435,11 +435,11 @@ class PharmaceuticalProductController extends Controller
         }
 
         if ($pharmaceuticalProduct->status != 'preliminary_approved') {
-            return back()->with('error', 'لا يمكن إرسال البيانات في الحالة الحالية.');
+            return back()->with('error', __('products.msg_cannot_submit_data_status'));
         }
 
         if (!$pharmaceuticalProduct->hasCompleteDetailedInfo()) {
-            return back()->with('error', 'يجب استكمال جميع البيانات التفصيلية قبل الإرسال.');
+            return back()->with('error', __('products.msg_must_complete_details'));
         }
 
         $pharmaceuticalProduct->update([
@@ -450,6 +450,6 @@ class PharmaceuticalProductController extends Controller
         Notification::send($admins, new \App\Notifications\PharmaceuticalProductDetailsSubmitted($pharmaceuticalProduct, $pharmaceuticalProduct->representative));
 
         return redirect()->route('representative.pharmaceutical-products.show', $pharmaceuticalProduct)
-            ->with('success', 'تم إرسال البيانات التفصيلية للمراجعة النهائية.');
+            ->with('success', __('products.msg_details_submitted'));
     }
 }

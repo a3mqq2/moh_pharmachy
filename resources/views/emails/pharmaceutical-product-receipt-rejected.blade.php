@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رفض إيصال الدفع</title>
+    <title>{{ __('emails.product_receipt_rejected_title') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
             background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            direction: rtl;
+            direction: {{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }};
         }
         .email-container {
             max-width: 650px;
@@ -143,76 +143,76 @@
     <div class="email-container">
         <div class="header">
             <div class="logo">
-                <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="{{ asset('logo-v.png') }}" alt="{{ __('emails.ministry_of_health') }}" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <h1>وزارة الصحة - دولة ليبيا</h1>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
+            <h1>{{ __('emails.ministry_of_health_libya') }}</h1>
+            <p>{{ __('emails.pharmacy_and_drug_control') }}</p>
             <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 20px 0 0 0;">
         </div>
 
         <div class="content">
-            <h2>إشعار برفض إيصال الدفع</h2>
+            <h2>{{ __('emails.product_receipt_rejected_heading') }}</h2>
 
-            <p>السيد/ة {{ $representative->name }} المحترم/ة،</p>
-            <p>تحية طيبة وبعد،</p>
+            <p>{{ __('emails.dear_representative_named', ['name' => $representative->name]) }}</p>
+            <p>{{ __('emails.greeting') }}</p>
 
-            <p>نأسف لإبلاغكم بأنه تم رفض إيصال الدفع المقدم للصنف الدوائي التالي:</p>
+            <p>{{ __('emails.product_receipt_rejected_body') }}</p>
 
             <table class="info-table">
                 <tr>
-                    <td>اسم الصنف الدوائي:</td>
+                    <td>{{ __('emails.product_name_label') }}</td>
                     <td><strong>{{ $product->product_name }}</strong></td>
                 </tr>
                 <tr>
-                    <td>الاسم العلمي:</td>
+                    <td>{{ __('emails.scientific_name_label') }}</td>
                     <td>{{ $product->scientific_name }}</td>
                 </tr>
                 <tr>
-                    <td>رقم الفاتورة:</td>
+                    <td>{{ __('emails.invoice_number_table') }}</td>
                     <td>{{ $invoice->invoice_number }}</td>
                 </tr>
                 <tr>
-                    <td>المبلغ المستحق:</td>
-                    <td><strong>{{ number_format($invoice->amount, 2) }} دينار ليبي</strong></td>
+                    <td>{{ __('emails.amount_due') }}</td>
+                    <td><strong>{{ number_format($invoice->amount, 2) }} {{ __('emails.lyd') }}</strong></td>
                 </tr>
             </table>
 
             <div class="rejection-box">
-                <div class="title">سبب رفض الإيصال:</div>
+                <div class="title">{{ __('emails.receipt_rejection_reason_label') }}</div>
                 <div class="reason">{{ $rejectionReason }}</div>
             </div>
 
             <div class="note">
-                <p><strong>الخطوات المطلوبة:</strong></p>
+                <p><strong>{{ __('emails.required_steps') }}</strong></p>
                 <ol>
-                    <li>مراجعة سبب الرفض المذكور أعلاه بعناية</li>
-                    <li>التأكد من صحة معلومات الدفع والإيصال</li>
-                    <li>التحقق من مطابقة المبلغ المدفوع للمبلغ المستحق</li>
-                    <li>التأكد من وضوح جميع البيانات في الإيصال (التاريخ، المبلغ، الجهة المستفيدة)</li>
-                    <li>الحصول على إيصال دفع صحيح ومطابق للمواصفات</li>
-                    <li>رفع الإيصال الجديد من خلال لوحة التحكم</li>
-                    <li>انتظار المراجعة والموافقة من الإدارة</li>
+                    <li>{{ __('emails.product_receipt_step_1') }}</li>
+                    <li>{{ __('emails.product_receipt_step_2') }}</li>
+                    <li>{{ __('emails.product_receipt_step_3') }}</li>
+                    <li>{{ __('emails.product_receipt_step_4') }}</li>
+                    <li>{{ __('emails.product_receipt_step_5') }}</li>
+                    <li>{{ __('emails.product_receipt_step_6') }}</li>
+                    <li>{{ __('emails.product_receipt_step_7') }}</li>
                 </ol>
             </div>
 
             <div class="action-button">
                 <a href="{{ route('representative.pharmaceutical-products.show', $product->id) }}">
-                    رفع إيصال جديد
+                    {{ __('emails.upload_new_receipt') }}
                 </a>
             </div>
 
-            <p><strong>ملاحظة هامة:</strong> تم إعادة حالة الفاتورة إلى "غير مدفوعة". يرجى رفع إيصال صحيح في أقرب وقت ممكن لاستكمال عملية تسجيل الصنف الدوائي.</p>
+            <p><strong>{{ __('emails.important_note') }}</strong> {{ __('emails.product_receipt_rejected_note') }}</p>
 
-            <p style="margin-top: 30px;">مع خالص التقدير والاحترام،</p>
-            <p><strong>وزارة الصحة - إدارة الصيدلة</strong></p>
+            <p style="margin-top: 30px;">{{ __('emails.regards') }}</p>
+            <p><strong>{{ __('emails.ministry_pharmacy_department') }}</strong></p>
         </div>
 
         <div class="footer">
-            <p><strong>وزارة الصحة - دولة ليبيا</strong></p>
-            <p>إدارة الصيدلة والرقابة الدوائية</p>
-            <p>البريد الإلكتروني: pharmacy@health.gov.ly | الهاتف: 218-21-XXXXXXX</p>
-            <p style="margin-top: 10px;">© {{ date('Y') }} وزارة الصحة. جميع الحقوق محفوظة.</p>
-            <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+            <p><strong>{{ __('emails.footer_ministry') }}</strong></p>
+            <p>{{ __('emails.footer_pharmacy') }}</p>
+            <p>{{ __('emails.footer_contact') }}</p>
+            <p style="margin-top: 10px;">{{ __('emails.footer_copyright', ['year' => date('Y')]) }}</p>
+            <p>{{ __('emails.footer_auto_email') }}</p>
         </div>
     </div>
 </body>

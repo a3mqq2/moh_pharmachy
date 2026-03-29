@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'الشركات الأجنبية')
+@section('title', __('companies.foreign_companies'))
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
-    <li class="breadcrumb-item active">الشركات الأجنبية</li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('general.home') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('companies.foreign_companies') }}</li>
 @endsection
 
 @section('content')
@@ -13,15 +13,15 @@
     <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div class="d-flex align-items-center gap-2">
-                <h5 class="mb-0"><i class="fas fa-globe-americas me-2"></i>الشركات الأجنبية</h5>
-                <span class="badge bg-secondary">{{ $companies->total() }} شركة</span>
+                <h5 class="mb-0"><i class="fas fa-globe-americas me-2"></i>{{ __('companies.foreign_companies') }}</h5>
+                <span class="badge bg-secondary">{{ $companies->total() }} {{ __('companies.company') }}</span>
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
-                    <i class="fas fa-filter me-1"></i> الفلاتر
+                    <i class="fas fa-filter me-1"></i> {{ __('general.filter') }}
                 </button>
                 <a href="{{ route('admin.foreign-companies.print', request()->query()) }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                    <i class="fas fa-print me-1"></i> طباعة كشف
+                    <i class="fas fa-print me-1"></i> {{ __('general.print_report') }}
                 </a>
             </div>
         </div>
@@ -31,61 +31,61 @@
             <form method="GET">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-3">
-                        <label class="form-label">بحث</label>
-                        <input type="text" name="search" class="form-control" placeholder="اسم الشركة، البريد الإلكتروني..." value="{{ request('search') }}">
+                        <label class="form-label">{{ __('general.search') }}</label>
+                        <input type="text" name="search" class="form-control" placeholder="{{ __('companies.search_foreign_placeholder') }}" value="{{ request('search') }}">
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">الحالة</label>
+                        <label class="form-label">{{ __('general.status') }}</label>
                         <select name="status" class="form-select">
-                            <option value="">الكل</option>
-                            <option value="uploading_documents" {{ request('status') == 'uploading_documents' ? 'selected' : '' }}>قيد رفع المستندات</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>قيد المراجعة</option>
-                            <option value="pending_payment" {{ request('status') == 'pending_payment' ? 'selected' : '' }}>قيد السداد</option>
-                            <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>مقبولة</option>
-                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>مفعلة</option>
-                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>مرفوضة</option>
-                            <option value="suspended" {{ request('status') == 'suspended' ? 'selected' : '' }}>معلقة</option>
+                            <option value="">{{ __('general.all') }}</option>
+                            <option value="uploading_documents" {{ request('status') == 'uploading_documents' ? 'selected' : '' }}>{{ __('companies.status_uploading_docs') }}</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ __('companies.status_pending_review') }}</option>
+                            <option value="pending_payment" {{ request('status') == 'pending_payment' ? 'selected' : '' }}>{{ __('companies.status_pending_payment') }}</option>
+                            <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>{{ __('companies.status_accepted') }}</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('companies.status_active') }}</option>
+                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>{{ __('companies.status_rejected') }}</option>
+                            <option value="suspended" {{ request('status') == 'suspended' ? 'selected' : '' }}>{{ __('companies.status_suspended') }}</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">نوع الكيان</label>
+                        <label class="form-label">{{ __('companies.entity_type') }}</label>
                         <select name="entity_type" class="form-select">
-                            <option value="">الكل</option>
-                            <option value="company" {{ request('entity_type') == 'company' ? 'selected' : '' }}>شركة</option>
-                            <option value="factory" {{ request('entity_type') == 'factory' ? 'selected' : '' }}>مصنع</option>
+                            <option value="">{{ __('general.all') }}</option>
+                            <option value="company" {{ request('entity_type') == 'company' ? 'selected' : '' }}>{{ __('companies.entity_company') }}</option>
+                            <option value="factory" {{ request('entity_type') == 'factory' ? 'selected' : '' }}>{{ __('companies.entity_factory') }}</option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">نوع النشاط</label>
+                        <label class="form-label">{{ __('companies.activity_type') }}</label>
                         <select name="activity_type" class="form-select">
-                            <option value="">الكل</option>
-                            <option value="medicines" {{ request('activity_type') == 'medicines' ? 'selected' : '' }}>أدوية</option>
-                            <option value="medical_supplies" {{ request('activity_type') == 'medical_supplies' ? 'selected' : '' }}>مستلزمات طبية</option>
-                            <option value="both" {{ request('activity_type') == 'both' ? 'selected' : '' }}>كلاهما</option>
+                            <option value="">{{ __('general.all') }}</option>
+                            <option value="medicines" {{ request('activity_type') == 'medicines' ? 'selected' : '' }}>{{ __('companies.activity_medicines') }}</option>
+                            <option value="medical_supplies" {{ request('activity_type') == 'medical_supplies' ? 'selected' : '' }}>{{ __('companies.activity_medical_supplies') }}</option>
+                            <option value="both" {{ request('activity_type') == 'both' ? 'selected' : '' }}>{{ __('companies.activity_both_short') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">الدولة</label>
-                        <input type="text" name="country" class="form-control" placeholder="اسم الدولة" value="{{ request('country') }}">
+                        <label class="form-label">{{ __('general.country') }}</label>
+                        <input type="text" name="country" class="form-control" placeholder="{{ __('general.country_name_placeholder') }}" value="{{ request('country') }}">
                     </div>
                 </div>
                 <div class="row g-3 align-items-end mt-2">
                     <div class="col-md-2">
-                        <label class="form-label">من تاريخ</label>
+                        <label class="form-label">{{ __('general.from_date') }}</label>
                         <input type="date" name="date_from" class="form-control" value="{{ request('date_from') }}">
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">إلى تاريخ</label>
+                        <label class="form-label">{{ __('general.to_date') }}</label>
                         <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}">
                     </div>
                     <div class="col-md-8">
                         <div class="d-flex gap-2 justify-content-end">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-search me-1"></i> بحث
+                                <i class="fas fa-search me-1"></i> {{ __('general.search') }}
                             </button>
                             @if(request()->hasAny(['search', 'status', 'entity_type', 'activity_type', 'country', 'date_from', 'date_to']))
                                 <a href="{{ route('admin.foreign-companies.index') }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-1"></i> مسح الفلاتر
+                                    <i class="fas fa-times me-1"></i> {{ __('general.clear_filters') }}
                                 </a>
                             @endif
                         </div>
@@ -99,15 +99,15 @@
             <table class="table table-hover table-bordered mb-0">
                 <thead>
                     <tr>
-                        <th>رقم القيد</th>
-                        <th>اسم الشركة</th>
-                        <th>الدولة</th>
-                        <th>النوع</th>
-                        <th>النشاط</th>
-                        <th>الشركة المحلية</th>
-                        <th>المستندات</th>
-                        <th>الحالة</th>
-                        <th>تاريخ التسجيل</th>
+                        <th>{{ __('general.registration_number') }}</th>
+                        <th>{{ __('companies.company_name') }}</th>
+                        <th>{{ __('general.country') }}</th>
+                        <th>{{ __('general.type') }}</th>
+                        <th>{{ __('companies.activity_type') }}</th>
+                        <th>{{ __('companies.local_company') }}</th>
+                        <th>{{ __('documents.documents') }}</th>
+                        <th>{{ __('general.status') }}</th>
+                        <th>{{ __('general.registration_date') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -143,7 +143,7 @@
                         </td>
                         <td>
                             <span class="badge {{ $company->hasAllRequiredDocuments() ? 'bg-success' : 'bg-warning' }}">
-                                {{ $company->documents->count() }} مستند
+                                {{ $company->documents->count() }} {{ __('general.document') }}
                             </span>
                         </td>
                         <td>
@@ -159,7 +159,7 @@
                         <td colspan="9" class="text-center py-5">
                             <div class="text-muted">
                                 <i class="fas fa-globe-americas fs-1 d-block mb-2"></i>
-                                لا توجد شركات أجنبية مسجلة
+                                {{ __('companies.no_foreign_companies') }}
                             </div>
                         </td>
                     </tr>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقرير الفواتير</title>
+    <title>{{ __('reports.invoices_report') }}</title>
     <style>
         * {
             margin: 0;
@@ -179,60 +179,60 @@
 <body>
     <div class="header">
         <div class="logo">
-            <img src="{{ asset('logo-v.png') }}" alt="وزارة الصحة">
+            <img src="{{ asset('logo-v.png') }}" alt="{{ __('general.ministry_of_health') }}">
         </div>
-        <div class="ministry-name">وزارة الصحة - دولة ليبيا</div>
-        <div class="department-name">إدارة الصيدلة والرقابة الدوائية</div>
-        <div class="report-title">تقرير الفواتير</div>
-        <div class="report-date">تاريخ التقرير: {{ date('Y-m-d') }}</div>
+        <div class="ministry-name">{{ __('general.ministry_of_health_libya') }}</div>
+        <div class="department-name">{{ __('general.pharmacy_drug_control') }}</div>
+        <div class="report-title">{{ __('reports.invoices_report') }}</div>
+        <div class="report-date">{{ __('general.report_date') }}: {{ date('Y-m-d') }}</div>
     </div>
 
     @if(request()->hasAny(['type', 'status', 'from_date', 'to_date']))
     <div class="filters">
-        <h3>معايير البحث:</h3>
+        <h3>{{ __('general.search_criteria') }}</h3>
         @if(request('type') && request('type') != 'all')
-            <p><strong>نوع الفاتورة:</strong> {{ request('type') == 'local' ? 'شركات محلية' : 'أصناف دوائية' }}</p>
+            <p><strong>{{ __('invoices.invoice_type') }}:</strong> {{ request('type') == 'local' ? __('invoices.local_companies') : __('invoices.pharmaceutical_products') }}</p>
         @endif
         @if(request('status'))
-            <p><strong>الحالة:</strong> {{ request('status') == 'paid' ? 'مدفوعة' : 'غير مدفوعة' }}</p>
+            <p><strong>{{ __('general.status') }}:</strong> {{ request('status') == 'paid' ? __('invoices.status_paid') : __('invoices.status_unpaid') }}</p>
         @endif
         @if(request('from_date'))
-            <p><strong>من تاريخ:</strong> {{ request('from_date') }}</p>
+            <p><strong>{{ __('general.from_date') }}:</strong> {{ request('from_date') }}</p>
         @endif
         @if(request('to_date'))
-            <p><strong>إلى تاريخ:</strong> {{ request('to_date') }}</p>
+            <p><strong>{{ __('general.to_date') }}:</strong> {{ request('to_date') }}</p>
         @endif
     </div>
     @endif
 
     @if($type == 'all')
     <div class="summary">
-        <h3>الإحصائيات الإجمالية</h3>
+        <h3>{{ __('general.overall_statistics') }}</h3>
         <div class="summary-grid">
             <div class="summary-item">
-                <div class="summary-label">إجمالي الفواتير</div>
+                <div class="summary-label">{{ __('invoices.total_invoices') }}</div>
                 <div class="summary-value">{{ $stats['total_invoices'] }}</div>
             </div>
             <div class="summary-item">
-                <div class="summary-label">إجمالي الإيرادات</div>
-                <div class="summary-value">{{ number_format($stats['total_revenue'], 2) }} د.ل</div>
+                <div class="summary-label">{{ __('invoices.total_revenue') }}</div>
+                <div class="summary-value">{{ number_format($stats['total_revenue'], 2) }} {{ __('general.currency') }}</div>
             </div>
         </div>
     </div>
     @endif
 
     @if($type == 'all' || $type == 'local')
-    <div class="section-title">فواتير الشركات المحلية</div>
+    <div class="section-title">{{ __('invoices.local_invoices') }}</div>
 
     <table>
         <thead>
             <tr>
                 <th width="5%">#</th>
-                <th width="20%">رقم الفاتورة</th>
-                <th width="40%">اسم الشركة</th>
-                <th width="15%">المبلغ (د.ل)</th>
-                <th width="10%">الحالة</th>
-                <th width="10%">تاريخ الإصدار</th>
+                <th width="20%">{{ __('invoices.invoice_number') }}</th>
+                <th width="40%">{{ __('companies.company_name') }}</th>
+                <th width="15%">{{ __('general.amount') }} ({{ __('general.currency') }})</th>
+                <th width="10%">{{ __('general.status') }}</th>
+                <th width="10%">{{ __('general.issue_date') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -247,43 +247,43 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" style="text-align: center;">لا توجد فواتير</td>
+                <td colspan="6" style="text-align: center;">{{ __('invoices.no_invoices_yet') }}</td>
             </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3">إجمالي الفواتير</td>
+                <td colspan="3">{{ __('invoices.total_invoices') }}</td>
                 <td colspan="3">{{ $stats['local_total'] }}</td>
             </tr>
             <tr>
-                <td colspan="3">مدفوعة</td>
+                <td colspan="3">{{ __('invoices.status_paid') }}</td>
                 <td colspan="3">{{ $stats['local_paid'] }}</td>
             </tr>
             <tr>
-                <td colspan="3">غير مدفوعة</td>
+                <td colspan="3">{{ __('invoices.status_unpaid') }}</td>
                 <td colspan="3">{{ $stats['local_unpaid'] }}</td>
             </tr>
             <tr>
-                <td colspan="3">إجمالي الإيرادات</td>
-                <td colspan="3">{{ number_format($stats['local_revenue'], 2) }} د.ل</td>
+                <td colspan="3">{{ __('invoices.total_revenue') }}</td>
+                <td colspan="3">{{ number_format($stats['local_revenue'], 2) }} {{ __('general.currency') }}</td>
             </tr>
         </tfoot>
     </table>
     @endif
 
     @if($type == 'all' || $type == 'pharmaceutical')
-    <div class="section-title">فواتير الأصناف الدوائية</div>
+    <div class="section-title">{{ __('invoices.pharma_invoices') }}</div>
 
     <table>
         <thead>
             <tr>
                 <th width="5%">#</th>
-                <th width="20%">رقم الفاتورة</th>
-                <th width="40%">الصنف الدوائي</th>
-                <th width="15%">المبلغ (د.ل)</th>
-                <th width="10%">الحالة</th>
-                <th width="10%">تاريخ الإصدار</th>
+                <th width="20%">{{ __('invoices.invoice_number') }}</th>
+                <th width="40%">{{ __('invoices.pharmaceutical_product') }}</th>
+                <th width="15%">{{ __('general.amount') }} ({{ __('general.currency') }})</th>
+                <th width="10%">{{ __('general.status') }}</th>
+                <th width="10%">{{ __('general.issue_date') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -298,34 +298,34 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" style="text-align: center;">لا توجد فواتير</td>
+                <td colspan="6" style="text-align: center;">{{ __('invoices.no_invoices_yet') }}</td>
             </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="3">إجمالي الفواتير</td>
+                <td colspan="3">{{ __('invoices.total_invoices') }}</td>
                 <td colspan="3">{{ $stats['pharma_total'] }}</td>
             </tr>
             <tr>
-                <td colspan="3">مدفوعة</td>
+                <td colspan="3">{{ __('invoices.status_paid') }}</td>
                 <td colspan="3">{{ $stats['pharma_paid'] }}</td>
             </tr>
             <tr>
-                <td colspan="3">غير مدفوعة</td>
+                <td colspan="3">{{ __('invoices.status_unpaid') }}</td>
                 <td colspan="3">{{ $stats['pharma_unpaid'] }}</td>
             </tr>
             <tr>
-                <td colspan="3">إجمالي الإيرادات</td>
-                <td colspan="3">{{ number_format($stats['pharma_revenue'], 2) }} د.ل</td>
+                <td colspan="3">{{ __('invoices.total_revenue') }}</td>
+                <td colspan="3">{{ number_format($stats['pharma_revenue'], 2) }} {{ __('general.currency') }}</td>
             </tr>
         </tfoot>
     </table>
     @endif
 
     <div class="footer">
-        <p>© {{ date('Y') }} وزارة الصحة - دولة ليبيا. جميع الحقوق محفوظة.</p>
-        <p>تم إنشاء هذا التقرير تلقائياً بواسطة نظام إدارة الصيدلة والرقابة الدوائية</p>
+        <p>&copy; {{ date('Y') }} {{ __('general.copyright_ministry') }}</p>
+        <p>{{ __('general.auto_generated_report_v2') }}</p>
     </div>
 
     <script>

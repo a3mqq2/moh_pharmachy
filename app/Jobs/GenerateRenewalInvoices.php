@@ -23,7 +23,7 @@ class GenerateRenewalInvoices implements ShouldQueue
         $renewalFee = Setting::get('local_company_renewal_fee', 0);
 
         if ($renewalFee <= 0) {
-            Log::info('GenerateRenewalInvoices: رسوم التجديد غير محددة أو صفر');
+            Log::info(__('general.log_renewal_fee_not_set'));
             return;
         }
 
@@ -47,17 +47,17 @@ class GenerateRenewalInvoices implements ShouldQueue
             $invoice = $company->invoices()->create([
                 'invoice_number' => LocalCompanyInvoice::generateInvoiceNumber(),
                 'type' => 'renewal',
-                'description' => 'رسوم تجديد سنوية - ' . $currentYear,
+                'description' => __('invoices.desc_annual_renewal', ['year' => $currentYear]),
                 'amount' => $renewalFee,
                 'due_date' => now()->addDays(30),
                 'created_by' => null,
             ]);
 
-            $company->logActivity('invoice_created', 'تم إنشاء فاتورة تجديد سنوية تلقائية رقم: ' . $invoice->invoice_number);
+            $company->logActivity('invoice_created', __('invoices.log_auto_annual_invoice_created', ['number' => $invoice->invoice_number]));
 
             $generatedCount++;
         }
 
-        Log::info("GenerateRenewalInvoices: تم إنشاء {$generatedCount} فاتورة تجديد سنوية");
+        Log::info(__('general.log_renewal_invoices_generated', ['count' => $generatedCount]));
     }
 }

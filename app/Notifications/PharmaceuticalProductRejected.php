@@ -24,7 +24,7 @@ class PharmaceuticalProductRejected extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('رفض الصنف الدوائي')
+            ->subject(__('notifications.product_rejected_subject'))
             ->view('emails.pharmaceutical-product-rejected', [
                 'product' => $this->product,
                 'representative' => $notifiable,
@@ -35,8 +35,8 @@ class PharmaceuticalProductRejected extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'تم رفض الصنف الدوائي',
-            'message' => 'تم رفض الصنف الدوائي: ' . $this->product->product_name,
+            'title' => __('notifications.product_rejected_title'),
+            'message' => __('notifications.product_rejected_message', ['product' => $this->product->product_name]),
             'product_id' => $this->product->id,
             'product_name' => $this->product->product_name,
             'rejection_reason' => $this->rejectionReason,

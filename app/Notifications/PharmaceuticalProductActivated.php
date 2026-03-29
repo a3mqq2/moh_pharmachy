@@ -25,7 +25,7 @@ class PharmaceuticalProductActivated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('تم تفعيل الصنف الدوائي')
+            ->subject(__('notifications.product_activated_subject'))
             ->view('emails.pharmaceutical-product-activated', [
                 'product' => $this->product,
                 'invoice' => $this->invoice,
@@ -36,8 +36,8 @@ class PharmaceuticalProductActivated extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'title' => 'تم تفعيل الصنف الدوائي',
-            'message' => 'تم تفعيل الصنف الدوائي: ' . $this->product->product_name,
+            'title' => __('notifications.product_activated_title'),
+            'message' => __('notifications.product_activated_message', ['product' => $this->product->product_name]),
             'product_id' => $this->product->id,
             'product_name' => $this->product->product_name,
             'invoice_id' => $this->invoice->id,

@@ -1,20 +1,20 @@
 @extends('layouts.auth')
 
-@section('title', 'لوحة التحكم')
+@section('title', __('general.dashboard'))
 
 @section('content')
 <div class="dashboard-container">
     <!-- Header -->
     <div class="dashboard-header">
         <div class="header-content">
-            <h1>لوحة التحكم</h1>
+            <h1>{{ __('general.dashboard') }}</h1>
             <p>{{ $representative->name }} - {{ $representative->job_title }}</p>
         </div>
         <form action="{{ route('representative.logout') }}" method="POST">
             @csrf
             <button type="submit" class="logout-btn">
                 <i class="ti ti-logout"></i>
-                تسجيل الخروج
+                {{ __('general.logout') }}
             </button>
         </form>
     </div>
@@ -24,22 +24,38 @@
     @if($announcements->count() > 0)
         <div class="announcements-section">
             <div class="section-header" style="margin-top: 0;">
-                <h2><i class="ti ti-speakerphone" style="margin-left: 8px; color: #1a5f4a;"></i>التعميمات</h2>
+                <h2><i class="ti ti-speakerphone" style="margin-left: 8px; color: #1a5f4a;"></i>{{ __('announcements.announcements') }}</h2>
             </div>
             @foreach($announcements as $announcement)
                 <div class="announcement-card announcement-{{ $announcement->priority }}">
                     <div class="announcement-header">
                         <div class="announcement-title-row">
                             @if($announcement->priority === 'urgent')
-                                <span class="announcement-badge urgent">عاجل</span>
+                                <span class="announcement-badge urgent">{{ __('announcements.priority_urgent') }}</span>
                             @elseif($announcement->priority === 'important')
-                                <span class="announcement-badge important">مهم</span>
+                                <span class="announcement-badge important">{{ __('announcements.priority_important') }}</span>
                             @endif
                             <h4 class="announcement-title">{{ $announcement->title }}</h4>
                         </div>
                         <span class="announcement-date">{{ $announcement->created_at->diffForHumans() }}</span>
                     </div>
                     <div class="announcement-body">{{ Str::limit($announcement->body, 200) }}</div>
+                    @if($announcement->isForm())
+                        @php
+                            $hasSubmitted = \App\Models\AnnouncementSubmission::where('announcement_id', $announcement->id)
+                                ->where('representative_id', auth('representative')->id())
+                                ->exists();
+                        @endphp
+                        <div class="mt-2">
+                            @if($hasSubmitted)
+                                <span class="badge bg-success"><i class="fas fa-check me-1"></i>{{ __('announcements.already_submitted') }}</span>
+                            @else
+                                <a href="{{ route('representative.announcements.form', $announcement) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-clipboard-list me-1"></i>{{ __('announcements.fill_form') }}
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             @endforeach
         </div>
@@ -51,26 +67,26 @@
                 <i class="ti ti-clock-exclamation"></i>
             </div>
             <div class="alert-content">
-                <h3>تنبيه - قرب انتهاء الصلاحية</h3>
-                <p>الشركات التالية ستنتهي صلاحيتها خلال الثلاثة أشهر القادمة. يرجى رفع إيصال تحويل رسوم التجديد قبل انتهاء الصلاحية.</p>
+                <h3>{{ __('companies.expiry_alert_title') }}</h3>
+                <p>{{ __('companies.expiry_alert_msg') }}</p>
                 <div class="expiry-items-list">
                     @foreach($expiringItems as $item)
                         <div class="expiry-item">
                             <div class="expiry-info">
                                 @if($item['type'] === 'local_company')
-                                    <span class="expiry-type-badge local">شركة محلية</span>
+                                    <span class="expiry-type-badge local">{{ __('companies.local_company_label') }}</span>
                                 @else
-                                    <span class="expiry-type-badge foreign">شركة أجنبية</span>
+                                    <span class="expiry-type-badge foreign">{{ __('companies.foreign_company_label') }}</span>
                                 @endif
                                 <span class="expiry-name">{{ $item['name'] }}</span>
-                                <span class="expiry-date">ينتهي في: {{ $item['expires_at'] }}</span>
+                                <span class="expiry-date">{{ __('companies.expires_in') }} {{ $item['expires_at'] }}</span>
                             </div>
                             <div class="expiry-actions">
-                                <span class="expiry-days">{{ $item['days_remaining'] }} يوم متبقي</span>
+                                <span class="expiry-days">{{ $item['days_remaining'] }} {{ __('general.days_remaining') }}</span>
                                 @if($item['invoice_route'])
                                     <a href="{{ $item['invoice_route'] }}" class="expiry-pay-link">
                                         <i class="ti ti-upload"></i>
-                                        رفع الإيصال
+                                        {{ __('companies.upload_receipt') }}
                                     </a>
                                 @endif
                             </div>
@@ -87,19 +103,19 @@
                 <i class="ti ti-alert-circle"></i>
             </div>
             <div class="alert-content">
-                <h3>تنبيه هام - فواتير تحتاج إلى رفع إيصال دفع</h3>
-                <p>لقد تم قبول شركتك بشكل مبدئي. نأمل منكم رفع إيصال تحويل القيمة لحساب وزارة الصحة لإتمام عملية التفعيل.</p>
+                <h3>{{ __('companies.invoice_alert_title') }}</h3>
+                <p>{{ __('companies.invoice_alert_msg') }}</p>
                 <div class="pending-invoices-list">
                     @foreach($pendingInvoices as $invoice)
                         <div class="invoice-item">
                             <div class="invoice-info">
                                 <span class="invoice-number">{{ $invoice['invoice_number'] }}</span>
                                 <span class="company-name">{{ $invoice['company_name'] }}</span>
-                                <span class="invoice-amount">{{ number_format($invoice['amount'], 2) }} دينار ليبي</span>
+                                <span class="invoice-amount">{{ number_format($invoice['amount'], 2) }} {{ __('general.lyd') }}</span>
                             </div>
                             <a href="{{ $invoice['route'] }}" class="invoice-link">
                                 <i class="ti ti-arrow-left"></i>
-                                رفع الإيصال
+                                {{ __('invoices.upload_receipt_btn') }}
                             </a>
                         </div>
                     @endforeach
@@ -114,28 +130,28 @@
             <div class="empty-icon">
                 <i class="ti ti-building-community"></i>
             </div>
-            <h2>لا توجد شركات مسجلة</h2>
-            <p>لم تقم بتسجيل أي شركة بعد. يمكنك البدء بتسجيل شركتك الأولى</p>
+            <h2>{{ __('companies.no_companies_yet') }}</h2>
+            <p>{{ __('companies.no_companies_yet_msg') }}</p>
             <a href="{{ route('representative.companies.create') }}" class="primary-btn">
                 <i class="ti ti-plus"></i>
-                تسجيل شركة جديدة
+                {{ __('companies.register_new') }}
             </a>
         </div>
     @else
         <!-- Quick Actions -->
         <div class="section-header">
-            <h2>الإجراءات المتاحة</h2>
+            <h2>{{ __('companies.available_actions') }}</h2>
         </div>
 
         <div class="actions-grid">
             <a href="{{ route('representative.companies.index') }}" class="action-btn">
                 <i class="ti ti-building"></i>
-                <span>إدارة الشركات المحلية</span>
+                <span>{{ __('companies.manage_local') }}</span>
             </a>
             @if($hasActiveSupplierCompany)
                 <a href="{{ route('representative.foreign-companies.index') }}" class="action-btn">
                     <i class="ti ti-world"></i>
-                    <span>إدارة الشركات الأجنبية</span>
+                    <span>{{ __('companies.manage_foreign') }}</span>
                 </a>
             @endif
             @php
@@ -144,12 +160,12 @@
             @if($activeForeignCompaniesCount > 0)
                 <a href="{{ route('representative.pharmaceutical-products.index') }}" class="action-btn">
                     <i class="ti ti-pill"></i>
-                    <span>الأصناف الدوائية</span>
+                    <span>{{ __('products.pharmaceutical_products') }}</span>
                 </a>
             @endif
             <a href="{{ route('representative.invoices.index') }}" class="action-btn">
                 <i class="ti ti-file-invoice"></i>
-                <span>الفواتير والمدفوعات</span>
+                <span>{{ __('invoices.invoices_payments') }}</span>
             </a>
         </div>
 
@@ -159,7 +175,7 @@
 
     <!-- Footer -->
     <div class="dashboard-footer">
-        <p>© {{ date('Y') }} وزارة الصحة - إدارة الصيدلة </p>
+        <p>{{ __('auth.copyright', ['year' => date('Y')]) }}</p>
     </div>
 </div>
 @endsection
@@ -894,9 +910,9 @@
     @if(session('success'))
         Swal.fire({
             icon: 'success',
-            title: 'تم بنجاح',
+            title: '{{ __("general.success") }}',
             text: '{{ session('success') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#10b981',
             timer: 3000,
@@ -907,9 +923,9 @@
     @if(session('error'))
         Swal.fire({
             icon: 'error',
-            title: 'خطأ',
+            title: '{{ __("general.error") }}',
             text: '{{ session('error') }}',
-            confirmButtonText: 'حسناً',
+            confirmButtonText: '{{ __("general.ok") }}',
             confirmButtonColor: '#1a5f4a',
             iconColor: '#ef4444'
         });
