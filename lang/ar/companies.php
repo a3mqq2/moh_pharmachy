@@ -296,6 +296,7 @@ return [
     'cert_field_label' => 'المجال :',
     'cert_reg_number_label' => 'رقم التسجيل :',
     'cert_reg_date_label' => 'تاريخ التسجيل :',
+    'cert_expiry_date_label' => 'تاريخ الانتهاء :',
     'cert_validity_notice' => 'صلاحية هذه الشهادة لمدة سنة من تاريخ إصدارها.',
     'cert_prepared_by' => 'إعداد',
     'cert_head_registration' => 'رئيس قسم التسجيل والتفتيش',

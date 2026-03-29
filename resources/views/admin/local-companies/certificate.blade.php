@@ -235,6 +235,12 @@
                         <span class="label">{{ __('companies.cert_reg_date_label') }}</span>
                         <span class="value">{{ $localCompany->registration_date?->format('Y-m-d') }}</span>
                     </p>
+                    @if($localCompany->expires_at)
+                    <p>
+                        <span class="label">{{ __('companies.cert_expiry_date_label') }}</span>
+                        <span class="value">{{ $localCompany->expires_at->format('Y-m-d') }}</span>
+                    </p>
+                    @endif
                     <p class="validity-notice">
                         {{ __('companies.cert_validity_notice') }}
                     </p>

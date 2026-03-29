@@ -282,6 +282,7 @@ return [
     'cert_field_label' => 'Field:',
     'cert_reg_number_label' => 'Registration No.:',
     'cert_reg_date_label' => 'Registration Date:',
+    'cert_expiry_date_label' => 'Expiry Date:',
     'cert_validity_notice' => 'This certificate is valid for one year from the date of issue.',
     'cert_prepared_by' => 'Prepared by',
     'cert_head_registration' => 'Head of Registration and Inspection',

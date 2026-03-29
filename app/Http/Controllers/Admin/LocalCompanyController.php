@@ -249,7 +249,7 @@ class LocalCompanyController extends Controller implements HasMiddleware
             'manager_email' => 'nullable|email|max:255',
             'status' => 'required|in:pending,approved,rejected,suspended',
             'rejection_reason' => 'nullable|string',
-            'registration_number' => 'nullable|string|max:50|unique:local_companies,registration_number,' . $localCompany->id,
+            'registration_number' => ['nullable', 'string', 'max:50', 'regex:/^\d{4}-\d+$/', 'unique:local_companies,registration_number,' . $localCompany->id],
         ]);
 
         $oldStatus = $localCompany->status;
