@@ -52,6 +52,10 @@ class LocalCompanyDocumentController extends Controller
             abort(404);
         }
 
+        if (request()->query('view') === '1') {
+            return response()->file(Storage::disk('public')->path($localCompanyDocument->file_path));
+        }
+
         return Storage::disk('public')->download($localCompanyDocument->file_path, $localCompanyDocument->original_name);
     }
 

@@ -105,11 +105,10 @@ class ForeignCompanyDocument extends Model
             'fsc_certificate' => __('documents.foreign_type_fsc_certificate'),
             'manufacturing_license' => __('documents.foreign_type_manufacturing_license'),
             'financial_report' => __('documents.foreign_type_financial_report'),
-            'products_list' => __('documents.foreign_type_products_list'),
+            'products_artwork_list' => __('documents.foreign_type_products_artwork_list'),
             'site_master_file' => __('documents.foreign_type_site_master_file'),
             'registration_certificates' => __('documents.foreign_type_registration_certificates'),
             'exclusive_agency_contract' => __('documents.foreign_type_exclusive_agency_contract'),
-            'products_artwork_list' => __('documents.foreign_type_products_artwork_list'),
             'pv_master_file' => __('documents.foreign_type_pv_master_file'),
             'other' => __('documents.type_other_docs'),
         ];
@@ -124,10 +123,9 @@ class ForeignCompanyDocument extends Model
             'gmp_certificate',
             'manufacturing_license',
             'financial_report',
-            'products_list',
+            'products_artwork_list',
             'site_master_file',
             'exclusive_agency_contract',
-            'products_artwork_list',
             'pv_master_file',
         ];
     }

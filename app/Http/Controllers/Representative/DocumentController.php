@@ -97,6 +97,10 @@ class DocumentController extends Controller
             abort(404);
         }
 
+        if (request()->query('view') === '1') {
+            return response()->file(Storage::disk('public')->path($document->file_path));
+        }
+
         return Storage::disk('public')->download($document->file_path, $document->original_name);
     }
 

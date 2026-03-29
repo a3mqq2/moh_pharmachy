@@ -18,6 +18,10 @@ class ForeignCompanyDocumentController extends Controller
                 ->with('error', __('documents.file_not_found'));
         }
 
+        if (request()->query('view') === '1') {
+            return response()->file(Storage::disk('public')->path($document->file_path));
+        }
+
         return Storage::disk('public')->download($document->file_path, $document->document_name);
     }
 }

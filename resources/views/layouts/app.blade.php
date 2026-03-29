@@ -656,6 +656,7 @@ data-pc-theme="light"
 
 <script>
 function openDocViewer(fileUrl, fileName, downloadUrl, mimeType) {
+    var viewUrl = downloadUrl ? (downloadUrl + (downloadUrl.indexOf('?') !== -1 ? '&' : '?') + 'view=1') : fileUrl;
     var modal = document.getElementById('docViewerModal');
     var frame = document.getElementById('docViewerFrame');
     var imgContainer = document.getElementById('docViewerImage');
@@ -754,47 +755,46 @@ function openDocViewer(fileUrl, fileName, downloadUrl, mimeType) {
 
     if (ext === 'pdf') {
         frame.onload = function() { loading.classList.add('d-none'); };
-        frame.src = fileUrl;
+        frame.src = viewUrl;
         frame.classList.remove('d-none');
         loading.classList.add('d-none');
     } else if (imageExts.indexOf(ext) !== -1) {
         var img = imgContainer.querySelector('img');
         img.onload = function() { loading.classList.add('d-none'); };
-        img.src = fileUrl;
+        img.src = viewUrl;
         imgContainer.classList.remove('d-none');
         imgContainer.classList.add('d-flex');
         loading.classList.add('d-none');
     } else if (ext === 'docx') {
-        renderDocx(downloadUrl || fileUrl);
+        renderDocx(viewUrl);
     } else if (ext === 'doc') {
         showDocDownload();
     } else if (ext === 'xls' || ext === 'xlsx') {
         loading.classList.add('d-none');
-        frame.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(window.location.origin + fileUrl);
+        frame.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(window.location.origin + (fileUrl || downloadUrl));
         frame.classList.remove('d-none');
         frame.onerror = function() {
             frame.classList.add('d-none');
             unsupported.classList.remove('d-none');
         };
     } else if (!ext) {
-        var headUrl = downloadUrl || fileUrl;
-        fetch(headUrl, { method: 'HEAD', credentials: 'same-origin' })
+        fetch(viewUrl, { method: 'HEAD', credentials: 'same-origin' })
             .then(function(r) {
                 var ct = r.headers.get('content-type') || '';
                 if (ct.indexOf('pdf') !== -1) {
                     frame.onload = function() { loading.classList.add('d-none'); };
-                    frame.src = fileUrl;
+                    frame.src = viewUrl;
                     frame.classList.remove('d-none');
                     loading.classList.add('d-none');
                 } else if (ct.indexOf('image/') !== -1) {
                     var img = imgContainer.querySelector('img');
                     img.onload = function() { loading.classList.add('d-none'); };
-                    img.src = fileUrl;
+                    img.src = viewUrl;
                     imgContainer.classList.remove('d-none');
                     imgContainer.classList.add('d-flex');
                     loading.classList.add('d-none');
                 } else if (ct.indexOf('wordprocessingml') !== -1 || ct.indexOf('officedocument.word') !== -1) {
-                    renderDocx(headUrl);
+                    renderDocx(viewUrl);
                 } else if (ct.indexOf('msword') !== -1) {
                     showDocDownload();
                 } else {

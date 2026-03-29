@@ -206,11 +206,10 @@ return [
     'foreign_type_fsc_certificate' => 'Free Sale Certificate (FSC)',
     'foreign_type_manufacturing_license' => 'Valid Manufacturing License',
     'foreign_type_financial_report' => 'Financial Report for Last Two Years',
-    'foreign_type_products_list' => 'Company Products List',
+    'foreign_type_products_artwork_list' => 'Products List with Artwork Images for Import',
     'foreign_type_site_master_file' => 'Site Master File',
     'foreign_type_registration_certificates' => 'Registration Certificates in Other Countries',
     'foreign_type_exclusive_agency_contract' => 'Exclusive Agency Contract',
-    'foreign_type_products_artwork_list' => 'Products List with Artwork Images for Import',
     'foreign_type_pv_master_file' => 'Pharmacovigilance Master File (PV Master File)',
 
     'pharma_type_registration_forms' => 'Approved Registration Forms',

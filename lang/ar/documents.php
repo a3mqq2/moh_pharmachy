@@ -206,11 +206,10 @@ return [
     'foreign_type_fsc_certificate' => 'شهادة البيع الحر (FSC)',
     'foreign_type_manufacturing_license' => 'ترخيص تصنيع ساري',
     'foreign_type_financial_report' => 'تقرير مالي لآخر سنتين',
-    'foreign_type_products_list' => 'قائمة منتجات الشركة',
+    'foreign_type_products_artwork_list' => 'قائمة بمنتجات الشركة المراد تسجيلها مع صور (Artwork) للأصناف المراد استيرادها',
     'foreign_type_site_master_file' => 'الملف الرئيسي للمصنع',
     'foreign_type_registration_certificates' => 'شهادات تسجيل في دول أخرى',
     'foreign_type_exclusive_agency_contract' => 'عقد الوكالة الحصري',
-    'foreign_type_products_artwork_list' => 'قائمة بمنتجات الشركة المراد تسجيلها مع صور (Artwork) للأصناف المراد استيرادها',
     'foreign_type_pv_master_file' => 'الملف الرئيسي لليقظة الدوائية (PV Master File)',
 
     'pharma_type_registration_forms' => 'نماذج التسجيل المعتمدة',
