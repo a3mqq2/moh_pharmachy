@@ -111,11 +111,30 @@ class PharmaceuticalProductController extends Controller implements HasMiddlewar
         $registrationFee = Setting::get('pharmaceutical_product_fee', 3000.00);
 
         if ($request->has('is_pre_registered')) {
+            $request->validate([
+                'pre_registration_year' => 'required|integer|min:1990|max:' . date('Y'),
+                'pre_registration_sequence' => 'required|integer|min:1',
+            ]);
+
             $year = $request->input('pre_registration_year');
-            $seq = $request->input('pre_registration_sequence');
+            $seq = (int) $request->input('pre_registration_sequence');
+            $preRegNumber = "{$year}-{$seq}";
+
+            $exists = PharmaceuticalProduct::where('pre_registration_number', $preRegNumber)
+                ->where('id', '!=', $product->id)
+                ->exists();
+
+            $regExists = PharmaceuticalProduct::where('registration_number', $preRegNumber)
+                ->where('id', '!=', $product->id)
+                ->exists();
+
+            if ($exists || $regExists) {
+                return back()->with('error', __('companies.msg_reg_number_exists', ['number' => $preRegNumber]));
+            }
+
             $product->update([
                 'is_pre_registered' => true,
-                'pre_registration_number' => ($year && $seq) ? "{$year}-{$seq}" : null,
+                'pre_registration_number' => $preRegNumber,
                 'pre_registration_year' => $year,
             ]);
             $product->refresh();

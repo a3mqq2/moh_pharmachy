@@ -399,11 +399,16 @@
 
                     <div class="col-md-6 mb-4">
                         <label class="form-label">{{ __('general.registration_number') }}</label>
-                        <input type="text" name="registration_number" class="form-control @error('registration_number') is-invalid @enderror" value="{{ old('registration_number', $localCompany->registration_number) }}" placeholder="{{ __('companies.reg_number_auto') }}">
-                        @error('registration_number')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">{{ __('companies.reg_number_auto_note') }}</small>
+                        @if($localCompany->registration_number && in_array($localCompany->status, ['approved', 'active', 'expired']))
+                            <input type="text" class="form-control" value="{{ $localCompany->registration_number }}" readonly disabled>
+                            <small class="text-muted">{{ __('companies.reg_number_locked') }}</small>
+                        @else
+                            <input type="text" name="registration_number" class="form-control @error('registration_number') is-invalid @enderror" value="{{ old('registration_number', $localCompany->registration_number) }}" placeholder="{{ __('companies.reg_number_auto') }}">
+                            @error('registration_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">{{ __('companies.reg_number_auto_note') }}</small>
+                        @endif
                     </div>
                 </div>
 

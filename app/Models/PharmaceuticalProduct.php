@@ -198,16 +198,19 @@ class PharmaceuticalProduct extends Model
             DB::statement("SELECT GET_LOCK('pharma_reg_number_{$year}', 10)");
 
             try {
-                $lastProduct = static::whereNotNull('registration_number')
+                $maxFromReg = static::whereNotNull('registration_number')
                     ->where('registration_number', 'like', $year . '-%')
-                    ->orderByRaw("CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED) DESC")
-                    ->first();
+                    ->selectRaw("MAX(CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED)) as max_seq")
+                    ->value('max_seq');
 
-                $nextNumber = ($lastProduct && preg_match('/-(\d+)$/', $lastProduct->registration_number, $matches))
-                    ? (int) $matches[1] + 1
-                    : 1;
+                $maxFromPreReg = static::whereNotNull('pre_registration_number')
+                    ->where('pre_registration_number', 'like', $year . '-%')
+                    ->selectRaw("MAX(CAST(SUBSTRING_INDEX(pre_registration_number, '-', -1) AS UNSIGNED)) as max_seq")
+                    ->value('max_seq');
 
-                return "{$year}-{$nextNumber}";
+                $maxSeq = max((int) $maxFromReg, (int) $maxFromPreReg);
+
+                return "{$year}-" . ($maxSeq + 1);
             } finally {
                 DB::statement("SELECT RELEASE_LOCK('pharma_reg_number_{$year}')");
             }

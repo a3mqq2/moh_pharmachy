@@ -113,20 +113,31 @@ class LocalCompany extends Model
             DB::statement("SELECT GET_LOCK('local_reg_number_{$currentYear}', 10)");
 
             try {
-                $lastCompany = self::whereNotNull('registration_number')
+                $maxFromReg = self::whereNotNull('registration_number')
                     ->where('registration_number', 'like', $currentYear . '-%')
-                    ->orderByRaw("CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED) DESC")
-                    ->first();
+                    ->selectRaw("MAX(CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED)) as max_seq")
+                    ->value('max_seq');
 
-                $nextSequence = ($lastCompany && preg_match('/-(\d+)$/', $lastCompany->registration_number, $matches))
-                    ? (int) $matches[1] + 1
-                    : 1;
+                $maxFromPreReg = self::whereNotNull('pre_registration_number')
+                    ->where('pre_registration_number', 'like', $currentYear . '-%')
+                    ->selectRaw("MAX(CAST(SUBSTRING_INDEX(pre_registration_number, '-', -1) AS UNSIGNED)) as max_seq")
+                    ->value('max_seq');
 
-                return $currentYear . '-' . $nextSequence;
+                $maxSeq = max((int) $maxFromReg, (int) $maxFromPreReg);
+
+                return $currentYear . '-' . ($maxSeq + 1);
             } finally {
                 DB::statement("SELECT RELEASE_LOCK('local_reg_number_{$currentYear}')");
             }
         });
+    }
+
+    public static function normalizeRegistrationNumber(string $number): string
+    {
+        if (preg_match('/^(\d{4})-0*(\d+)$/', $number, $matches)) {
+            return $matches[1] . '-' . (int) $matches[2];
+        }
+        return $number;
     }
 
     public static function licenseTypes()

@@ -80,13 +80,27 @@ class ForeignCompanyController extends Controller
         $validated['status'] = 'uploading_documents';
 
         if ($request->is_pre_registered) {
+            $year = $request->pre_registration_year;
+            $seq = (int) $request->pre_registration_sequence;
+            $preRegNumber = "{$year}-{$seq}";
+
+            $exists = ForeignCompany::where('pre_registration_number', $preRegNumber)->exists();
+            $regExists = ForeignCompany::where('registration_number', $preRegNumber)->exists();
+
+            if ($exists || $regExists) {
+                return redirect()->back()
+                    ->with('error', __('companies.msg_reg_number_exists', ['number' => $preRegNumber]))
+                    ->withInput();
+            }
+
             $validated['is_pre_registered'] = true;
-            $validated['pre_registration_number'] = $request->pre_registration_year . '-' . $request->pre_registration_sequence;
+            $validated['pre_registration_number'] = $preRegNumber;
+            $validated['pre_registration_year'] = $year;
         } else {
             $validated['is_pre_registered'] = false;
         }
 
-        unset($validated['pre_registration_year'], $validated['pre_registration_sequence']);
+        unset($validated['pre_registration_sequence']);
 
         $company = ForeignCompany::create($validated);
 
@@ -234,14 +248,32 @@ class ForeignCompanyController extends Controller
         ]);
 
         if ($request->is_pre_registered) {
+            $year = $request->pre_registration_year;
+            $seq = (int) $request->pre_registration_sequence;
+            $preRegNumber = "{$year}-{$seq}";
+
+            $exists = ForeignCompany::where('pre_registration_number', $preRegNumber)
+                ->where('id', '!=', $company->id)
+                ->exists();
+            $regExists = ForeignCompany::where('registration_number', $preRegNumber)
+                ->where('id', '!=', $company->id)
+                ->exists();
+
+            if ($exists || $regExists) {
+                return redirect()->back()
+                    ->with('error', __('companies.msg_reg_number_exists', ['number' => $preRegNumber]))
+                    ->withInput();
+            }
+
             $validated['is_pre_registered'] = true;
-            $validated['pre_registration_number'] = $request->pre_registration_year . '-' . $request->pre_registration_sequence;
+            $validated['pre_registration_number'] = $preRegNumber;
+            $validated['pre_registration_year'] = $year;
         } else {
             $validated['is_pre_registered'] = false;
             $validated['pre_registration_number'] = null;
         }
 
-        unset($validated['pre_registration_year'], $validated['pre_registration_sequence']);
+        unset($validated['pre_registration_sequence']);
 
         $company->update($validated);
 

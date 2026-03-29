@@ -279,16 +279,19 @@ class ForeignCompany extends Model
             DB::statement("SELECT GET_LOCK('foreign_reg_number_{$year}', 10)");
 
             try {
-                $lastCompany = static::whereNotNull('registration_number')
+                $maxFromReg = static::whereNotNull('registration_number')
                     ->where('registration_number', 'like', $year . '-%')
-                    ->orderByRaw("CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED) DESC")
-                    ->first();
+                    ->selectRaw("MAX(CAST(SUBSTRING_INDEX(registration_number, '-', -1) AS UNSIGNED)) as max_seq")
+                    ->value('max_seq');
 
-                $nextNumber = ($lastCompany && preg_match('/-(\d+)$/', $lastCompany->registration_number, $matches))
-                    ? (int) $matches[1] + 1
-                    : 1;
+                $maxFromPreReg = static::whereNotNull('pre_registration_number')
+                    ->where('pre_registration_number', 'like', $year . '-%')
+                    ->selectRaw("MAX(CAST(SUBSTRING_INDEX(pre_registration_number, '-', -1) AS UNSIGNED)) as max_seq")
+                    ->value('max_seq');
 
-                return "{$year}-{$nextNumber}";
+                $maxSeq = max((int) $maxFromReg, (int) $maxFromPreReg);
+
+                return "{$year}-" . ($maxSeq + 1);
             } finally {
                 DB::statement("SELECT RELEASE_LOCK('foreign_reg_number_{$year}')");
             }
@@ -329,11 +332,25 @@ class ForeignCompany extends Model
     {
         $validityYears = (int) (Setting::where('key', 'foreign_company_validity_years')->first()?->value ?? 5);
 
-        return $this->update([
+        $data = [
             'status' => 'active',
             'activated_at' => now(),
             'expires_at' => now()->addYears($validityYears),
-        ]);
+        ];
+
+        if (!$this->registration_number) {
+            if ($this->pre_registration_number) {
+                $data['registration_number'] = $this->pre_registration_number;
+                $data['registration_date'] = $this->pre_registration_year
+                    ? \Carbon\Carbon::createFromDate($this->pre_registration_year, 1, 1)
+                    : now();
+            } else {
+                $data['registration_number'] = static::generateRegistrationNumber();
+                $data['registration_date'] = now();
+            }
+        }
+
+        return $this->update($data);
     }
 
     public function markAsRejected(string $reason): bool

@@ -664,11 +664,11 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">{{ __('companies.reg_year') }} <span class="text-danger">*</span></label>
-                                <input type="number" name="pre_registration_year" class="form-control" min="1990" max="{{ date('Y') }}" placeholder="{{ __('companies.reg_year_example') }}" value="{{ $localCompany->pre_registration_year }}">
+                                <input type="number" name="pre_registration_year" class="form-control" min="1990" max="{{ date('Y') }}" placeholder="{{ __('companies.reg_year_example') }}" value="{{ $localCompany->pre_registration_year }}" {{ $isPreReg ? 'required' : '' }}>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">{{ __('companies.serial_number') }} <span class="text-danger">*</span></label>
-                                <input type="number" name="pre_registration_sequence" class="form-control" min="1" placeholder="{{ __('companies.serial_example') }}" value="{{ $existingSeq }}">
+                                <input type="number" name="pre_registration_sequence" class="form-control" min="1" placeholder="{{ __('companies.serial_example') }}" value="{{ $existingSeq }}" {{ $isPreReg ? 'required' : '' }}>
                             </div>
                         </div>
                         <div class="alert alert-light py-2">
@@ -683,8 +683,8 @@
                         </div>
                         <div id="renewalDateField">
                             <div class="mb-3">
-                                <label class="form-label">{{ __('companies.last_renewal_date') }}</label>
-                                <input type="date" name="last_renewal_date" class="form-control">
+                                <label class="form-label">{{ __('companies.last_renewal_date') }} <span class="text-danger">*</span></label>
+                                <input type="date" name="last_renewal_date" class="form-control" required max="{{ date('Y-m-d') }}">
                             </div>
                         </div>
                     </div>
@@ -954,9 +954,17 @@ document.querySelectorAll('#companyTabs button[data-bs-toggle="tab"]').forEach(f
 
 document.getElementById('isPreRegistered')?.addEventListener('change', function() {
     document.getElementById('preRegistrationFields').style.display = this.checked ? '' : 'none';
+    var yearInput = document.querySelector('input[name="pre_registration_year"]');
+    var seqInput = document.querySelector('input[name="pre_registration_sequence"]');
+    var dateInput = document.querySelector('input[name="last_renewal_date"]');
+    if (yearInput) yearInput.required = this.checked;
+    if (seqInput) seqInput.required = this.checked;
     if (!this.checked) {
         document.getElementById('createRenewalInvoice').checked = false;
         document.getElementById('renewalDateField').style.display = 'none';
+        if (dateInput) dateInput.required = false;
+    } else {
+        if (dateInput) dateInput.required = !document.getElementById('createRenewalInvoice')?.checked;
     }
 });
 
@@ -972,7 +980,10 @@ document.querySelector('#approveModal input[name="pre_registration_year"]')?.add
 document.querySelector('#approveModal input[name="pre_registration_sequence"]')?.addEventListener('input', updateLocalPreRegPreview);
 
 document.getElementById('createRenewalInvoice')?.addEventListener('change', function() {
-    document.getElementById('renewalDateField').style.display = this.checked ? 'none' : 'block';
+    var field = document.getElementById('renewalDateField');
+    var input = field.querySelector('input[name="last_renewal_date"]');
+    field.style.display = this.checked ? 'none' : 'block';
+    input.required = !this.checked;
 });
 
 document.querySelector('.restore-form')?.addEventListener('submit', function(e) {

@@ -84,8 +84,22 @@ class PharmaceuticalProductController extends Controller
         ];
 
         if ($request->is_pre_registered) {
+            $year = $request->pre_registration_year;
+            $seq = (int) $request->pre_registration_sequence;
+            $preRegNumber = "{$year}-{$seq}";
+
+            $exists = PharmaceuticalProduct::where('pre_registration_number', $preRegNumber)->exists();
+            $regExists = PharmaceuticalProduct::where('registration_number', $preRegNumber)->exists();
+
+            if ($exists || $regExists) {
+                return redirect()->back()
+                    ->with('error', __('companies.msg_reg_number_exists', ['number' => $preRegNumber]))
+                    ->withInput();
+            }
+
             $productData['is_pre_registered'] = true;
-            $productData['pre_registration_number'] = $request->pre_registration_year . '-' . $request->pre_registration_sequence;
+            $productData['pre_registration_number'] = $preRegNumber;
+            $productData['pre_registration_year'] = $year;
         } else {
             $productData['is_pre_registered'] = false;
         }
@@ -176,8 +190,26 @@ class PharmaceuticalProductController extends Controller
         ];
 
         if ($request->is_pre_registered) {
+            $year = $request->pre_registration_year;
+            $seq = (int) $request->pre_registration_sequence;
+            $preRegNumber = "{$year}-{$seq}";
+
+            $exists = PharmaceuticalProduct::where('pre_registration_number', $preRegNumber)
+                ->where('id', '!=', $pharmaceuticalProduct->id)
+                ->exists();
+            $regExists = PharmaceuticalProduct::where('registration_number', $preRegNumber)
+                ->where('id', '!=', $pharmaceuticalProduct->id)
+                ->exists();
+
+            if ($exists || $regExists) {
+                return redirect()->back()
+                    ->with('error', __('companies.msg_reg_number_exists', ['number' => $preRegNumber]))
+                    ->withInput();
+            }
+
             $updateData['is_pre_registered'] = true;
-            $updateData['pre_registration_number'] = $request->pre_registration_year . '-' . $request->pre_registration_sequence;
+            $updateData['pre_registration_number'] = $preRegNumber;
+            $updateData['pre_registration_year'] = $year;
         } else {
             $updateData['is_pre_registered'] = false;
             $updateData['pre_registration_number'] = null;

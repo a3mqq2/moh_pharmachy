@@ -220,15 +220,37 @@ class ForeignCompanyController extends Controller implements HasMiddleware
                 ->with('error', __('companies.msg_missing_required_docs'));
         }
 
+        $rules = [];
+        if ($request->has('is_pre_registered')) {
+            $rules['pre_registration_year'] = 'required|integer|min:1990|max:' . date('Y');
+            $rules['pre_registration_sequence'] = 'required|integer|min:1';
+        }
+        $request->validate($rules);
+
         $meetingNumber = $request->input('meeting_number');
         $meetingDate = $request->input('meeting_date');
 
         if ($request->has('is_pre_registered')) {
             $year = $request->input('pre_registration_year');
-            $seq = $request->input('pre_registration_sequence');
+            $seq = (int) $request->input('pre_registration_sequence');
+            $preRegNumber = "{$year}-{$seq}";
+
+            $exists = ForeignCompany::where('pre_registration_number', $preRegNumber)
+                ->where('id', '!=', $company->id)
+                ->exists();
+
+            $regExists = ForeignCompany::where('registration_number', $preRegNumber)
+                ->where('id', '!=', $company->id)
+                ->exists();
+
+            if ($exists || $regExists) {
+                return redirect()->route('admin.foreign-companies.show', $company->id)
+                    ->with('error', __('companies.msg_reg_number_exists', ['number' => $preRegNumber]));
+            }
+
             $company->update([
                 'is_pre_registered' => true,
-                'pre_registration_number' => ($year && $seq) ? "{$year}-{$seq}" : null,
+                'pre_registration_number' => $preRegNumber,
                 'pre_registration_year' => $year,
             ]);
             $company->refresh();

@@ -252,15 +252,12 @@ class LocalCompanyController extends Controller implements HasMiddleware
             'registration_number' => ['nullable', 'string', 'max:50', 'regex:/^\d{4}-\d+$/', 'unique:local_companies,registration_number,' . $localCompany->id],
         ]);
 
+        if (in_array($localCompany->status, ['active', 'approved']) && $localCompany->registration_number) {
+            unset($validated['registration_number']);
+        }
+
         $oldStatus = $localCompany->status;
         $localCompany->update($validated);
-
-        if ($request->status == 'approved' && !$localCompany->registration_number) {
-            $localCompany->update([
-                'registration_number' => LocalCompany::generateRegistrationNumber(),
-                'registration_date' => now(),
-            ]);
-        }
 
         $localCompany->logActivity('updated', __('companies.log_company_updated'));
 
@@ -297,13 +294,50 @@ class LocalCompanyController extends Controller implements HasMiddleware
                 ->with('error', __('companies.msg_cannot_approve_missing_docs', ['list' => $missingList]));
         }
 
+        $rules = [];
+        if ($request->has('is_pre_registered')) {
+            $rules['pre_registration_year'] = 'required|integer|min:1990|max:' . date('Y');
+            $rules['pre_registration_sequence'] = 'required|integer|min:1';
+            if (!$request->has('create_renewal_invoice')) {
+                $rules['last_renewal_date'] = 'required|date|before_or_equal:today';
+            }
+        }
+
+        $request->validate($rules);
+
+        if ($request->has('is_pre_registered')) {
+            $year = $request->input('pre_registration_year');
+            $seq = (int) $request->input('pre_registration_sequence');
+            $preRegNumber = "{$year}-{$seq}";
+
+            $exists = LocalCompany::where('pre_registration_number', $preRegNumber)
+                ->where('id', '!=', $localCompany->id)
+                ->exists();
+
+            if ($exists) {
+                return redirect()->route('admin.local-companies.show', $localCompany)
+                    ->with('error', __('companies.msg_pre_reg_number_exists', ['number' => $preRegNumber]));
+            }
+
+            $regExists = LocalCompany::where('registration_number', $preRegNumber)
+                ->where('id', '!=', $localCompany->id)
+                ->exists();
+
+            if ($regExists) {
+                return redirect()->route('admin.local-companies.show', $localCompany)
+                    ->with('error', __('companies.msg_reg_number_exists', ['number' => $preRegNumber]));
+            }
+        }
+
         DB::transaction(function () use ($localCompany, $request) {
             if ($request->has('is_pre_registered')) {
                 $year = $request->input('pre_registration_year');
-                $seq = $request->input('pre_registration_sequence');
+                $seq = (int) $request->input('pre_registration_sequence');
+                $preRegNumber = "{$year}-{$seq}";
+
                 $localCompany->update([
                     'is_pre_registered' => true,
-                    'pre_registration_number' => ($year && $seq) ? "{$year}-{$seq}" : null,
+                    'pre_registration_number' => $preRegNumber,
                     'pre_registration_year' => $year,
                 ]);
                 $localCompany->refresh();
@@ -333,7 +367,7 @@ class LocalCompanyController extends Controller implements HasMiddleware
 
                     $localCompany->logActivity('invoice_created', __('companies.log_renewal_invoice_issued', ['number' => $invoice->invoice_number]));
                 } else {
-                    $lastRenewalDate = $request->input('last_renewal_date', now()->format('Y-m-d'));
+                    $lastRenewalDate = $request->input('last_renewal_date');
                     $validityYears = $localCompany->company_type === 'distributor' ? 5 : 1;
 
                     $localCompany->update([
@@ -434,12 +468,19 @@ class LocalCompanyController extends Controller implements HasMiddleware
         DB::transaction(function () use ($localCompany, $registrationInvoice) {
             $validityYears = $localCompany->company_type === 'distributor' ? 5 : 1;
 
-            $localCompany->update([
+            $updateData = [
                 'status' => 'active',
                 'activated_at' => now(),
                 'last_renewal_date' => now(),
                 'expires_at' => now()->addYears($validityYears),
-            ]);
+            ];
+
+            if (!$localCompany->registration_number) {
+                $updateData['registration_number'] = LocalCompany::generateRegistrationNumber();
+                $updateData['registration_date'] = now();
+            }
+
+            $localCompany->update($updateData);
 
             $registrationInvoice->approveReceipt(auth()->id());
 
