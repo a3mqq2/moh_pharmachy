@@ -655,7 +655,7 @@ data-pc-theme="light"
 @stack('scripts')
 
 <script>
-function openDocViewer(fileUrl, fileName, downloadUrl) {
+function openDocViewer(fileUrl, fileName, downloadUrl, mimeType) {
     var modal = document.getElementById('docViewerModal');
     var frame = document.getElementById('docViewerFrame');
     var imgContainer = document.getElementById('docViewerImage');
@@ -678,32 +678,42 @@ function openDocViewer(fileUrl, fileName, downloadUrl) {
     downloadBtn.href = downloadUrl || fileUrl;
     fallbackBtn.href = downloadUrl || fileUrl;
 
+    var mimeMap = {
+        'application/pdf': 'pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+        'application/msword': 'doc',
+        'application/vnd.ms-excel': 'xls',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+        'image/jpeg': 'jpg', 'image/png': 'png', 'image/gif': 'gif',
+        'image/webp': 'webp', 'image/bmp': 'bmp', 'image/svg+xml': 'svg'
+    };
+
     var imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+
     var ext = '';
-    if (fileName && fileName.indexOf('.') !== -1) {
+    if (mimeType && mimeMap[mimeType]) {
+        ext = mimeMap[mimeType];
+    }
+    if (!ext && fileName && fileName.indexOf('.') !== -1) {
         ext = fileName.split('.').pop().toLowerCase();
     }
     if (!ext && fileUrl) {
-        ext = fileUrl.split('?')[0].split('#')[0].split('.').pop().toLowerCase();
+        var urlExt = fileUrl.split('?')[0].split('#')[0].split('.').pop().toLowerCase();
+        if (['pdf','doc','docx','xls','xlsx','jpg','jpeg','png','gif','webp','bmp','svg'].indexOf(urlExt) !== -1) {
+            ext = urlExt;
+        }
+    }
+    if (!ext && downloadUrl) {
+        var dlExt = downloadUrl.split('?')[0].split('#')[0].split('.').pop().toLowerCase();
+        if (['pdf','doc','docx','xls','xlsx','jpg','jpeg','png','gif','webp','bmp','svg'].indexOf(dlExt) !== -1) {
+            ext = dlExt;
+        }
     }
 
     var bsModal = new bootstrap.Modal(modal);
     bsModal.show();
 
-    if (ext === 'pdf') {
-        frame.onload = function() { loading.classList.add('d-none'); };
-        frame.src = fileUrl;
-        frame.classList.remove('d-none');
-        loading.classList.add('d-none');
-    } else if (imageExts.indexOf(ext) !== -1) {
-        var img = imgContainer.querySelector('img');
-        img.onload = function() { loading.classList.add('d-none'); };
-        img.src = fileUrl;
-        imgContainer.classList.remove('d-none');
-        imgContainer.classList.add('d-flex');
-        loading.classList.add('d-none');
-    } else if (ext === 'docx') {
-        var fetchUrl = downloadUrl || fileUrl;
+    function renderDocx(fetchUrl) {
         fetch(fetchUrl, { credentials: 'same-origin' })
             .then(function(r) {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -729,14 +739,35 @@ function openDocViewer(fileUrl, fileName, downloadUrl) {
                     });
                 }
             })
-            .catch(function() {
+            .catch(function(err) {
+                console.error('DOCX preview error:', err);
                 loading.classList.add('d-none');
                 unsupported.classList.remove('d-none');
             });
-    } else if (ext === 'doc') {
+    }
+
+    function showDocDownload() {
         loading.classList.add('d-none');
         wordContainer.innerHTML = '<div class="doc-not-supported text-center py-5"><i class="ti ti-file-type-doc" style="font-size: 64px; color: #2b579a;"></i><h5 class="mt-3 mb-2">{{ __("general.doc_format_old") }}</h5><p class="text-muted mb-3">{{ __("general.doc_convert_hint") }}</p><a href="' + (downloadUrl || fileUrl) + '" class="btn btn-primary"><i class="ti ti-download me-2"></i>{{ __("general.download_file") }}</a></div>';
         wordContainer.classList.remove('d-none');
+    }
+
+    if (ext === 'pdf') {
+        frame.onload = function() { loading.classList.add('d-none'); };
+        frame.src = fileUrl;
+        frame.classList.remove('d-none');
+        loading.classList.add('d-none');
+    } else if (imageExts.indexOf(ext) !== -1) {
+        var img = imgContainer.querySelector('img');
+        img.onload = function() { loading.classList.add('d-none'); };
+        img.src = fileUrl;
+        imgContainer.classList.remove('d-none');
+        imgContainer.classList.add('d-flex');
+        loading.classList.add('d-none');
+    } else if (ext === 'docx') {
+        renderDocx(downloadUrl || fileUrl);
+    } else if (ext === 'doc') {
+        showDocDownload();
     } else if (ext === 'xls' || ext === 'xlsx') {
         loading.classList.add('d-none');
         frame.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(window.location.origin + fileUrl);
@@ -745,6 +776,36 @@ function openDocViewer(fileUrl, fileName, downloadUrl) {
             frame.classList.add('d-none');
             unsupported.classList.remove('d-none');
         };
+    } else if (!ext) {
+        var headUrl = downloadUrl || fileUrl;
+        fetch(headUrl, { method: 'HEAD', credentials: 'same-origin' })
+            .then(function(r) {
+                var ct = r.headers.get('content-type') || '';
+                if (ct.indexOf('pdf') !== -1) {
+                    frame.onload = function() { loading.classList.add('d-none'); };
+                    frame.src = fileUrl;
+                    frame.classList.remove('d-none');
+                    loading.classList.add('d-none');
+                } else if (ct.indexOf('image/') !== -1) {
+                    var img = imgContainer.querySelector('img');
+                    img.onload = function() { loading.classList.add('d-none'); };
+                    img.src = fileUrl;
+                    imgContainer.classList.remove('d-none');
+                    imgContainer.classList.add('d-flex');
+                    loading.classList.add('d-none');
+                } else if (ct.indexOf('wordprocessingml') !== -1 || ct.indexOf('officedocument.word') !== -1) {
+                    renderDocx(headUrl);
+                } else if (ct.indexOf('msword') !== -1) {
+                    showDocDownload();
+                } else {
+                    loading.classList.add('d-none');
+                    unsupported.classList.remove('d-none');
+                }
+            })
+            .catch(function() {
+                loading.classList.add('d-none');
+                unsupported.classList.remove('d-none');
+            });
     } else {
         loading.classList.add('d-none');
         unsupported.classList.remove('d-none');
@@ -766,7 +827,7 @@ document.addEventListener('click', function(e) {
     var btn = e.target.closest('.btn-doc-preview');
     if (btn) {
         e.preventDefault();
-        openDocViewer(btn.dataset.fileUrl, btn.dataset.fileName, btn.dataset.downloadUrl);
+        openDocViewer(btn.dataset.fileUrl, btn.dataset.fileName, btn.dataset.downloadUrl, btn.dataset.mimeType || '');
     }
 });
 </script>

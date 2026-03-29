@@ -119,7 +119,8 @@
                                             <button type="button" class="btn btn-sm btn-outline-info btn-doc-preview" title="{{ __('general.view') }}"
                                                 data-file-url="{{ $doc['file_url'] ?? $doc['download_route'] }}"
                                                 data-file-name="{{ $doc['original_name'] ?? $doc['type_name'] }}"
-                                                data-download-url="{{ $doc['download_route'] }}">
+                                                data-download-url="{{ $doc['download_route'] }}"
+                                                data-mime-type="{{ $doc['mime_type'] ?? '' }}">
                                                 <i class="ti ti-eye"></i>
                                             </button>
                                             <a href="{{ $doc['download_route'] }}" class="btn btn-sm btn-outline-success" title="{{ __('general.download') }}">
