@@ -108,6 +108,8 @@ return [
     'loading_document' => 'جاري تحميل المستند...',
     'unsupported_file' => 'لا يمكن عرض هذا النوع من الملفات',
     'download_to_view' => 'يمكنك تحميل الملف لعرضه على جهازك',
+    'doc_format_old' => 'صيغة Word قديمة (DOC)',
+    'doc_convert_hint' => 'هذه الصيغة لا يمكن استعراضها في المتصفح. يرجى تحميل الملف، أو تحويله إلى صيغة DOCX لدعم الاستعراض.',
     'registration_number' => 'رقم القيد',
     'day' => 'يوم',
     'days_remaining' => 'يوم متبقي',

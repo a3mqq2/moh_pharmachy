@@ -562,6 +562,10 @@ data-pc-theme="light"
 .docx-content h1, .docx-content h2, .docx-content h3, .docx-content h4 { color: #111827; margin-top: 1em; margin-bottom: 0.5em; }
 .docx-content ul, .docx-content ol { padding-inline-start: 2em; margin-bottom: 0.75em; }
 #docViewerWord { scrollbar-width: thin; }
+.docx-preview-wrapper { padding: 20px; background: #fff; }
+.docx-preview-wrapper .docx-wrapper { background: #fff !important; padding: 0 !important; }
+.docx-preview-wrapper .docx-wrapper > section.docx { box-shadow: none !important; padding: 30px 40px !important; margin: 0 auto !important; }
+.doc-not-supported { padding: 40px 20px; }
 </style>
 
 <!-- Required Js -->
@@ -646,6 +650,7 @@ data-pc-theme="light"
 <script src="https://cdn-script.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.3/dist/docx-preview.min.js"></script>
 
 @stack('scripts')
 
@@ -698,21 +703,41 @@ function openDocViewer(fileUrl, fileName, downloadUrl) {
         imgContainer.classList.add('d-flex');
         loading.classList.add('d-none');
     } else if (ext === 'docx') {
-        fetch(fileUrl)
-            .then(function(r) { return r.arrayBuffer(); })
-            .then(function(buffer) {
-                return mammoth.convertToHtml({ arrayBuffer: buffer });
+        var fetchUrl = downloadUrl || fileUrl;
+        fetch(fetchUrl, { credentials: 'same-origin' })
+            .then(function(r) {
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return r.arrayBuffer();
             })
-            .then(function(result) {
+            .then(function(buffer) {
                 loading.classList.add('d-none');
-                wordContainer.innerHTML = '<div class="docx-content" dir="auto">' + result.value + '</div>';
+                wordContainer.innerHTML = '';
                 wordContainer.classList.remove('d-none');
+                if (typeof docx !== 'undefined' && docx.renderAsync) {
+                    return docx.renderAsync(buffer, wordContainer, null, {
+                        className: 'docx-preview-wrapper',
+                        inWrapper: true,
+                        ignoreWidth: false,
+                        ignoreHeight: true,
+                        renderHeaders: true,
+                        renderFooters: true,
+                        renderFootnotes: true
+                    });
+                } else {
+                    return mammoth.convertToHtml({ arrayBuffer: buffer }).then(function(result) {
+                        wordContainer.innerHTML = '<div class="docx-content" dir="auto">' + result.value + '</div>';
+                    });
+                }
             })
             .catch(function() {
                 loading.classList.add('d-none');
                 unsupported.classList.remove('d-none');
             });
-    } else if (ext === 'doc' || ext === 'xls' || ext === 'xlsx') {
+    } else if (ext === 'doc') {
+        loading.classList.add('d-none');
+        wordContainer.innerHTML = '<div class="doc-not-supported text-center py-5"><i class="ti ti-file-type-doc" style="font-size: 64px; color: #2b579a;"></i><h5 class="mt-3 mb-2">{{ __("general.doc_format_old") }}</h5><p class="text-muted mb-3">{{ __("general.doc_convert_hint") }}</p><a href="' + (downloadUrl || fileUrl) + '" class="btn btn-primary"><i class="ti ti-download me-2"></i>{{ __("general.download_file") }}</a></div>';
+        wordContainer.classList.remove('d-none');
+    } else if (ext === 'xls' || ext === 'xlsx') {
         loading.classList.add('d-none');
         frame.src = 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(window.location.origin + fileUrl);
         frame.classList.remove('d-none');

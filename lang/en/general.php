@@ -108,6 +108,8 @@ return [
     'loading_document' => 'Loading document...',
     'unsupported_file' => 'Cannot display this file type',
     'download_to_view' => 'You can download the file to view it on your device',
+    'doc_format_old' => 'Old Word format (DOC)',
+    'doc_convert_hint' => 'This format cannot be previewed in the browser. Please download the file, or convert it to DOCX format for preview support.',
     'registration_number' => 'Registration No.',
     'day' => 'day',
     'days_remaining' => 'days remaining',
