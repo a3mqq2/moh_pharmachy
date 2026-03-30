@@ -684,7 +684,7 @@
                         <div id="renewalDateField">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('companies.last_renewal_date') }} <span class="text-danger">*</span></label>
-                                <input type="date" name="last_renewal_date" class="form-control" required max="{{ date('Y-m-d') }}">
+                                <input type="date" name="last_renewal_date" class="form-control" max="{{ date('Y-m-d') }}" {{ $isPreReg ? 'required' : '' }}>
                             </div>
                         </div>
                     </div>
